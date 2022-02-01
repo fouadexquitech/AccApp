@@ -1,0 +1,217 @@
+<div class="container-fluid">
+<div class="p-3">
+  <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-beat">
+    <p style="font-size: 20px; color: white">Loading...</p>
+  </ngx-spinner>
+  <app-nav></app-nav>
+
+  <br>
+
+  <div class="row">
+    <div class="col-sm-12 form-group">
+      <mat-card style="height: 119px;">
+        <mat-card-header>
+          <mat-card-title>Package</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>
+            {{ PackageName }}
+          </p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-12 form-group" *ngIf="SupplierPackagesList.length == 0 && FilePath != null">
+     
+       
+      <mat-form-field style="width: 100%;" appearance="fill">
+        <mat-label>Suppliers</mat-label>
+        <mat-select multiple [(ngModel)]="selectedSuppliers">
+          <mat-option *ngFor="let item of SupplierList" [value]="item.supID">{{item.supName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+         
+      </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-3 form-group" *ngIf="FilePath == null">
+      <button style="width: 100%;" type="button" 
+      class="btn btn-success"
+      [disabled]="(FilePath != null)"
+      (click)="validateExcelBeforeAssign()">Validate Excel</button>
+    
+    </div>
+  
+    
+ 
+    <div class="col-sm-3 form-group" *ngIf="SupplierPackagesList.length == 0 && FilePath != null">
+      <button style="width: 100%;" type="button" 
+      class="btn btn-primary" 
+      [disabled]="(selectedSuppliers.length == 0 || isAssigning)"
+      (click)="AssignSuppliers()">
+      <span *ngIf="isAssigning" class="spinner-border spinner-border-sm mr-1"></span>
+      Assign</button>
+    </div>
+
+    <div class="col-sm-3 form-group" *ngIf="SupplierPackagesList.length > 0 && FilePath != null">
+      <button style="width: 100%;" type="button" class="btn btn-primary" 
+      (click)="onCompare()">Compare</button>
+    </div>
+    
+  </div>
+  
+  <br>
+    
+    
+ 
+  
+  <div class="row">
+
+  <div class="col-sm-12 form-group">
+  <table class="table">
+    <thead>
+      <tr>
+        <th style="display: none;">Package Supplier Id</th>
+        <th>Supplier Id</th>
+        <th>Supplier Name</th>
+        <th>Package Description</th>
+        <th style="width: 17%; text-align: center;">Actions</th>
+      </tr>
+    </thead>
+    <tbody *ngFor="let item of SupplierPackagesList; let i = index">
+      <tr>
+        <td style="display: none;">{{item.psId}}</td>
+        <td>{{item.psSuppId}}</td>
+        <td>{{item.psSupName}}</td>
+        <td>{{PackageName}}</td>
+        <td>
+          &nbsp;
+          <button type="button" class="btn btn-primary" (click)="Toggle(item , i)">View</button>
+          &nbsp;
+          <button type="button" class="btn btn-primary" (click)="OpenModal(item.psId)">Add Revision</button>
+        </td>
+      </tr>
+      <tr *ngIf="currentRowIndex == i">
+        <td colspan="12">
+          <table *ngIf="SupplierPackagesRevList.length > 0" class="table">
+            <thead>
+              <tr>
+                <th>Revision Id</th>
+                <th>Revision No</th>
+                <th>Revision Date</th>
+                <th>Total Price</th>
+                <th style="width: 10%;">Action</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let item of SupplierPackagesRevList; let i = index">
+              <tr>
+                <td>{{item.prRevId}}</td>
+                <td>{{item.prRevNo}}</td>
+                <td>{{item.prRevDate | date: 'dd/MM/yyyy'}}</td>
+                <td>{{item.prTotPrice | number : '1.2-2' }}</td>
+                <td style="text-align: center;">
+                  <button type="button" class="btn btn-primary" (click)="OpenFieldModal(item.prRevId)">Add
+                    Field</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p *ngIf="SupplierPackagesRevList.length == 0" style="text-align: center;"><strong>No Revision Found
+              !</strong></p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+  </div>
+</div>
+  <!-- Add Revision Modal -->
+  <div class="modal fade" id="addRevisionModal" tabindex="-1" aria-labelledby="addRevisionLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addRevisionLabel">Upload File</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-12 form-group">
+              <label for="revisionDate">Revision Date</label>
+           
+              <input type="date" id="revisionDate" name="revisionDate" 
+              class="form-control">
+            </div>
+          </div>
+<br>
+          <div class="row">
+            <div class="col-sm-12 form-group">
+              <label for="currency">Currency</label>
+            
+              <select class="form-select" id="currency" [(ngModel)]="selectedCurrencyId">
+                <option value="" selected></option>
+                <option *ngFor="let item of CurrencyList" [ngValue]="item.curId">{{item.curCode}}</option>
+              </select>
+            </div>
+          </div>
+        <br>
+        <div class="row">
+          <div class="col-sm-12 form-group">
+            <label for="exchangeRate">Exchange Rate</label>
+            <input type="number" id="exchangeRate" name="exchangeRate" class="form-control" value="0">
+          </div>
+        </div>
+        <br>
+          <div class="row">
+            
+              <div class="col-sm-12 form-group">
+                <form>
+                <input type="file" class="form-control-file" id="excelFile" (change)="onFileSelect($event)">
+              </form>
+              </div>
+           
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="CloseModal()">Close</button>
+          <button type="button" class="btn btn-primary" (click)="AddRevision()" [disabled]="addingRevision">
+            <span *ngIf="addingRevision" class="spinner-border spinner-border-sm mr-1"></span>
+            Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Field Modal -->
+  <div class="modal fade" id="addFieldModal" tabindex="-1" aria-labelledby="addFieldLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addFieldLabel">Add New Field</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-6">
+              <label>Label :</label>
+              <input type="text" class="form-control" id="labelInput">
+            </div>
+            <div class="col-6">
+              <label>Value :</label>
+              <input type="text" class="form-control" id="valueInput"
+                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="CloseFieldModal()">Close</button>
+          <button type="button" class="btn btn-primary" (click)="AddField()">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

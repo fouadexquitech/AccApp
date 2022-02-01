@@ -1,0 +1,374 @@
+<div class="p-3">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-beat">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <app-nav></app-nav>
+
+    <br>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 style="display: inline-block;">Search</h5>
+            <span style="float: right; cursor: pointer;user-select: none;" (click)="toggleShow()">show / hide</span>
+        </div>
+        <div class="card-body" *ngIf="isShown">
+            <div class="row">
+                <div class="col-sm-3 form-group">
+                    <!--<label>BOQ Div</label>
+                    <ng-select2 [(ngModel)]="SearchInput.bOQDiv" width="100%" [options]="select2Options" *ngIf="BOQDivList">
+                        <option value="" selected></option>
+                        <option *ngFor="let item of BOQDivList" [ngValue]="item.sectionO">{{ item.sectionO }}
+                        </option>
+                    </ng-select2>-->
+
+                    <mat-form-field appearance="fill" class="full-width-field">
+                        <mat-label>BOQ Div</mat-label>
+                        <mat-select [(ngModel)]="SearchInput.bOQDiv" multiple>
+                            <input matInput type="text" focused="'true'" (keyup)="filterBOQDiv($event)" class="mat-filter">
+                            <span class="fa fa-search input-icon"></span>
+                            <mat-divider></mat-divider>
+                         
+                          <mat-option *ngFor="let item of selectedBOQDivList" [value]="item.sectionO">{{ item.sectionO }}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                
+                </div>
+
+                <div class="col-sm-2 form-group">
+                    
+                    <label>BOQ Item</label>
+                            
+                    <input type="text" class="form-control" [(ngModel)]="SearchInput.bOQItem">
+          
+                </div>
+
+                <div class="col-sm-3 form-group">
+                    
+                    <label>BOQ Desc</label>
+                
+                    <input type="text" class="form-control" [(ngModel)]="SearchInput.bOQDesc">
+                        
+                </div>
+
+                <div class="col-sm-2 form-group">
+                    
+                    <label>From Row</label>
+                       
+                    <input type="text" class="form-control" [(ngModel)]="SearchInput.fromRow">
+               
+                   
+                       
+                </div>
+                <div class="col-sm-2 form-group">
+                    <label>To Row</label>
+               
+                    <input type="text" class="form-control" [(ngModel)]="SearchInput.toRow">
+                </div>
+                </div>
+            <div class="row">
+                <div class="col-sm-8 form-group">
+                   <!--
+                           
+
+                            <label>Package</label>
+                
+                    <ng-select2 [(ngModel)]="SearchInput.package" *ngIf="PackageList" width="100%">
+                        <option selected value=""></option>
+                        <option *ngFor="let item of PackageList" [ngValue]="item.idPkge">{{ item.pkgeName}}
+                        </option>
+                    </ng-select2>-->
+
+                    <mat-form-field appearance="fill" class="full-width-field">
+                        <mat-label>Package</mat-label>
+                        <mat-select [(ngModel)]="SearchInput.package">
+                            <input matInput type="text" focused="'true'" (keyup)="filterSearchPackages($event)" class="mat-filter">
+                            <span class="fa fa-search input-icon"></span>
+                            <mat-divider></mat-divider>
+                          <mat-option></mat-option>
+                          <mat-option *ngFor="let pitem of selectedFilterPackages" [value]="pitem.idPkge">{{ pitem.pkgeName }}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                       
+                </div>
+                <div class="col-sm-4 form-group">
+                    
+                    <!--<label>Sheet Desc</label>
+               
+                    <ng-select2 [(ngModel)]="SearchInput.sheetDesc" width="100%" [allowClear]="true" [placeholder]="" *ngIf="SheetDescList">
+                        <option selected value=""></option>
+                        <option *ngFor="let item of SheetDescList" [ngValue]="item.obSheetDesc">{{
+                            item.obSheetDesc }}</option>
+                    </ng-select2>-->
+
+                    <mat-form-field appearance="fill" class="full-width-field">
+                        <mat-label>Sheet Desc</mat-label>
+                        <mat-select [(ngModel)]="SearchInput.sheetDesc">
+                            <input matInput type="text" focused="'true'" (keyup)="filterSheetDesc($event)" class="mat-filter">
+                            <span class="fa fa-search input-icon"></span>
+                            <mat-divider></mat-divider>
+                          <mat-option></mat-option>
+                          <mat-option *ngFor="let item of selectedSheetDescList" [value]="item.obSheetDesc">{{ item.obSheetDesc }}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+              
+            </div>
+            </div>
+           
+            <div class="row">
+                <div class="col-sm-3 form-group">
+                    
+                   <!-- <label>RES Div</label>
+                
+                    <ng-select2 [(ngModel)]="SearchInput.rESDiv" *ngIf="RESDivList" width="100%" [allowClear]="true" [placeholder]="">
+                        <option selected value=""></option>
+                        <option *ngFor="let item of RESDivList" [ngValue]="item.boqDiv">{{item.boqDiv}}</option>
+                    </ng-select2>-->
+
+                    <mat-form-field appearance="fill" class="full-width-field">
+                        <mat-label>RES Div</mat-label>
+                        <mat-select [(ngModel)]="SearchInput.rESDiv" multiple>
+                            <input matInput type="text" focused="'true'" (keyup)="filterRESDiv($event)" class="mat-filter">
+                            <span class="fa fa-search input-icon"></span>
+                            <mat-divider></mat-divider>
+                         
+                          <mat-option *ngFor="let item of selectedRESDivList" [value]="item.boqDiv">{{ item.boqDiv }}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                       
+
+                </div>
+
+                <div class="col-sm-3 form-group">
+                    
+                   <!-- <label>RES Type</label>
+                
+                    <ng-select2 [(ngModel)]="SearchInput.rESType" width="100%" [allowClear]="true" [placeholder]="" *ngIf="RESTypeList">
+                        <option selected value=""></option>
+                        <option *ngFor="let item of RESTypeList" [ngValue]="item.boqCtg">{{item.boqCtg}}
+                        </option>
+                    </ng-select2>-->
+
+                    <mat-form-field appearance="fill" class="full-width-field">
+                        <mat-label>RES Type</mat-label>
+                        <mat-select [(ngModel)]="SearchInput.rESType" multiple>
+                            <input matInput type="text" focused="'true'" (keyup)="filterSearchRESType($event)" class="mat-filter">
+                            <span class="fa fa-search input-icon"></span>
+                            <mat-divider></mat-divider>
+                         
+                          <mat-option *ngFor="let item of selectedRESTypeList" [value]="item.boqCtg">{{ item.boqCtg }}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                       
+                </div>
+
+                <div class="col-sm-3 form-group">
+                   
+                    <label>RES Desc</label>
+                
+                    <input type="text" class="form-control" [(ngModel)]="SearchInput.rESDesc">
+                       
+                </div>
+
+                <div class="col-sm-3 form-group">
+                    
+                    <!--<label>RES Package</label>
+                
+                    <ng-select2 [(ngModel)]="SearchInput.rESPackage" width="100%" [allowClear]="true" [placeholder]="" *ngIf="RESPackageList">
+                        <option selected value=""></option>
+                        <option *ngFor="let item of RESPackageList" [ngValue]="item.boqPackage">{{
+                            item.boqPackage }}</option>
+                    </ng-select2>-->
+
+                    <mat-form-field appearance="fill" class="full-width-field">
+                        <mat-label>RES Package</mat-label>
+                        <mat-select [(ngModel)]="SearchInput.rESPackage">
+                            <input matInput type="text" focused="'true'" (keyup)="filterSearchRESPackage($event)" class="mat-filter">
+                            <span class="fa fa-search input-icon"></span>
+                            <mat-divider></mat-divider>
+                            <mat-option></mat-option>
+                          <mat-option *ngFor="let item of selectedFilterResPackages" [value]="item.boqPackage">{{ item.boqPackage }}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                        
+                </div>
+
+                
+
+            </div>
+
+           <hr>
+
+            <div class="row">
+                
+                <div class="col-sm-2 form-group">
+                    <button type="button" class="btn btn-primary" style="float: right; width: 100%;"
+                        (click)="onSearch()">Search</button>
+                </div>
+                <div class="col-sm-2 form-group">
+                    <button type="button" class="btn btn-danger" style="float: right; width: 100%;"
+                        (click)="clearAllSelections()" [disabled]="SelectedOriginalBoqList.length == 0">Clear All Selections</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <br>
+
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <h5 style="display: inline-block;">Assign Package</h5>
+                    <span style="float: right; cursor: pointer;user-select: none;" (click)="toggleAssignShow()">show /
+                        hide</span>
+                </div>
+                <div class="card-body" *ngIf="isAssignShown">
+                    <div class="row">
+                        <div class="col-sm-12 form-group">
+                            <!--<label>Package</label>
+                        
+                            <ng-select2 [(ngModel)]="SelectedPackage" width="100%" [allowClear]="true" [placeholder]="" *ngIf="PackageList"
+                            (ngModelChange)="onPackageSelected($event)">
+                                <option value="" selected></option>
+                                <option *ngFor="let pitem of PackageList" [ngValue]="pitem.idPkge">{{ pitem.pkgeName }}
+                                </option>
+                            </ng-select2>-->
+
+                            <mat-form-field appearance="fill" class="full-width-field">
+                                <mat-label>Package</mat-label>
+                                <mat-select [(ngModel)]="SelectedPackage" (selectionChange)="onPackageMatSelected($event)">
+                                    <input matInput type="text" focused="'true'" (keyup)="filterPackages($event)" class="mat-filter">
+                                    <span class="fa fa-search input-icon"></span>
+                                    <mat-divider></mat-divider>
+                                  <mat-option></mat-option>
+                                  <mat-option *ngFor="let pitem of selectedPackages" [value]="pitem.idPkge">{{ pitem.pkgeName }}</mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                       </div> 
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                        
+                        <div class="col-sm-3 form-group">
+                            <button [disabled]="isAssigning" type="button" class="btn btn-primary" style="float: right; width: 100%;"
+                                (click)="AssignPackages()">
+                                <span *ngIf="isAssigning" class="spinner-border spinner-border-sm mr-1"></span>
+                                Assign
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+<br>
+    
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <table id="originalBOQTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    <input type="checkbox" #checkboxes class="form-check-input" (change)="checkAllOriginalBoq($event)">
+                                </th>
+                                <th scope="col">Row#</th>
+                                <th scope="col">Div</th>
+                                <th scope="col">BOQ Item</th>
+                                <th scope="col">BOQ Description</th>
+                                <th scope="col">Unit</th>
+                                <th scope="col">BOQ Qty</th>
+                                <th scope="col">Unit Price</th>
+                                <!--<th scope="col">Package</th>-->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of OriginalBoqList ; let i = index" style="cursor: pointer;"
+                                (click)="selectRow($event, i)" [ngClass]="{'HighlightedRow': i === CurrentRowIndex }">
+                                <td><input disabled #checkboxes class="form-check-input" style="cursor: pointer;" type="checkbox"
+                                       ></td>
+                                <td>{{item.rowNumber}}</td>
+                                <td>{{item.sectionO}}</td>
+                                <td>{{item.itemO}}</td>
+                                <td>{{item.descriptionO}}</td>
+                                <td>{{item.unitO}}</td>
+                                <td>{{item.qtyO | number: '.2' }}</td>
+                                <td>{{item.unitRate | number: '.2' }}</td>
+                                <!--<td *ngIf="PackageList" width="20%">
+                                    <ng-select2 width="100%" [allowClear]="true" [placeholder]="" [(ngModel)]="item.scope">
+                                        <option selected></option>
+                                        <option *ngFor="let pitem of PackageList" [ngValue]="pitem.idPkge">{{ pitem.pkgeName }}
+                                        </option>
+                                    </ng-select2>
+                                </td>-->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <br>
+
+    <div class="table-wrapper-scroll-y my-second-scrollbar-table" *ngIf="BoqList.length > 0">
+        <table class="table table-bordered table-responsive mb-0 boqTable">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Resource Description</th>
+                    <th scope="col">Unit</th>
+                    <th scope="col">Res. Qty</th>
+                    <th scope="col">Unit Price</th>
+                    <th scope="col">Final Price</th>
+                    <th scope="col">Total Unit Price</th>
+                    <th scope="col">Div.</th>
+                    <th scope="col">Res.Package</th>
+                    <!--<th scope="col">Package</th>-->
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of BoqList; let i = index">
+                    <td><input #checkboxes class="form-check-input" style="cursor: pointer;" type="checkbox"
+                            (change)="OnBoqChecked($event , i)" [checked]="item.isSelected"></td>
+                    <td>{{item.boqCtg}}</td>
+                    <td>{{item.resDescription}}</td>
+                    <td>{{item.boqUnitMesure}}</td>
+                    <td>{{item.boqQty | number: '.2'}}</td>
+                    <td>{{item.boqUprice | number: '.2'}}</td>
+                    <td>{{item.boqQty * item.boqUprice | number: '.2' }}</td>
+                    <td>{{SelectedBoqQty * item.boqUprice | number: '.2' }}</td>
+                    <td>{{item.boqDiv}}</td>
+                    <td>{{item.boqPackage}}</td>
+                    <!--<td *ngIf="PackageList" width="20%">
+                        <ng-select2 width="100%" [allowClear]="true" [placeholder]="" [(ngModel)]="item.boqScope">
+                            <option selected></option>
+                            <option *ngFor="let item of PackageList">{{ item["pkgeName"] }}</option>
+                        </ng-select2>
+                    </td>-->
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <br>
+
+    <div class="row" *ngIf="BoqList.length > 0">
+        <div class="col-8">
+
+        </div>
+        <div class="col-2">
+            <strong>Final Unit Price : </strong>
+        </div>
+        <div class="col-2">
+            <span style="float: left;">{{FinalUnitPrice | number: '.2' }}</span>
+        </div>
+    </div>
+</div>

@@ -1,1 +1,32 @@
 /* You can add global styles to this file, and also import other style files */
+
+.my-first-scrollbar-table {
+    position: relative;
+    height: auto;
+    max-height: 400px;
+    overflow: auto;
+    }
+
+.my-second-scrollbar-table {
+    position: relative;
+    height: auto;
+    max-height: 400px;
+    overflow: auto;
+    }
+
+.table-wrapper-scroll-y {
+    display: block;
+    }
+
+select {
+    cursor: pointer;
+}
+
+.HighlightedRow{ background-color: #F0F8FF; }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.hiddenRow {
+    padding: 0 !important;
+}

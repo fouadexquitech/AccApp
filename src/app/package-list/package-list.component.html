@@ -1,0 +1,30 @@
+<div class="p-3">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-beat">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <app-nav></app-nav>
+
+    <br>
+
+    <div class="card card-body">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Description</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of PackageList ; let i = index" style="cursor: pointer;">
+                    <td id="pckId">{{ item.idPkge }}</td>
+                    <td>{{ item.pkgeName }}</td>
+                    <td style="width: 185px !important;">
+                        <button type="button" class="btn btn-primary" (click)="onClick(item.idPkge)">Assign To
+                            Suppliers</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,75 @@
+﻿<section style="background-color: #cab268;">
+    <div class="container py-5">
+      <div class="row d-flex justify-content-center align-items-center">
+        <div class="col col-xl-10">
+          <div class="card" style="border-radius: 1rem;">
+            <div class="row g-0">
+              <div class="col-md-6 col-lg-5 d-none d-md-block">
+                <img
+                  src="../../assets/img/img2.webp"
+                  alt="login form"
+                  class="img-responsive img-fluid" style="border-radius: 0 0 0 0; min-height: 100%;"
+                />
+              </div>
+              <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                <div class="card-body p-4 text-black">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div class="d-flex align-items-center mb-3 pb-1">
+                
+                <span class="h1 fw-bold mb-0"><img src="../../assets/img/acc_logo.png"></span>
+              </div>
+
+              <div class="form-outline mb-4">
+                <label for="country">Country</label>
+                <select formControlName="country" class="form-select" 
+                [ngClass]="{ 'is-invalid': submitted && f.country.errors }" *ngIf="countries"
+                (change)="getProjects($event)">
+                   
+                        <option *ngFor="let country of countries" [ngValue]="country.dbSeq">{{ country.dbLocation }}
+                        </option>
+                    </select>
+                <div *ngIf="submitted && f.country.errors" class="invalid-feedback">
+                    <div *ngIf="f.country.errors.required">Country is required</div>
+                </div>
+            </div>
+            <div class="form-outline mb-4">
+                <label for="project">Project</label>
+                <select [(ngModel)]="selectedProject" formControlName="project" class="form-select" [ngClass]="{ 'is-invalid': submitted && f.project.errors }">
+                    
+                        <option *ngFor="let project of projects" [ngValue]="project.seq">{{ project.prjCostDatabase }}
+                        </option>
+                </select>
+                <div *ngIf="submitted && f.project.errors" class="invalid-feedback">
+                    <div *ngIf="f.project.errors.required">Project is required</div>
+                </div>
+            </div>
+            <div class="form-outline mb-4">
+                <label for="username">Username</label>
+                <input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+                <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+                    <div *ngIf="f.username.errors.required">Username is required</div>
+                </div>
+            </div>
+            <div class="form-outline mb-4">
+                <label for="password">Password</label>
+                <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+                <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                    <div *ngIf="f.password.errors.required">Password is required</div>
+                </div>
+            </div>
+            <div class="pt-1 mb-4">
+                <button [disabled]="loading" class="btn btn-dark btn-lg btn-block">
+                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                    Login
+                </button>
+               
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>

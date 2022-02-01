@@ -1,0 +1,117 @@
+<div class="p-3">
+  <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-beat">
+    <p style="font-size: 20px; color: white">Loading...</p>
+  </ngx-spinner>
+  <app-nav></app-nav>
+
+  <br>
+
+  <table class="table" id="myTable">
+    <thead>
+      <tr>
+        <th scope="col" *ngFor="let col of columns">
+          {{col}}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of comparisonObject; let j = index">
+        <td *ngFor="let itemCol of comparisonObjectColumns">
+          {{ item[itemCol] }}
+        </td>
+        <td *ngIf="show">
+          <p *ngFor="let item of packageSuppliersPrice; let i = index">
+            <label>Percentage {{ item.supplierName}}</label>
+            &nbsp;
+            <input class="form-control" type="text" value="{{item.revisionDetails[j].perc}}" id="perc-{{item.supplierId}}"/>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4"><strong>Additional Fees</strong></td>
+        <td *ngFor="let item of packageSuppliersPrice">
+          <p *ngFor="let field of item.fieldLists">
+            {{field.label}} ({{field.value}}%)
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4"><strong>Total</strong></td>
+        <td *ngFor="let item of totalPackageSuppliersPrice ;  let i = index" [ngClass]="{ 'lowest': item.lowest }">
+          <strong>{{item.totalprice | number : '1.2-2' }}</strong>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <br>
+
+  <div class="row" *ngIf="!show">
+    <div class="col-4"></div>
+    <div class="col-4">
+      <button style="width: 100%;" type="button" class="btn btn-primary" (click)="OpenAssignInputs()">
+        Assign Package To Suppliers By Resource
+      </button>
+    </div>
+    <div class="col-4">
+      <button style="width: 100%;" type="button" class="btn btn-primary" (click)="OpenAssignModal()">
+        Assign Package To Suppliers
+      </button>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="show">
+    <div class="col-8"></div>
+    <div class="col-2">
+      <button style="width: 100%;" type="button" class="btn btn-secondary" (click)="Cancel()" >
+        Cancel
+      </button>
+    </div>
+    <div class="col-2">
+      <button style="width: 100%;" type="button" class="btn btn-primary" (click)="saveNew()" >
+        Save
+      </button>
+    </div>
+  </div>
+  <br>
+  <br>
+
+  <!-- Assign Package Modal -->
+  <div class="modal fade" id="assignPackageModal" tabindex="-1" aria-labelledby="assignPackageLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="assignPackageLabel">Assign Package To Suppliers</h5>
+          <button type="button" class="btn-close" (click)="CloseAssignModal()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col" hidden="true">Supplier Id</th>
+                  <th scope="col">Supplier Name</th>
+                  <th class="percentage" scope="col">Percentage</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of SupplierPackagesList; let i = index">
+                  <td hidden="true">{{item.psSuppId}}</td>
+                  <td>{{item.psSupName}}</td>
+                  <td><input type="text" class="form-control" id="valueInput{{i}}"
+                      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+          <div class="modal-footer customFooter">
+            <button type="button" class="btn btn-secondary" (click)="CloseAssignModal()">Close</button>
+            <button type="button" class="btn btn-primary" (click)="AssignPackageSuppliers()">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
