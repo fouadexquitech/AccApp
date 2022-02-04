@@ -12,6 +12,11 @@ export class SupplierInput {
     public supID: number = 0;
 }
 
+export class ExchangeRate {
+    public curCode : string = null;
+    public curRate : number = 0;
+}
+
 export class SupplierPackagesList {
     public psId: number = 0;
     public psPackId: number = 0;

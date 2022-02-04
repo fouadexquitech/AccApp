@@ -317,8 +317,8 @@
 
     <br>
 
-    <div class="table-wrapper-scroll-y my-second-scrollbar-table" *ngIf="BoqList.length > 0">
-        <table class="table table-bordered table-responsive mb-0 boqTable">
+    <div class="table-wrapper-scroll-y my-second-scrollbar-table" *ngIf="displayedBoqList.length > 0">
+        <table class="table table-responsive mb-0 boqTable">
             <thead>
                 <tr>
                     <th scope="col"></th>
@@ -335,8 +335,8 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let item of BoqList; let i = index">
-                    <td><input #checkboxes class="form-check-input" style="cursor: pointer;" type="checkbox"
+                <tr *ngFor="let item of displayedBoqList; let i = index">
+                   <td><input #checkboxes class="form-check-input" style="cursor: pointer;" type="checkbox"
                             (change)="OnBoqChecked($event , i)" [checked]="item.isSelected"></td>
                     <td>{{item.boqCtg}}</td>
                     <td>{{item.resDescription}}</td>
@@ -354,21 +354,37 @@
                         </ng-select2>
                     </td>-->
                 </tr>
+                
             </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="5"></th>
+                    <th><h5 style="text-align: right;"><strong>Total Final Price</strong></h5></th>
+                    <th>
+                        
+                        <h5>{{FinalUnitPrice | number: '.2' }}</h5>
+                    </th>
+                    <th colspan="3"></th>
+                </tr>
+            </tfoot>
+
         </table>
+    </div>
+    <div *ngIf="displayedBoqList.length == 0">
+            <h3>No resources have been selected</h3>
     </div>
 
     <br>
 
-    <div class="row" *ngIf="BoqList.length > 0">
+    <!--<div class="row" *ngIf="displayedBoqList.length > 0">
         <div class="col-8">
 
         </div>
         <div class="col-2">
-            <strong>Final Unit Price : </strong>
+            <strong>Final Total Price : </strong>
         </div>
         <div class="col-2">
             <span style="float: left;">{{FinalUnitPrice | number: '.2' }}</span>
         </div>
-    </div>
+    </div>-->
 </div>

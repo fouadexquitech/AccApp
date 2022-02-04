@@ -53,7 +53,7 @@
       [disabled]="(selectedSuppliers.length == 0 || isAssigning)"
       (click)="AssignSuppliers()">
       <span *ngIf="isAssigning" class="spinner-border spinner-border-sm mr-1"></span>
-      Assign</button>
+      Assign and send email</button>
     </div>
 
     <div class="col-sm-3 form-group" *ngIf="SupplierPackagesList.length > 0 && FilePath != null">
@@ -150,7 +150,7 @@
             <div class="col-sm-12 form-group">
               <label for="currency">Currency</label>
             
-              <select class="form-select" id="currency" [(ngModel)]="selectedCurrencyId">
+              <select class="form-select" id="currency" #currency name="currency" [(ngModel)]="selectedCurrencyId" (change)="onCurrencyChange(currency.options[currency.options.selectedIndex].text)">
                 <option value="" selected></option>
                 <option *ngFor="let item of CurrencyList" [ngValue]="item.curId">{{item.curCode}}</option>
               </select>
@@ -160,7 +160,7 @@
         <div class="row">
           <div class="col-sm-12 form-group">
             <label for="exchangeRate">Exchange Rate</label>
-            <input type="number" id="exchangeRate" name="exchangeRate" class="form-control" value="0">
+            <input type="number" id="exchangeRate" name="exchangeRate" [(ngModel)]="exchangeRate" class="form-control">
           </div>
         </div>
         <br>

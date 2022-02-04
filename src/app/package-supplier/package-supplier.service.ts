@@ -84,6 +84,13 @@ export class PackageSupplierService {
   );
 }
 
+ getExchangeRate(selectedCurrency : string, projectCurrency : string)
+ {
+  return this.http.get('http://api.exchangeratesapi.io/v1/latest?access_key=ac94d97d8f42506333ce81bcf6b68544&symbols=USD,' + projectCurrency + ',' + selectedCurrency).pipe(
+    map(res => res), catchError(this.handleError)
+  );
+ }
+
   handleError(error: any): Promise<any> {
     console.error('An error occurred', error);
     return Promise.reject(error.message || error);

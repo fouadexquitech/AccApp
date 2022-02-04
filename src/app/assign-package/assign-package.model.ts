@@ -11,6 +11,7 @@ export class OriginalBoqModel {
 
 export class BoqModel {
     public boqSeq: number = 0;
+    public boqResSeq: string = "";
     public boqCtg: string = "";
     public boqUnitMesure: string = "";
     public boqQty: number = 0;
@@ -20,6 +21,7 @@ export class BoqModel {
     public boqScope: number = 0;
     public resDescription: string = "";
     public isSelected : boolean = true;
+    public boqItem : string = null;
 }
 
 export class SearchInput {
@@ -69,9 +71,9 @@ export class AssignOriginalBoqList {
 
 export class AssignBoqList {
     public boqSeq: number = 0;
-
     public boqScope: number = 0;
-
+    public boqResSeq : string = null;
+    public boqItem : string = null;
 }
 
 export class AssignPackages {

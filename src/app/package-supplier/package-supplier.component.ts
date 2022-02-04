@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
-import { SupplierInput, SupplierList, SupplierPackagesList, SupplierPackagesRevList, CurrencyList } from './package-supplier.model';
+import { SupplierInput, SupplierList, SupplierPackagesList, SupplierPackagesRevList, CurrencyList, ExchangeRate } from './package-supplier.model';
 import { PackageSupplierService } from './package-supplier.service';
 import { environment } from '../../environments/environment';
 import { ProjectCurrency } from '../login/login.model';
@@ -33,6 +33,8 @@ export class PackageSupplierComponent implements OnInit {
   selectedCurrencyId : number = 0;
   public isAssigning : boolean = false;
   public addingRevision : boolean = false;
+  exchangeRate : number = 1;
+  exchangeRates : ExchangeRate[];
 
   constructor(private router: Router, private packageSupplierService: PackageSupplierService, private spinner: NgxSpinnerService, private toastr: ToastrService) {
     if (this.router.getCurrentNavigation().extras.state != undefined) {
@@ -152,9 +154,10 @@ export class PackageSupplierComponent implements OnInit {
     var date = document.getElementById("revisionDate") as HTMLInputElement;
     date.value = new Date().toISOString().substring(0, 10);
     var file = document.getElementById("excelFile") as HTMLInputElement;
-    var exchangeRate = document.getElementById("exchangeRate") as HTMLInputElement;
+    //var exchangeRate = document.getElementById("exchangeRate") as HTMLInputElement;
     file.value = null;
-    exchangeRate.value = "0";
+    this.exchangeRate = 1;
+    this.exchangeRates = [];
     this.selectedPsId = 0;
     let projectCurrency = JSON.parse(localStorage.getItem("currency")) as ProjectCurrency;
     this.selectedCurrencyId = projectCurrency.curId;
@@ -172,17 +175,17 @@ export class PackageSupplierComponent implements OnInit {
   AddRevision() {
     this.addingRevision = true;
     var date = document.getElementById("revisionDate") as HTMLInputElement;
-    var exchangeRate = document.getElementById("exchangeRate") as HTMLInputElement;
+    //var exchangeRate = document.getElementById("exchangeRate") as HTMLInputElement;
     if (date.value) {
       
       if(this.selectedCurrencyId > 0)
       {
-        if(exchangeRate.value)
+        if(this.exchangeRate)
         {
       if (this.selectedFile != null) 
         {
           this.addingRevision = true;
-          this.packageSupplierService.AddRevision(this.selectedPsId, date.value, this.selectedFile, this.selectedCurrencyId, Number(exchangeRate.value)).subscribe((data) => {
+          this.packageSupplierService.AddRevision(this.selectedPsId, date.value, this.selectedFile, this.selectedCurrencyId, this.exchangeRate).subscribe((data) => {
             if (data) {
               // Refresh Supplier Package Revision List
               this.addingRevision = false;
@@ -276,5 +279,43 @@ export class PackageSupplierComponent implements OnInit {
   validateExcel()
   {
 
+  }
+
+  onCurrencyChange(val : any)
+  {
+    this.exchangeRates = [];
+    this.exchangeRate = 1;
+    if(val)
+    {
+      let projectCurrency = JSON.parse(localStorage.getItem("currency")) as ProjectCurrency;
+        this.packageSupplierService.getExchangeRate(val, projectCurrency.curCode).subscribe((data)=>{
+            if(data)
+            {
+              this.exchangeRates = data.rates;
+
+              let array = Object.values(this.exchangeRates);
+              
+              if(array.length == 2 && val == 'USD')
+              {
+                this.exchangeRate = Number((Number(array[0]) / Number(array[1])).toFixed(2));
+              }
+              else if(array.length == 2 && projectCurrency.curCode === val)
+              {
+                this.exchangeRate = 1;
+              }
+              else
+              {
+                  let usdToSelectedRate = Number(array[2]) / Number(array[0]);
+                  let projectToUsd = Number(array[0]) / Number(array[1]);
+                  
+                  this.exchangeRate = Number((usdToSelectedRate * projectToUsd).toFixed(2));
+                  
+                   
+              }
+            }
+            
+        });
+    }
+   
   }
 }
