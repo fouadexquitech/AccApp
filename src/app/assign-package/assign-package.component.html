@@ -201,8 +201,10 @@
             <div class="row">
                 
                 <div class="col-sm-2 form-group">
-                    <button type="button" class="btn btn-primary" style="float: right; width: 100%;"
-                        (click)="onSearch()">Search</button>
+                    <button type="button" class="btn btn-primary" [disabled]="isSearching" style="float: right; width: 100%;"
+                        (click)="onSearch()">
+                        <i class="fa fa-spinner fa-spin" *ngIf="isSearching"></i>
+                        Search</button>
                 </div>
                 <div class="col-sm-2 form-group">
                     <button type="button" class="btn btn-danger" style="float: right; width: 100%;"
@@ -271,6 +273,7 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-body">
+                    
                     <table id="originalBOQTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
                         <thead>
                             <tr>
@@ -288,6 +291,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            
                             <tr *ngFor="let item of OriginalBoqList ; let i = index" style="cursor: pointer;"
                                 (click)="selectRow($event, i)" [ngClass]="{'HighlightedRow': i === CurrentRowIndex }">
                                 <td><input disabled #checkboxes class="form-check-input" style="cursor: pointer;" type="checkbox"
@@ -308,6 +312,13 @@
                                 </td>-->
                             </tr>
                         </tbody>
+                        <tfoot *ngIf="isSearching && OriginalBoqList.length == 0">
+                            <tr> 
+                                <td colspan="8" style="text-align: center;">
+                                    <mat-progress-bar  [mode]="'indeterminate'"></mat-progress-bar>
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>

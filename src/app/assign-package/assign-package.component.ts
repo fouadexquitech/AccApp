@@ -49,6 +49,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective;
   public isAssigning : boolean = false;
+  public isSearching : boolean = false;
   @ViewChildren("checkboxes") checkboxes!: QueryList<ElementRef>;
 
   
@@ -186,8 +187,10 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   GetOriginalBoqList(input: SearchInput) {
     //this.spinner.show();
-    
+    this.isSearching = true;
     this.assignPackageService.GetOriginalBoqList(input).subscribe((data) => {
+      this.isSearching = false;
+      this.toggleShow();
       if (data) {
         this.OriginalBoqList = data;
         //this.spinner.hide();

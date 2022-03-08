@@ -5,3 +5,9 @@
 .table > * {
   border-bottom-width: 2px;
 }
+
+
+.modal-body{
+  height: 60vh;
+  overflow-y: auto;
+}

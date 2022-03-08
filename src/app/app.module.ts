@@ -19,6 +19,8 @@ import { MatSelectModule } from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatCardModule} from '@angular/material/card';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSelect} from '@angular/material/select';
 import {MatDividerModule} from '@angular/material/divider';
 import { PackageComparisonComponent } from './package-comparison/package-comparison.component';
@@ -27,6 +29,10 @@ import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { NgSelect2Module } from 'ng-select2';
 import { DataTablesModule } from 'angular-datatables';
+import { ConfirmationDialogComponent } from './_components/confirmation-dialog/confirmation-dialog.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ConfirmationDialogService } from './_components/confirmation-dialog/confirmation-dialog.service';
+import { RevisionDetailsComponent } from './revision-details/revision-details.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +44,9 @@ import { DataTablesModule } from 'angular-datatables';
     AlertComponent,
     PackageListComponent,
     PackageSupplierComponent,
-    PackageComparisonComponent
+    PackageComparisonComponent,
+    ConfirmationDialogComponent,
+    RevisionDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -52,15 +60,19 @@ import { DataTablesModule } from 'angular-datatables';
     MatCardModule,
     MatInputModule,
     MatDividerModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
     ToastrModule.forRoot(),
     NgxSpinnerModule,
     NgSelect2Module,
-    DataTablesModule
+    DataTablesModule,
+    NgbModule
     ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    AssignPackageService
+    AssignPackageService,
+    ConfirmationDialogService
   ],
   bootstrap: [AppComponent]
 })

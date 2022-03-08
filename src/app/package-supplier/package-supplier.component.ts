@@ -1,11 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
-import { SupplierInput, SupplierList, SupplierPackagesList, SupplierPackagesRevList, CurrencyList, ExchangeRate } from './package-supplier.model';
+import { SupplierInput, SupplierList, SupplierPackagesList, SupplierPackagesRevList, CurrencyList, ExchangeRate, RevisionFieldsList, RevisionDetailsList, SupplierInputList, ComercialCond } from './package-supplier.model';
 import { PackageSupplierService } from './package-supplier.service';
 import { environment } from '../../environments/environment';
 import { ProjectCurrency } from '../login/login.model';
+import { EmailTemplate, FieldType, Language } from '../_models';
+import { ConfirmationDialogService } from '../_components/confirmation-dialog/confirmation-dialog.service';
+import { OriginalBoqModel } from '../assign-package/assign-package.model';
+import { TblComCond } from '../package-comparison/package-comparison.model';
 
 declare var $: any;
 @Component({
@@ -23,20 +28,63 @@ export class PackageSupplierComponent implements OnInit {
   SupplierInput: SupplierInput[] = [];
   SupplierPackagesList: SupplierPackagesList[] = [];
   SupplierPackagesRevList: SupplierPackagesRevList[] = [];
+  RevisionDetailsList: RevisionDetailsList[] = [];
+  RevisionDetailsBoqItems : OriginalBoqModel[] = [];
+  SupplierInputList : SupplierInputList[] = [];
   CurrencyList : CurrencyList[] = [];
 
   expandedDetail: boolean = false;
   currentRowIndex: number = -1;
+  currentRevRowIndex : number = -1;
   selectedFile: File = null;
+  selectedTechnicalCondFile : File = null;
+  selectedCommercialCondFile : File = null;
   selectedPsId: number = 0;
   selectedRevisionId: number = 0;
   selectedCurrencyId : number = 0;
   public isAssigning : boolean = false;
   public addingRevision : boolean = false;
+  public isValidatingExcel : boolean = false;
+  selectedPackageSupplier : SupplierPackagesList;
   exchangeRate : number = 1;
   exchangeRates : ExchangeRate[];
+  selectedLanguage : string = '';
+  selectedEmailTemplate : EmailTemplate | null;
+  lstLanguages : string[] = [];
+  isUpdatingTechnicalConditions : boolean = false;
+  formEmailTemplate: FormGroup = new FormGroup({
+    language: new FormControl(''),
+    template: new FormControl(''),
+    
+  });
 
-  constructor(private router: Router, private packageSupplierService: PackageSupplierService, private spinner: NgxSpinnerService, private toastr: ToastrService) {
+  formEmailSubmitted = false;
+  assignByBoqOnly : string;
+  fieldTypes : any[] = [{id : FieldType.AMOUNT_TYPE_ID, name : FieldType.AMOUNT_TYPE_NAME}, 
+    {id : FieldType.PERCENTAGE_TYPE_ID, name : FieldType.PERCENTAGE_TYPE_NAME}];
+  selectedSupplierName : any = null;
+  selectedRevisionNb : any = null;
+  revisionFieldsList : RevisionFieldsList[] = [];
+  isSendingTechConditions : boolean = false;
+  comConditions : TblComCond[] = [];
+  isUpdatingCommercialConditions : boolean = false;
+  dtOptions = {
+    //pagingType: 'full_numbers',
+    //pageLength: 10,
+    responsive : true,
+    paging : false,
+    info : false,
+    searching : true,
+    destroy : true,
+    sorting : false
+  };
+
+  constructor(private router: Router, 
+    private packageSupplierService: PackageSupplierService, 
+    private spinner: NgxSpinnerService, 
+    private toastr: ToastrService,
+    private formBuilder : FormBuilder,
+    private confirmationDialogService: ConfirmationDialogService) {
     if (this.router.getCurrentNavigation().extras.state != undefined) {
       this.PackageId = this.router.getCurrentNavigation().extras.state.packageId;
     } else {
@@ -44,7 +92,130 @@ export class PackageSupplierComponent implements OnInit {
     }
   }
 
+  checkAllComCond(event : any)
+  {
+      let chk = event.target as HTMLInputElement;
+      this.comConditions.forEach(c=>{
+          c.checked = chk.checked;
+      });
+  }
+
+  selectComCond(event : any, index : number)
+  {
+      let chk = event.target as HTMLInputElement;
+      let chkAll = document.getElementById("chkAllComCond") as HTMLInputElement;
+      let comCond = this.comConditions[index];
+      comCond.checked = chk.checked;
+
+      let allChecked : boolean = true;
+
+      this.comConditions.forEach(c=>{
+        if(!c.checked)
+        {
+          allChecked = false;
+          return;
+        }
+    });
+
+    
+    chkAll.checked = allChecked;
+  }
+
+  deleteField(fieldId : any, revisionId : any)
+  {
+    this.confirmationDialogService.confirm('Please confirm', 'Do you really want to delete this field ?')
+    .then((confirmed) => {
+      if(confirmed)
+        {
+          this.packageSupplierService.DeleteField(Number(fieldId)).subscribe(data=>{
+            if(data)
+            {
+              this.toastr.success('Deleted successfuly');
+              this.getFields(revisionId);
+            }
+          });
+        }
+    });
+    
+
+    
+  }
+
+  sendTechnicalConditions()
+  {
+      this.isSendingTechConditions = true;
+      this.packageSupplierService.sendTechnicalConditions(Number(this.PackageId)).subscribe(data=>{
+        this.isSendingTechConditions = false;
+          if(data)
+          {
+            this.toastr.success("Technical conditions sent successfully");
+          }
+          else
+          {
+            this.toastr.error("Sending email failed");
+          }
+      });
+  }
+
+  getElementOfArray(arr : any[], val : any)
+  {
+    let result = arr.find(obj => {
+      return obj.id === val
+    });
+
+    return result?.name;
+  }
+
+  CloseFieldsListModal()
+  {
+    $('#fieldsListModal').modal('hide');
+    this.revisionFieldsList = [];
+    this.selectedSupplierName = null;
+    this.selectedRevisionNb = null;
+  }
+
+  openFieldsListModal(revisionId : any, prRevNo : any, psSupName : any)
+  {
+    $('#fieldsListModal').modal('show');
+      this.selectedSupplierName = psSupName;
+      this.selectedRevisionNb = prRevNo;
+      this.getFields(revisionId);
+     
+  }
+
+  getFields(revisionId : any)
+  {
+    this.packageSupplierService.GetFields(Number(revisionId)).subscribe(data=>{
+      this.revisionFieldsList = data;
+    });
+  }
+
+  waitForElm(selector : any) {
+    return new Promise(resolve => {
+        if (document.querySelector(selector)) {
+            return resolve(document.querySelector(selector));
+        }
+
+        const observer = new MutationObserver(mutations => {
+            if (document.querySelector(selector)) {
+                resolve(document.querySelector(selector));
+                observer.disconnect();
+            }
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    });
+}
+
   ngOnInit(): void {
+    if(localStorage.getItem('assignByBoqOnly') == null)
+    {
+      localStorage.setItem('assignByBoqOnly', '0');
+    }
+   
 
     if (this.PackageId != null && this.PackageId != 0) {
       this.GetPackageById(Number(this.PackageId));
@@ -53,6 +224,17 @@ export class PackageSupplierComponent implements OnInit {
     this.GetSupplierList(Number(this.PackageId));
 
     this.GetSupplierPackagesList();
+    this.assignByBoqOnly = localStorage.getItem('assignByBoqOnly');
+  }
+
+  flexSwitchCheckDefaultChange(event : any)
+  {
+      let checkbox = event.target as HTMLInputElement;
+      if(checkbox.type == 'checkbox')
+      {
+          let val = checkbox.checked? '1' : '0';
+          localStorage.setItem('assignByBoqOnly', val)
+      }
   }
 
   GetPackageById(IdPkge: number) {
@@ -60,6 +242,7 @@ export class PackageSupplierComponent implements OnInit {
       if (data) {
         this.PackageName = data.packageName;
         this.FilePath = data.filePath;
+     
       }
     });
   }
@@ -83,6 +266,79 @@ export class PackageSupplierComponent implements OnInit {
     });
   }
 
+  checkIfItemExistsInResources(arrRevDetails : RevisionDetailsList[], itemO : string)
+  {
+      
+      let arr = arrRevDetails.filter(element=>element.rdBoqItem == itemO);
+      
+      return arr.length;
+  }
+
+  getResourcesPerItem(arrRevDetails : RevisionDetailsList[], itemO : string)
+  {
+    
+      return arrRevDetails.filter(element=>element.rdBoqItem === itemO);
+  }
+
+  /*getEmailTemplate(language : string)
+  {
+    this.packageSupplierService.GetEmailTemplate(language).subscribe((data) => {
+      if (data) {
+          this.selectedEmailTemplate = data;
+      }
+    });
+  }*/
+
+  OpenEmailTemplateModal() {
+    this.lstLanguages = Language.languages;
+    this.SupplierInputList = [];
+    this.formEmailTemplate = this.formBuilder.group(
+      {
+        language: ['', Validators.required],
+        template: ['', Validators.required]
+      }
+      
+    );
+    this.getComConditions();
+    $("#emailTemplateModal").modal('show');
+  }
+
+  get f(): { [key: string]: AbstractControl } {
+    return this.formEmailTemplate.controls;
+  }
+
+  CloseEmailTemplateModal()
+  {
+    $("#emailTemplateModal").modal('hide');
+    this.selectedEmailTemplate = null;
+    
+  }
+
+  onEmailTemplateSubmit(){
+    this.formEmailSubmitted = true;
+    if (this.formEmailTemplate.invalid) {
+      return;
+    }
+    else
+    {
+      this.AssignSuppliers();
+    }
+
+  }
+
+  onLanguageChange(event : any)
+  {
+      let select = event.target as HTMLInputElement;
+      let lang = select.value;
+    
+      this.formEmailTemplate.controls['template'].setValue('');
+      this.packageSupplierService.GetEmailTemplate(lang).subscribe((data) => {
+      this.selectedEmailTemplate = data;
+      this.formEmailTemplate.controls['template'].setValue(this.selectedEmailTemplate?.etContent || '');
+        
+      });
+  }
+
   AssignSuppliers() {
     //this.spinner.show();
     this.isAssigning = true;
@@ -92,13 +348,33 @@ export class PackageSupplierComponent implements OnInit {
         this.SupplierInput.push({ supID: element });
       });
 
-      if (this.SupplierInput.length > 0) {
-        this.packageSupplierService.AssignPackageSuppliers(this.PackageId, this.SupplierInput).subscribe((data) => {
+      let comercialCond : ComercialCond[] = [];
+      this.comConditions.forEach(c=>{
+          if(c.checked)
+          {
+            comercialCond.push({ id : c.cmSeq, description : c.cmDescription });
+          }
+      });
+
+      this.SupplierInput.forEach(supplier=>{
+        this.SupplierInputList.push({supplierInput : supplier, comercialCondList : comercialCond});
+      });
+
+
+      if (this.SupplierInputList.length > 0) {
+        let template = this.formEmailTemplate.get('template').value;
+        this.packageSupplierService.AssignPackageSuppliers(this.PackageId, this.SupplierInputList, this.FilePath, template, Number(localStorage.getItem('assignByBoqOnly'))).subscribe((data) => {
+          this.isAssigning = false;
           if (data) {
             //this.spinner.hide();
-            this.isAssigning = false;
-            this.toastr.success("Assigned !!")
+            
+            this.toastr.success("Supplier(s) assigned successfuly");
             this.GetSupplierPackagesList();
+            this.CloseEmailTemplateModal();
+          }
+          else
+          {
+            this.toastr.error("An error occured");
           }
         });
       }
@@ -108,6 +384,13 @@ export class PackageSupplierComponent implements OnInit {
       this.isAssigning = false;
       this.toastr.error('You Should Select at Least 1 Supplier !!')
     }
+  }
+
+  getComConditions()
+  {
+      this.packageSupplierService.getComConditions().subscribe(data=>{
+          this.comConditions = data;
+      });
   }
 
   GetSupplierPackagesList() {
@@ -154,8 +437,10 @@ export class PackageSupplierComponent implements OnInit {
     var date = document.getElementById("revisionDate") as HTMLInputElement;
     date.value = new Date().toISOString().substring(0, 10);
     var file = document.getElementById("excelFile") as HTMLInputElement;
+   
     //var exchangeRate = document.getElementById("exchangeRate") as HTMLInputElement;
     file.value = null;
+  
     this.exchangeRate = 1;
     this.exchangeRates = [];
     this.selectedPsId = 0;
@@ -190,7 +475,7 @@ export class PackageSupplierComponent implements OnInit {
               // Refresh Supplier Package Revision List
               this.addingRevision = false;
               this.GetSupplierPackagesRevision(this.selectedPsId);
-
+              //this.GetRevisionDetails(this.selectedRevisionId);
               this.selectedPsId = 0;
               date.value = null;
               this.selectedFile = null;
@@ -219,10 +504,23 @@ export class PackageSupplierComponent implements OnInit {
   }
 
   validateExcelBeforeAssign(){
-    this.spinner.show();
-    this.packageSupplierService.validateExcelBeforeAssign(this.PackageId).subscribe((data) => {
+    //this.spinner.show();
+    this.isValidatingExcel = true;
+    
+    let flexSwitchCheckDefault = document.getElementById("flexSwitchCheckDefault") as HTMLInputElement;
+    if(flexSwitchCheckDefault)
+    {
+      if(flexSwitchCheckDefault.type == 'checkbox' && flexSwitchCheckDefault.checked)
+      {
+          localStorage.setItem('assignByBoqOnly', '1');
+      }      
+    }
+    
+    this.packageSupplierService.validateExcelBeforeAssign(this.PackageId, Number(localStorage.getItem('assignByBoqOnly'))).subscribe((data) => {
+      this.isValidatingExcel = false;
       if (data) {
-        this.spinner.hide();
+        //this.spinner.hide();
+        
         this.toastr.success("Validated !!")
         this.GetPackageById(Number(this.PackageId));
 
@@ -245,23 +543,138 @@ export class PackageSupplierComponent implements OnInit {
     $("#addFieldModal").modal('show')
     this.selectedRevisionId = prRevId;
   }
+  
 
   CloseFieldModal() {
     $("#addFieldModal").modal('hide');
     var labelInput = document.getElementById("labelInput") as HTMLInputElement;
     var valueInput = document.getElementById("valueInput") as HTMLInputElement;
+    var valueType = document.getElementById("valueType") as HTMLSelectElement;
     labelInput.value = null;
     valueInput.value = null;
+    valueType.selectedIndex = 0;
     this.selectedRevisionId = 0;
 
   }
 
-  AddField() {
+  openUpdateCommercialCondModal(packageSupplier : SupplierPackagesList)
+  {
+    var inputCommercialCondFile = document.getElementById("inputCommercialCondFile") as HTMLInputElement;
+    inputCommercialCondFile.value = null;
+    this.selectedCommercialCondFile = null;
+    this.selectedPackageSupplier = packageSupplier;
+    $("#updateCommercialCondModal").modal('show');
+  }
+
+  openUpdateTechnicalCondModal(packageSupplier : SupplierPackagesList)
+  {
+    var inputTechnicalCondFile = document.getElementById("inputTechnicalCondFile") as HTMLInputElement;
+    inputTechnicalCondFile.value = null;
+    this.selectedTechnicalCondFile = null;
+    this.selectedPackageSupplier = packageSupplier;
+    $("#updateTechnicalCondModal").modal('show');
+  }
+
+  closeUpdateTechnicalCondModal() {
+    $("#updateTechnicalCondModal").modal('hide');
+  }
+
+  closeUpdateCommercialCondModal()
+  {
+    $("#updateCommercialCondModal").modal('hide');
+  }
+
+  inputTechnicalCondFile_change(event : any)
+  {
+    var inputTechnicalCondFile = event.target as HTMLInputElement;
+    var ext = inputTechnicalCondFile.value.split('.').pop().toLowerCase();
+    if(ext !== 'xls' && ext !== 'xlsx') {
+        this.toastr.error('Please upload excel file only');
+        inputTechnicalCondFile.value = null;
+        return;
+    }
+
+    if (event.target.files.length > 0) {
+
+      const file = event.target.files[0];
+      this.selectedTechnicalCondFile = file;
+    }
+  }
+
+  inputCommercialCondFile_change(event : any)
+  {
+    var inputCommercialCondFile = event.target as HTMLInputElement;
+    var ext = inputCommercialCondFile.value.split('.').pop().toLowerCase();
+    if(ext !== 'xls' && ext !== 'xlsx') {
+        this.toastr.error('Please upload excel file only');
+        inputCommercialCondFile.value = null;
+        return;
+    }
+
+    if (event.target.files.length > 0) {
+
+      const file = event.target.files[0];
+      this.selectedCommercialCondFile = file;
+    }
+  }
+
+  updateCommercialConditions()
+  {
+    var inputCommercialCondFile = document.getElementById("inputCommercialCondFile") as HTMLInputElement;
+    if(!inputCommercialCondFile.value)
+    {
+      this.toastr.error('Please select a file');
+      
+      return;
+    }
+
+    this.isUpdatingCommercialConditions = true;
+    this.packageSupplierService.updateCommercialConditions(this.selectedPackageSupplier?.psId, this.selectedCommercialCondFile).subscribe(data=>{
+      this.isUpdatingCommercialConditions = false;  
+      if(data)
+        {
+            this.toastr.success("Commercial conditions updated successfully");
+            this.closeUpdateCommercialCondModal();
+        }
+        else
+        {
+          this.toastr.error("Commercial conditions updated failed");    
+        }
+    });
+  }
+
+  updateTechnicalConditions()
+  {
+    var inputTechnicalCondFile = document.getElementById("inputTechnicalCondFile") as HTMLInputElement;
+    if(!inputTechnicalCondFile.value)
+    {
+      this.toastr.error('Please select a file');
+      
+      return;
+    }
+
+    this.isUpdatingTechnicalConditions = true;
+    this.packageSupplierService.updateTechnicalConditions(this.selectedPackageSupplier?.psId, this.selectedTechnicalCondFile).subscribe(data=>{
+      this.isUpdatingTechnicalConditions = false;  
+      if(data)
+        {
+            this.toastr.success("Technical conditions updated successfully");
+            this.closeUpdateTechnicalCondModal();
+        }
+        else
+        {
+          this.toastr.error("Technical conditions updated failed");    
+        }
+    });
+  }
+
+   AddField() {
     var labelInput = document.getElementById("labelInput") as HTMLInputElement;
     var valueInput = document.getElementById("valueInput") as HTMLInputElement;
+    var valueType = document.getElementById("valueType") as HTMLSelectElement;
 
-    if (labelInput.value && valueInput.value) {
-      this.packageSupplierService.AddField(this.selectedRevisionId, labelInput.value, Number(valueInput.value)).subscribe((data) => {
+    if (labelInput.value && valueInput.value && valueType.selectedIndex > 0) {
+      this.packageSupplierService.AddField(this.selectedRevisionId, labelInput.value, Number(valueInput.value), Number(valueType.value)).subscribe((data) => {
         this.SupplierPackagesRevList.find(x => x.prRevId == this.selectedRevisionId).prTotPrice = data;
         this.CloseFieldModal();
         this.toastr.success("A new field has been added !")
@@ -279,6 +692,68 @@ export class PackageSupplierComponent implements OnInit {
   validateExcel()
   {
 
+  }
+
+  ToggleRevDetails(prRevId : number, index : number)
+  {
+    if (this.currentRevRowIndex == index) {
+      this.currentRevRowIndex = -1;
+    } else {
+      this.currentRevRowIndex = index;
+      this.RevisionDetailsList = [];
+      this.RevisionDetailsBoqItems = [];
+      this.GetRevisionDetails(prRevId);
+    }
+  }
+
+  GetRevisionDetails(prRevId : number)
+  {
+      this.packageSupplierService.GetRevisionDetails(prRevId, '', '').subscribe(data=>{
+          if(data)
+          {
+            this.RevisionDetailsList = data;
+            this.RevisionDetailsList.forEach(rev=>{
+              let item : OriginalBoqModel = {
+               sectionO : '',
+               descriptionO : rev.rdBoqItemDescription,
+               itemO : rev.rdBoqItem,
+               qtyO : 0,
+               rowNumber : 0,
+               scope : 0,
+               unitO : '',
+               unitRate : 0
+            };
+            //const found = this.RevisionDetailsBoqItems.find(elem => elem.itemO === rev.rdBoqItem);
+            //console.log(found);
+            //if(found == undefined)
+              this.RevisionDetailsBoqItems.push(item);
+            }
+            );
+            //remove duplication
+           
+          const uniqueValuesSet = new Set();
+          const filteredArr = this.RevisionDetailsBoqItems.filter((obj) => {
+            // check if name property value is already in the set
+            const isPresentInSet = uniqueValuesSet.has(obj.itemO);
+          
+            // add name property value to Set
+            uniqueValuesSet.add(obj.itemO);
+          
+            // return the negated value of
+            // isPresentInSet variable
+            return !isPresentInSet;
+          });
+          this.RevisionDetailsBoqItems = filteredArr;
+          
+          
+          }
+      });
+  }
+
+  UpdateRevisionPrices(revId : number, tableId : string)
+  {
+      let table = document.getElementById(tableId) as HTMLTableElement;
+      console.log(table);
   }
 
   onCurrencyChange(val : any)
@@ -317,5 +792,9 @@ export class PackageSupplierComponent implements OnInit {
         });
     }
    
+  }
+
+  routeToRevisionDetails(revisionId : number, psByBoq : number){
+    this.router.navigate(['revision-details'], { state: { revisionId: revisionId, psByBoq : psByBoq } });
   }
 }
