@@ -22,6 +22,7 @@ export class SupplierInputList
 {
     public supplierInput : SupplierInput = null;
     public comercialCondList : ComercialCond[] = [];
+    public emailTemplate : string = null;
 }
 
 export class ExchangeRate {
@@ -35,6 +36,7 @@ export class SupplierPackagesList {
     public psSuppId: number = 0;
     public psSupName: number = 0;
     public psByBoq : number = 0;
+    public tecCondSent : boolean = false;
 }
 
 export class SupplierPackagesRevList {

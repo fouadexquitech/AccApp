@@ -17,24 +17,42 @@ export class RevisionDetailsComponent implements OnInit {
   psByBoq : number = 0;
   RevisionDetailsList : RevisionDetailsList[] = [];
   RevisionDetailsBoqItems : OriginalBoqModel[] = [];
+  supplierPackage : SupplierPackagesList;
   saving : boolean = false;
+  packageId : number;
   constructor(private router: Router, private packageSupplierService : PackageSupplierService, 
     private revisionDetailsService : RevisionDetailsService, private toastr: ToastrService,) {
     if (this.router.getCurrentNavigation().extras.state != undefined) {
       let RevisionId = this.router.getCurrentNavigation().extras.state.revisionId;
+      let psId = this.router.getCurrentNavigation().extras.state.psId;
       this.psByBoq = this.router.getCurrentNavigation().extras.state.psByBoq;
+      this.packageId = this.router.getCurrentNavigation().extras.state.packageId;
       this.packageSupplierService.GetSupplierPackagesSingleRevision(RevisionId).subscribe(data=>{
           this.Revision = data;
           
           this.GetRevisionDetails(this.Revision.prRevId);
+         
       });
+      this.getPackageSupplier(psId);
     } else {
       this.router.navigateByUrl("/package-list");
     }
    }
 
   ngOnInit(): void {
-    
+      
+  }
+
+  goBack()
+  {
+      this.router.navigate(['package-supplier'], { state: { packageId : this.packageId  } });
+  }
+
+  getPackageSupplier(prPackSuppId : number)
+  {
+    this.packageSupplierService.GetSupplierPackage(prPackSuppId).subscribe(data=>{
+      this.supplierPackage = data;
+  });
   }
 
   UpdateRevisionPricesByBoq(revId : number,  tableId : string)

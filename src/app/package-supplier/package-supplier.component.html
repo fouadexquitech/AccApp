@@ -1,27 +1,20 @@
-<div class="container-fluid">
-<div class="p-3">
+
+
   <!--<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-beat">
     <p style="font-size: 20px; color: white">Loading...</p>
   </ngx-spinner>-->
   <app-nav></app-nav>
+  <section>
+  <nav aria-label="breadcrumb" class="p-2">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
+        <li class="breadcrumb-item"><a [routerLink]="['/package-list']">Packages List</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Package Supplier</li>
+        <li class="breadcrumb-item active" aria-current="page"><strong> {{ PackageName }}</strong></li>
+    </ol>
+  </nav>
+  <div class="container-fluid">
 
-  <br>
-
-  <div class="row">
-    <div class="col-sm-12 form-group">
-      <mat-card style="height: 119px;">
-        <mat-card-header>
-          <mat-card-title>Package</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <p>
-            {{ PackageName }}
-          </p>
-        </mat-card-content>
-      </mat-card>
-    </div>
-  </div>
-  <br>
   <div class="row">
     <div class="col-sm-12 form-group" *ngIf="SupplierPackagesList.length == 0 && FilePath != null">
      
@@ -67,12 +60,19 @@
       <button type="button" class="btn btn-primary" 
       (click)="onCompare()">Compare</button>
     </div>
-
     <div class="col-sm-3 form-group" *ngIf="SupplierPackagesList.length > 0 && FilePath != null">
       <button type="button" class="btn btn-secondary" 
+      (click)="onGrouping()">Grouping</button>
+    </div>
+    <div class="col-sm-3 form-group" *ngIf="SupplierPackagesList.length > 0 && FilePath != null">
+      <button type="button" class="btn btn-secondary" *ngIf="!SupplierPackagesList[0].tecCondSent"
       (click)="sendTechnicalConditions()" [disabled]="isSendingTechConditions">
       <i class="fa fa-spinner fa-spin" *ngIf="isSendingTechConditions"></i>
       Send Technical Conditions</button>
+      <div class="alert alert-success" *ngIf="SupplierPackagesList[0].tecCondSent">
+        Technical Conditions Sent
+        <i class="fa fa-check"></i>
+      </div>
     </div>
     
   </div>
@@ -130,7 +130,7 @@
                 <td>{{rev.prRevDate | date: 'dd/MM/yyyy'}}</td>
                 <td>{{rev.prTotPrice | number : '1.2-2' }}</td>
                 <td style="text-align: center;">
-                  <button class="btn btn-warning" (click)="routeToRevisionDetails(rev.prRevId, item.psByBoq)">View Revision Details</button>
+                  <button class="btn btn-warning" (click)="routeToRevisionDetails(rev.prRevId, item.psByBoq, item.psId)">View Revision Details</button>
                 </td>
                 <td style="text-align: center;">
                   <button type="button" class="btn btn-primary" (click)="OpenFieldModal(rev.prRevId)">Add Field</button>
@@ -389,8 +389,10 @@
             <div class="row">
               <div class="col-sm-12 form-group">
                 Template
-                <textarea class="form-control" rows="20" formControlName="template"
-                [ngClass]="{ 'is-invalid': formEmailSubmitted && f.template.errors }"></textarea>
+                <angular-editor formControlName="template" [config]="editorConfig"
+                [ngClass]="{ 'is-invalid': formEmailSubmitted && f.template.errors }"></angular-editor>
+                <!--<textarea class="form-control" rows="20" formControlName="template"
+                [ngClass]="{ 'is-invalid': formEmailSubmitted && f.template.errors }"></textarea>-->
                 <div *ngIf="formEmailSubmitted && f.template.errors" class="invalid-feedback">
                   <div *ngIf="f.template.errors.required">*Required</div>
                   
@@ -462,7 +464,7 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="closeUpdateTechnicalCondModal()">Close</button>
           <button type="button" class="btn btn-primary" (click)="updateTechnicalConditions()" [disabled]="isUpdatingTechnicalConditions">
-            <i class="fa fa-spinner fa-spin" *ngIf="isUpdatingTechnicalConditions"></i>
+            
             Save</button>
         </div>
       </div>
@@ -489,11 +491,10 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="closeUpdateCommercialCondModal()">Close</button>
           <button type="button" class="btn btn-primary" (click)="updateCommercialConditions()" [disabled]="isUpdatingCommercialConditions">
-            <i class="fa fa-spinner fa-spin" *ngIf="isUpdatingCommercialConditions"></i>
+           
             Save</button>
         </div>
       </div>
     </div>
   </div>
-
-</div>
+</section>

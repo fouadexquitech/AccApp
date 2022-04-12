@@ -21,5 +21,6 @@ export class NavComponent implements OnInit {
   {
     this.loginService.logout();
   }
+  
 
 }

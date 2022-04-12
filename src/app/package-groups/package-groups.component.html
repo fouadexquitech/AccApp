@@ -1,0 +1,385 @@
+<app-nav></app-nav>
+<section>
+    
+    <nav aria-label="breadcrumb" class="p-2">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
+            <li class="breadcrumb-item"><a [routerLink]="['/package-list']">Package List</a></li>
+            <li class="breadcrumb-item">Package Groups</li>
+            <li class="breadcrumb-item active" aria-current="page"><strong>{{packageName}}</strong></li>
+        </ol>
+      </nav>
+
+      <div class="container-fluid">
+          <div class="row p-2">
+            <div class="col-sm-12">
+                Group <button class="btn btn-link" title="Add New Group" (click)="openAddGroup()"><i class="fa fa-plus-circle"></i></button>
+                <ng-select [items]="groups" 
+                bindLabel="name" 
+                bindValue="id" 
+                [placeholder]="'Select group'"
+                [closeOnSelect]="true"
+                [(ngModel)]="selectedGroup" (ngModelChange)="onGroupchange($event)"> 
+                
+            </ng-select>
+            
+            </div>
+          </div>
+         
+        <div class="row p-2" *ngIf="proceed">
+            <div class="col-sm-12">
+              <div class="card">
+                <div class="card-header">
+                  <div class="row">
+                    <div class="col-sm-3 form-group"><h5 style="display: inline-block;"><span> Search</span>&nbsp;
+                      <span style="float: right; cursor: pointer;user-select: none;" (click)="toggleShow()">show / hide</span>
+                                          
+                    </h5></div>
+                                       
+                </div>
+                    
+                </div>
+                <div class="card-body" *ngIf="isShown">
+                    <div class="row">
+                        
+                        <div class="col-sm-3 p-2 form-group">
+                            BOQ Div
+                            <ng-select [items]="BOQDivList" 
+                            bindLabel="sectionO" 
+                            bindValue="sectionO" 
+                            [placeholder]="'BOQ Div'"
+                            [closeOnSelect]="true"
+                            [multiple]="true"
+                            [(ngModel)]="selectedBOQDivList"> <!--SearchInput.bOQDiv-->
+                            <ng-template ng-header-tmp>
+
+                                <div>
+                                  <button class="btn btn-link"
+                                          (click)="onSelectAllBOQDiv()">Select All</button>
+                                  
+                                </div>
+                            
+                            </ng-template>
+                        </ng-select>
+                           
+                        
+                        </div>
+            
+                        <div class="col-sm-2 p-2 form-group">
+                            
+                            <label>BOQ Item</label>
+                                    
+                            <input type="text" class="form-control" [(ngModel)]="SearchInput.bOQItem">
+                  
+                        </div>
+            
+                        <div class="col-sm-3 p-2 form-group">
+                            
+                            <label>BOQ Desc</label>
+                        
+                            <input type="text" class="form-control" [(ngModel)]="SearchInput.bOQDesc">
+                                
+                        </div>
+            
+                        <div class="col-sm-2 p-2 form-group">
+                            
+                            <label>From Row</label>
+                               
+                            <input type="text" class="form-control" [(ngModel)]="SearchInput.fromRow">
+                       
+                           
+                               
+                        </div>
+                        <div class="col-sm-2 p-2 form-group">
+                            <label>To Row</label>
+                       
+                            <input type="text" class="form-control" [(ngModel)]="SearchInput.toRow">
+                        </div>
+                        </div>
+                    <div class="row">
+                        
+                        <div class="col-sm-3 p-2 form-group">
+                            Sheet Desc
+                            <ng-select [items]="SheetDescList" 
+                            bindLabel="obSheetDesc" 
+                            bindValue="obSheetDesc" 
+                            [placeholder]="'Sheet Desc'"
+                            [closeOnSelect]="true"
+                            [multiple]="true"
+                            [(ngModel)]="selectedSheetDescList">
+                            <ng-template ng-header-tmp>
+
+                                <div>
+                                  <button class="btn btn-link"
+                                          (click)="onSelectAllSheetDesc()">Select All</button>
+                                  
+                                </div>
+                            
+                            </ng-template>
+                        </ng-select>
+            
+                          
+                      
+                    </div>
+                    <div class="col-sm-3 p-2 form-group">
+                            
+                        RES Div
+                        <ng-select [items]="RESDivList" 
+                        bindLabel="boqDiv" 
+                        bindValue="boqDiv" 
+                        [placeholder]="'RES Div'"
+                        [closeOnSelect]="true"
+                        [multiple]="true"
+                        [(ngModel)]="selectedRESDivList">
+                        <ng-template ng-header-tmp>
+
+                            <div>
+                              <button class="btn btn-link"
+                                      (click)="onSelectAllRESDiv()">Select All</button>
+                              
+                            </div>
+                        
+                        </ng-template>
+                    </ng-select>
+            
+                  </div>
+            
+                  <div class="col-sm-3 p-2 form-group">
+                    RES Type
+                    <ng-select [items]="RESTypeList" 
+                    bindLabel="boqCtg" 
+                    bindValue="boqCtg" 
+                    [placeholder]="'RES Type'"
+                    [closeOnSelect]="true"
+                    [multiple]="true"
+                    [(ngModel)]="selectedRESTypeList">
+                    <ng-template ng-header-tmp>
+
+                        <div>
+                          <button class="btn btn-link"
+                                  (click)="onSelectAllRESType()">Select All</button>
+                          
+                        </div>
+                    
+                    </ng-template>
+                </ng-select>
+                                     
+                  </div>
+            
+                  <div class="col-sm-3 form-group">
+                     
+                      <label>RES Desc</label>
+                  
+                      <input type="text" class="form-control" [(ngModel)]="SearchInput.rESDesc">
+                         
+                  </div>
+                    </div>
+                   
+            
+                   <hr>
+            
+                    <div class="row">
+                        
+                        <div class="col-sm-2 form-group">
+                            <button type="button" class="btn btn-primary" [disabled]="searching" style="float: right; width: 100%;"
+                                (click)="onSearch()">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="searching"></span>
+                                <span *ngIf="searching">Searching...</span>
+                                <span *ngIf="!searching">Search</span>
+                                </button>
+                        </div>
+                        
+                       
+                    </div>
+            
+                </div>
+            </div>
+            </div>
+          </div>
+          <div class="row p-2" *ngIf="proceed && !byBoq">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-5 shadow p-3 mb-5 bg-white rounded">
+                                <table class="table table-bordered">
+                                     <tbody *ngIf="groupingBoqs.length > 0">
+                                        <tr *ngFor="let item of groupingBoqs; let i = index">
+                                            <td *ngIf="!allSelected(item.groupingResources)">
+                                                <input type="checkbox" (change)="selectLeftItem($event,item)" [checked]="item.isChecked">
+                                            </td>
+                                            <td *ngIf="!allSelected(item.groupingResources)">
+                                                <strong>{{item.descriptionO}}</strong>
+                                                <table class="table table-bordered" *ngIf="item.groupingResources?.length > 0">
+                                                    <tbody>
+                                                        <tr *ngFor="let resource of item.groupingResources; let j = index">
+                                                            <td>
+                                                                <input type="checkbox" *ngIf="!resource.isSelected" 
+                                                                [checked]="resource.isChecked" (change)="selectLeftResource($event, resource, item)">
+                                                            </td>
+                                                            <td>
+                                                                {{resource.resourceDescription}}
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot *ngIf="groupingBoqs.length == 0">
+                                        <tr>
+                                            <td colspan="2" class="text-center">No data available</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="row">
+                                    <div class="col-12 text-center p-2">
+                                        <button class="btn btn-link" title="Add Selected" 
+                                        [disabled]="selectedLeftResources.length == 0" (click)="attachToGroup($event)">
+                                        Attach
+                                        <div> <i class="fa fa-angle-right fa-2x"></i></div>
+                                           
+                                           
+                                        </button>
+                                    </div>
+                                    <div class="col-12 text-center p-2">
+                                        <button class="btn btn-link" title="Remove Selected"
+                                         [disabled]="selectedRightResources.length == 0" (click)="detachFromGroup($event)">
+                                         Detach
+                                           <div> <i class="fa fa-angle-left fa-2x"></i></div>
+                                           
+                                        </button>
+                                    </div>
+                                </div>
+                               <!--<div class="row">
+                                    <div class="col-12 text-center">
+                                        <button class="btn btn-link" title="Add All" [disabled]="groupingBoqs.length == 0">
+                                            <i class="fa fa-angle-double-right"></i>
+                                        </button>
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        <button class="btn btn-link" title="Remove All" [disabled]="groupingBoqs.length == 0">
+                                            <i class="fa fa-angle-double-left"></i>
+                                        </button>
+                                    </div>
+                                </div>-->
+                                
+                            </div>
+                            <div class="col-sm-5 shadow p-3 mb-5 bg-white rounded">
+                                <table class="table table-bordered">
+                                    <tbody *ngIf="groupingBoqs.length > 0">
+                                       <tr *ngFor="let item of groupingBoqs; let i = index" >
+                                           <td *ngIf="allSelected(item.groupingResources)">
+                                               <input type="checkbox" (change)="selectRightItem($event,item)" [checked]="item.isChecked">
+                                           </td>
+                                           <td *ngIf="allSelected(item.groupingResources)">
+                                               <strong>{{item.descriptionO}}</strong>
+                                               <table class="table table-bordered" *ngIf="item.groupingResources?.length > 0">
+                                                   <tbody>
+                                                       <tr *ngFor="let resource of item.groupingResources; let j = index">
+                                                           <td>
+                                                               <input type="checkbox" *ngIf="resource.isSelected" 
+                                                               [checked]="resource.isChecked"
+                                                               (change)="selectRightResource($event, resource, item)">
+                                                           </td>
+                                                           <td>
+                                                               {{resource.resourceDescription}}
+                                                           </td>
+                                                       </tr>
+                                                   </tbody>
+                                               </table>
+                                           </td>
+                                       </tr>
+                                   </tbody>
+                                   <tfoot *ngIf="groupingBoqs.length == 0">
+                                       <tr>
+                                           <td colspan="2" class="text-center">No data available</td>
+                                       </tr>
+                                   </tfoot>
+                               </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+          </div>
+          <div class="row p-2" *ngIf="proceed && byBoq">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-5 shadow p-3 mb-5 bg-white rounded">
+                                <table class="table table-bordered">
+                                     <tbody *ngIf="groupingBoqs.length > 0">
+                                        <tr *ngFor="let item of groupingBoqs; let i = index">
+                                            <td *ngIf="!item.isSelected">
+                                                <input type="checkbox" (change)="selectLeftItemByBoq($event,item)" [checked]="item.isChecked">
+                                            </td>
+                                            <td *ngIf="!item.isSelected">
+                                                <strong>{{item.descriptionO}}</strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot *ngIf="groupingBoqs.length == 0">
+                                        <tr>
+                                            <td colspan="2" class="text-center">No data available</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="row">
+                                    <div class="col-12 text-center p-2">
+                                        <button class="btn btn-link" title="Add Selected" 
+                                        [disabled]="selectedLeftItems.length == 0" (click)="attachToGroupByBoq($event)">
+                                        Attach
+                                        <div> <i class="fa fa-angle-right fa-2x"></i></div>
+                                           
+                                           
+                                        </button>
+                                    </div>
+                                    <div class="col-12 text-center p-2">
+                                        <button class="btn btn-link" title="Remove Selected"
+                                         [disabled]="selectedRightItems.length == 0" (click)="detachFromGroupByBoq($event)">
+                                         Detach
+                                           <div> <i class="fa fa-angle-left fa-2x"></i></div>
+                                           
+                                        </button>
+                                    </div>
+                                </div>
+                             
+                                
+                            </div>
+                            <div class="col-sm-5 shadow p-3 mb-5 bg-white rounded">
+                                <table class="table table-bordered">
+                                    <tbody *ngIf="groupingBoqs.length > 0">
+                                       <tr *ngFor="let item of groupingBoqs; let i = index" >
+                                           <td *ngIf="item.isSelected">
+                                               <input type="checkbox" (change)="selectRightItemByBoq($event,item)" [checked]="item.isChecked">
+                                           </td>
+                                           <td *ngIf="item.isSelected">
+                                               <strong>{{item.descriptionO}}</strong>
+                                              
+                                           </td>
+                                       </tr>
+                                   </tbody>
+                                   <tfoot *ngIf="groupingBoqs.length == 0">
+                                       <tr>
+                                           <td colspan="2" class="text-center">No data available</td>
+                                       </tr>
+                                   </tfoot>
+                               </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+          </div>
+      </div>
+</section>

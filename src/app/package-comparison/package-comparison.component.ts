@@ -7,10 +7,16 @@ import { BOQDivList, OriginalBoqModel, PackageList, RESDivList, RESPackageList, 
 import { AssignPackageService } from '../assign-package/assign-package.service';
 import { SupplierPackagesList } from '../package-supplier/package-supplier.model';
 import { FieldType } from '../_models';
-import { AssignSuppliertBoq, AssignSuppliertRes, boqItem, ConditionsReply, PackageSuppliersPrice, ressourceItem, RevisionDetails, SupplierBOQ, SupplierPercent, SupplierResrouces, TblSuppComCondReply, TblSuppTechCondReply, TblTechCond } from './package-comparison.model';
+import { AssignSuppliertBoq, AssignSuppliertRes, boqItem, CompManagementModel, DisplayCondition, PackageSuppliersPrice, ressourceItem, RevisionDetails, SupplierBOQ, SupplierPercent, SupplierResrouces, TblTechCond, TopManagement } from './package-comparison.model';
 import { PackageComparisonService } from './package-comparison.service';
+import { AngularEditorConfig } from '@kolkov/angular-editor';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas'; 
+import { ComparisonPackageGroup } from '../package-groups/package-groups.model';
+import { PackageGroupsService } from '../package-groups/package-groups.service';
 
 declare var $: any;
+
 @Component({
   selector: 'app-package-comparison',
   templateUrl: './package-comparison.component.html',
@@ -53,11 +59,66 @@ export class PackageComparisonComponent implements OnInit {
   isAssigningSupplierRessource : boolean = false;
   isAssigningSupplierList : boolean = false;
   techConditions : TblTechCond[] = [];
-  techConditionsReplies : any[][] = [];
-  comConditionsReplies : any[][] = [];
+  techConditionsReplies : DisplayCondition[] = [];
+  comConditionsReplies : DisplayCondition[] = [];
+  topManagementList : TopManagement[] = [];
+  selectedTopManagementList : TopManagement[] = [];
+  htmlContent : string = "";
+  sendingEmail : boolean = false;
+  generatingFile : boolean = false;
+  topManagementAttachement :  File | null;
+  selectedGroup : any;
+  groups : ComparisonPackageGroup[] = [];
+  byGroup : boolean = false;
+  editorConfig: AngularEditorConfig = {
+    editable: true,
+      spellcheck: true,
+      height: 'auto',
+      minHeight: '0',
+      maxHeight: 'auto',
+      width: 'auto',
+      minWidth: '0',
+      translate: 'yes',
+      enableToolbar: true,
+      showToolbar: true,
+      placeholder: 'Enter text here...',
+      defaultParagraphSeparator: '',
+      defaultFontName: '',
+      defaultFontSize: '',
+      fonts: [
+        {class: 'arial', name: 'Arial'},
+        {class: 'times-new-roman', name: 'Times New Roman'},
+        {class: 'calibri', name: 'Calibri'},
+        {class: 'comic-sans-ms', name: 'Comic Sans MS'}
+      ],
+      customClasses: [
+      {
+        name: 'quote',
+        class: 'quote',
+      },
+      {
+        name: 'redText',
+        class: 'redText'
+      },
+      {
+        name: 'titleText',
+        class: 'titleText',
+        tag: 'h1',
+      },
+    ],
+    
+    uploadWithCredentials: false,
+    sanitize: true,
+    toolbarPosition: 'top',
+    toolbarHiddenButtons: [
+      ['bold', 'italic'],
+      ['fontSize']
+    ]
+};
+
 
   constructor(private router: Router, private packageComparisonService: PackageComparisonService, 
-    private spinner: NgxSpinnerService, private toastr: ToastrService, private assignPackageService : AssignPackageService) {
+    private spinner: NgxSpinnerService, private toastr: ToastrService, private assignPackageService : AssignPackageService, private packageGroupsService : PackageGroupsService) {
     if (this.router.getCurrentNavigation().extras.state != undefined) {
       this.PackageId = this.router.getCurrentNavigation().extras.state.packageId;
     } else {
@@ -66,21 +127,117 @@ export class PackageComparisonComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getGroups();
     this.GetBOQDivList();
     this.GetSheetDescList();
     this.GetRESDivList();
     this.GetRESTypeList();
     this.GetPackageSuppliersPrice();
     this.GetSupplierPackagesList();
-    //this.getTechConditions();
+    this.getTechCondReplies();
+    this.getComCondReplies();
+    
   }
 
-  /*getTechConditionsReply()
+  getGroups()
   {
-     this.packageComparisonService.getTechConditionsReply().subscribe(data=>{
+    
+    this.packageGroupsService.getGroups(this.PackageId).subscribe((data) => {
+        if(data)
+        {
+            this.groups = data;
+            
+        }
+    });
+  }
+
+  switchCheckByGroup(event : any)
+  {
+      let checkbox = event.target as HTMLInputElement;
+      this.byGroup = checkbox.checked;
+  }
+
+  onGroupchange(event : any)
+  {
+    
+
+  }
+
+  generatePDF()
+  {
+    let data = document.getElementsByClassName("table-comparison")[0] as HTMLTableElement;
+    this.generatingFile = true;
+    html2canvas(data).then(canvas => {  
+      // Few necessary setting options  
+      this.generatingFile = false;
+      let imgWidth = 208;   
+      let pageHeight = 295;    
+      let imgHeight = canvas.height * imgWidth / canvas.width;  
+      let heightLeft = imgHeight;  
+
+      const contentDataURL = canvas.toDataURL('image/png')  
+      let pdf = new jsPDF('p', 'mm', 'a4', true); // A4 size page of PDF  
+      let position = 0;  
+      pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)  
+      pdf.save(new Date().toLocaleDateString("en-UK") + '.pdf'); // Generated PDF   
+    });  
+  }
+
+  onFileSelect(event : any)
+  {
+    if (event.target.files.length > 0) {
+
+      const file = event.target.files[0];
+      this.topManagementAttachement = file;
+    }
+    else
+    {
+      this.topManagementAttachement = null;
+    }
+  }
+
+  sendEmail()
+  {
+      if(this.selectedTopManagementList.length == 0 || this.topManagementAttachement == null)
+      {
+          this.toastr.error('Fields are required', '');
+          return;
+      }
+
+      this.sendingEmail = true;
+    
+      this.packageComparisonService.sendCompToManagement(this.PackageId,  this.selectedTopManagementList, this.topManagementAttachement).subscribe(data=>{
+        this.sendingEmail = false;
+          if(data)
+          {
+            this.toastr.success('Email sent successfully', '');
+            this.CloseSendEmailModal();
+          }
+      });
+  }
+
+  getManagementEmail()
+  {
+    this.selectedTopManagementList = [];
+      this.packageComparisonService.getManagementEmail('').subscribe(data=>{
+          this.topManagementList = data;
+      });
+  }
+
+
+  getTechCondReplies()
+  {
+     this.packageComparisonService.getTechCondReplies( this.PackageId).subscribe(data=>{
         this.techConditionsReplies = data;
      });
-  }*/
+  }
+
+  getComCondReplies()
+  {
+     this.packageComparisonService.getComCondReplies( this.PackageId).subscribe(data=>{
+        this.comConditionsReplies = data;
+     });
+  }
 
   toggleShow() {
     this.isShown = !this.isShown;
@@ -122,6 +279,7 @@ export class PackageComparisonComponent implements OnInit {
         
         this.RevisionDetailsBoqItems = [];
         this.packageSuppliersPrice = data;
+        //console.log(this.packageSuppliersPrice);
         let isByBoq = this.packageSuppliersPrice[0].byBoq;
         if(isByBoq == 1)
         {
@@ -177,7 +335,8 @@ export class PackageComparisonComponent implements OnInit {
             && key != "itemO" && key != "sectionO" && key != "unitO" && key != "qtyO" && 
             !key.includes("missedPrice") && key != "boqScope" && key != "boqPackage" && key != "boqDiv"
             &&  key != "boqUprice" && key != "boqQty" && key != "boqUnitMesure" && key != "boqCtg"
-            &&  key != "boqSeq" && key != "obSheetDesc" && key != "scope" && key != "unitRate" && key != "priceOrigCur") {
+            &&  key != "boqSeq" && key != "obSheetDesc" && key != "scope" && key != "unitRate" && key != "priceOrigCur" && key != "assignedToSupplier" &&
+            key != "boqPackage" && key != "boqScope" && key != "resDiv"  && key != "resCtg") {
               this.comparisonObjectColumns.push(key);
              }
             }
@@ -186,8 +345,8 @@ export class PackageComparisonComponent implements OnInit {
               if (key != "perc" && key != "resourceID" && key != "rowNumber"  
               && key != "itemO" && key != "sectionO" && key != "resDescription" && key != "resourceUnit" && key != "resourceQty" &&
               !key.includes("missedPrice") && key != "boqScope" && key != "boqPackage" && key != "boqDiv"
-              &&  key != "boqUprice" && key != "boqQty" && key != "boqUnitMesure" && key != "boqCtg"
-              &&  key != "boqSeq" && key != "obSheetDesc" && key != "scope" && key != "unitRate" && key != "priceOrigCur") {
+              &&  key != "boqUprice" && key != "boqQty" && key != "boqUnitMesure" && key != "boqCtg" && key != "resCtg" && key != "resDiv"
+              &&  key != "boqSeq" && key != "obSheetDesc" && key != "scope" && key != "unitRate" && key != "priceOrigCur" && key != "assignedToSupplier") {
                 this.comparisonObjectColumns.push(key);
                }
             }
@@ -258,6 +417,14 @@ export class PackageComparisonComponent implements OnInit {
     
   }
 
+  isAssigned(item : any)
+  {
+    
+      let val : boolean = item['assignedToSupplier'];
+      return (val);
+    
+  }
+
   isPriceUpdated(item : any, col : string)
   {
     if(col.includes('price'))
@@ -286,29 +453,12 @@ export class PackageComparisonComponent implements OnInit {
 
   GetSupplierPackagesList() {
     this.techConditionsReplies = [];
+    
     this.packageComparisonService.GetSupplierPackagesList(this.PackageId).subscribe((data) => {
       if (data) {
         this.SupplierPackagesList = data;
         this.byBoq = this.SupplierPackagesList[0].psByBoq;
-
-        this.SupplierPackagesList.forEach((item, index)=>
-          {
-              let psId = item.psId;
-              this.techConditionsReplies.push([]);
-              this.comConditionsReplies.push([]);
-              this.packageComparisonService.getTechConditionsReply(psId).subscribe((response : ConditionsReply[])=>{
-                    
-                    this.techConditionsReplies[index].push(response);
-                  
-              });
-
-              this.packageComparisonService.getComConditionsReply(psId).subscribe((response : ConditionsReply[])=>{
-                    
-                this.comConditionsReplies[index].push(response);
-              
-              });
-          });
-          
+         
       }
     });
     
@@ -453,6 +603,19 @@ export class PackageComparisonComponent implements OnInit {
     }
     this.supplierPercent = [];
     $("#assignPackageModal").modal('hide');
+  }
+
+  CloseSendEmailModal()
+  {
+    $("#modalEmail").modal('hide');
+  }
+
+  openSendEmailModal()
+  {
+    this.topManagementAttachement = null;
+    this.selectedTopManagementList = [];
+    this.getManagementEmail();
+    $("#modalEmail").modal('show');
   }
 
   OpenAssignModal() {
@@ -727,14 +890,6 @@ export class PackageComparisonComponent implements OnInit {
       });
     }
 
-  }
-
-  getTechConditions()
-  {
-      this.packageComparisonService.getTechConditions(Number(this.PackageId)).subscribe(data=>{
-          this.techConditions = data;
-          console.log(this.techConditions);
-      });
   }
 
   filterBOQDiv(event: KeyboardEvent)

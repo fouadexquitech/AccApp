@@ -1,145 +1,199 @@
-<div class="p-3">
+
   <!--<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-beat">
     <p style="font-size: 20px; color: white">Loading...</p>
   </ngx-spinner>-->
   <app-nav></app-nav>
-
-  <div class="card">
-    <div class="card-header">
-        <h5 style="display: inline-block;">Search</h5>
-        <span style="float: right; cursor: pointer;user-select: none;" (click)="toggleShow()">show / hide</span>
-    </div>
-    <div class="card-body" *ngIf="isShown">
-        <div class="row">
-            <div class="col-sm-3 form-group">
-               
-                <mat-form-field appearance="fill" class="full-width-field">
-                    <mat-label>BOQ Div</mat-label>
-                    <mat-select [(ngModel)]="SearchInput.bOQDiv" multiple>
-                        <input matInput type="text" focused="'true'" (keyup)="filterBOQDiv($event)" class="mat-filter">
-                        <span class="fa fa-search input-icon"></span>
-                        <mat-divider></mat-divider>
-                     
-                      <mat-option *ngFor="let item of selectedBOQDivList" [value]="item.sectionO">{{ item.sectionO }}</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-            
-            </div>
-
-            <div class="col-sm-2 form-group">
-                
-                <label>BOQ Item</label>
-                        
-                <input type="text" class="form-control" [(ngModel)]="SearchInput.bOQItem">
-      
-            </div>
-
-            <div class="col-sm-3 form-group">
-                
-                <label>BOQ Desc</label>
-            
-                <input type="text" class="form-control" [(ngModel)]="SearchInput.bOQDesc">
-                    
-            </div>
-
-            <div class="col-sm-2 form-group">
-                
-                <label>From Row</label>
-                   
-                <input type="text" class="form-control" [(ngModel)]="SearchInput.fromRow">
-           
-               
-                   
-            </div>
-            <div class="col-sm-2 form-group">
-                <label>To Row</label>
-           
-                <input type="text" class="form-control" [(ngModel)]="SearchInput.toRow">
-            </div>
-            </div>
-        <div class="row">
-            
-            <div class="col-sm-3 form-group">
-          
-
-                <mat-form-field appearance="fill" class="full-width-field">
-                    <mat-label>Sheet Desc</mat-label>
-                    <mat-select [(ngModel)]="SearchInput.sheetDesc">
-                        <input matInput type="text" focused="'true'" (keyup)="filterSheetDesc($event)" class="mat-filter">
-                        <span class="fa fa-search input-icon"></span>
-                        <mat-divider></mat-divider>
-                      <mat-option></mat-option>
-                      <mat-option *ngFor="let item of selectedSheetDescList" [value]="item.obSheetDesc">{{ item.obSheetDesc }}</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-          
-        </div>
-        <div class="col-sm-3 form-group">
-                
-            
-
-          <mat-form-field appearance="fill" class="full-width-field">
-              <mat-label>RES Div</mat-label>
-              <mat-select [(ngModel)]="SearchInput.rESDiv" multiple>
-                  <input matInput type="text" focused="'true'" (keyup)="filterRESDiv($event)" class="mat-filter">
-                  <span class="fa fa-search input-icon"></span>
-                  <mat-divider></mat-divider>
-               
-                <mat-option *ngFor="let item of selectedRESDivList" [value]="item.boqDiv">{{ item.boqDiv }}</mat-option>
-              </mat-select>
-            </mat-form-field>
+  <section>
+  <nav aria-label="breadcrumb" class="p-2">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a [routerLink]="['/package-list']">Packages List</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Packages Comparison</li>
+    </ol>
+  </nav>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-sm-2 form-group"><h5 style="display: inline-block;"><span> Search</span>&nbsp;
+              <span style="float: right; cursor: pointer;user-select: none;" (click)="toggleShow()">show / hide</span>
              
-
-      </div>
-
-      <div class="col-sm-3 form-group">
-          
-
-          <mat-form-field appearance="fill" class="full-width-field">
-              <mat-label>RES Type</mat-label>
-              <mat-select [(ngModel)]="SearchInput.rESType" multiple>
-                  <input matInput type="text" focused="'true'" (keyup)="filterSearchRESType($event)" class="mat-filter">
-                  <span class="fa fa-search input-icon"></span>
-                  <mat-divider></mat-divider>
-               
-                <mat-option *ngFor="let item of selectedRESTypeList" [value]="item.boqCtg">{{ item.boqCtg }}</mat-option>
-              </mat-select>
-            </mat-form-field>
              
-      </div>
+            </h5></div>
+            <div class="col-sm-2 form-group">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckByGroup" (change)="switchCheckByGroup($event)">
+                <label class="form-check-label" for="flexSwitchCheckByGroup">By Group</label>
+               
+              </div>
+             
+              
 
-      <div class="col-sm-3 form-group">
+            </div>
+            <div *ngIf="byGroup" class="col-sm-3 form-group">
+              <ng-select [items]="groups"  
+              bindLabel="name" 
+              bindValue="id" 
+              [placeholder]="'Select group'"
+              [closeOnSelect]="true"
+              [(ngModel)]="selectedGroup" (ngModelChange)="onGroupchange($event)"></ng-select>
+            </div>
+            <div class="col-sm-2 form-group">
+              <button class="btn btn-danger" (click)="generatePDF()" [disabled]="generatingFile">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="generatingFile"></span>
+                <span class="fa-solid fa-file-pdf"></span>
+                <span *ngIf="generatingFile">Generating...</span>
+                <span *ngIf="!generatingFile">Generate PDF</span>
+                </button>
+            </div>
+            <div class="col-sm-2 form-group">
+              <button type="button" class="btn btn-primary" style="float: right; width: 100%;"
+              (click)="openSendEmailModal()">Send Email</button>
+              
+            </div>
          
-          <label>RES Desc</label>
-      
-          <input type="text" class="form-control" [(ngModel)]="SearchInput.rESDesc">
-             
-      </div>
-        </div>
-       
-
-       <hr>
-
-        <div class="row">
             
-            <div class="col-sm-2 form-group">
-                <button type="button" class="btn btn-primary" [disabled]="searching" style="float: right; width: 100%;"
-                    (click)="onSearch()">
-                    <i class="fa fa-spinner fa-spin" *ngIf="searching"></i>
-                    Search</button>
-            </div>
-            <div class="col-sm-2 form-group">
-                <button type="button" class="btn btn-danger" style="float: right; width: 100%;"
-                    (click)="clearAllSelections()">Clear All Selections</button>
-            </div>
         </div>
-
+            
+        </div>
+        <div class="card-body" *ngIf="isShown">
+            <div class="row">
+                <div class="col-sm-3 form-group">
+                   
+                    <mat-form-field appearance="fill" class="full-width-field">
+                        <mat-label>BOQ Div</mat-label>
+                        <mat-select [(ngModel)]="SearchInput.bOQDiv" multiple>
+                            <input matInput type="text" focused="'true'" (keyup)="filterBOQDiv($event)" class="mat-filter">
+                            <span class="fa fa-search input-icon"></span>
+                            <mat-divider></mat-divider>
+                         
+                          <mat-option *ngFor="let item of selectedBOQDivList" [value]="item.sectionO">{{ item.sectionO }}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                
+                </div>
+    
+                <div class="col-sm-2 form-group">
+                    
+                    <label>BOQ Item</label>
+                            
+                    <input type="text" class="form-control" [(ngModel)]="SearchInput.bOQItem">
+          
+                </div>
+    
+                <div class="col-sm-3 form-group">
+                    
+                    <label>BOQ Desc</label>
+                
+                    <input type="text" class="form-control" [(ngModel)]="SearchInput.bOQDesc">
+                        
+                </div>
+    
+                <div class="col-sm-2 form-group">
+                    
+                    <label>From Row</label>
+                       
+                    <input type="text" class="form-control" [(ngModel)]="SearchInput.fromRow">
+               
+                   
+                       
+                </div>
+                <div class="col-sm-2 form-group">
+                    <label>To Row</label>
+               
+                    <input type="text" class="form-control" [(ngModel)]="SearchInput.toRow">
+                </div>
+                </div>
+            <div class="row">
+                
+                <div class="col-sm-3 form-group">
+              
+    
+                    <mat-form-field appearance="fill" class="full-width-field">
+                        <mat-label>Sheet Desc</mat-label>
+                        <mat-select [(ngModel)]="SearchInput.sheetDesc">
+                            <input matInput type="text" focused="'true'" (keyup)="filterSheetDesc($event)" class="mat-filter">
+                            <span class="fa fa-search input-icon"></span>
+                            <mat-divider></mat-divider>
+                          <mat-option></mat-option>
+                          <mat-option *ngFor="let item of selectedSheetDescList" [value]="item.obSheetDesc">{{ item.obSheetDesc }}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+              
+            </div>
+            <div class="col-sm-3 form-group">
+                    
+                
+    
+              <mat-form-field appearance="fill" class="full-width-field">
+                  <mat-label>RES Div</mat-label>
+                  <mat-select [(ngModel)]="SearchInput.rESDiv" multiple>
+                      <input matInput type="text" focused="'true'" (keyup)="filterRESDiv($event)" class="mat-filter">
+                      <span class="fa fa-search input-icon"></span>
+                      <mat-divider></mat-divider>
+                   
+                    <mat-option *ngFor="let item of selectedRESDivList" [value]="item.boqDiv">{{ item.boqDiv }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                 
+    
+          </div>
+    
+          <div class="col-sm-3 form-group">
+              
+    
+              <mat-form-field appearance="fill" class="full-width-field">
+                  <mat-label>RES Type</mat-label>
+                  <mat-select [(ngModel)]="SearchInput.rESType" multiple>
+                      <input matInput type="text" focused="'true'" (keyup)="filterSearchRESType($event)" class="mat-filter">
+                      <span class="fa fa-search input-icon"></span>
+                      <mat-divider></mat-divider>
+                   
+                    <mat-option *ngFor="let item of selectedRESTypeList" [value]="item.boqCtg">{{ item.boqCtg }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                 
+          </div>
+    
+          <div class="col-sm-3 form-group">
+             
+              <label>RES Desc</label>
+          
+              <input type="text" class="form-control" [(ngModel)]="SearchInput.rESDesc">
+                 
+          </div>
+            </div>
+           
+    
+           <hr>
+    
+            <div class="row">
+                
+                <div class="col-sm-2 form-group">
+                    <button type="button" class="btn btn-primary" [disabled]="searching" style="float: right; width: 100%;"
+                        (click)="onSearch()">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="searching"></span>
+                        <span *ngIf="searching">Searching...</span>
+                        <span *ngIf="!searching">Search</span>
+                        </button>
+                </div>
+                <div class="col-sm-2 form-group">
+                    <button type="button" class="btn btn-danger" style="float: right; width: 100%;"
+                        (click)="clearAllSelections()">Clear All Selections</button>
+                </div>
+               
+            </div>
+    
+        </div>
     </div>
-</div>
+    </div>
+  </div>
 
-
-  <br>
-
+  
+<div class="row">
+  <div class="col-12 table-responsive">
     <table class="table table-comparison" *ngIf="byBoq == 0">
       <thead>
         <tr>
@@ -166,7 +220,7 @@
               </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let dt of getResourcesPerItem(comparisonObject, item.itemO); let j = index">
+                <tr *ngFor="let dt of getResourcesPerItem(comparisonObject, item.itemO); let j = index" [ngClass]="isAssigned(dt) ? 'bg-acc' : ''">
                   <td style="width:1%">
                     <input type="checkbox" (change)="selectResource($event.target, dt.resourceID, getParentItemTargetByResource($event.target), item.itemO)">
                     <input type="hidden" [value]="dt.resourceID">
@@ -197,13 +251,14 @@
           <table class="table">
             <tr>
               <td><strong>Sub Total</strong></td>
-              <td>
-                <table style="float: right !important;">
+              <td style="width:35%">
+                <table class="table">
                     <tr>
-                      <td *ngFor="let item of totalPackageSuppliersPrice ;  let i = index" [ngClass]="{ 'lowest': item.lowest }">
+                      <td *ngFor="let item of totalPackageSuppliersPrice ;  let i = index">
                         <table class="table">
                           <tr>
                             <td><strong>{{item.totalprice | number : '1.2-2' }}</strong></td>
+                           
                           </tr>
                         </table>
                         
@@ -221,8 +276,8 @@
             <table class="table">
               <tr>
               <td><strong>Additional Fees</strong></td>
-              <td>
-                <table style="float: right !important;">
+              <td style="width:35%">
+                <table class="table">
                   <tr>
                     <td *ngFor="let supp of packageSuppliersPrice">
                       <table class="table" >
@@ -252,11 +307,11 @@
                   <td>
                     <strong>Grand Total</strong>
                   </td>
-                  <td>
-                    <table style="float: right !important;">
+                  <td style="width:35%">
+                    <table class="table">
                       <tr>
                        
-                        <td *ngFor="let item of totalPackageSuppliersPrice ;  let i = index" [ngClass]="{ 'lowest': item.lowest }">
+                        <td *ngFor="let item of totalPackageSuppliersPrice ;  let i = index">
                           <table class="table" >
                             <tr>
                               <td><strong>{{item.totalNetPrice | number : '1.2-2' }}</strong></td>
@@ -277,32 +332,26 @@
           <td colspan="2">
             <table class="table">
               <tr>
-                <td style="vertical-align: top;">
+                <td>
                   <strong>Technical Conditions</strong>
                  
                 </td>
-                <td *ngFor="let item of techConditionsReplies; let i = index" style="vertical-align: top;">
-                  <table style="float: right !important;">
-                    <tr>
-                      
-                      <td>
-                       
-                        <table class="table">
-                          <tr *ngFor="let cond of item[0]; let j = index">
-                            <td><strong>
-                              {{cond.condDesc}}
-                            </strong>
-                           </td>
-                           <td>
-                            {{cond.condReply}}
-                          </td>
+              </tr>
+              <tr>
+                <td>
+                  <table class="table table-bordered">
+                          <tr *ngFor="let cond of techConditionsReplies ;  let i = index">
+                            <td style="width:70%">{{cond.description}}</td>
+                            <td *ngFor="let reply of cond.replies">
+                              <table class="table">
+                                <tr>
+                                  <td class="text-center"><strong>{{reply.reply}}</strong></td>
+                                </tr>
+                              </table>
+                            </td>
+                           
                           </tr>
                         </table>
-                        
-                      </td>
-              
-                    </tr>
-                  </table>
                 </td>
               </tr>
             </table>
@@ -312,31 +361,25 @@
           <td colspan="2">
             <table class="table">
               <tr>
-                <td style="vertical-align: top;">
-                  <strong>Commercial Conditions</strong>
-                  
-                </td>
                 <td>
-                  <table style="float: right !important;">
-                    <tr *ngFor="let item of comConditionsReplies; let i = index" style="vertical-align: top;">
-                      
-                      <td>
-                       
-                        <table class="table" >
-                          <tr *ngFor="let cond of item[0]">
-                            <td><strong>
-                              {{cond.condDesc}}
-                            </strong></td>
-                            <td>
-                              {{cond.condReply}}
+                  <strong>Commercial Conditions</strong>
+                 
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <table class="table table-bordered">
+                          <tr *ngFor="let cond of comConditionsReplies ;  let i = index">
+                            <td style="width:70%">{{cond.description}}</td>
+                            <td *ngFor="let reply of cond.replies">
+                              <table class="table" >
+                                <tr>
+                                  <td class="text-center"><strong>{{reply.reply}}</strong></td>
+                                </tr>
+                              </table>
                             </td>
                           </tr>
                         </table>
-                        
-                      </td>
-              
-                    </tr>
-                  </table>
                 </td>
               </tr>
             </table>
@@ -359,7 +402,7 @@
       </thead>
       <tbody>
        
-        <tr *ngFor="let item of comparisonObject; let j = index">
+        <tr *ngFor="let item of comparisonObject; let j = index" [ngClass]="isAssigned(item) ? 'bg-acc' : ''">
           <td style="width:1%">
             <input type="checkbox" (change)="selectBoqItem($event.target, item['itemO'], getParentTargetByBoqItem($event.target))">
             <input type="hidden" [value]="item['itemO']">
@@ -378,7 +421,7 @@
         </tr>
         <tr>
           <td colspan="4"><strong>Sub Total</strong></td>
-          <td *ngFor="let item of totalPackageSuppliersPrice ;  let i = index" [ngClass]="{ 'lowest': item.lowest }">
+          <td *ngFor="let item of totalPackageSuppliersPrice ;  let i = index">
             <table class="table">
               <tr>
                 
@@ -407,7 +450,7 @@
         </tr>
         <tr>
           <td colspan="4"><strong>Grand Total</strong></td>
-          <td *ngFor="let item of totalPackageSuppliersPrice ;  let i = index" [ngClass]="{ 'lowest': item.lowest }">
+          <td *ngFor="let item of totalPackageSuppliersPrice ;  let i = index">
             <table class="table">
               <tr>
                 
@@ -418,6 +461,52 @@
             </table>
             
           </td>
+        </tr>
+        <tr>
+          <td [attr.colspan]="totalPackageSuppliersPrice.length + 4"><strong>Technical Conditions</strong></td>
+        </tr>
+        <tr>
+          <td [attr.colspan]="totalPackageSuppliersPrice.length + 4">
+            <table class="table table-bordered">
+            
+                  
+              <tr *ngFor="let cond of techConditionsReplies ;  let i = index">
+                <td style="width:70%">{{cond.description}}</td>
+                <td *ngFor="let reply of cond.replies" style="width:30%">
+                  <table class="table">
+                    <tr>
+                      <td class="text-center"><strong>{{reply.reply}}</strong></td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+        </table>
+          </td>
+         
+        
+        </tr>
+        <tr>
+          <td [attr.colspan]="totalPackageSuppliersPrice.length + 4"><strong>Commercial Conditions</strong></td>
+        </tr>
+        <tr>
+          <td [attr.colspan]="totalPackageSuppliersPrice.length + 4">
+            <table class="table table-bordered">
+            
+                  
+              <tr *ngFor="let cond of comConditionsReplies ;  let i = index">
+                <td style="width:70%">{{cond.description}}</td>
+                <td *ngFor="let reply of cond.replies"  style="width:30%">
+                  <table class="table">
+                    <tr>
+                      <td class="text-center"><strong>{{reply.reply}}</strong></td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+        </table>
+          </td>
+         
+        
         </tr>
       </tbody>
     </table>
@@ -461,6 +550,10 @@
       </tr>
     </tbody>
   </table>
+  </div>
+</div>
+
+    
 
   <br>
 
@@ -538,3 +631,53 @@
     </div>
 
   </div>
+
+
+  <!-- Email Modal -->
+  <div class="modal fade" id="modalEmail" tabindex="-1" aria-labelledby="modalEmailLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalEmailLabel">Send Email</h5>
+          <button type="button" class="btn-close" (click)="CloseSendEmailModal()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-12 p-2">
+              Select management list
+              <div class="multi_default">
+              <ng-select [items]="topManagementList"
+              [searchable]="true"
+              [(ngModel)]="selectedTopManagementList"
+              
+              [multiple]="true" bindLabel="userName">
+                  <ng-template ng-optgroup-tmp let-item="item">
+                      {{item.userName}}
+                  </ng-template>
+              </ng-select>
+            </div>
+            </div>
+            <div class="col-sm-12 p-2">
+              Attachement
+              <input type="file" id="topManagementAttachement" name="topManagementAttachement"
+               class="form-control" (change)="onFileSelect($event)">
+            </div>
+          </div>
+         <!-- <div class="row">
+            <div class="col-sm-12 p-2">
+              <angular-editor [placeholder]="'Enter text here...'" [(ngModel)]="htmlContent"></angular-editor>
+            </div>
+          </div>   -->       
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="CloseSendEmailModal()">Close</button>
+          <button type="button" class="btn btn-primary" (click)="sendEmail()" [disabled]="sendingEmail">
+            <i class="fa fa-spinner fa-spin" *ngIf="sendingEmail"></i>
+            Send</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</section>

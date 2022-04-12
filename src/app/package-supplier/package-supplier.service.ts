@@ -41,8 +41,8 @@ export class PackageSupplierService {
     );
   }
 
-  AssignPackageSuppliers(PackId: number, supInputList: SupplierInputList[], filePath : string, emailcontent : string, byBoq : number): Observable<any> {
-    return this.http.post(this.baseUrl + 'SupplierPackages/AssignPackageSuppliers?packId=' + PackId + '&FilePath=' + filePath + '&EmailContent=' + emailcontent + '&ByBoq=' + byBoq, supInputList).pipe(
+  AssignPackageSuppliers(PackId: number, supInputList: SupplierInputList[], filePath : string, byBoq : number): Observable<any> {
+    return this.http.post(this.baseUrl + 'SupplierPackages/AssignPackageSuppliers?packId=' + PackId + '&FilePath=' + filePath + '&ByBoq=' + byBoq, supInputList).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
@@ -63,6 +63,12 @@ export class PackageSupplierService {
 
   GetSupplierPackagesList(PackId: number): Observable<any> {
     return this.http.get(this.baseUrl + 'SupplierPackages/GetSupplierPackagesList?packageid=' + PackId).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
+  GetSupplierPackage(psId: number): Observable<any> {
+    return this.http.get(this.baseUrl + 'SupplierPackages/GetSupplierPackage?psId=' + psId).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
@@ -131,11 +137,11 @@ export class PackageSupplierService {
   );
  }
 
- updateTechnicalConditions(packageSupplierId: number, input: File)
+ updateTechnicalConditions(packageId : number, packageSupplierId: number, input: File)
  {
   const formData = new FormData();
   formData.append('ExcelFile' , input , input.name)
-    return this.http.post(this.baseUrl + 'Conditions/UpdateTechnicalConditions?PackageSupliersID=' + packageSupplierId, formData).pipe(
+    return this.http.post(this.baseUrl + 'Conditions/UpdateTechnicalConditions?PackageSupliersID=' + packageSupplierId + '&packageId=' + packageId, formData).pipe(
     map(res => res), catchError(this.handleError)
   );
  }
@@ -156,7 +162,12 @@ export class PackageSupplierService {
   );
  }
 
- 
+ getTechConditions(packId : number) : Observable<any>
+ {
+  return this.http.get(this.baseUrl + 'Conditions/GetTechConditions?packId=' + packId).pipe(
+    map(res => res), catchError(this.handleError)
+  );
+ }
 
   handleError(error: any): Promise<any> {
     console.error('An error occurred', error);

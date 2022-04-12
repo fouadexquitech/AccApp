@@ -13,9 +13,15 @@ import { PackageListService } from './package-list.service';
 export class PackageListComponent implements OnInit, OnDestroy {
 
   PackageList: PackageList[] = [];
-  public dtOptions: DataTables.Settings = {};
+  public dtOptions: DataTables.Settings = {
+    pagingType: 'full_numbers',
+    pageLength: 10,
+    searching : true,
+    destroy : true,
+    responsive : true
+  };
   public dtTrigger: Subject<any> = new Subject<any>();
-
+  isSearching : boolean = false;
   constructor(private packageListService: PackageListService , private router: Router , private spinner: NgxSpinnerService,) { }
 
   ngOnInit(): void {
@@ -23,15 +29,11 @@ export class PackageListComponent implements OnInit, OnDestroy {
   }
 
   GetPackageList() {
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 10,
-      searching : true,
-      destroy : true,
-      responsive : true
-    };
+   
     //this.spinner.show();
+    this.isSearching = true;
     this.packageListService.GetPackageList().subscribe((data) => {
+      this.isSearching = false;
       if (data) {
         this.PackageList = data;
         //this.spinner.hide();
@@ -50,4 +52,12 @@ export class PackageListComponent implements OnInit, OnDestroy {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
   }
+
+  routeToTechnicalConditions(idPkge:number, pkgeName : string)
+  {
+    
+    this.router.navigate(['technical-conditions'], { state: { packageId: idPkge, pkgeName : pkgeName } });
+  }
+
+ 
 }

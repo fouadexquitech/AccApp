@@ -8,6 +8,11 @@ export class PackageSuppliersPrice {
     public totalNetPrice: number = 0;
     public byBoq : number = 0;
     public lastRevisionDate : Date = null;
+    public assignedToSupplier : boolean = false;
+    public boqPackage : string = null;
+    public boqScope : number = 0;
+    public resDiv : string = null;
+    public resCtg : string = null;
 }
 
 export class FieldList {
@@ -45,6 +50,12 @@ export class SupplierBOQ
     public supplierPercents : SupplierPercent[] = [];
 }
 
+export class SupplierGroups
+{
+    public groupId : number = 0;
+    public supplierPercents : SupplierPercent[] = [];
+}
+
 export class ressourceItem
 {
     public resId : number = 0;
@@ -53,6 +64,11 @@ export class ressourceItem
 export class boqItem
 {
     public boqItemID : string = null;
+}
+
+export class Group
+{
+    public id : number = 0;
 }
 
 export class AssignSuppliertRes
@@ -66,6 +82,12 @@ export class AssignSuppliertBoq
 {
     public supplierPercentList : SupplierPercent[] = [];
     public supplierBoqItemList : boqItem[] = [];
+}
+
+export class AssignSupplierGroup
+{
+    public supplierPercentList : SupplierPercent[] = [];
+    public supplierGroupList : Group[] = [];
 }
 
 export class TblTechCond
@@ -106,6 +128,44 @@ export class ConditionsReply
     public condReply : string = null;
     public supId : number = 0;
     public supName : string = null;
+}
+
+export class DisplayCondReply
+{
+    public supplierId : number = 0;
+    public supplierName : string = null;
+
+    public conditionId : number = 0;
+
+    public reply : string = null;
+}
+
+export class DisplayCondition
+{
+    public id : number = 0;
+    public description : string = null;
+    public replies : DisplayCondReply[] = [];
+}
+
+export class TopManagement
+{
+    public id : number = 0;
+    public userName : string = null;
+    public mail : string = null;
+    public occupation : string = null;
+}
+
+export class CompManagementModel
+{
+    public topManagList : TopManagement[] = [];
+    public excelComparisonSheet: FormData = null;
+}
+
+export class TechConditions
+{
+    public tcSeq : number = 0;
+    public tcPackId : number = 0;
+    public tcDescription : string  = null;
 }
 
 

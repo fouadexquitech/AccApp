@@ -1,25 +1,38 @@
-<div class="container-fluid">
-    <div class="p-3">
+
+  
         <app-nav></app-nav>
-    </div>
-    <div class="p-3">
+      <section>
+        <nav aria-label="breadcrumb" class="p-2">
+          <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><a [routerLink]="['/package-list']">Packages List</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><a style="color:#0d6efd; cursor: pointer; text-decoration: underline;" (click)="goBack()">Package Supplier</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><strong>Revision Details</strong></li>
+             
+          </ol>
+        </nav>
+    <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12 card">
             <div class="card-header">
-                <h3 *ngIf="Revision">Revision {{Revision.prRevNo}} | {{Revision.prRevDate | date:'dd-MM-YYYY'}}</h3>
+                <h3 *ngIf="Revision">Supplier {{supplierPackage.psSupName}} | Revision {{Revision.prRevNo}} | {{Revision.prRevDate | date:'dd-MM-YYYY'}}</h3>
                 <div class="row">
-                    <div class="col-sm-4 form-group p-2">
+                    <div class="col-sm-3 form-group p-2">
                         <label>Item</label>
                         <input type="text" class="form-control" id="filterItemDesc">
                     </div>
-                    <div class="col-sm-4 form-group p-2" [ngStyle]="{'display': (psByBoq == 0) ? 'block' : 'none'}">
+                    <div class="col-sm-3 form-group p-2" [ngStyle]="{'display': (psByBoq == 0) ? 'block' : 'none'}">
                         <label>Resource</label>
                         <input type="text" class="form-control" id="filterResource">
                     </div>
-                    <div class="col-sm-4 form-group p-2">
+                    <div class="col-sm-3 form-group p-2">
                         <br>
                         <button class="btn btn-primary" (click)="searchRevDetails()">Search</button>
                     </div>
+                    <div class="col-sm-3 form-group p-2">
+                      <br>
+                      <button class="btn btn-secondary" (click)="goBack()">Back to Package Supplier</button>
+                  </div>
                 </div>
             </div>
             <div class="card-body">
@@ -80,7 +93,7 @@
                                     <input *ngIf="dt.rdMissedPrice == 1" [id]="'price-' + dt.rdResourceSeq + '-' + + Revision.prRevId"
                                     [value]="dt.rdPrice" type="number"
                                     [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                                    <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdPrice}}</span></td>
+                                    <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdPrice | number : '1.2-2'}}</span></td>
                                 </tr>
                               </tbody>
                           </table>
@@ -95,7 +108,7 @@
                       <td style="text-align: right;">
                         <button class="btn btn-success btn-block" [disabled]="saving"
                         (click)="UpdateRevisionPrices(Revision.prRevId, 'tblRevisionDtl-' + Revision.prRevId)">
-                        <i class="fa fa-spinner fa-spin" *ngIf="saving"></i>
+                        <span class="spinner-border spinner-border-sm" *ngIf="saving"></span>
                         Update Prices</button>
                       </td>
                     </tr>
@@ -104,5 +117,5 @@
             </div>
         </div>
     </div>
-    </div>
-</div>
+  </div>
+  </section>

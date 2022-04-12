@@ -1,0 +1,64 @@
+<app-nav></app-nav>
+<section>
+        <nav aria-label="breadcrumb" class="p-2">
+          <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><a [routerLink]="['/package-list']">Packages List</a></li>
+              <li class="breadcrumb-item active" aria-current="page">{{packageName}}</li>
+              <li class="breadcrumb-item active" aria-current="page"><strong>Technical Conditions</strong></li>
+              
+            </ol>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12 card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-3">
+                                <input placeholder="Search" class="form-control">
+                            </div>
+                            <div class="col-3">
+                                <button class="btn btn-secondary">Search</button>
+                            </div>
+                            <div class="col-3">
+                                <button class="btn btn-primary">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Description
+                                        </th>
+                                        <th colspan="2">
+                                            Actions
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of list">
+                                        <td>{{item.tcDescription}}</td>
+                                        <td>
+                                            <a class="btn btn-link" title="Edit"><i class="fa-solid fa-edit"></i></a>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-link text-danger" title="Delete"><i class="fa-solid fa-times"></i></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot *ngIf="list.length == 0">
+                                    <tr>
+                                        <td class="text-center" colspan="3">No Data Available</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>

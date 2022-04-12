@@ -11,6 +11,7 @@ import { EmailTemplate, FieldType, Language } from '../_models';
 import { ConfirmationDialogService } from '../_components/confirmation-dialog/confirmation-dialog.service';
 import { OriginalBoqModel } from '../assign-package/assign-package.model';
 import { TblComCond } from '../package-comparison/package-comparison.model';
+import { AngularEditorConfig } from '@kolkov/angular-editor';
 
 declare var $: any;
 @Component({
@@ -78,6 +79,50 @@ export class PackageSupplierComponent implements OnInit {
     destroy : true,
     sorting : false
   };
+
+  editorConfig: AngularEditorConfig = {
+    editable: true,
+      spellcheck: true,
+      height: 'auto',
+      minHeight: '0',
+      maxHeight: 'auto',
+      width: 'auto',
+      minWidth: '0',
+      translate: 'yes',
+      enableToolbar: true,
+      showToolbar: true,
+      placeholder: 'Enter text here...',
+      defaultParagraphSeparator: '',
+      defaultFontName: '',
+      defaultFontSize: '',
+      fonts: [
+        {class: 'calibri', name: 'Calibri'},
+     
+      ],
+      customClasses: [
+      {
+        name: 'quote',
+        class: 'quote',
+      },
+      {
+        name: 'redText',
+        class: 'redText'
+      },
+      {
+        name: 'titleText',
+        class: 'titleText',
+        tag: 'h1',
+      },
+    ],
+    
+    uploadWithCredentials: false,
+    sanitize: true,
+    toolbarPosition: 'top',
+    toolbarHiddenButtons: [
+      ['italic']
+    
+    ]
+};
 
   constructor(private router: Router, 
     private packageSupplierService: PackageSupplierService, 
@@ -149,6 +194,7 @@ export class PackageSupplierComponent implements OnInit {
           if(data)
           {
             this.toastr.success("Technical conditions sent successfully");
+            this.GetSupplierPackagesList();
           }
           else
           {
@@ -357,13 +403,15 @@ export class PackageSupplierComponent implements OnInit {
       });
 
       this.SupplierInput.forEach(supplier=>{
-        this.SupplierInputList.push({supplierInput : supplier, comercialCondList : comercialCond});
+        this.SupplierInputList.push({supplierInput : supplier, comercialCondList : comercialCond, emailTemplate : null});
       });
 
 
       if (this.SupplierInputList.length > 0) {
-        let template = this.formEmailTemplate.get('template').value;
-        this.packageSupplierService.AssignPackageSuppliers(this.PackageId, this.SupplierInputList, this.FilePath, template, Number(localStorage.getItem('assignByBoqOnly'))).subscribe((data) => {
+        this.SupplierInputList.forEach(sup=>{
+          sup.emailTemplate = this.f.template.value;
+        });
+        this.packageSupplierService.AssignPackageSuppliers(this.PackageId, this.SupplierInputList, this.FilePath, Number(localStorage.getItem('assignByBoqOnly'))).subscribe((data) => {
           this.isAssigning = false;
           if (data) {
             //this.spinner.hide();
@@ -654,7 +702,7 @@ export class PackageSupplierComponent implements OnInit {
     }
 
     this.isUpdatingTechnicalConditions = true;
-    this.packageSupplierService.updateTechnicalConditions(this.selectedPackageSupplier?.psId, this.selectedTechnicalCondFile).subscribe(data=>{
+    this.packageSupplierService.updateTechnicalConditions(this.PackageId, this.selectedPackageSupplier?.psId, this.selectedTechnicalCondFile).subscribe(data=>{
       this.isUpdatingTechnicalConditions = false;  
       if(data)
         {
@@ -686,7 +734,7 @@ export class PackageSupplierComponent implements OnInit {
   }
 
   onCompare() {
-    this.router.navigate(['package-comparison'], { state: { packageId: this.PackageId } });
+    this.router.navigate(['package-comparison-novo'], { state: { packageId: this.PackageId, packageName : this.PackageName, byBoq : (this.SupplierPackagesList[0]?.psByBoq == 1) } });
   }
 
   validateExcel()
@@ -753,7 +801,7 @@ export class PackageSupplierComponent implements OnInit {
   UpdateRevisionPrices(revId : number, tableId : string)
   {
       let table = document.getElementById(tableId) as HTMLTableElement;
-      console.log(table);
+      //console.log(table);
   }
 
   onCurrencyChange(val : any)
@@ -794,7 +842,13 @@ export class PackageSupplierComponent implements OnInit {
    
   }
 
-  routeToRevisionDetails(revisionId : number, psByBoq : number){
-    this.router.navigate(['revision-details'], { state: { revisionId: revisionId, psByBoq : psByBoq } });
+  routeToRevisionDetails(revisionId : number, psByBoq : number, psId : number){
+    this.router.navigate(['revision-details'], { state: { revisionId: revisionId, psByBoq : psByBoq, psId : psId, packageId : this.PackageId } });
+  }
+
+  onGrouping()
+  {
+    let byBoq = (this.SupplierPackagesList[0].psByBoq == 1)
+    this.router.navigate(['package-groups'], { state: { packageId: this.PackageId, pkgeName : this.PackageName, byBoq : byBoq } });
   }
 }
