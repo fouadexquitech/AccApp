@@ -237,10 +237,13 @@
             <div class="col-sm-12 form-group">
               <label for="currency">Currency</label>
             
-              <select class="form-select" id="currency" #currency name="currency" [(ngModel)]="selectedCurrencyId" (change)="onCurrencyChange(currency.options[currency.options.selectedIndex].text)">
-                <option value="" selected></option>
-                <option *ngFor="let item of CurrencyList" [ngValue]="item.curId">{{item.curCode}}</option>
-              </select>
+              <ng-select [items]="CurrencyList" 
+                  bindLabel="curCode" 
+                  bindValue="curId" 
+                  placeholder="Select currency"
+                  [(ngModel)]="selectedCurrencyId"
+                  (change)="onCurrencyChange($event)">
+                      </ng-select>
             </div>
           </div>
         <br>

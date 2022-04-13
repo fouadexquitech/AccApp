@@ -806,23 +806,24 @@ export class PackageSupplierComponent implements OnInit {
 
   onCurrencyChange(val : any)
   {
+    
     this.exchangeRates = [];
     this.exchangeRate = 1;
     if(val)
     {
       let projectCurrency = JSON.parse(localStorage.getItem("currency")) as ProjectCurrency;
-        this.packageSupplierService.getExchangeRate(val, projectCurrency.curCode).subscribe((data)=>{
+        this.packageSupplierService.getExchangeRate(val.curCode, projectCurrency.curCode).subscribe((data)=>{
             if(data)
             {
               this.exchangeRates = data.rates;
 
               let array = Object.values(this.exchangeRates);
               
-              if(array.length == 2 && val == 'USD')
+              if(array.length == 2 && val.curCode == 'USD')
               {
                 this.exchangeRate = Number((Number(array[0]) / Number(array[1])).toFixed(2));
               }
-              else if(array.length == 2 && projectCurrency.curCode === val)
+              else if(array.length == 2 && projectCurrency.curCode === val.curCode)
               {
                 this.exchangeRate = 1;
               }
