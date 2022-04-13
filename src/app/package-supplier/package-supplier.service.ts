@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { SupplierInput } from './package-supplier.model';
+import { SupplierInput, SupplierInputList } from './package-supplier.model';
 
 @Injectable({
   providedIn: 'root'
@@ -28,8 +28,28 @@ export class PackageSupplierService {
     );
   }
 
-  AssignPackageSuppliers(PackId: number, input: SupplierInput[]): Observable<any> {
-    return this.http.post(this.baseUrl + 'SupplierPackages/AssignPackageSuppliers?packId=' + PackId, input).pipe(
+  DeleteField(fieldId : number)
+  {
+    return this.http.post(this.baseUrl + 'SupplierPackagesRev/DeleteField?fieldId=' + fieldId, null).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
+  GetFields(revisionId: number): Observable<any> {
+    return this.http.get(this.baseUrl + 'SupplierPackagesRev/GetFields?revisionid=' + revisionId).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
+  AssignPackageSuppliers(PackId: number, supInputList: SupplierInputList[], filePath : string, byBoq : number): Observable<any> {
+    return this.http.post(this.baseUrl + 'SupplierPackages/AssignPackageSuppliers?packId=' + PackId + '&FilePath=' + filePath + '&ByBoq=' + byBoq, supInputList).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
+  GetEmailTemplate(language : string)
+  {
+    return this.http.get(this.baseUrl + 'Logon/GetSuppliersEmailTemplate?Lang=' + language).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
@@ -47,15 +67,27 @@ export class PackageSupplierService {
     );
   }
 
+  GetSupplierPackage(psId: number): Observable<any> {
+    return this.http.get(this.baseUrl + 'SupplierPackages/GetSupplierPackage?psId=' + psId).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
   GetSupplierPackagesRevision(packageSupplierId: number): Observable<any> {
     return this.http.get(this.baseUrl + 'SupplierPackagesRev/GetSupplierPackagesRevision?packageSupplierId=' + packageSupplierId).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
 
-  validateExcelBeforeAssign(packId: number) : Observable<any> 
+  GetSupplierPackagesSingleRevision(revision: number): Observable<any> {
+    return this.http.get(this.baseUrl + 'SupplierPackagesRev/GetSupplierPackagesSingleRevision?revisionId=' + revision).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
+  validateExcelBeforeAssign(packId: number, byBoq : number) : Observable<any> 
   {
-    return this.http.post(this.baseUrl + 'SupplierPackages/ValidateExcelBeforeAssign?packId=' + packId, null).pipe(
+    return this.http.post(this.baseUrl + 'SupplierPackages/ValidateExcelBeforeAssign?packId=' + packId + '&byBoq=' + byBoq, null).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
@@ -71,8 +103,15 @@ export class PackageSupplierService {
     );
   }
 
-  AddField(revId: number, lbl: string, val: number): Observable<any> {
-    return this.http.post(this.baseUrl + 'SupplierPackagesRev/AddField?revId=' + revId + '&lbl=' + lbl + '&val=' + val, null).pipe(
+  GetRevisionDetails(RevisionId : number, itemDesc : string, resource : string)
+  {
+    return this.http.get(this.baseUrl + 'RevisionDetails/GetRevisionDetails?RevisionId=' + RevisionId + '&itemDesc=' + itemDesc + '&resource=' + resource).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
+  AddField(revId: number, lbl: string, val: number, type : number): Observable<any> {
+    return this.http.post(this.baseUrl + 'SupplierPackagesRev/AddField?revId=' + revId + '&lbl=' + lbl + '&val=' + val + '&type=' + type, null).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
@@ -87,6 +126,45 @@ export class PackageSupplierService {
  getExchangeRate(selectedCurrency : string, projectCurrency : string)
  {
   return this.http.get('http://api.exchangeratesapi.io/v1/latest?access_key=ac94d97d8f42506333ce81bcf6b68544&symbols=USD,' + projectCurrency + ',' + selectedCurrency).pipe(
+    map(res => res), catchError(this.handleError)
+  );
+ }
+
+ sendTechnicalConditions(packId : number)
+ {
+    return this.http.post(this.baseUrl + 'Conditions/SendTechnicalConditions?packId=' + packId, null).pipe(
+    map(res => res), catchError(this.handleError)
+  );
+ }
+
+ updateTechnicalConditions(packageId : number, packageSupplierId: number, input: File)
+ {
+  const formData = new FormData();
+  formData.append('ExcelFile' , input , input.name)
+    return this.http.post(this.baseUrl + 'Conditions/UpdateTechnicalConditions?PackageSupliersID=' + packageSupplierId + '&packageId=' + packageId, formData).pipe(
+    map(res => res), catchError(this.handleError)
+  );
+ }
+
+ updateCommercialConditions(packageSupplierId: number, input: File)
+ {
+  const formData = new FormData();
+  formData.append('ExcelFile' , input , input.name)
+    return this.http.post(this.baseUrl + 'Conditions/UpdateCommercialConditions?PackageSupliersID=' + packageSupplierId, formData).pipe(
+    map(res => res), catchError(this.handleError)
+  );
+ }
+
+ getComConditions() : Observable<any>
+ {
+  return this.http.get(this.baseUrl + 'Conditions/GetComConditions').pipe(
+    map(res => res), catchError(this.handleError)
+  );
+ }
+
+ getTechConditions(packId : number) : Observable<any>
+ {
+  return this.http.get(this.baseUrl + 'Conditions/GetTechConditions?packId=' + packId).pipe(
     map(res => res), catchError(this.handleError)
   );
  }

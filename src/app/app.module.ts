@@ -11,6 +11,8 @@ import { AlertComponent } from './_components';
 import { AssignPackageService } from './assign-package/assign-package.service';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap'
 import { PackageListComponent } from './package-list/package-list.component';
 import { PackageSupplierComponent } from './package-supplier/package-supplier.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -19,6 +21,8 @@ import { MatSelectModule } from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatCardModule} from '@angular/material/card';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSelect} from '@angular/material/select';
 import {MatDividerModule} from '@angular/material/divider';
 import { PackageComparisonComponent } from './package-comparison/package-comparison.component';
@@ -27,6 +31,17 @@ import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { NgSelect2Module } from 'ng-select2';
 import { DataTablesModule } from 'angular-datatables';
+import { ConfirmationDialogComponent } from './_components/confirmation-dialog/confirmation-dialog.component';
+
+import { ConfirmationDialogService } from './_components/confirmation-dialog/confirmation-dialog.service';
+import { RevisionDetailsComponent } from './revision-details/revision-details.component';
+import { AngularEditorModule } from '@kolkov/angular-editor';
+import { ManagementUsersComponent } from './management-users/management-users.component';
+import { ConfirmBoxConfigModule, DialogConfigModule, NgxAwesomePopupModule, ToastNotificationConfigModule } from '@costlydeveloper/ngx-awesome-popup';
+import { TechnicalConditionsComponent } from './technical-conditions/technical-conditions.component';
+import { PackageGroupsComponent } from './package-groups/package-groups.component';
+import { PackageComparisonNovoComponent } from './package-comparison-novo/package-comparison-novo.component';
+
 
 @NgModule({
   declarations: [
@@ -38,12 +53,19 @@ import { DataTablesModule } from 'angular-datatables';
     AlertComponent,
     PackageListComponent,
     PackageSupplierComponent,
-    PackageComparisonComponent
+    PackageComparisonComponent,
+    ConfirmationDialogComponent,
+    RevisionDetailsComponent,
+    ManagementUsersComponent,
+    TechnicalConditionsComponent,
+    PackageGroupsComponent,
+    PackageComparisonNovoComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    NgSelectModule,
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
@@ -52,15 +74,24 @@ import { DataTablesModule } from 'angular-datatables';
     MatCardModule,
     MatInputModule,
     MatDividerModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
     ToastrModule.forRoot(),
+    NgxAwesomePopupModule.forRoot(), // Essential, mandatory main module.
+    DialogConfigModule.forRoot(), // Needed for instantiating dynamic components.
+    ConfirmBoxConfigModule.forRoot(), // Needed for instantiating confirm boxes.
+    ToastNotificationConfigModule.forRoot(), // Needed for instantiating toast notifications.
     NgxSpinnerModule,
     NgSelect2Module,
-    DataTablesModule
+    DataTablesModule,
+    NgbModule,
+    AngularEditorModule
     ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    AssignPackageService
+    AssignPackageService,
+    ConfirmationDialogService
   ],
   bootstrap: [AppComponent]
 })

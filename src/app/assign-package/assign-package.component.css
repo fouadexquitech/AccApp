@@ -23,3 +23,8 @@ th {
    z-index: 2;
   
 }
+
+.mat-progress-spinner {
+   display: inline-block;
+   vertical-align: middle;
+ }

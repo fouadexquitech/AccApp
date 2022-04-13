@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { LoginService } from '../login/login.service';
+import Swal from 'sweetalert2';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -17,7 +18,26 @@ export class ErrorInterceptor implements HttpInterceptor {
             }
             
             const error = err.error.message || err.statusText;
+            this.showError(error);
             return throwError(error);
         }))
     }
+
+    showError(msg : any) {
+        Swal.fire(
+          {
+            title : 'Error', 
+            text : msg,
+            showConfirmButton: true,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            icon: 'error',
+            confirmButtonColor : '#dc3545',
+            confirmButtonText : 'Ok'
+          }
+        ).then(()=>  {
+          
+        }
+        );
+      }
 }

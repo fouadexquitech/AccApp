@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHandler, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { SupplierPercent, SupplierResrouces } from './package-comparison.model';
+import { SearchInput } from '../assign-package/assign-package.model';
+import { AssignSupplierGroup, AssignSuppliertBoq, AssignSuppliertRes, SupplierBOQ, SupplierGroups, SupplierPercent, SupplierResrouces, TopManagement } from './package-comparison.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +17,10 @@ export class PackageComparisonService {
     this.baseUrl = environment.baseApiUrl + "api/";
   }
 
-  GetPackageSuppliersPrice(IdPkge: number): Observable<any> {
-    return this.http.get(this.baseUrl + 'Package/GetPackageSuppliersPrice?IdPkge=' + IdPkge).pipe(
+  GetPackageSuppliersPrice(IdPkge: number, searchInput : SearchInput): Observable<any> {
+    const headers = { 'content-type': 'application/json'}  
+    const body=JSON.stringify(searchInput);
+    return this.http.post(this.baseUrl + 'Package/GetPackageSuppliersPrice?IdPkge=' + IdPkge, body, {'headers':headers}).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
@@ -41,6 +44,117 @@ export class PackageComparisonService {
     );
   }
 
+  AssignSupplierBOQ(packId: number, input: SupplierBOQ[]): Observable<any> {
+    return this.http.post(this.baseUrl + 'RevisionDetails/AssignSupplierBOQ?packId=' + packId, input).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
+  AssignSupplierGroup(packId: number, byBoq : boolean, input: SupplierGroups[]): Observable<any> {
+    return this.http.post(this.baseUrl + 'RevisionDetails/AssignSupplierGroup?packId=' + packId + '&byBoq=' + byBoq, input).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
+  AssignSupplierListRessourceList(PackId: number, item: AssignSuppliertRes): Observable<any> {
+    return this.http.post(this.baseUrl + 'RevisionDetails/AssignSupplierListRessourceList?packId=' + PackId, item).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
+  AssignSupplierListBoqList(PackId: number, item: AssignSuppliertBoq): Observable<any> {
+    return this.http.post(this.baseUrl + 'RevisionDetails/AssignSupplierListBoqList?packId=' + PackId, item).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
+  AssignSupplierListGroupList(PackId: number, byBoq : boolean, item: AssignSupplierGroup): Observable<any> {
+    return this.http.post(this.baseUrl + 'RevisionDetails/AssignSupplierListGroupList?packId=' + PackId + '&byBoq=' + byBoq, item).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
+  getComparisonSheetResourcesByGroup(PackId: number, input: SearchInput): Observable<any> {
+    return this.http.post(this.baseUrl + 'RevisionDetails/GetComparisonSheetResourcesByGroup?packageId=' + PackId, input).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
+ getComparisonSheetBoqByGroup(PackId: number, input: SearchInput): Observable<any> {
+    return this.http.post(this.baseUrl + 'RevisionDetails/GetComparisonSheetBoqByGroup?packageId=' + PackId, input).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
+  getTechConditions(packId : number)
+ {
+  return this.http.get(this.baseUrl + 'Conditions/GetTechConditions?packId=' + packId).pipe(
+    map(res => res), catchError(this.handleError)
+  );
+ }
+
+ getTechCondReplies(packId : number)
+ {
+  return this.http.get(this.baseUrl + 'Conditions/getTechCondReplies?packId=' + packId).pipe(
+    map(res => res), catchError(this.handleError)
+  );
+ }
+
+ getComCondReplies(packId : number)
+ {
+  return this.http.get(this.baseUrl + 'Conditions/GetComCondReplies?packId=' + packId).pipe(
+    map(res => res), catchError(this.handleError)
+  );
+ }
+
+ getTechConditionsReply(packageSupliersID : number)
+ {
+  return this.http.get(this.baseUrl + 'Conditions/GetTechConditionsReply?packageSupliersID=' + packageSupliersID).pipe(
+    map(res => res), catchError(this.handleError)
+  );
+ }
+
+ getComConditionsReply(packageSupliersID : number)
+ {
+  return this.http.get(this.baseUrl + 'Conditions/GetComConditionsReply?packageSupliersID=' + packageSupliersID).pipe(
+    map(res => res), catchError(this.handleError)
+  );
+ }
+
+ getManagementEmail(filter : string)
+ {
+  
+  return this.http.get(this.baseUrl + 'Logon/GetManagementEmail?filter=' + filter).pipe(
+    map(res => res), catchError(this.handleError)
+  );
+ }
+
+ sendCompToManagement(packId: number, topManagementList : TopManagement[], attachement : File)
+ {
+  
+  let params = packId.toString() + ',';
+  topManagementList.forEach(item=>{
+    params = params + item.mail + ','
+  });
+  params = params.substring(0, params.length - 1);
+  const formData = new FormData();
+  formData.append('attachement' , attachement , attachement.name);
+  return this.http.post(this.baseUrl + 'RevisionDetails/SendCompToManagement?parameters=' + params, formData).pipe(
+    map(res => res), catchError(this.handleError)
+  );
+ }
+ 
+ getComparisonSheet(packId: number, input: SearchInput): Observable<any> {
+  return this.http.post(this.baseUrl + 'RevisionDetails/GetComparisonSheet?packageId=' + packId, input).pipe(
+    map(res => res), catchError(this.handleError)
+  );
+}
+
+getComparisonSheetByBoq(packId: number, input: SearchInput): Observable<any> {
+  return this.http.post(this.baseUrl + 'RevisionDetails/GetComparisonSheetByBoq?packageId=' + packId, input).pipe(
+    map(res => res), catchError(this.handleError)
+  );
+}
 
   handleError(error: any): Promise<any> {
     console.error('An error occurred', error);

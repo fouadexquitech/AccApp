@@ -1,0 +1,29 @@
+.lowest {
+    background-color: green;
+    color: white;
+}
+
+.percentage {
+    width: 40%;
+}
+
+.customFooter{
+    border: 0px;
+}
+
+/*th {
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+  }*/
+
+  .bg-acc
+  {
+      background-color: rgb(177, 216, 177);
+  }
+
+  .table-comparison
+  {
+      font-size: 12px;
+  }
