@@ -43,6 +43,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   SelectedOriginalBoqRow = new OriginalBoqModel();
   SelectedBoqRow = new BoqModel();
   FinalUnitPrice: number = 0;
+  FinalTotalPrice : number = 0;
   public dtOptions: DataTables.Settings = {};
   public dtTrigger: Subject<any> = new Subject<any>();
   public select2Options : Select2.Options = {};
@@ -299,7 +300,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     
     if (!evt.target.checked)
     {
-      this.FinalUnitPrice -= this.SelectedBoqRow.boqUprice * this.SelectedBoqRow.boqQty;
+      this.FinalTotalPrice -= this.SelectedBoqRow.boqUprice * this.SelectedBoqRow.boqQty;
+      this.FinalUnitPrice -= this.SelectedBoqRow.totalUnitPrice;
       this.SelectedBoqList = this.SelectedBoqList.filter(x=>x.boqResSeq != this.SelectedBoqRow.boqResSeq);
 
       this.displayedBoqList.splice(index, 1);
@@ -414,34 +416,42 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   
   }
 
+  
+
   editDisplayedBoqList(BoqList : BoqModel[], add : boolean)
   {
     BoqList.forEach(boq=>{
+        let boqItem = this.OriginalBoqList.find(x=>x.itemO == boq.boqItem);
+        boq.totalUnitPrice = boqItem.unitRate;
         let item = this.displayedBoqList.find(a=>a.boqResSeq == boq.boqResSeq);
         
         if(add)
         {
-          this.FinalUnitPrice += (boq.boqQty * boq.boqUprice);
+          this.FinalTotalPrice += (boq.boqQty * boq.boqUprice);
+          this.FinalUnitPrice += (boq.totalUnitPrice);
           if(item)
           {
             item.boqQty += boq.boqQty;   
-            
+            item.totalUnitPrice += boq.totalUnitPrice;
           }
           else
           {
             this.displayedBoqList.push(boq);
           }
+
+         
         }
         else
         {
-            this.FinalUnitPrice -= (boq.boqQty * boq.boqUprice);
+            this.FinalTotalPrice -= (boq.boqQty * boq.boqUprice);
+            this.FinalUnitPrice -= (boq.totalUnitPrice);
             if(item)
             {
               
                 if((item.boqQty - boq.boqQty) > 0)
                 {
                   item.boqQty -= boq.boqQty;
-                  
+                  item.totalUnitPrice -= boq.totalUnitPrice;
                 }
                 else
                 {
@@ -459,6 +469,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.BoqList = [];
     this.displayedBoqList = [];
     this.FinalUnitPrice = 0;
+    this.FinalTotalPrice = 0;
     let originalBOQTable = document.getElementById('originalBOQTable') as HTMLTableElement;
     if(originalBOQTable)
       {
@@ -551,6 +562,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         this.uncheckAll();
         //this.SelectedPackage = 0;
         this.FinalUnitPrice = 0;
+        this.FinalTotalPrice = 0;
         this.router.navigate(['package-supplier'], { state: { packageId: this.SelectedPackage } });
         //this.GetOriginalBoqList(this.SearchInput);
       }

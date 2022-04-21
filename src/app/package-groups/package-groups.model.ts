@@ -67,4 +67,5 @@ export class GroupingPackageSupplierPrice
     public originalCurrencyPrice : number = 0;
     public missedPrice : number = 0;
     public assignedPercentage : number = 0;
+    public assignedQty : number = 0;
 }

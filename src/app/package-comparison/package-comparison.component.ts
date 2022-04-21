@@ -532,7 +532,7 @@ export class PackageComparisonComponent implements OnInit {
        
         let assignSuppliertRes : AssignSuppliertRes = {supplierPercentList : this.supplierPercent, supplierResItemList : ressourceItems};
         this.isAssigningSupplierList = true;
-        this.packageComparisonService.AssignSupplierListRessourceList(this.PackageId, assignSuppliertRes).subscribe((data) => {
+        this.packageComparisonService.AssignSupplierListRessourceList(this.PackageId, true, assignSuppliertRes).subscribe((data) => {
           this.isAssigningSupplierList = false;
           if (data) {
             this.supplierPercent = [];
@@ -579,7 +579,7 @@ export class PackageComparisonComponent implements OnInit {
       {
         let assignSuppliertBoq : AssignSuppliertBoq = {supplierPercentList : this.supplierPercent, supplierBoqItemList : boqItems};
         this.isAssigningSupplierList = true;
-        this.packageComparisonService.AssignSupplierListBoqList(this.PackageId, assignSuppliertBoq).subscribe((data) => {
+        this.packageComparisonService.AssignSupplierListBoqList(this.PackageId, true, assignSuppliertBoq).subscribe((data) => {
           this.isAssigningSupplierList = false;
           if (data) {
             this.supplierPercent = [];
@@ -755,7 +755,8 @@ export class PackageComparisonComponent implements OnInit {
 
           const newSupplierResource : SupplierResrouces = {
             resourceID : Number(resourceId),
-            supplierPercents : this.supplierResourcePercent
+            supplierPercents : this.supplierResourcePercent,
+            supplierQtys : []
 
           };
           this.supplierResrouces.push(newSupplierResource);
@@ -775,7 +776,7 @@ export class PackageComparisonComponent implements OnInit {
     } 
     else {
         this.isAssigningSupplierRessource = true;
-        this.packageComparisonService.AssignSupplierRessource(this.PackageId, this.supplierResrouces).subscribe((data) => {
+        this.packageComparisonService.AssignSupplierRessource(this.PackageId, true, this.supplierResrouces).subscribe((data) => {
         this.isAssigningSupplierRessource = false;
         if (data) {
         this.supplierResrouces = [];
@@ -856,6 +857,7 @@ export class PackageComparisonComponent implements OnInit {
 
             const newSupplierBOQ : SupplierBOQ = {
             boqItemID : itemO,
+            supplierQtys : [],
             supplierPercents : this.supplierResourcePercent
 
           };
@@ -874,7 +876,7 @@ export class PackageComparisonComponent implements OnInit {
     } 
     else {
         this.isAssigningSupplierRessource = true;
-        this.packageComparisonService.AssignSupplierBOQ(this.PackageId, this.supplierBOQ).subscribe((data) => {
+        this.packageComparisonService.AssignSupplierBOQ(this.PackageId, true, this.supplierBOQ).subscribe((data) => {
         this.isAssigningSupplierRessource = false;
         if (data) {
         this.supplierBOQ = [];
