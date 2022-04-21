@@ -38,38 +38,38 @@ export class PackageComparisonService {
     );
   }
 
-  AssignSupplierRessource(packId: number, input: SupplierResrouces[]): Observable<any> {
-    return this.http.post(this.baseUrl + 'RevisionDetails/AssignSupplierRessource?packId=' + packId, input).pipe(
+  AssignSupplierRessource(packId: number, isPercent : boolean, input: SupplierResrouces[]): Observable<any> {
+    return this.http.post(this.baseUrl + 'RevisionDetails/AssignSupplierRessource?packId=' + packId + '&isPercent=' + isPercent, input).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
 
-  AssignSupplierBOQ(packId: number, input: SupplierBOQ[]): Observable<any> {
-    return this.http.post(this.baseUrl + 'RevisionDetails/AssignSupplierBOQ?packId=' + packId, input).pipe(
+  AssignSupplierBOQ(packId: number, isPercent : boolean, input: SupplierBOQ[]): Observable<any> {
+    return this.http.post(this.baseUrl + 'RevisionDetails/AssignSupplierBOQ?packId=' + packId + '&isPercent=' + isPercent, input).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
 
-  AssignSupplierGroup(packId: number, byBoq : boolean, input: SupplierGroups[]): Observable<any> {
-    return this.http.post(this.baseUrl + 'RevisionDetails/AssignSupplierGroup?packId=' + packId + '&byBoq=' + byBoq, input).pipe(
+  AssignSupplierGroup(packId: number, byBoq : boolean, isPercent : boolean, input: SupplierGroups[]): Observable<any> {
+    return this.http.post(this.baseUrl + 'RevisionDetails/AssignSupplierGroup?packId=' + packId + '&byBoq=' + byBoq + '&isPercent=' + isPercent, input).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
 
-  AssignSupplierListRessourceList(PackId: number, item: AssignSuppliertRes): Observable<any> {
-    return this.http.post(this.baseUrl + 'RevisionDetails/AssignSupplierListRessourceList?packId=' + PackId, item).pipe(
+  AssignSupplierListRessourceList(PackId: number, isPercent : boolean, item: AssignSuppliertRes): Observable<any> {
+    return this.http.post(this.baseUrl + 'RevisionDetails/AssignSupplierListRessourceList?packId=' + PackId + '&isPercent=' + isPercent, item).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
 
-  AssignSupplierListBoqList(PackId: number, item: AssignSuppliertBoq): Observable<any> {
-    return this.http.post(this.baseUrl + 'RevisionDetails/AssignSupplierListBoqList?packId=' + PackId, item).pipe(
+  AssignSupplierListBoqList(PackId: number, isPercent : boolean, item: AssignSuppliertBoq): Observable<any> {
+    return this.http.post(this.baseUrl + 'RevisionDetails/AssignSupplierListBoqList?packId=' + PackId + '&isPercent=' + isPercent, item).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
 
-  AssignSupplierListGroupList(PackId: number, byBoq : boolean, item: AssignSupplierGroup): Observable<any> {
-    return this.http.post(this.baseUrl + 'RevisionDetails/AssignSupplierListGroupList?packId=' + PackId + '&byBoq=' + byBoq, item).pipe(
+  AssignSupplierListGroupList(PackId: number, byBoq : boolean, isPercent : boolean, item: AssignSupplierGroup): Observable<any> {
+    return this.http.post(this.baseUrl + 'RevisionDetails/AssignSupplierListGroupList?packId=' + PackId + '&byBoq=' + byBoq+ '&isPercent=' + isPercent, item).pipe(
       map(res => res), catchError(this.handleError)
     );
   }

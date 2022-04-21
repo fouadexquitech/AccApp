@@ -316,8 +316,8 @@
                                                <label>Quantity {{ sup.supplierName}}</label>
                                                &nbsp; 
                                                <input class="form-control" type="number" [ngClass]="resource.validPerc? '' : 'border-danger'"
-                                               (change)="setSupplierPerc($event, resource, sup)"
-                                               [value]="sup.assignedPercentage"/>
+                                               (change)="setSupplierQty($event, resource, sup)"
+                                               [value]="sup.assignedQty"/>
                                              </p>
                                            </td>
                                                      
@@ -391,11 +391,21 @@
                             <td colspan="2">
                                 <table class="table">
                                     <tr>
-                                        <td style="width:43%"><strong>Grand Total</strong></td>
+                                        <td style="width:43%">
+                                        <table class="table">
+                                          <tr>
+                                            <td style="width:85%"><strong>Grand Total</strong></td>
+                                            <td> <strong> {{getTotalBudget() | number : '1.2-2'}}</strong></td>
+                                          </tr>
+                                        </table>
+                                        </td>
                                         <td *ngFor="let p of packageSuppliersPrices">
                                             <table class="table">
                                                 <tr>
-                                                    <td colspan="2"></td>
+                                                    <td colspan="2">
+                                                     
+                                                    </td>
+                                                  
                                                     <td style="width:33.33%" class="text-center">
                                                        <strong> {{p.totalNetPrice | number : '1.2-2'}}</strong>
                                                     </td>
@@ -539,8 +549,8 @@
                                    <label>Quantity {{ sup.supplierName}}</label>
                                    &nbsp; 
                                    <input class="form-control" type="number" [ngClass]="item.validPerc? '' : 'border-danger'"
-                                    (change)="setSupplierPercByBoq($event, item, sup)"
-                                   [value]="sup.assignedPercentage"/>
+                                    (change)="setSupplierQtyByBoq($event, item, sup)"
+                                   [value]="sup.assignedQty"/>
                                  </p>
                                </td>
                         </tr>
@@ -590,7 +600,10 @@
                             
                         </tr>
                         <tr>
-                            <td colspan="5"><strong>Grand Total</strong></td>
+                            <td colspan="4"><strong>Grand Total</strong></td>
+                            <td class="text-center">
+                              <strong> {{getTotalBudget() | number : '1.2-2'}}</strong>
+                            </td>
                             <td *ngFor="let p of packageSuppliersPrices" class="text-center">
                                 <table class="table">
                                     <tr>
@@ -700,8 +713,8 @@
                                   <label>Quantity {{ sup.supplierName}}</label>
                                   &nbsp; 
                                   <input class="form-control" type="number" [ngClass]="item.validPerc? '' : 'border-danger'"
-                                  (change)="setSupplierGroupPerc($event, item, sup)"
-                                  [value]="0"/>
+                                  (change)="setSupplierGroupQty($event, item, sup)"
+                                  [value]="sup.assignedQty"/>
                                 </p>
                               </td>
                         </tr>
@@ -751,7 +764,10 @@
                             
                         </tr>
                         <tr>
-                            <td colspan="3"><strong>Grand Total</strong></td>
+                            <td colspan="2"><strong>Grand Total</strong></td>
+                            <td>
+                              <strong> {{getTotalBudget() | number : '1.2-2'}}</strong>
+                            </td>
                             <td *ngFor="let p of packageSuppliersPrices" class="text-center">
                                 <table class="table">
                                     <tr>
@@ -860,7 +876,7 @@
             </div>
             <div class="col-2">
               <button style="width: 100%;" type="button" class="btn btn-primary" 
-              [disabled]="isAssigningSupplierRessource || isAssigningSupplierBoq" (click)="saveNew()">
+              [disabled]="isAssigningSupplierRessource || isAssigningSupplierBoq" (click)="saveByQty()">
                 <span *ngIf="isAssigningSupplierRessource || isAssigningSupplierBoq" class="spinner-border spinner-border-sm mr-1"></span>
                 Save
               </button>

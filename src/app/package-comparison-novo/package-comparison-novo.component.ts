@@ -6,7 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { BOQDivList, RESDivList, RESTypeList, SearchInput, SheetDescList } from '../assign-package/assign-package.model';
 import { AssignPackageService } from '../assign-package/assign-package.service';
-import { AssignSupplierGroup, AssignSuppliertBoq, AssignSuppliertRes, boqItem, DisplayCondition, Group, PackageSuppliersPrice, ressourceItem, RevisionDetails, SupplierBOQ, SupplierGroups, SupplierPercent, SupplierResrouces, TopManagement } from '../package-comparison/package-comparison.model';
+import { AssignSupplierGroup, AssignSuppliertBoq, AssignSuppliertRes, boqItem, DisplayCondition, Group, PackageSuppliersPrice, ressourceItem, RevisionDetails, SupplierBOQ, SupplierGroups, SupplierPercent, SupplierQty, SupplierResrouces, TopManagement } from '../package-comparison/package-comparison.model';
 import { PackageComparisonService } from '../package-comparison/package-comparison.service';
 import { GroupingBoq, GroupingBoqGroup, GroupingPackageSupplierPrice, GroupingResource } from '../package-groups/package-groups.model';
 import { SupplierPackagesList } from '../package-supplier/package-supplier.model';
@@ -30,9 +30,13 @@ export class PackageComparisonNovoComponent implements OnInit {
   RESDivList: RESDivList[] = [];
   BOQDivList: BOQDivList[] = [];
   supplierResourcePercent : SupplierPercent[] = [];
+  supplierResourceQty : SupplierQty[] = [];
   supplierBoqPercent : SupplierPercent[] = [];
+  supplierBoqQty: SupplierQty[] = [];
   supplierGroupPercent : SupplierPercent[] = [];
+  supplierGroupQty : SupplierQty[] = [];
   supplierPercent: SupplierPercent[] = [];
+  supplierQty: SupplierPercent[] = [];
   supplierResrouces : SupplierResrouces[] = [];
   supplierBoq : SupplierBOQ[] = [];
   supplierGroups : SupplierGroups[] = [];
@@ -173,6 +177,22 @@ export class PackageComparisonNovoComponent implements OnInit {
       
   }
 
+  setSupplierGroupQty(event : any, item : GroupingBoqGroup, sup : GroupingPackageSupplierPrice)
+  {
+    let element = event.target as HTMLInputElement;
+    this.groupingBoqGroupList.forEach((group : GroupingBoqGroup,i : number)=>{
+         
+        if(group.id === item.id)
+        {
+          this.searchSupQtyByGroup(Number(element.value), item, sup);
+            return;
+        }
+        
+      });   
+      
+      
+  }
+
   showByGroup()
   {
       this.byGroup = !this.byGroup;
@@ -260,7 +280,7 @@ export class PackageComparisonNovoComponent implements OnInit {
       {
         let assignSuppliertRes : AssignSuppliertRes = {supplierPercentList : this.supplierPercent, supplierResItemList : ressourceItems};
         this.isAssigningSupplierList = true;
-        this.packageComparisonService.AssignSupplierListRessourceList(this.packageId, assignSuppliertRes).subscribe((data) => {
+        this.packageComparisonService.AssignSupplierListRessourceList(this.packageId, true, assignSuppliertRes).subscribe((data) => {
           this.isAssigningSupplierList = false;
           if (data) {
             this.supplierPercent = [];
@@ -306,7 +326,7 @@ export class PackageComparisonNovoComponent implements OnInit {
       {
         let assignSuppliertBoq: AssignSuppliertBoq = {supplierPercentList : this.supplierPercent, supplierBoqItemList : boqItems};
         this.isAssigningSupplierList = true;
-        this.packageComparisonService.AssignSupplierListBoqList(this.packageId, assignSuppliertBoq).subscribe((data) => {
+        this.packageComparisonService.AssignSupplierListBoqList(this.packageId, true, assignSuppliertBoq).subscribe((data) => {
           this.isAssigningSupplierList = false;
           if (data) {
             this.supplierPercent = [];
@@ -352,7 +372,7 @@ export class PackageComparisonNovoComponent implements OnInit {
       {
         let assignSupplierGroup: AssignSupplierGroup = {supplierPercentList : this.supplierPercent, supplierGroupList : groups};
         this.isAssigningSupplierList = true;
-        this.packageComparisonService.AssignSupplierListGroupList(this.packageId, this.byBoq, assignSupplierGroup).subscribe((data) => {
+        this.packageComparisonService.AssignSupplierListGroupList(this.packageId, this.byBoq, true, assignSupplierGroup).subscribe((data) => {
           this.isAssigningSupplierList = false;
           if (data) {
             this.supplierPercent = [];
@@ -460,6 +480,250 @@ export class PackageComparisonNovoComponent implements OnInit {
     }
   }
 
+  saveByQty()
+  {
+    if(!this.byBoq && !this.byGroup)
+    {
+    this.supplierResrouces = [];
+    this.supplierResourceQty = [];    
+    let oneResourceChecked = false;
+    let qtyIsValid = true;
+    this.comparisonList.forEach((boq : GroupingBoq, i : any)=>{
+    
+        let resources = boq.groupingResources;
+        resources.forEach((resource : GroupingResource, index : any) => {
+          if(resource.isChecked)
+          {
+            oneResourceChecked = true;
+          let resourceId = resource.boqSeq;
+          let totalQty = 0;
+          let sups = resource.groupingPackageSuppliersPrices;
+          resource.validPerc = true;
+          this.supplierResourceQty = [];
+          sups.forEach((sup, j)=>{
+            totalQty += sup.assignedQty;
+            this.supplierResourceQty.push({supID : sup.supplierId, qty : sup.assignedQty});
+          });
+          
+          //alert(totalPerc);
+          if(totalQty != resource.qty)
+          { 
+              qtyIsValid = false;
+              resource.validPerc = false;
+              
+          }
+       
+          
+          const newSupplierResource : SupplierResrouces = {
+            resourceID : resourceId,
+            supplierPercents : [],
+            supplierQtys : this.supplierResourceQty
+
+          };
+          this.supplierResrouces.push(newSupplierResource);
+        }
+         
+        });
+      
+    });
+
+    if(oneResourceChecked)
+    {
+    if (!qtyIsValid) 
+    {
+        this.toastr.error("Invalid total quantities");
+        this.supplierResrouces = [];
+        this.supplierResourceQty = [];
+        qtyIsValid = true;
+        
+    } 
+    else {
+        this.isAssigningSupplierRessource = true;
+        this.packageComparisonService.AssignSupplierRessource(this.packageId, false, this.supplierResrouces).subscribe((data) => {
+        this.isAssigningSupplierRessource = false;
+        if (data) {
+        this.supplierResrouces = [];
+        this.supplierResourceQty = [];
+        this.selectedResources = [];
+        this.toastr.success("Assigned Successfully");
+        let checkAll = document.getElementById("selectAllResourcesByItem") as HTMLInputElement;
+        checkAll.checked = false;
+        this.onSearch();
+        this.Cancel();
+        
+        }
+      });
+    }
+  }
+  else
+  {
+    this.toastr.warning("You must selected at least one resource");
+  }
+  }
+    
+    else if(this.byBoq && !this.byGroup)
+    {
+      //byBoq only
+      this.supplierBoq = [];
+      this.supplierBoqQty = [];    
+      let oneItemChecked = false;
+      let qtyIsValid = true;
+      this.comparisonList.forEach((boq : GroupingBoq, i : any)=>{
+    
+          
+          if(boq.isChecked)
+          {
+            oneItemChecked = true;
+          let itemO = boq.itemO;
+          let totalQty = 0;
+          let sups = boq.groupingPackageSuppliersPrices;
+          boq.validPerc = true;
+          this.supplierBoqQty = [];
+          sups.forEach((sup, j)=>{
+            totalQty += sup.assignedQty;
+            this.supplierBoqQty.push({supID : sup.supplierId, qty : sup.assignedQty});
+          });
+          
+          //alert(totalPerc);
+          if(totalQty != boq.qty)
+          { 
+              qtyIsValid = false;
+              boq.validPerc = false;
+              
+          }
+       
+          
+          const newSupplierBoq : SupplierBOQ = {
+            boqItemID : itemO,
+            supplierPercents : [],
+            supplierQtys : this.supplierBoqQty
+
+          };
+          this.supplierBoq.push(newSupplierBoq);
+        }
+         
+        
+      
+    });
+    if(oneItemChecked)
+    {
+    if (!qtyIsValid) 
+    {
+        this.toastr.error("Invalid total quantities");
+        this.supplierBoq = [];
+        this.supplierBoqQty = [];
+        qtyIsValid = true;
+        
+    } 
+    else {
+        this.isAssigningSupplierBoq = true;
+        this.packageComparisonService.AssignSupplierBOQ(this.packageId, false, this.supplierBoq).subscribe((data) => {
+        this.isAssigningSupplierBoq = false;
+        if (data) {
+        this.supplierResrouces = [];
+        this.supplierBoqQty= [];
+        this.selectedBoqItems = [];
+        this.toastr.success("Assigned Successfully");
+        let checkAll = document.getElementById("selectAllBoqItems") as HTMLInputElement;
+        checkAll.checked = false;
+        this.onSearch();
+        this.Cancel();
+        
+        }
+      });
+    }
+  }
+  else
+  {
+    this.toastr.warning("You must selected at least one item");
+  }
+    }
+    else if(this.byGroup)
+    { 
+      Swal.fire({  
+        title: 'You are about to overwrite the values!',  
+        text: 'Are you sure you want to proceed? Please confirm',  
+        icon: 'warning',  
+        showCancelButton: true,  
+        confirmButtonText: 'Proceed',  
+        cancelButtonText: 'Cancel'  
+      }).then((result) => {  
+        if (result.value) 
+        {   
+          let oneGroupChecked = false;
+          let qtyIsValid = true;
+          this.supplierGroups = [];
+          this.supplierGroupQty = [];
+          this.groupingBoqGroupList.forEach((group : GroupingBoqGroup, i : number)=>{
+              
+              if(group.isChecked)
+              {
+                oneGroupChecked = true;
+                let groupId = group.id;
+                let totalQty = 0;
+                let sups = group.groupingPackageSuppliersPrices;
+               
+                group.validPerc = true;
+                this.supplierGroupQty = [];
+                  sups.forEach((sup, j)=>{
+                    totalQty += sup.assignedQty;
+                    this.supplierGroupQty.push({supID : sup.supplierId, qty : sup.assignedQty});
+                  });
+
+                  
+               
+                  
+                  const newSupplierGroups : SupplierGroups = {
+                    groupId : groupId,
+                    supplierPercents : [],
+                    supplierQtys : this.supplierGroupQty
+        
+                  };
+                  this.supplierGroups.push(newSupplierGroups);
+              }
+          });
+
+          if(oneGroupChecked)
+          {
+            if (!qtyIsValid) 
+            {
+                this.toastr.error("Invalid total quantities");
+                this.supplierGroups = [];
+                this.supplierGroupQty = [];
+                qtyIsValid = true;
+              }
+              else
+              {
+                this.isAssigningSupplierGroup = true;
+                this.packageComparisonService.AssignSupplierGroup(this.packageId, this.byBoq, false, this.supplierGroups).subscribe((data) => {
+                this.isAssigningSupplierGroup = false;
+                if (data) {
+                this.supplierGroups = [];
+                this.supplierGroupQty= [];
+                this.selectedGroups = [];
+                this.toastr.success("Assigned Successfully");
+                let checkAll = document.getElementById("selectAllGroups") as HTMLInputElement;
+                checkAll.checked = false;
+                this.onSearch();
+                this.getByGroup();
+                this.Cancel();
+                }
+              });
+            }
+          }
+          else
+          {
+            this.toastr.warning("You must select at least one group");
+          }
+          
+
+        } else if (result.dismiss === Swal.DismissReason.cancel) {  
+           this.Cancel();
+        }  
+      }); 
+    }
+  }
+
   saveNew(){
     if(!this.byBoq && !this.byGroup)
     {
@@ -495,7 +759,8 @@ export class PackageComparisonNovoComponent implements OnInit {
           
           const newSupplierResource : SupplierResrouces = {
             resourceID : resourceId,
-            supplierPercents : this.supplierResourcePercent
+            supplierPercents : this.supplierResourcePercent,
+            supplierQtys : []
 
           };
           this.supplierResrouces.push(newSupplierResource);
@@ -517,7 +782,7 @@ export class PackageComparisonNovoComponent implements OnInit {
     } 
     else {
         this.isAssigningSupplierRessource = true;
-        this.packageComparisonService.AssignSupplierRessource(this.packageId, this.supplierResrouces).subscribe((data) => {
+        this.packageComparisonService.AssignSupplierRessource(this.packageId, true, this.supplierResrouces).subscribe((data) => {
         this.isAssigningSupplierRessource = false;
         if (data) {
         this.supplierResrouces = [];
@@ -573,7 +838,8 @@ export class PackageComparisonNovoComponent implements OnInit {
           
           const newSupplierBoq : SupplierBOQ = {
             boqItemID : itemO,
-            supplierPercents : this.supplierBoqPercent
+            supplierPercents : this.supplierBoqPercent,
+            supplierQtys : []
 
           };
           this.supplierBoq.push(newSupplierBoq);
@@ -594,7 +860,7 @@ export class PackageComparisonNovoComponent implements OnInit {
     } 
     else {
         this.isAssigningSupplierBoq = true;
-        this.packageComparisonService.AssignSupplierBOQ(this.packageId, this.supplierBoq).subscribe((data) => {
+        this.packageComparisonService.AssignSupplierBOQ(this.packageId, true, this.supplierBoq).subscribe((data) => {
         this.isAssigningSupplierBoq = false;
         if (data) {
         this.supplierResrouces = [];
@@ -657,7 +923,8 @@ export class PackageComparisonNovoComponent implements OnInit {
                   
                   const newSupplierGroups : SupplierGroups = {
                     groupId : groupId,
-                    supplierPercents : this.supplierGroupPercent
+                    supplierPercents : this.supplierGroupPercent,
+                    supplierQtys : []
         
                   };
                   this.supplierGroups.push(newSupplierGroups);
@@ -676,7 +943,7 @@ export class PackageComparisonNovoComponent implements OnInit {
               else
               {
                 this.isAssigningSupplierGroup = true;
-                this.packageComparisonService.AssignSupplierGroup(this.packageId, this.byBoq, this.supplierGroups).subscribe((data) => {
+                this.packageComparisonService.AssignSupplierGroup(this.packageId, this.byBoq, true, this.supplierGroups).subscribe((data) => {
                 this.isAssigningSupplierGroup = false;
                 if (data) {
                 this.supplierGroups = [];
@@ -694,7 +961,7 @@ export class PackageComparisonNovoComponent implements OnInit {
           }
           else
           {
-            this.toastr.warning("You must selected at least one group");
+            this.toastr.warning("You must select at least one group");
           }
           
 
@@ -706,10 +973,48 @@ export class PackageComparisonNovoComponent implements OnInit {
 
   }
 
+  getTotalBudget()
+  {
+    let total = 0;
+    if(!this.byBoq)
+    {
+        this.comparisonList.forEach(item=>{
+            item.groupingResources.forEach(resource=>{
+              total += resource.totalPrice;
+            });
+        });
+    }
+    else
+    {
+      this.comparisonList.forEach(item=>{
+        
+          total += item.totalPrice;
+        
+    });
+    }
+
+    return total;
+  }
+
   
 
   Cancel(){
     this.show = false;
+  }
+
+  setSupplierQty(event:any, resource : GroupingResource, sup : GroupingPackageSupplierPrice)
+  {
+    let element = event.target as HTMLInputElement;
+    this.comparisonList.forEach((boq : GroupingBoq,i : number)=>{
+          boq.groupingResources.forEach((res : GroupingResource, j : number)=>{
+              if(res.boqSeq === resource.boqSeq)
+              {
+                this.searchSupQty(Number(element.value), resource, sup);
+                  return;
+              }
+          });
+      });
+      
   }
 
   setSupplierPerc(event:any, resource : GroupingResource, sup : GroupingPackageSupplierPrice)
@@ -728,6 +1033,20 @@ export class PackageComparisonNovoComponent implements OnInit {
       
   }
 
+  setSupplierQtyByBoq(event:any, item : GroupingBoq, sup : GroupingPackageSupplierPrice)
+  {
+    let element = event.target as HTMLInputElement;
+    this.comparisonList.forEach((boq : GroupingBoq,i : number)=>{
+          
+              if(boq.itemO === item.itemO)
+              {
+                this.searchSupQtyByBoq(Number(element.value), item, sup);
+                  return;
+              }
+         
+      });
+  }
+
   setSupplierPercByBoq(event:any, item : GroupingBoq, sup : GroupingPackageSupplierPrice)
   {
     let element = event.target as HTMLInputElement;
@@ -740,6 +1059,20 @@ export class PackageComparisonNovoComponent implements OnInit {
               }
          
       });
+  }
+
+  searchSupQty(val : number, resource : GroupingResource, sup : GroupingPackageSupplierPrice)
+  {
+    resource.groupingPackageSuppliersPrices.forEach(item => {
+          if(item.supplierId === sup.supplierId)
+          {
+              item.assignedQty = val;
+              return;
+          }
+      });
+
+      
+      
   }
 
   searchSupPerc(val : number, resource : GroupingResource, sup : GroupingPackageSupplierPrice)
@@ -768,12 +1101,38 @@ export class PackageComparisonNovoComponent implements OnInit {
       
   }
 
+  searchSupQtyByGroup(val : number, group : GroupingBoqGroup, sup : GroupingPackageSupplierPrice)
+  {
+    group.groupingPackageSuppliersPrices.forEach(item => {
+          if(item.supplierId === sup.supplierId)
+          {
+              item.assignedQty = val;
+              return;
+          }
+      });
+      
+  }
+
   searchSupPercByBoq(val : number, boq : GroupingBoq, sup : GroupingPackageSupplierPrice)
   {
     boq.groupingPackageSuppliersPrices.forEach(item => {
           if(item.supplierId === sup.supplierId)
           {
               item.assignedPercentage = val;
+              return;
+          }
+      });
+
+      
+      
+  }
+
+  searchSupQtyByBoq(val : number, boq : GroupingBoq, sup : GroupingPackageSupplierPrice)
+  {
+    boq.groupingPackageSuppliersPrices.forEach(item => {
+          if(item.supplierId === sup.supplierId)
+          {
+              item.assignedQty = val;
               return;
           }
       });
@@ -808,7 +1167,7 @@ export class PackageComparisonNovoComponent implements OnInit {
         this.searching = false; 
         if(data)
         {
-            console.log(data);
+            //console.log(data);
             this.comparisonList = data;
             this.getSuppliersPrice();
         }

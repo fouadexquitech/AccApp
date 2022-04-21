@@ -22,6 +22,7 @@ export class BoqModel {
     public resDescription: string = "";
     public isSelected : boolean = true;
     public boqItem : string = null;
+    public totalUnitPrice : number = 0;
 }
 
 export class SearchInput {

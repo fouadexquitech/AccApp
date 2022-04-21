@@ -38,21 +38,29 @@ export class SupplierPercent {
     public percent: number = 0;
 }
 
+export class SupplierQty {
+    public supID: number = 0;
+    public qty: number = 0;
+}
+
 export class SupplierResrouces 
 {
     public resourceID : number = 0;
+    public supplierQtys : SupplierQty[] = [];
     public supplierPercents : SupplierPercent[] = [];
 }
 
 export class SupplierBOQ
 {
     public boqItemID : string = null;
+    public supplierQtys : SupplierQty[] = [];
     public supplierPercents : SupplierPercent[] = [];
 }
 
 export class SupplierGroups
 {
     public groupId : number = 0;
+    public supplierQtys : SupplierQty[] = [];
     public supplierPercents : SupplierPercent[] = [];
 }
 
