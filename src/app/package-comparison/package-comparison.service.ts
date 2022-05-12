@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { SearchInput } from '../assign-package/assign-package.model';
-import { AssignSupplierGroup, AssignSuppliertBoq, AssignSuppliertRes, SupplierBOQ, SupplierGroups, SupplierPercent, SupplierResrouces, TopManagement } from './package-comparison.model';
+import { AssignSupplierGroup, AssignSuppliertBoq, AssignSuppliertRes, SupplierBOQ, SupplierGroups, SupplierPercent, SupplierResrouces, TopManagement, TopManagementTemplate } from './package-comparison.model';
 
 @Injectable({
   providedIn: 'root'
@@ -129,17 +129,13 @@ export class PackageComparisonService {
   );
  }
 
- sendCompToManagement(packId: number, topManagementList : TopManagement[], attachement : File)
+ sendCompToManagement(topManagementTemplate : TopManagementTemplate, attachement : File)
  {
   
-  let params = packId.toString() + ',';
-  topManagementList.forEach(item=>{
-    params = params + item.mail + ','
-  });
-  params = params.substring(0, params.length - 1);
   const formData = new FormData();
   formData.append('attachement' , attachement , attachement.name);
-  return this.http.post(this.baseUrl + 'RevisionDetails/SendCompToManagement?parameters=' + params, formData).pipe(
+  formData.append('topManagementTemplate' , JSON.stringify(topManagementTemplate));
+  return this.http.post(this.baseUrl + 'RevisionDetails/SendCompToManagement', formData).pipe(
     map(res => res), catchError(this.handleError)
   );
  }

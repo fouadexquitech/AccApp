@@ -206,14 +206,14 @@ export class PackageComparisonComponent implements OnInit {
 
       this.sendingEmail = true;
     
-      this.packageComparisonService.sendCompToManagement(this.PackageId,  this.selectedTopManagementList, this.topManagementAttachement).subscribe(data=>{
+      /*this.packageComparisonService.sendCompToManagement(this.PackageId, "",  this.selectedTopManagementList, this.topManagementAttachement).subscribe(data=>{
         this.sendingEmail = false;
           if(data)
           {
             this.toastr.success('Email sent successfully', '');
             this.CloseSendEmailModal();
           }
-      });
+      });*/
   }
 
   getManagementEmail()
