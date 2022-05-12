@@ -37,12 +37,20 @@
                     </span>
                                         
                   </h5></div>
-                  <div class="col-sm-2 form-group">
+                  <!--<div class="col-sm-2 form-group">
                     <button class="btn btn-danger" (click)="generatePDF()" [disabled]="generatingFile">
                       <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="generatingFile"></span>
                       <span class="fa-solid fa-file-pdf"></span>
                       <span *ngIf="generatingFile">Generating...</span>
                       <span *ngIf="!generatingFile">Generate PDF</span>
+                      </button>
+                  </div>-->
+                  <div class="col-sm-2 form-group">
+                    <button class="btn btn-success" (click)="generateExcel()" [disabled]="generatingFile">
+                      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="generatingFile"></span>
+                      <span class="fa-solid fa-file-excel"></span>
+                      <span *ngIf="generatingFile"> Generating...</span>
+                      <span *ngIf="!generatingFile"> Generate Excel</span>
                       </button>
                   </div>
                   <div class="col-sm-2 form-group">
@@ -261,6 +269,7 @@
                                             <tr>
                                                 <td colspan="3" class="text-center">
                                                     {{sup.supplierName}} ({{sup.lastRevisionDate | date: 'dd/MM/yyyy'}})  
+                                                    
                                                 </td>
                                             </tr>
                                         <tr>
@@ -304,7 +313,9 @@
                                         <td *ngFor="let sup of resource.groupingPackageSuppliersPrices">
                                             <table class="table">
                                             <tr>
-                                               <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.qty | number : '1.2-2'}}</span> </td>
+                                               <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.qty | number : '1.2-2'}}</span> 
+                                                <i class="fas fa-flag text-success" title="Quantity Assigned" *ngIf="sup.assignedQty > 0"></i>
+                                              </td>
                                                <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.unitPrice | number : '1.2-2'}}</span></td> 
                                                 <td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.totalPrice | number : '1.2-2'}}</span> </td>
                                             </tr> 
@@ -930,7 +941,7 @@
 
   <!-- Email Modal -->
   <div class="modal fade" id="modalEmail" tabindex="-1" aria-labelledby="modalEmailLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="modalEmailLabel">Send Email</h5>
@@ -952,6 +963,11 @@
               </ng-select>
             </div>
             </div>
+            <div class="col-sm-12 form-group">
+              Template
+              <angular-editor [config]="editorConfig" [(ngModel)]="emailTemplate"></angular-editor>
+              </div>
+              
             <div class="col-sm-12 p-2">
               Attachement
               <input type="file" id="topManagementAttachement" name="topManagementAttachement"

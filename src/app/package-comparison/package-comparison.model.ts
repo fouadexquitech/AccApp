@@ -163,6 +163,13 @@ export class TopManagement
     public occupation : string = null;
 }
 
+export class TopManagementTemplate
+{
+    packageId : number = 0;
+    template : string = null;
+    topManagements : TopManagement[] = [];
+}
+
 export class CompManagementModel
 {
     public topManagList : TopManagement[] = [];

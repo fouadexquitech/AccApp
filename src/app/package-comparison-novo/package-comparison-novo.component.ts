@@ -6,8 +6,9 @@ import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { BOQDivList, RESDivList, RESTypeList, SearchInput, SheetDescList } from '../assign-package/assign-package.model';
 import { AssignPackageService } from '../assign-package/assign-package.service';
-import { AssignSupplierGroup, AssignSuppliertBoq, AssignSuppliertRes, boqItem, DisplayCondition, Group, PackageSuppliersPrice, ressourceItem, RevisionDetails, SupplierBOQ, SupplierGroups, SupplierPercent, SupplierQty, SupplierResrouces, TopManagement } from '../package-comparison/package-comparison.model';
+import { AssignSupplierGroup, AssignSuppliertBoq, AssignSuppliertRes, boqItem, DisplayCondition, Group, PackageSuppliersPrice, ressourceItem, RevisionDetails, SupplierBOQ, SupplierGroups, SupplierPercent, SupplierQty, SupplierResrouces, TopManagement, TopManagementTemplate } from '../package-comparison/package-comparison.model';
 import { PackageComparisonService } from '../package-comparison/package-comparison.service';
+import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { GroupingBoq, GroupingBoqGroup, GroupingPackageSupplierPrice, GroupingResource } from '../package-groups/package-groups.model';
 import { SupplierPackagesList } from '../package-supplier/package-supplier.model';
 import { FieldType } from '../_models';
@@ -70,6 +71,51 @@ export class PackageComparisonNovoComponent implements OnInit {
   sendingEmail : boolean = false;
   generatingFile : boolean = false;
   topManagementAttachement :  File | null;
+  emailTemplate : string = "";
+
+  editorConfig: AngularEditorConfig = {
+    editable: true,
+      spellcheck: true,
+      height: '15rem',
+      minHeight: '15rem',
+      maxHeight: '15rem',
+      width: 'auto',
+      minWidth: '0',
+      translate: 'yes',
+      enableToolbar: true,
+      showToolbar: true,
+      placeholder: 'Enter text here...',
+      defaultParagraphSeparator: '',
+      defaultFontName: '',
+      defaultFontSize: '',
+      fonts: [
+        {class: 'calibri', name: 'Calibri'},
+     
+      ],
+      customClasses: [
+      {
+        name: 'quote',
+        class: 'quote',
+      },
+      {
+        name: 'redText',
+        class: 'redText'
+      },
+      {
+        name: 'titleText',
+        class: 'titleText',
+        tag: 'h1',
+      },
+    ],
+    
+    uploadWithCredentials: false,
+    sanitize: true,
+    toolbarPosition: 'top',
+    toolbarHiddenButtons: [
+      ['italic']
+    
+    ]
+};
   
   constructor(private router: Router, 
     private packageComparisonService: PackageComparisonService,
@@ -414,6 +460,7 @@ export class PackageComparisonNovoComponent implements OnInit {
   openSendEmailModal()
   {
     this.topManagementAttachement = null;
+    this.emailTemplate = "";
     this.selectedTopManagementList = [];
     this.getManagementEmail();
     $("#modalEmail").modal('show');
@@ -447,17 +494,21 @@ export class PackageComparisonNovoComponent implements OnInit {
     });  
   }
 
+  generateExcel()
+  {}
+
   sendEmail()
   {
-      if(this.selectedTopManagementList.length == 0 || this.topManagementAttachement == null)
+      if(this.selectedTopManagementList.length == 0 || this.topManagementAttachement == null || this.emailTemplate == "")
       {
           this.toastr.error('Fields are required', '');
           return;
       }
 
       this.sendingEmail = true;
+      let topManagementTemplate : TopManagementTemplate = { packageId : this.packageId, topManagements : this.selectedTopManagementList, template : this.emailTemplate};
     
-      this.packageComparisonService.sendCompToManagement(this.packageId,  this.selectedTopManagementList, this.topManagementAttachement).subscribe(data=>{
+      this.packageComparisonService.sendCompToManagement(topManagementTemplate, this.topManagementAttachement).subscribe(data=>{
         this.sendingEmail = false;
           if(data)
           {
