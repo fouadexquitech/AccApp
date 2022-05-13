@@ -5,8 +5,9 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
             <li class="breadcrumb-item"><a [routerLink]="['/package-list']">Package List</a></li>
+            <li class="breadcrumb-item"><a [routerLink]="['/package-supplier', this.packageId]">{{packageName}}</a></li>
             <li class="breadcrumb-item">Package Groups</li>
-            <li class="breadcrumb-item active" aria-current="page"><strong>{{packageName}}</strong></li>
+            
         </ol>
       </nav>
 

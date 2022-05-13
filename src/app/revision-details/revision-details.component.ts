@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { OriginalBoqModel } from '../assign-package/assign-package.model';
 import { RevisionDetailsList, SupplierPackagesList, SupplierPackagesRevList } from '../package-supplier/package-supplier.model';
@@ -11,8 +11,8 @@ import { RevisionDetailsService } from './revision-details.service';
   templateUrl: './revision-details.component.html',
   styleUrls: ['./revision-details.component.css']
 })
-export class RevisionDetailsComponent implements OnInit {
-
+export class RevisionDetailsComponent implements OnInit, OnDestroy {
+  params : any;
   Revision : SupplierPackagesRevList | null;
   psByBoq : number = 0;
   RevisionDetailsList : RevisionDetailsList[] = [];
@@ -20,13 +20,15 @@ export class RevisionDetailsComponent implements OnInit {
   supplierPackage : SupplierPackagesList;
   saving : boolean = false;
   packageId : number;
-  constructor(private router: Router, private packageSupplierService : PackageSupplierService, 
+  packageName : string;
+  constructor(private router: Router, private packageSupplierService : PackageSupplierService, private route: ActivatedRoute,
     private revisionDetailsService : RevisionDetailsService, private toastr: ToastrService,) {
-    if (this.router.getCurrentNavigation().extras.state != undefined) {
+    /*if (this.router.getCurrentNavigation().extras.state != undefined) {
       let RevisionId = this.router.getCurrentNavigation().extras.state.revisionId;
       let psId = this.router.getCurrentNavigation().extras.state.psId;
       this.psByBoq = this.router.getCurrentNavigation().extras.state.psByBoq;
       this.packageId = this.router.getCurrentNavigation().extras.state.packageId;
+
       this.packageSupplierService.GetSupplierPackagesSingleRevision(RevisionId).subscribe(data=>{
           this.Revision = data;
           
@@ -36,22 +38,41 @@ export class RevisionDetailsComponent implements OnInit {
       this.getPackageSupplier(psId);
     } else {
       this.router.navigateByUrl("/package-list");
-    }
+    }*/
    }
 
   ngOnInit(): void {
-      
+    this.params = this.route.params.subscribe(params => {
+      let RevisionId = Number(params['revisionId']);
+      let psId = Number(params['psId']);
+      this.psByBoq = Number(params['psByBoq']);
+      this.packageId = Number(params['packageId']);
+      this.packageName = params['packageName'];
+      this.packageSupplierService.GetSupplierPackagesSingleRevision(RevisionId).subscribe(data=>{
+        this.Revision = data;
+        
+        this.GetRevisionDetails(this.Revision.prRevId);
+        
+        });
+        this.getPackageSupplier(psId);
+   });
+  }
+
+  ngOnDestroy() : void 
+  {
+      this.params.unsubscribe();
   }
 
   goBack()
   {
-      this.router.navigate(['package-supplier'], { state: { packageId : this.packageId  } });
+      this.router.navigate(['/package-supplier', this.packageId]);
   }
 
   getPackageSupplier(prPackSuppId : number)
-  {
+  { 
     this.packageSupplierService.GetSupplierPackage(prPackSuppId).subscribe(data=>{
       this.supplierPackage = data;
+     
   });
   }
 

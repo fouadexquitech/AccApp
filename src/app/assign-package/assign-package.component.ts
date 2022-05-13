@@ -563,7 +563,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         //this.SelectedPackage = 0;
         this.FinalUnitPrice = 0;
         this.FinalTotalPrice = 0;
-        this.router.navigate(['package-supplier'], { state: { packageId: this.SelectedPackage } });
+        this.router.navigate(['/package-supplier', this.SelectedPackage]);
         //this.GetOriginalBoqList(this.SearchInput);
       }
     });

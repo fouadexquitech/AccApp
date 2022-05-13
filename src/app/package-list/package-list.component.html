@@ -32,8 +32,8 @@
                                 <td id="pckId">{{ item.idPkge }}</td>
                                 <td>{{ item.pkgeName }}</td>
                                 <td>
-                                    <button type="button" class="btn btn-primary" (click)="onClick(item.idPkge)">Assign To
-                                        Suppliers</button>
+                                    <a class="btn btn-primary" [routerLink]="['/package-supplier', item.idPkge]">Assign To
+                                        Suppliers</a>
                                 </td>
                                
                                 <td>
