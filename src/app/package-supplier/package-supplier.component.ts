@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { SupplierInput, SupplierList, SupplierPackagesList, SupplierPackagesRevList, CurrencyList, ExchangeRate, RevisionFieldsList, RevisionDetailsList, SupplierInputList, ComercialCond } from './package-supplier.model';
@@ -19,8 +19,8 @@ declare var $: any;
   templateUrl: './package-supplier.component.html',
   styleUrls: ['./package-supplier.component.css']
 })
-export class PackageSupplierComponent implements OnInit {
- 
+export class PackageSupplierComponent implements OnInit, OnDestroy {
+  params : any;
   PackageId: number = 0;
   PackageName = "";
   FilePath = "";
@@ -129,12 +129,13 @@ export class PackageSupplierComponent implements OnInit {
     private spinner: NgxSpinnerService, 
     private toastr: ToastrService,
     private formBuilder : FormBuilder,
+    private route: ActivatedRoute,
     private confirmationDialogService: ConfirmationDialogService) {
-    if (this.router.getCurrentNavigation().extras.state != undefined) {
+    /*if (this.router.getCurrentNavigation().extras.state != undefined) {
       this.PackageId = this.router.getCurrentNavigation().extras.state.packageId;
     } else {
       this.router.navigateByUrl("/package-list");
-    }
+    }*/
   }
 
   checkAllComCond(event : any)
@@ -256,21 +257,31 @@ export class PackageSupplierComponent implements OnInit {
     });
 }
 
+  ngOnDestroy() {
+    this.params.unsubscribe();
+  }
+
   ngOnInit(): void {
-    if(localStorage.getItem('assignByBoqOnly') == null)
-    {
-      localStorage.setItem('assignByBoqOnly', '0');
-    }
+
+    this.params = this.route.params.subscribe(params => {
+      this.PackageId = Number(params['packageId']);
+      if(localStorage.getItem('assignByBoqOnly') == null)
+      {
+        localStorage.setItem('assignByBoqOnly', '0');
+      }
    
 
-    if (this.PackageId != null && this.PackageId != 0) {
-      this.GetPackageById(Number(this.PackageId));
-    }
+      if (this.PackageId != null && this.PackageId != 0) {
+        this.GetPackageById(Number(this.PackageId));
+      }
 
-    this.GetSupplierList(Number(this.PackageId));
+      this.GetSupplierList(Number(this.PackageId));
 
-    this.GetSupplierPackagesList();
-    this.assignByBoqOnly = localStorage.getItem('assignByBoqOnly');
+      this.GetSupplierPackagesList();
+      this.assignByBoqOnly = localStorage.getItem('assignByBoqOnly');
+   });
+
+    
   }
 
   flexSwitchCheckDefaultChange(event : any)
@@ -844,12 +855,13 @@ export class PackageSupplierComponent implements OnInit {
   }
 
   routeToRevisionDetails(revisionId : number, psByBoq : number, psId : number){
-    this.router.navigate(['revision-details'], { state: { revisionId: revisionId, psByBoq : psByBoq, psId : psId, packageId : this.PackageId } });
+    this.router.navigate(['/revision-details', revisionId, psId, psByBoq, this.PackageId, this.PackageName]);
   }
 
   onGrouping()
   {
-    let byBoq = (this.SupplierPackagesList[0].psByBoq == 1)
-    this.router.navigate(['package-groups'], { state: { packageId: this.PackageId, pkgeName : this.PackageName, byBoq : byBoq } });
+    let byBoq = (this.SupplierPackagesList[0].psByBoq == 1);
+    this.router.navigate(['/package-groups', this.PackageId, this.PackageName, byBoq]);
+    
   }
 }

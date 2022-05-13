@@ -21,13 +21,13 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'assign-package', component: AssignPackageComponent, canActivate: [AuthGuard] },
   { path: 'package-list', component: PackageListComponent, canActivate: [AuthGuard] },
-  { path: 'package-supplier', component: PackageSupplierComponent, canActivate: [AuthGuard] },
+  { path: 'package-supplier/:packageId', component: PackageSupplierComponent, canActivate: [AuthGuard] },
   { path: 'package-comparison', component: PackageComparisonComponent, canActivate: [AuthGuard] },
   { path: 'package-comparison-novo', component: PackageComparisonNovoComponent, canActivate: [AuthGuard] },
-  { path: 'revision-details', component: RevisionDetailsComponent, canActivate: [AuthGuard] },
+  { path: 'revision-details/:revisionId/:psId/:psByBoq/:packageId/:packageName', component: RevisionDetailsComponent, canActivate: [AuthGuard] },
   { path: 'management-users', component: ManagementUsersComponent, canActivate: [AuthGuard] },
   { path: 'technical-conditions', component: TechnicalConditionsComponent, canActivate: [AuthGuard] },
-  { path: 'package-groups', component: PackageGroupsComponent, canActivate: [AuthGuard] },
+  { path: 'package-groups/:packageId/:pkgeName/:byBoq', component: PackageGroupsComponent, canActivate: [AuthGuard] },
 
   // otherwise redirect to home
   { path: '**', redirectTo: '' }

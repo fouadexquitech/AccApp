@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { BOQDivList, BoqModel, RESDivList, RESTypeList, SearchInput, SheetDescList } from '../assign-package/assign-package.model';
@@ -14,8 +14,9 @@ import { PackageGroupsService } from './package-groups.service';
   templateUrl: './package-groups.component.html',
   styleUrls: ['./package-groups.component.css']
 })
-export class PackageGroupsComponent implements OnInit {
+export class PackageGroupsComponent implements OnInit, OnDestroy {
 
+  params : any;
   packageId : number = 0;
   packageName : string = "";
   isShown: boolean = true; // shown by default
@@ -41,20 +42,33 @@ export class PackageGroupsComponent implements OnInit {
 
 
   constructor(private router : Router, private assignPackageService : AssignPackageService, 
-    private packageGroupsService : PackageGroupsService, private loginService : LoginService, private toastrService : ToastrService) { 
-    if (this.router.getCurrentNavigation().extras.state != undefined) {
+    private packageGroupsService : PackageGroupsService, private loginService : LoginService, private route: ActivatedRoute,
+     private toastrService : ToastrService) { 
+    /*if (this.router.getCurrentNavigation().extras.state != undefined) {
       this.packageId= this.router.getCurrentNavigation().extras.state.packageId;
       this.packageName = this.router.getCurrentNavigation().extras.state.pkgeName;
       this.byBoq = this.router.getCurrentNavigation().extras.state.byBoq;
     } else {
       this.router.navigateByUrl("/package-list");
-    }
+    }*/
 
   }
 
   ngOnInit(): void {
-    this.getGroups();
+    this.params = this.route.params.subscribe(params => {
+      
+      this.packageId= Number(params["packageId"]);
+      this.packageName = params["pkgeName"];
+      this.byBoq = Boolean(params["byBoq"]);
+
+      this.getGroups();
+     });
+   
     
+  }
+
+  ngOnDestroy(): void {
+    this.params.unsubscribe();
   }
 
   getGroups()
