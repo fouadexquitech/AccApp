@@ -12,6 +12,7 @@ import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { GroupingBoq, GroupingBoqGroup, GroupingPackageSupplierPrice, GroupingResource } from '../package-groups/package-groups.model';
 import { SupplierPackagesList } from '../package-supplier/package-supplier.model';
 import { FieldType } from '../_models';
+import {environment} from '../../environments/environment';
 declare var $: any;
 @Component({
   selector: 'app-package-comparison-novo',
@@ -495,7 +496,95 @@ export class PackageComparisonNovoComponent implements OnInit {
   }
 
   generateExcel()
-  {}
+  {
+      this.generatingFile = true;
+      if(!this.byGroup)
+      {
+      if(!this.byBoq)
+      {
+          this.packageComparisonService.getComparisonSheet_Excel(this.packageId, this.SearchInput).subscribe(data=>{
+            if (data) {
+              //this.spinner.hide();
+              this.generatingFile = false;
+              
+              
+      
+              let a = document.createElement('a');
+              a.id = 'downloader';
+              a.target = '_blank'; 
+              a.style.visibility = "hidden";
+              document.body.appendChild(a);
+              a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
+              a.click();
+              
+            }
+          });
+      }
+      else(this.byBoq)
+      {
+          this.packageComparisonService.GetComparisonSheetByBoq_Excel(this.packageId, this.SearchInput).subscribe(data=>{
+            if (data) {
+              //this.spinner.hide();
+              this.generatingFile = false;
+              
+              
+      
+              let a = document.createElement('a');
+              a.id = 'downloader';
+              a.target = '_blank'; 
+              a.style.visibility = "hidden";
+              document.body.appendChild(a);
+              a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
+              a.click();
+              
+            }
+          });
+        }
+      }
+      else
+      {
+        if(!this.byBoq)
+        {
+            this.packageComparisonService.getComparisonSheetResourcesByGroup_Excel(this.packageId, this.SearchInput).subscribe(data=>{
+              if (data) {
+                //this.spinner.hide();
+                this.generatingFile = false;
+                
+                
+        
+                let a = document.createElement('a');
+                a.id = 'downloader';
+                a.target = '_blank'; 
+                a.style.visibility = "hidden";
+                document.body.appendChild(a);
+                a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
+                a.click();
+                
+              }
+            });
+        }
+        else
+        {
+          this.packageComparisonService.getComparisonSheetBoqByGroup_Excel(this.packageId, this.SearchInput).subscribe(data=>{
+            if (data) {
+              //this.spinner.hide();
+              this.generatingFile = false;
+              
+              
+      
+              let a = document.createElement('a');
+              a.id = 'downloader';
+              a.target = '_blank'; 
+              a.style.visibility = "hidden";
+              document.body.appendChild(a);
+              a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
+              a.click();
+              
+            }
+          });
+        }
+      }
+  }
 
   sendEmail()
   {
