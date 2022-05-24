@@ -152,6 +152,42 @@ getComparisonSheetByBoq(packId: number, input: SearchInput): Observable<any> {
   );
 }
 
+getComparisonSheet_Excel(packageId: number, input : SearchInput) : Observable<any> 
+  {
+    const headers = { 'content-type': 'application/json'};
+    let body = JSON.stringify(input);
+    return this.http.post(this.baseUrl + 'RevisionDetails/GetComparisonSheet_Excel?packageId=' + packageId, body, {headers : headers}).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
+  GetComparisonSheetByBoq_Excel(packageId: number, input : SearchInput) : Observable<any> 
+  {
+    const headers = { 'content-type': 'application/json'};
+    let body = JSON.stringify(input);
+    return this.http.post(this.baseUrl + 'RevisionDetails/GetComparisonSheetByBoq_Excel?packageId=' + packageId, body, {headers : headers}).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
+  getComparisonSheetResourcesByGroup_Excel(packageId: number, input : SearchInput) : Observable<any> 
+  {
+    const headers = { 'content-type': 'application/json'};
+    let body = JSON.stringify(input);
+    return this.http.post(this.baseUrl + 'RevisionDetails/GetComparisonSheetResourcesByGroup_Excel?packageId=' + packageId, body, {headers : headers}).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
+  getComparisonSheetBoqByGroup_Excel(packageId: number, input : SearchInput) : Observable<any> 
+  {
+    const headers = { 'content-type': 'application/json'};
+    let body = JSON.stringify(input);
+    return this.http.post(this.baseUrl + 'RevisionDetails/GetComparisonSheetBoqByGroup_Excel?packageId=' + packageId, body, {headers : headers}).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
   handleError(error: any): Promise<any> {
     console.error('An error occurred', error);
     return Promise.reject(error.message || error);
