@@ -414,7 +414,7 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
       });
 
       this.SupplierInput.forEach(supplier=>{
-        this.SupplierInputList.push({supplierInput : supplier, comercialCondList : comercialCond, emailTemplate : null});
+        this.SupplierInputList.push({supplierInput : supplier, comercialCondList : comercialCond, emailTemplate : null, filePath : this.FilePath});
       });
 
 
@@ -422,7 +422,7 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
         this.SupplierInputList.forEach(sup=>{
           sup.emailTemplate = this.f.template.value;
         });
-        this.packageSupplierService.AssignPackageSuppliers(this.PackageId, this.SupplierInputList, this.FilePath, Number(localStorage.getItem('assignByBoqOnly'))).subscribe((data) => {
+        this.packageSupplierService.AssignPackageSuppliers(this.PackageId, this.SupplierInputList, Number(localStorage.getItem('assignByBoqOnly'))).subscribe((data) => {
           this.isAssigning = false;
           if (data) {
             //this.spinner.hide();

@@ -41,8 +41,8 @@ export class PackageSupplierService {
     );
   }
 
-  AssignPackageSuppliers(PackId: number, supInputList: SupplierInputList[], filePath : string, byBoq : number): Observable<any> {
-    return this.http.post(this.baseUrl + 'SupplierPackages/AssignPackageSuppliers?packId=' + PackId + '&FilePath=' + filePath + '&ByBoq=' + byBoq, supInputList).pipe(
+  AssignPackageSuppliers(PackId: number, supInputList: SupplierInputList[], byBoq : number): Observable<any> {
+    return this.http.post(this.baseUrl + 'SupplierPackages/AssignPackageSuppliers?packId=' + PackId + '&ByBoq=' + byBoq, supInputList).pipe(
       map(res => res), catchError(this.handleError)
     );
   }

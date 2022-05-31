@@ -22,6 +22,7 @@ export class SupplierInputList
 {
     public supplierInput : SupplierInput = null;
     public comercialCondList : ComercialCond[] = [];
+    public filePath : string = null;
     public emailTemplate : string = null;
 }
 

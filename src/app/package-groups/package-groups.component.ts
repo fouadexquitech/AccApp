@@ -59,7 +59,7 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
       
       this.packageId= Number(params["packageId"]);
       this.packageName = params["pkgeName"];
-      this.byBoq = Boolean(params["byBoq"]);
+      this.byBoq = params["byBoq"] == "true";
 
       this.getGroups();
      });
