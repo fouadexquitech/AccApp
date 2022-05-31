@@ -627,7 +627,7 @@
                             </td>
                             
                         </tr>
-                        <tr *ngIf="techConditionsReplies.length > 0">
+                        <tr *ngIf="techConditionsReplies?.length > 0">
                             <td colspan="5"><strong>Technical Conditions</strong></td>
                          
                             <td [attr.colspan]="packageSuppliersPrices.length" class="text-center">
@@ -791,7 +791,7 @@
                             </td>
                             
                         </tr>
-                        <tr *ngIf="techConditionsReplies.length > 0">
+                        <tr *ngIf="techConditionsReplies?.length > 0">
                             <td colspan="2"><strong>Technical Conditions</strong></td>
                          
                             <td [attr.colspan]="packageSuppliersPrices.length + 1">

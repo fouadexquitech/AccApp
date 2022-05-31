@@ -248,11 +248,13 @@ export class PackageComparisonNovoComponent implements OnInit {
 
   getByGroup()
   {
+    console.log(this.byBoq);
     if(this.byGroup && !this.byBoq)
       {
         this.packageComparisonService.getComparisonSheetResourcesByGroup(this.packageId, this.SearchInput).subscribe((data) => {
           if (data) {
             this.groupingBoqGroupList = data;
+            
             //console.log(this.groupingBoqGroupList);
              
           }
@@ -500,46 +502,46 @@ export class PackageComparisonNovoComponent implements OnInit {
       this.generatingFile = true;
       if(!this.byGroup)
       {
-      if(!this.byBoq)
-      {
-          this.packageComparisonService.getComparisonSheet_Excel(this.packageId, this.SearchInput).subscribe(data=>{
-            if (data) {
-              //this.spinner.hide();
-              this.generatingFile = false;
-              
-              
-      
-              let a = document.createElement('a');
-              a.id = 'downloader';
-              a.target = '_blank'; 
-              a.style.visibility = "hidden";
-              document.body.appendChild(a);
-              a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
-              a.click();
-              
-            }
-          });
-      }
-      else(this.byBoq)
-      {
-          this.packageComparisonService.GetComparisonSheetByBoq_Excel(this.packageId, this.SearchInput).subscribe(data=>{
-            if (data) {
-              //this.spinner.hide();
-              this.generatingFile = false;
-              
-              
-      
-              let a = document.createElement('a');
-              a.id = 'downloader';
-              a.target = '_blank'; 
-              a.style.visibility = "hidden";
-              document.body.appendChild(a);
-              a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
-              a.click();
-              
-            }
-          });
+        if(!this.byBoq)
+        {
+            this.packageComparisonService.getComparisonSheet_Excel(this.packageId, this.SearchInput).subscribe(data=>{
+              if (data) {
+                //this.spinner.hide();
+                this.generatingFile = false;
+                
+                
+        
+                let a = document.createElement('a');
+                a.id = 'downloader';
+                a.target = '_blank'; 
+                a.style.visibility = "hidden";
+                document.body.appendChild(a);
+                a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
+                a.click();
+                
+              }
+            });
         }
+        else
+        {
+            this.packageComparisonService.GetComparisonSheetByBoq_Excel(this.packageId, this.SearchInput).subscribe(data=>{
+              if (data) {
+                //this.spinner.hide();
+                this.generatingFile = false;
+                
+                
+        
+                let a = document.createElement('a');
+                a.id = 'downloader';
+                a.target = '_blank'; 
+                a.style.visibility = "hidden";
+                document.body.appendChild(a);
+                a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
+                a.click();
+                
+              }
+            });
+          }
       }
       else
       {
