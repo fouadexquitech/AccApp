@@ -65,11 +65,15 @@
       (click)="onGrouping()">Grouping</button>
     </div>
     <div class="col-sm-3 form-group" *ngIf="SupplierPackagesList.length > 0 && FilePath != null">
-      <button type="button" class="btn btn-secondary" *ngIf="!SupplierPackagesList[0].tecCondSent"
+      <button type="button" class="btn btn-secondary"
+      (click)="viewTechnicalConditions()">
+     
+      View Technical Conditions</button>
+      <button type="button" class="btn btn-secondary" *ngIf="false"
       (click)="sendTechnicalConditions()" [disabled]="isSendingTechConditions">
       <i class="fa fa-spinner fa-spin" *ngIf="isSendingTechConditions"></i>
       Send Technical Conditions</button>
-      <div class="alert alert-success" *ngIf="SupplierPackagesList[0].tecCondSent">
+      <div class="alert alert-success" *ngIf="false">
         Technical Conditions Sent
         <i class="fa fa-check"></i>
       </div>
@@ -496,6 +500,56 @@
           <button type="button" class="btn btn-primary" (click)="updateCommercialConditions()" [disabled]="isUpdatingCommercialConditions">
            
             Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+   <!--Technical Conditions Modal -->
+   <div class="modal fade" id="viewTechnicalConditionsModal" tabindex="-1" aria-labelledby="viewTechnicalConditionsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewTechnicalConditionsModalLabel">Technical Conditions</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-12 p-2">
+              <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Condition</th>
+                      
+                      
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let c of techConditions">
+                        <td>
+                          {{c.tcDescription}}
+                        </td>
+                       
+                       
+                    </tr>
+                  </tbody>
+                  <tfoot *ngIf="techConditions.length == 0">
+                    <tr>
+                        <td class="text-center">
+                          No data available
+                        </td>
+                    
+                    </tr>
+                  </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeViewTechnicalConditionsModal()">Close</button>
+          <button type="button" class="btn btn-primary" (click)="sendTechnicalConditions()" [disabled]="isSendingTechConditions">
+            <i class="fa fa-spinner fa-spin" *ngIf="isSendingTechConditions"></i>
+           Send</button>
         </div>
       </div>
     </div>

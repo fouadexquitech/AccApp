@@ -23,7 +23,7 @@
                                 <th scope="col">Description</th>
                                 <th scope="col"></th>
                                 
-                                <th scope="col"></th>
+                                <th scope="col" *ngIf="false"></th>
                                 
                             </tr>
                         </thead>
@@ -36,7 +36,7 @@
                                         Suppliers</a>
                                 </td>
                                
-                                <td>
+                                <td *ngIf="false">
                                     <button type="button" class="btn btn-secondary" (click)="routeToTechnicalConditions(item.idPkge, item.pkgeName)">Technical Conditions</button>
                                 </td>
                             </tr>

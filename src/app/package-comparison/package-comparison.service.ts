@@ -86,9 +86,9 @@ export class PackageComparisonService {
     );
   }
 
-  getTechConditions(packId : number)
+  getTechConditions(packId : number, filter : string)
  {
-  return this.http.get(this.baseUrl + 'Conditions/GetTechConditions?packId=' + packId).pipe(
+  return this.http.get(this.baseUrl + 'Conditions/GetTechConditions?packId=' + packId + '&filter=' + filter).pipe(
     map(res => res), catchError(this.handleError)
   );
  }

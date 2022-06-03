@@ -26,7 +26,7 @@ const routes: Routes = [
   { path: 'package-comparison-novo', component: PackageComparisonNovoComponent, canActivate: [AuthGuard] },
   { path: 'revision-details/:revisionId/:psId/:psByBoq/:packageId/:packageName', component: RevisionDetailsComponent, canActivate: [AuthGuard] },
   { path: 'management-users', component: ManagementUsersComponent, canActivate: [AuthGuard] },
-  { path: 'technical-conditions', component: TechnicalConditionsComponent, canActivate: [AuthGuard] },
+  { path: 'technical-conditions/:packageId/:packageName', component: TechnicalConditionsComponent, canActivate: [AuthGuard] },
   { path: 'package-groups/:packageId/:pkgeName/:byBoq', component: PackageGroupsComponent, canActivate: [AuthGuard] },
 
   // otherwise redirect to home

@@ -181,6 +181,13 @@ export class TechConditions
     public tcSeq : number = 0;
     public tcPackId : number = 0;
     public tcDescription : string  = null;
+    public techConditionGroups : TechConditionGroup[] = [];
+}
+
+export class TechConditionGroup
+{
+    public groupId : number = 0;
+    public groupDescription : string = null;
 }
 
 

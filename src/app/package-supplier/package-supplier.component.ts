@@ -10,8 +10,10 @@ import { ProjectCurrency } from '../login/login.model';
 import { EmailTemplate, FieldType, Language } from '../_models';
 import { ConfirmationDialogService } from '../_components/confirmation-dialog/confirmation-dialog.service';
 import { OriginalBoqModel } from '../assign-package/assign-package.model';
-import { TblComCond } from '../package-comparison/package-comparison.model';
+import { Group, TblComCond, TechConditions } from '../package-comparison/package-comparison.model';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
+import { ComparisonPackageGroup } from '../package-groups/package-groups.model';
+import { PackageGroupsService } from '../package-groups/package-groups.service';
 
 declare var $: any;
 @Component({
@@ -58,6 +60,8 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
     template: new FormControl(''),
     
   });
+  addedTechConditions : TechConditions[] = [];
+  groups : ComparisonPackageGroup[] = [];
 
   formEmailSubmitted = false;
   assignByBoqOnly : string;
@@ -68,6 +72,7 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
   revisionFieldsList : RevisionFieldsList[] = [];
   isSendingTechConditions : boolean = false;
   comConditions : TblComCond[] = [];
+  techConditions : TechConditions[] = [];
   isUpdatingCommercialConditions : boolean = false;
   dtOptions = {
     //pagingType: 'full_numbers',
@@ -130,12 +135,30 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
     private toastr: ToastrService,
     private formBuilder : FormBuilder,
     private route: ActivatedRoute,
-    private confirmationDialogService: ConfirmationDialogService) {
+    private confirmationDialogService: ConfirmationDialogService,
+    private packageGroupsService : PackageGroupsService) {
     /*if (this.router.getCurrentNavigation().extras.state != undefined) {
       this.PackageId = this.router.getCurrentNavigation().extras.state.packageId;
     } else {
       this.router.navigateByUrl("/package-list");
     }*/
+  }
+
+  getGroups()
+  {
+    
+    this.packageGroupsService.getGroups(this.PackageId).subscribe((data) => {
+        if(data)
+        {
+            this.groups = data;
+            
+        }
+    });
+  }
+
+  onGroupChange(event : any)
+  {
+
   }
 
   checkAllComCond(event : any)
@@ -195,6 +218,7 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
           if(data)
           {
             this.toastr.success("Technical conditions sent successfully");
+            $("#viewTechnicalConditionsModal").modal('hide');
             this.GetSupplierPackagesList();
           }
           else
@@ -394,6 +418,27 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
       this.formEmailTemplate.controls['template'].setValue(this.selectedEmailTemplate?.etContent || '');
         
       });
+  }
+
+  viewTechnicalConditions()
+  {
+      /*this.packageSupplierService.getTechConditions(this.PackageId).subscribe(data=>{
+          if(data)
+          {
+            this.techConditions = data;
+            console.log(this.techConditions);
+            $("#viewTechnicalConditionsModal").modal('show');
+          }
+         
+      });*/
+
+      this.router.navigate(['technical-conditions', this.PackageId, this.PackageName]);
+      
+  }
+
+  closeViewTechnicalConditionsModal()
+  {
+     $("#viewTechnicalConditionsModal").modal('hide');
   }
 
   AssignSuppliers() {
@@ -823,10 +868,10 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
     if(val)
     {
       let projectCurrency = JSON.parse(localStorage.getItem("currency")) as ProjectCurrency;
-        this.packageSupplierService.getExchangeRate(val.curCode, projectCurrency.curCode).subscribe((data)=>{
+        this.packageSupplierService.getExchangeRateV2(val.curCode, projectCurrency.curCode).subscribe((data)=>{
             if(data)
             {
-              this.exchangeRates = data.rates;
+              /*this.exchangeRates = data.rates;
 
               let array = Object.values(this.exchangeRates);
               
@@ -846,8 +891,14 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
                   this.exchangeRate = Number((usdToSelectedRate * projectToUsd).toFixed(2));
                   
                    
-              }
+              }*/
+              //this.exchangeRate = data.value
+              let d = data;
+              let first = d[Object.keys(d)[1]];
+              let cur = first[Object.keys(first)[0]];
+              this.exchangeRate = cur.value;
             }
+            
             
         });
     }

@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { TechConditions } from '../package-comparison/package-comparison.model';
 import { SupplierInput, SupplierInputList } from './package-supplier.model';
 
 @Injectable({
@@ -130,6 +131,13 @@ export class PackageSupplierService {
   );
  }
 
+ getExchangeRateV2(selectedCurrency : string, projectCurrency : string)
+ {
+    return this.http.get('https://api.currencyapi.com/v3/latest?apikey=KYYw4tEhIF3PjGx2ccGDM3FpZOCKq7FNhkc5keQk&base_currency='+projectCurrency+'&currencies=' + selectedCurrency).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+ }
+
  sendTechnicalConditions(packId : number)
  {
     return this.http.post(this.baseUrl + 'Conditions/SendTechnicalConditions?packId=' + packId, null).pipe(
@@ -165,6 +173,33 @@ export class PackageSupplierService {
  getTechConditions(packId : number) : Observable<any>
  {
   return this.http.get(this.baseUrl + 'Conditions/GetTechConditions?packId=' + packId).pipe(
+    map(res => res), catchError(this.handleError)
+  );
+ }
+
+ addTechConditions(item : TechConditions)
+ {
+   let headers = {};
+    let body = JSON.stringify(item);
+    return this.http.post(this.baseUrl + 'Conditions/AddTechConditions', body, {headers: new HttpHeaders().set('Content-Type','application/json')}).pipe(
+    map(res => res), catchError(this.handleError)
+  );
+ }
+
+ updateTechConditions(item : TechConditions)
+ {
+   let headers = {};
+    let body = JSON.stringify(item);
+    return this.http.post(this.baseUrl + 'Conditions/UpdateTechConditions', body, {headers: new HttpHeaders().set('Content-Type','application/json')}).pipe(
+    map(res => res), catchError(this.handleError)
+  );
+ }
+
+
+ delTechConditions(item : TechConditions)
+ {
+   
+    return this.http.post(this.baseUrl + 'Conditions/DelTechConditions?id=' + item.tcSeq, null).pipe(
     map(res => res), catchError(this.handleError)
   );
  }

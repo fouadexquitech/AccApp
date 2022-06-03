@@ -13,6 +13,7 @@ import { GroupingBoq, GroupingBoqGroup, GroupingPackageSupplierPrice, GroupingRe
 import { SupplierPackagesList } from '../package-supplier/package-supplier.model';
 import { FieldType } from '../_models';
 import {environment} from '../../environments/environment';
+import { PackageSupplierService } from '../package-supplier/package-supplier.service';
 declare var $: any;
 @Component({
   selector: 'app-package-comparison-novo',
@@ -65,7 +66,6 @@ export class PackageComparisonNovoComponent implements OnInit {
   byGroup : boolean = false;
   techConditionsReplies : DisplayCondition[] = [];
   comConditionsReplies : DisplayCondition[] = [];
-
   topManagementList : TopManagement[] = [];
   selectedTopManagementList : TopManagement[] = [];
   htmlContent : string = "";
@@ -121,6 +121,7 @@ export class PackageComparisonNovoComponent implements OnInit {
   constructor(private router: Router, 
     private packageComparisonService: PackageComparisonService,
     private assignPackageService : AssignPackageService,
+    private packageSupplierService : PackageSupplierService,
     private toastr : ToastrService) { 
     if (this.router.getCurrentNavigation().extras.state != undefined) {
       this.packageId= this.router.getCurrentNavigation().extras.state.packageId;
@@ -463,10 +464,20 @@ export class PackageComparisonNovoComponent implements OnInit {
   openSendEmailModal()
   {
     this.topManagementAttachement = null;
-    this.emailTemplate = "";
+    //this.emailTemplate = "";
+    this.getEmailTemplate();
     this.selectedTopManagementList = [];
     this.getManagementEmail();
+
     $("#modalEmail").modal('show');
+  }
+
+  getEmailTemplate()
+  {
+      this.packageSupplierService.GetEmailTemplate('0').subscribe(data=>{
+        this.emailTemplate = data?.etContent;
+        
+      });
   }
 
   getManagementEmail()
