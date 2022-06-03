@@ -45,7 +45,7 @@ export class PackageListComponent implements OnInit, OnDestroy {
   }
 
   onClick(idPkge:number){
-    this.router.navigate(['package-supplier'], { state: { packageId: idPkge } });
+    this.router.navigate(['package-supplier', idPkge]);
   }
 
   ngOnDestroy(): void {

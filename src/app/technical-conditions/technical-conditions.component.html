@@ -3,8 +3,8 @@
         <nav aria-label="breadcrumb" class="p-2">
           <ol class="breadcrumb">
               <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
-              <li class="breadcrumb-item active" aria-current="page"><a [routerLink]="['/package-list']">Packages List</a></li>
-              <li class="breadcrumb-item active" aria-current="page">{{packageName}}</li>
+              <li class="breadcrumb-item active" aria-current="page"><a href="#" [routerLink]="['/package-list']">Packages List</a></li>
+              
               <li class="breadcrumb-item active" aria-current="page"><strong>Technical Conditions</strong></li>
               
             </ol>
@@ -16,13 +16,13 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-3">
-                                <input placeholder="Search" class="form-control">
+                                <input placeholder="Search" class="form-control" [(ngModel)]="filter">
                             </div>
                             <div class="col-3">
-                                <button class="btn btn-secondary">Search</button>
+                                <button class="btn btn-secondary" (click)="doSearch()">Search</button>
                             </div>
                             <div class="col-3">
-                                <button class="btn btn-primary">Add</button>
+                                <button class="btn btn-primary" (click)="addTechnicalCondition()">Add</button>
                             </div>
                         </div>
                     </div>
@@ -43,10 +43,10 @@
                                     <tr *ngFor="let item of list">
                                         <td>{{item.tcDescription}}</td>
                                         <td>
-                                            <a class="btn btn-link" title="Edit"><i class="fa-solid fa-edit"></i></a>
+                                            <a class="btn btn-link" title="Edit" (click)="editTechCond(item)"><i class="fa-solid fa-edit"></i></a>
                                         </td>
                                         <td>
-                                            <a class="btn btn-link text-danger" title="Delete"><i class="fa-solid fa-times"></i></a>
+                                            <a class="btn btn-link text-danger" title="Delete" (click)="deleteTechCond(item)"><i class="fa-solid fa-times"></i></a>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -61,4 +61,56 @@
                 </div>
             </div>
         </div>
+
+
+        
+        <!--Technical Conditions Modal -->
+   <div class="modal fade" id="technicalConditionsModal" tabindex="-1" aria-labelledby="technicalConditionsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        
+        <div class="modal-header">
+          <h5 class="modal-title" id="technicalConditionsModalLabel">{{technicalConditionsModalLabel}}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form name="formTechCond" [formGroup]="formTechCond" (ngSubmit)="onFormTechCondSubmit()" novalidate *ngIf="formTechCond">
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-12 p-2">
+                    Description
+                    <input class="form-control" formControlName="tcDescription"
+                    [ngClass]="{ 'is-invalid': submitted && f.tcDescription.errors }">
+                    <div *ngIf="submitted && f.tcDescription.errors" class="invalid-feedback">
+                        <div *ngIf="f.tcDescription.errors.required">Required Field</div>
+                        
+                    </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12 p-2">
+                    Group
+                    <ng-select [items]="groups" 
+                    bindLabel="name" 
+                    formControlName="techConditionGroups"
+                    [multiple]="true"
+                    [ngClass]="{ 'is-invalid': submitted && f.techConditionGroups.errors }"
+                    [placeholder]="'Select group'"> </ng-select>
+                    <div *ngIf="submitted && f.techConditionGroups.errors" class="invalid-feedback">
+                        <div *ngIf="f.techConditionGroups.errors.required">Required Field</div>
+                        
+                    </div>
+                </div>
+              </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeTechnicalConditionsModal()">Close</button>
+          <button type="submit" class="btn btn-primary" [disabled]="submitting">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="submitting"></span>
+           Submit</button>
+        </div>
+    </form>
+      </div>
+    </div>
+  </div>
+
     </section>

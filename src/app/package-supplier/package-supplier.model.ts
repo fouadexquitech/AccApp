@@ -72,3 +72,5 @@ export class RevisionFieldsList
     public type? : number = null;
 }
 
+
+
