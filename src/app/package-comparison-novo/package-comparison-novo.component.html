@@ -548,7 +548,9 @@
                             <td *ngFor="let sup of item.groupingPackageSuppliersPrices">
                                 <table class="table">
                                 <tr>
-                                   <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.qty | number : '1.2-2'}}</span> </td>
+                                   <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.qty | number : '1.2-2'}}</span> 
+                                    <i class="fas fa-flag text-success" title="Quantity Assigned" *ngIf="sup.assignedQty > 0"></i>
+                                  </td>
                                    <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.unitPrice | number : '1.2-2'}}</span></td> 
                                     <td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.totalPrice | number : '1.2-2'}}</span> </td>
                                 </tr> 
@@ -714,7 +716,9 @@
                                 <table class="table">
                                 <tr>
                                    
-                                    <td class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.totalPrice | number : '1.2-2'}}</span> </td>
+                                    <td class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.totalPrice | number : '1.2-2'}}</span> 
+                                      <i class="fas fa-flag text-success" title="Quantity Assigned" *ngIf="sup.assignedQty > 0"></i>
+                                    </td>
                                 </tr> 
                             </table>
                                
