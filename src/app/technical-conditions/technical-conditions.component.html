@@ -24,6 +24,12 @@
                             <div class="col-3">
                                 <button class="btn btn-primary" (click)="addTechnicalCondition()">Add</button>
                             </div>
+                            <div class="col-3">
+                                <button class="btn btn-info" (click)="sendTechnicalConditions()" [disabled]="isSendingTechConditions">
+                            
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="isSendingTechConditions"></span>
+                                    Send Technical Conditions</button>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">

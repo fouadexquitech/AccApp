@@ -45,6 +45,8 @@ export class SupplierPackagesRevList {
     public prRevNo: number = 0;
     public prRevDate: Date;
     public prTotPrice: number = 0;
+    public prCurrency : number = 0;
+    public currency : string = null;
     public prPackSuppId: number = 0;
 }
 
