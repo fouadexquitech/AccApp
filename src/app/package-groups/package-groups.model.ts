@@ -68,4 +68,5 @@ export class GroupingPackageSupplierPrice
     public missedPrice : number = 0;
     public assignedPercentage : number = 0;
     public assignedQty : number = 0;
+    public exchRateNow : number = 0;
 }

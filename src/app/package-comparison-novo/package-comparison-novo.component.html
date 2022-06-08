@@ -230,7 +230,17 @@
                       </thead>
                       <tbody>
                           <tr>
-                            <td colspan="2"><strong>Boq Item</strong></td>
+                            <td></td>
+                            <td>
+                              <table class="table">
+                                <thead>
+                                  <th><strong>Boq #</strong></th>
+                                  <th><strong>Boq Item</strong></th>
+                                </thead>
+                                
+                              </table>
+                              
+                            </td>
                           </tr>
                         <tr *ngFor="let item of comparisonList; let i = index">
                           <td>
@@ -240,7 +250,7 @@
                           
                           <td>
                             
-                            <div class="p-2">{{item.descriptionO}}</div>
+                            <div class="p-2">{{item.itemO}}    -    {{item.descriptionO}}</div>
                             <div class="p-2">
                                 <table class="table">
                                     <thead>
@@ -313,11 +323,11 @@
                                         <td *ngFor="let sup of resource.groupingPackageSuppliersPrices">
                                             <table class="table">
                                             <tr>
-                                               <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.qty | number : '1.2-2'}}</span> 
+                                               <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.assignedQty | number : '1.2-2'}}</span> 
                                                 <i class="fas fa-flag text-success" title="Quantity Assigned" *ngIf="sup.assignedQty > 0"></i>
                                               </td>
-                                               <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.unitPrice | number : '1.2-2'}}</span></td> 
-                                                <td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.totalPrice | number : '1.2-2'}}</span> </td>
+                                               <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.unitPrice * sup.exchRateNow) | number : '1.2-2'}}</span></td> 
+                                                <td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.totalPrice * sup.exchRateNow) | number : '1.2-2'}}</span> </td>
                                             </tr> 
                                         </table>
                                            
@@ -484,6 +494,7 @@
                             <th style="width:1%">
                                 <input type="checkbox" id="selectAllBoqItems" (change)="selectAllBoqItems($event.target)">
                             </th>
+                            <th>Boq #</th>
                             <th>Boq Item</th>
                             <th>Unit</th>
                             <th>Qty</th>
@@ -524,6 +535,9 @@
                                 <input type="checkbox" [checked]="item.isChecked" (change)="selectBoq($event, item)">
                                 <input type="hidden" [value]="item.itemO">
                               </td>
+                              <td>
+                                {{item.itemO}}
+                            </td>
                             <td style="width:20%">
                                 {{item.descriptionO}}
                             </td>
@@ -548,11 +562,11 @@
                             <td *ngFor="let sup of item.groupingPackageSuppliersPrices">
                                 <table class="table">
                                 <tr>
-                                   <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.qty | number : '1.2-2'}}</span> 
+                                   <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.assignedQty | number : '1.2-2'}}</span> 
                                     <i class="fas fa-flag text-success" title="Quantity Assigned" *ngIf="sup.assignedQty > 0"></i>
                                   </td>
-                                   <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.unitPrice | number : '1.2-2'}}</span></td> 
-                                    <td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.totalPrice | number : '1.2-2'}}</span> </td>
+                                   <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.unitPrice * sup.exchRateNow) | number : '1.2-2'}}</span></td> 
+                                    <td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.totalPrice * sup.exchRateNow) | number : '1.2-2'}}</span> </td>
                                 </tr> 
                             </table>
                                
@@ -570,7 +584,7 @@
                       </tbody>
                       <tfoot>
                         <tr>
-                            <td colspan="5"><strong>Sub-Total</strong></td>
+                            <td colspan="6"><strong>Sub-Total</strong></td>
                             <td *ngFor="let p of packageSuppliersPrices" class="text-center">
                                 <table class="table">
                                     <tr>
@@ -584,7 +598,7 @@
                             
                         </tr>
                         <tr>
-                            <td colspan="5"><strong>Additional Fees</strong></td>
+                            <td colspan="6"><strong>Additional Fees</strong></td>
                             
                             <td *ngFor="let supp of packageSuppliersPrices" class="text-center">
                                 <table class="table" >
@@ -613,7 +627,7 @@
                             
                         </tr>
                         <tr>
-                            <td colspan="4"><strong>Grand Total</strong></td>
+                            <td colspan="5"><strong>Grand Total</strong></td>
                             <td class="text-center">
                               <strong> {{getTotalBudget() | number : '1.2-2'}}</strong>
                             </td>
@@ -630,7 +644,7 @@
                             
                         </tr>
                         <tr *ngIf="techConditionsReplies?.length > 0">
-                            <td colspan="5"><strong>Technical Conditions</strong></td>
+                            <td colspan="6"><strong>Technical Conditions</strong></td>
                          
                             <td [attr.colspan]="packageSuppliersPrices.length" class="text-center">
                               <table class="table table-bordered">
@@ -652,7 +666,7 @@
                           
                           </tr>
                         <tr *ngIf="comConditionsReplies.length > 0">
-                            <td colspan="5"><strong>Commercial Conditions</strong></td>
+                            <td colspan="6"><strong>Commercial Conditions</strong></td>
                           
                             <td [attr.colspan]="packageSuppliersPrices.length" class="text-center">
                               <table class="table table-bordered">
@@ -716,8 +730,8 @@
                                 <table class="table">
                                 <tr>
                                    
-                                    <td class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.totalPrice | number : '1.2-2'}}</span> 
-                                      <i class="fas fa-flag text-success" title="Quantity Assigned" *ngIf="sup.assignedQty > 0"></i>
+                                    <td class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.totalPrice * sup.exchRateNow) | number : '1.2-2'}}</span> 
+                                     
                                     </td>
                                 </tr> 
                             </table>

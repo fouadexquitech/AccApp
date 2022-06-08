@@ -27,6 +27,7 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
   groups : ComparisonPackageGroup[] = [];
   packageName : string;
   filter : string = '';
+  isSendingTechConditions : boolean = false;
   technicalConditionsModalLabel : string = '';
   constructor(private router: Router, private packageComparisonService : PackageComparisonService, private packageSupplierService : PackageSupplierService,
     private packageGroupsService : PackageGroupsService, private formBuilder: FormBuilder,
@@ -50,6 +51,24 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
      
       this.getTechnicalConditionsList();
      });
+  }
+
+  sendTechnicalConditions()
+  {
+    this.isSendingTechConditions = true;
+    this.packageSupplierService.sendTechnicalConditions(Number(this.packageId)).subscribe(data=>{
+      this.isSendingTechConditions = false;
+        if(data)
+        {
+          this.toastrService.success("Technical conditions sent successfully");
+          
+          
+        }
+        else
+        {
+          this.toastrService.error("Sending email failed");
+        }
+    });
   }
 
   doSearch()
