@@ -35,7 +35,7 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
   RevisionDetailsBoqItems : OriginalBoqModel[] = [];
   SupplierInputList : SupplierInputList[] = [];
   CurrencyList : CurrencyList[] = [];
-
+  projectCurrency : ProjectCurrency;
   expandedDetail: boolean = false;
   currentRowIndex: number = -1;
   currentRevRowIndex : number = -1;
@@ -303,6 +303,7 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
 
       this.GetSupplierPackagesList();
       this.assignByBoqOnly = localStorage.getItem('assignByBoqOnly');
+      this.projectCurrency = JSON.parse(localStorage.getItem("currency")) as ProjectCurrency;
    });
 
     
@@ -867,8 +868,8 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
     this.exchangeRate = 1;
     if(val)
     {
-      let projectCurrency = JSON.parse(localStorage.getItem("currency")) as ProjectCurrency;
-        this.packageSupplierService.getExchangeRateV2(val.curCode, projectCurrency.curCode).subscribe((data)=>{
+        
+        this.packageSupplierService.getExchangeRateV2(val.curCode, this.projectCurrency?.curCode).subscribe((data)=>{
             if(data)
             {
               /*this.exchangeRates = data.rates;
