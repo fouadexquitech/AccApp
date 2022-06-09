@@ -644,9 +644,11 @@
                             
                         </tr>
                         <tr *ngIf="techConditionsReplies?.length > 0">
-                            <td colspan="6"><strong>Technical Conditions</strong></td>
+                            <td [attr.colspan]="SupplierPackagesList.length + 10"><strong>Technical Conditions</strong></td>
+                        </tr>
+                        <tr>
                          
-                            <td [attr.colspan]="packageSuppliersPrices.length" class="text-center">
+                            <td [attr.colspan]="SupplierPackagesList.length + 10">
                               <table class="table table-bordered">
                               
                                     
@@ -666,9 +668,11 @@
                           
                           </tr>
                         <tr *ngIf="comConditionsReplies.length > 0">
-                            <td colspan="6"><strong>Commercial Conditions</strong></td>
+                            <td [attr.colspan]="SupplierPackagesList.length + 10"><strong>Commercial Conditions</strong></td>
+                        </tr>
+                        <tr>
                           
-                            <td [attr.colspan]="packageSuppliersPrices.length" class="text-center">
+                            <td [attr.colspan]="packageSuppliersPrices.length + 10">
                               <table class="table table-bordered">
                               
                                     
