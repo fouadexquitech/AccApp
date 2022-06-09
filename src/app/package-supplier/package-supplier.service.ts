@@ -133,7 +133,7 @@ export class PackageSupplierService {
 
  getExchangeRateV2(selectedCurrency : string, projectCurrency : string)
  {
-    let url = 'https://free.currconv.com/api/v7/convert?q=' + projectCurrency + '_' + selectedCurrency + '&compact=ultra&apiKey=7726dd1cebe5aeb063da';
+    let url = 'https://free.currconv.com/api/v7/convert?q=' + selectedCurrency + '_' + projectCurrency + '&compact=ultra&apiKey=7726dd1cebe5aeb063da';
     
     return this.http.get(url).pipe(
       map(res => res), catchError(this.handleError)
