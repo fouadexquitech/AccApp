@@ -896,9 +896,9 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
               //this.exchangeRate = data.value
               let d = data;
               
-              let rate = d[Object.keys(d)[0]];
+              //let rate = d[Object.keys(d)[0]];
               
-              this.exchangeRate = rate;
+              this.exchangeRate = d.result;
             }
             
             
