@@ -277,7 +277,8 @@ export class PackageComparisonNovoComponent implements OnInit {
   {
      this.packageComparisonService.getTechCondReplies( this.packageId).subscribe(data=>{
         this.techConditionsReplies = data;
-        //console.log(this.techConditionsReplies);
+    
+        
      });
   }
 

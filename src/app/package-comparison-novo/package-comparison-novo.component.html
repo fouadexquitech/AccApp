@@ -326,8 +326,8 @@
                                                <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.assignedQty | number : '1.2-2'}}</span> 
                                                 <i class="fas fa-flag text-success" title="Quantity Assigned" *ngIf="sup.assignedQty > 0"></i>
                                               </td>
-                                               <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.unitPrice * sup.exchRateNow) | number : '1.2-2'}}</span></td> 
-                                                <td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.totalPrice * sup.exchRateNow) | number : '1.2-2'}}</span> </td>
+                                               <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.exchRateNow) | number : '1.2-2'}}</span></td> 
+                                                <td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.assignedQty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>
                                             </tr> 
                                         </table>
                                            
@@ -449,10 +449,11 @@
                                     
                                 <tr *ngFor="let cond of techConditionsReplies ;  let i = index">
                                   <td style="width:55%">{{cond.description}}</td>
+                        
                                   <td *ngFor="let reply of cond.replies" style="width:30%">
                                     <table class="table">
                                       <tr>
-                                        <td class="text-center"><strong>{{reply.reply}}</strong></td>
+                                        <td class="text-center"><strong>{{reply?.reply}}</strong></td>
                                       </tr>
                                     </table>
                                   </td>
@@ -565,8 +566,8 @@
                                    <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.assignedQty | number : '1.2-2'}}</span> 
                                     <i class="fas fa-flag text-success" title="Quantity Assigned" *ngIf="sup.assignedQty > 0"></i>
                                   </td>
-                                   <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.unitPrice * sup.exchRateNow) | number : '1.2-2'}}</span></td> 
-                                    <td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.totalPrice * sup.exchRateNow) | number : '1.2-2'}}</span> </td>
+                                   <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.exchRateNow) | number : '1.2-2'}}</span></td> 
+                                    <td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.assignedQty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>
                                 </tr> 
                             </table>
                                
@@ -734,7 +735,7 @@
                                 <table class="table">
                                 <tr>
                                    
-                                    <td class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.totalPrice * sup.exchRateNow) | number : '1.2-2'}}</span> 
+                                    <td class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.assignedQty * sup.exchRateNow) | number : '1.2-2'}}</span> 
                                      
                                     </td>
                                 </tr> 
