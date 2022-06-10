@@ -327,7 +327,7 @@
                                                 <i class="fas fa-flag text-success" title="Quantity Assigned" *ngIf="sup.assignedQty > 0"></i>
                                               </td>
                                                <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.exchRateNow) | number : '1.2-2'}}</span></td> 
-                                                <td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.assignedQty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>
+                                                <td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * resource.qty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>
                                             </tr> 
                                         </table>
                                            
@@ -567,7 +567,7 @@
                                     <i class="fas fa-flag text-success" title="Quantity Assigned" *ngIf="sup.assignedQty > 0"></i>
                                   </td>
                                    <td style="width:33.33%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.exchRateNow) | number : '1.2-2'}}</span></td> 
-                                    <td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.assignedQty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>
+                                    <td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * item.qty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>
                                 </tr> 
                             </table>
                                
