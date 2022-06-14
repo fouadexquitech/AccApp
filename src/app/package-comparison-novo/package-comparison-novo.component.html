@@ -439,7 +439,7 @@
                             </td>
                             
                         </tr>
-                        <tr>
+                        <tr class="bg-secondary text-white">
                             <td [attr.colspan]="SupplierPackagesList.length + 4"><strong>Technical Conditions</strong></td>
                           </tr>
                           <tr>
@@ -463,7 +463,7 @@
                            
                           
                           </tr>
-                          <tr>
+                          <tr class="bg-secondary text-white">
                             <td [attr.colspan]="SupplierPackagesList.length + 4"><strong>Commercial Conditions</strong></td>
                           </tr>
                           <tr>
@@ -644,7 +644,7 @@
                             </td>
                             
                         </tr>
-                        <tr *ngIf="techConditionsReplies?.length > 0">
+                        <tr *ngIf="techConditionsReplies?.length > 0" class="bg-secondary text-white">
                             <td [attr.colspan]="SupplierPackagesList.length + 10"><strong>Technical Conditions</strong></td>
                         </tr>
                         <tr>
@@ -668,7 +668,7 @@
                            
                           
                           </tr>
-                        <tr *ngIf="comConditionsReplies.length > 0">
+                        <tr *ngIf="comConditionsReplies.length > 0" class="bg-secondary text-white">
                             <td [attr.colspan]="SupplierPackagesList.length + 10"><strong>Commercial Conditions</strong></td>
                         </tr>
                         <tr>
@@ -735,7 +735,7 @@
                                 <table class="table">
                                 <tr>
                                    
-                                    <td class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.assignedQty * sup.exchRateNow) | number : '1.2-2'}}</span> 
+                                    <td class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.totalPrice | number : '1.2-2'}}</span> 
                                      
                                     </td>
                                 </tr> 
