@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { SearchInput } from '../assign-package/assign-package.model';
 import { TechConditions } from '../package-comparison/package-comparison.model';
-import { SupplierInput, SupplierInputList } from './package-supplier.model';
+import { AssignPackageTemplate, SupplierInput, SupplierInputList } from './package-supplier.model';
 
 @Injectable({
   providedIn: 'root'
@@ -42,8 +43,15 @@ export class PackageSupplierService {
     );
   }
 
-  AssignPackageSuppliers(PackId: number, supInputList: SupplierInputList[], byBoq : number): Observable<any> {
-    return this.http.post(this.baseUrl + 'SupplierPackages/AssignPackageSuppliers?packId=' + PackId + '&ByBoq=' + byBoq, supInputList).pipe(
+  AssignPackageSuppliers(assignPackageTemplate : AssignPackageTemplate, attachements : File[]): Observable<any> {
+
+    const formData = new FormData();
+  
+    formData.append('assignPackageTemplate' , JSON.stringify(assignPackageTemplate));
+    attachements.forEach(attachement =>{
+    formData.append(attachement?.name, attachement , attachement?.name);
+  });
+    return this.http.post(this.baseUrl + 'SupplierPackages/AssignPackageSuppliers', formData).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
@@ -92,6 +100,7 @@ export class PackageSupplierService {
       map(res => res), catchError(this.handleError)
     );
   }
+
 
   AddRevision(PackageSupplierId: number, PackSuppDate: string, input: File, CurrencyId : number, ExchangeRate : number): Observable<any> {
     const formData = new FormData();

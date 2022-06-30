@@ -6,14 +6,16 @@ import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { BOQDivList, RESDivList, RESTypeList, SearchInput, SheetDescList } from '../assign-package/assign-package.model';
 import { AssignPackageService } from '../assign-package/assign-package.service';
-import { AssignSupplierGroup, AssignSuppliertBoq, AssignSuppliertRes, boqItem, DisplayCondition, Group, PackageSuppliersPrice, ressourceItem, RevisionDetails, SupplierBOQ, SupplierGroups, SupplierPercent, SupplierQty, SupplierResrouces, TopManagement, TopManagementTemplate } from '../package-comparison/package-comparison.model';
+import { AssignSupplierGroup, AssignSuppliertBoq, AssignSuppliertRes, boqItem, DisplayCondition, Group, PackageSuppliersPrice, ressourceItem, RevisionDetails, SupplierBOQ, SupplierGroups, SupplierPercent, SupplierQty, SupplierResrouces, TopManagement, TopManagementAttachement, TopManagementTemplate } from '../package-comparison/package-comparison.model';
 import { PackageComparisonService } from '../package-comparison/package-comparison.service';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { GroupingBoq, GroupingBoqGroup, GroupingPackageSupplierPrice, GroupingResource } from '../package-groups/package-groups.model';
-import { SupplierPackagesList } from '../package-supplier/package-supplier.model';
-import { FieldType } from '../_models';
+import { SupplierList, SupplierPackagesList } from '../package-supplier/package-supplier.model';
+import { FieldType, Language } from '../_models';
 import {environment} from '../../environments/environment';
 import { PackageSupplierService } from '../package-supplier/package-supplier.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LoginService } from '../login/login.service';
 declare var $: any;
 @Component({
   selector: 'app-package-comparison-novo',
@@ -73,6 +75,7 @@ export class PackageComparisonNovoComponent implements OnInit {
   generatingFile : boolean = false;
   topManagementAttachement :  File | null;
   emailTemplate : string = "";
+  languages = Language.languages;
 
   editorConfig: AngularEditorConfig = {
     editable: true,
@@ -117,12 +120,22 @@ export class PackageComparisonNovoComponent implements OnInit {
     
     ]
 };
+
+formEmailTemplate! : FormGroup;
+formEmailSubmitted : boolean = false;
+topManagementAttachements : TopManagementAttachement[] = [];
+listCC : string[] = [];
+maxAttachements : number = 5;
+supplierList : SupplierList[] = [];
+selectedSupplier : SupplierList = null;
   
   constructor(private router: Router, 
     private packageComparisonService: PackageComparisonService,
     private assignPackageService : AssignPackageService,
     private packageSupplierService : PackageSupplierService,
-    private toastr : ToastrService) { 
+    private toastr : ToastrService,
+    private formBuilder : FormBuilder,
+    private loginService : LoginService) { 
     if (this.router.getCurrentNavigation().extras.state != undefined) {
       this.packageId= this.router.getCurrentNavigation().extras.state.packageId;
       this.packageName = this.router.getCurrentNavigation().extras.state.packageName;
@@ -141,11 +154,20 @@ export class PackageComparisonNovoComponent implements OnInit {
     this.onSearch();
     this.getTechCondReplies();
     this.getComCondReplies();
+    this.GetSupplierList();
   }
 
   isResourceSelected(boqSeq : number)
   {
     return false;
+  }
+
+  GetSupplierList() {
+    this.packageSupplierService.GetSupplierList(this.packageId).subscribe((data) => {
+      if (data) {
+        this.supplierList = data;
+      }
+    });
   }
 
   getPercByResource(revisionDetails : RevisionDetails[], resourceID : number, itemO : string)
@@ -462,21 +484,54 @@ export class PackageComparisonNovoComponent implements OnInit {
     $("#modalEmail").modal('hide');
   }
 
+  get f()
+  {
+    return this.formEmailTemplate.controls;
+  }
+
   openSendEmailModal()
   {
+    this.formEmailSubmitted = false;
+    this.topManagementAttachements = [];
+    this.listCC = [];
+    this.formEmailTemplate =  this.formBuilder.group(
+      {
+        selectedTopManagementList : [null, Validators.required],
+        listCC :[null,[]],
+        language: [null, Validators.required],
+        template: [null, Validators.required]
+      }
+      
+    );
+
     this.topManagementAttachement = null;
     //this.emailTemplate = "";
-    this.getEmailTemplate();
-    this.selectedTopManagementList = [];
+    //this.getEmailTemplate();
+    
     this.getManagementEmail();
 
     $("#modalEmail").modal('show');
   }
 
-  getEmailTemplate()
+  onLanguageChange(event : any)
   {
-      this.packageSupplierService.GetEmailTemplate('0').subscribe(data=>{
-        this.emailTemplate = data?.etContent;
+     
+      let select = event.target as HTMLInputElement;
+      let lang = select.value;
+      if(lang)
+      {
+        this.getEmailTemplate(lang);
+      }
+      else
+      {
+        this.f.template.setValue('');
+      }
+  }
+
+  getEmailTemplate(lang : string)
+  {
+      this.packageSupplierService.GetEmailTemplate(lang).subscribe(data=>{
+        this.f.template.setValue(data?.etContent);
         
       });
   }
@@ -488,6 +543,7 @@ export class PackageComparisonNovoComponent implements OnInit {
           this.topManagementList = data;
       });
   }
+  
 
   generatePDF()
   {
@@ -600,18 +656,72 @@ export class PackageComparisonNovoComponent implements OnInit {
       }
   }
 
+  generateSupplierContract()
+  {
+      if(!this.selectedSupplier)
+      {
+          this.toastr.error('Please select a supplier');
+          return;
+      }
+
+      this.packageComparisonService.generateSuppliersContractsExcel(this.packageId, this.selectedSupplier?.supID, this.SearchInput).subscribe(res=>{
+          if(res)
+          {
+            let a = document.createElement('a');
+            a.id = 'downloader';
+            a.target = '_blank'; 
+            a.style.visibility = "hidden";
+            document.body.appendChild(a);
+            a.href = environment.baseApiUrl +'api/RevisionDetails/DownloadFile?filename=' + res;
+            a.click();
+          }
+          else
+          {
+              this.toastr.error('Error Downloading File');
+          }
+      });
+  }
+
+  CloseContractModal()
+  {
+      $('#generateContractModal').modal('hide');
+  }
+
+  openGenerateContract()
+  {
+    this.selectedSupplier = null;
+    $('#generateContractModal').modal('show');
+  }
+
   sendEmail()
   {
-      if(this.selectedTopManagementList.length == 0 || this.topManagementAttachement == null || this.emailTemplate == "")
+      this.formEmailSubmitted = true;
+      
+      if(this.formEmailTemplate.invalid)
       {
           this.toastr.error('Fields are required', '');
           return;
       }
 
+      /*if(this.topManagementAttachements.length == 0)
+      {
+        this.toastr.error('Please add your attachement', '');
+          return;
+      }*/
+
       this.sendingEmail = true;
-      let topManagementTemplate : TopManagementTemplate = { packageId : this.packageId, topManagements : this.selectedTopManagementList, template : this.emailTemplate};
-    
-      this.packageComparisonService.sendCompToManagement(topManagementTemplate, this.topManagementAttachement).subscribe(data=>{
+      let topManagementTemplate : TopManagementTemplate = { packageId : this.packageId, 
+        topManagements : this.f.selectedTopManagementList?.value, 
+        template : this.f.template?.value,
+        listCC : this.f.listCC.value, userName : this.loginService.userValue?.usrId };
+        
+        let files : File[] = [];
+        this.topManagementAttachements.forEach(file=>{
+          files.push(file.file);
+        });
+        
+        
+        this.packageComparisonService.sendCompToManagement(topManagementTemplate, files).subscribe(data=>{
         this.sendingEmail = false;
           if(data)
           {
@@ -621,16 +731,26 @@ export class PackageComparisonNovoComponent implements OnInit {
       });
   }
 
-  onFileSelect(event : any)
+  removeAttachement(index : number)
+  {
+    this.topManagementAttachements.splice(index, 1);
+  }
+
+  addAttachement()
+  {
+      this.topManagementAttachements.push({id : 0, file : null});
+  }
+
+  onFileSelect(event : any, index : number)
   {
     if (event.target.files.length > 0) {
 
       const file = event.target.files[0];
-      this.topManagementAttachement = file;
+      this.topManagementAttachements[index].file = file;
     }
     else
     {
-      this.topManagementAttachement = null;
+      this.topManagementAttachements[index].file = null;
     }
   }
 
@@ -685,7 +805,7 @@ export class PackageComparisonNovoComponent implements OnInit {
     {
     if (!qtyIsValid) 
     {
-        this.toastr.error("Invalid total quantities");
+        this.toastr.error("Sum of quantities should be less then or equals to the resource quantity");
         this.supplierResrouces = [];
         this.supplierResourceQty = [];
         qtyIsValid = true;
@@ -763,7 +883,7 @@ export class PackageComparisonNovoComponent implements OnInit {
     {
     if (!qtyIsValid) 
     {
-        this.toastr.error("Invalid total quantities");
+        this.toastr.error("Sum of quantities should be less then or equals to the item quantity");
         this.supplierBoq = [];
         this.supplierBoqQty = [];
         qtyIsValid = true;
@@ -841,7 +961,7 @@ export class PackageComparisonNovoComponent implements OnInit {
           {
             if (!qtyIsValid) 
             {
-                this.toastr.error("Invalid total quantities");
+                this.toastr.error("Sum of quantities should be less then or equals to the group quantity");
                 this.supplierGroups = [];
                 this.supplierGroupQty = [];
                 qtyIsValid = true;

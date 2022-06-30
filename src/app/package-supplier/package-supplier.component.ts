@@ -3,17 +3,18 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
-import { SupplierInput, SupplierList, SupplierPackagesList, SupplierPackagesRevList, CurrencyList, ExchangeRate, RevisionFieldsList, RevisionDetailsList, SupplierInputList, ComercialCond } from './package-supplier.model';
+import { SupplierInput, SupplierList, SupplierPackagesList, SupplierPackagesRevList, CurrencyList, ExchangeRate, RevisionFieldsList, RevisionDetailsList, SupplierInputList, ComercialCond, AssignPackageTemplate } from './package-supplier.model';
 import { PackageSupplierService } from './package-supplier.service';
 import { environment } from '../../environments/environment';
 import { ProjectCurrency } from '../login/login.model';
 import { EmailTemplate, FieldType, Language } from '../_models';
 import { ConfirmationDialogService } from '../_components/confirmation-dialog/confirmation-dialog.service';
 import { OriginalBoqModel } from '../assign-package/assign-package.model';
-import { Group, TblComCond, TechConditions } from '../package-comparison/package-comparison.model';
+import { Group, TblComCond, TechConditions, TopManagementAttachement } from '../package-comparison/package-comparison.model';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { ComparisonPackageGroup } from '../package-groups/package-groups.model';
 import { PackageGroupsService } from '../package-groups/package-groups.service';
+import { LoginService } from '../login/login.service';
 
 declare var $: any;
 @Component({
@@ -129,6 +130,9 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
     ]
 };
 
+topManagementAttachements : TopManagementAttachement[] = [];
+maxAttachements : number = 5;
+
   constructor(private router: Router, 
     private packageSupplierService: PackageSupplierService, 
     private spinner: NgxSpinnerService, 
@@ -136,7 +140,8 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
     private formBuilder : FormBuilder,
     private route: ActivatedRoute,
     private confirmationDialogService: ConfirmationDialogService,
-    private packageGroupsService : PackageGroupsService) {
+    private packageGroupsService : PackageGroupsService,
+    private loginService : LoginService) {
     /*if (this.router.getCurrentNavigation().extras.state != undefined) {
       this.PackageId = this.router.getCurrentNavigation().extras.state.packageId;
     } else {
@@ -346,6 +351,7 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
         this.SupplierList = data;
       }
     });
+    
   }
 
   checkIfItemExistsInResources(arrRevDetails : RevisionDetailsList[], itemO : string)
@@ -371,8 +377,32 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
     });
   }*/
 
+  onAttachementSelect(event : any, index : number)
+  {
+    if (event.target.files.length > 0) {
+
+      const file = event.target.files[0];
+      this.topManagementAttachements[index].file = file;
+    }
+    else
+    {
+      this.topManagementAttachements[index].file = null;
+    }
+  }
+
+  removeAttachement(index : number)
+  {
+    this.topManagementAttachements.splice(index, 1);
+  }
+
+  addAttachement()
+  {
+      this.topManagementAttachements.push({id : 0, file : null});
+  }
+
   OpenEmailTemplateModal() {
     this.lstLanguages = Language.languages;
+    this.topManagementAttachements = [];
     this.SupplierInputList = [];
     this.formEmailTemplate = this.formBuilder.group(
       {
@@ -468,7 +498,22 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
         this.SupplierInputList.forEach(sup=>{
           sup.emailTemplate = this.f.template.value;
         });
-        this.packageSupplierService.AssignPackageSuppliers(this.PackageId, this.SupplierInputList, Number(localStorage.getItem('assignByBoqOnly'))).subscribe((data) => {
+
+        let assignPackageTemplate : AssignPackageTemplate = {
+          byBoq : Number(localStorage.getItem('assignByBoqOnly')),
+          listAttach : [],
+          listCC : [],
+          packId : this.PackageId,
+          supInputList : this.SupplierInputList,
+          userName : this.loginService.userValue?.usrId
+        };
+
+        let files : File[] = [];
+        this.topManagementAttachements.forEach(attachement=>{
+          files.push(attachement.file);
+        });
+
+        this.packageSupplierService.AssignPackageSuppliers(assignPackageTemplate, files).subscribe((data) => {
           this.isAssigning = false;
           if (data) {
             //this.spinner.hide();

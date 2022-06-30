@@ -168,6 +168,8 @@ export class TopManagementTemplate
     packageId : number = 0;
     template : string = null;
     topManagements : TopManagement[] = [];
+    listCC : string[] = [];
+    userName : string = null;
 }
 
 export class CompManagementModel
@@ -188,6 +190,12 @@ export class TechConditionGroup
 {
     public groupId : number = 0;
     public groupDescription : string = null;
+}
+
+export class TopManagementAttachement
+{
+    public id : number = 0;
+    public file : File = null;
 }
 
 

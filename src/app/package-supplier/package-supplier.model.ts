@@ -74,5 +74,15 @@ export class RevisionFieldsList
     public type? : number = null;
 }
 
+export class AssignPackageTemplate
+{
+    public supInputList : SupplierInputList[] = [];
+    public packId : number = 0;
+    public byBoq : number = 0;
+    public userName : string = null;
+    public listCC : string[] = [];
+    public listAttach : string[] = [];
+}
+
 
 

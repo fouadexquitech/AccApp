@@ -41,7 +41,7 @@ import { ConfirmBoxConfigModule, DialogConfigModule, NgxAwesomePopupModule, Toas
 import { TechnicalConditionsComponent } from './technical-conditions/technical-conditions.component';
 import { PackageGroupsComponent } from './package-groups/package-groups.component';
 import { PackageComparisonNovoComponent } from './package-comparison-novo/package-comparison-novo.component';
-
+import { TagInputModule } from 'ngx-chips';
 
 @NgModule({
   declarations: [
@@ -85,7 +85,8 @@ import { PackageComparisonNovoComponent } from './package-comparison-novo/packag
     NgSelect2Module,
     DataTablesModule,
     NgbModule,
-    AngularEditorModule
+    AngularEditorModule,
+    TagInputModule
     ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
