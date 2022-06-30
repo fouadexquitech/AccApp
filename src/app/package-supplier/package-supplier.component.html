@@ -410,6 +410,29 @@
             </div>
             <br>
             <div class="row">
+              <div class="col-sm-12 p-2">
+                <button type="button" class="btn btn-secondary" (click)="addAttachement()" [disabled]="topManagementAttachements.length > maxAttachements">Add Attachement</button>
+              </div>
+            <div class="col-sm-12 p-2">
+              
+              <table class="table">
+                <tbody>
+                  <tr *ngFor="let attachement of topManagementAttachements; let i = index">
+                    <td>
+                      <input type="file" class="form-control" (change)="onAttachementSelect($event, i)">
+                    </td>
+                    <td>
+                      <a class="btn btn-link" (click)="removeAttachement(i)"><i class="fas fa-times text-danger"></i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              
+               
+            </div>
+            </div>
+            <br>
+            <div class="row">
               <div class="col-sm-12 form-group">
                
                 <table class="table">

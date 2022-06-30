@@ -129,12 +129,25 @@ export class PackageComparisonService {
   );
  }
 
- sendCompToManagement(topManagementTemplate : TopManagementTemplate, attachement : File)
+ 
+ generateSuppliersContractsExcel(packId: number, supId : number, searchInput : SearchInput) : Observable<any> 
+ {
+   let body = JSON.stringify(searchInput);
+   return this.http.post(this.baseUrl + 'RevisionDetails/GenerateSuppliersContracts_Excel?packageId=' + packId + '&supId=' + supId, body,{headers: new HttpHeaders().set('Content-Type','application/json')}).pipe(
+     map(res => res), catchError(this.handleError)
+   );
+ }
+
+ sendCompToManagement(topManagementTemplate : TopManagementTemplate, attachements : File[])
  {
   
   const formData = new FormData();
-  formData.append('attachement' , attachement , attachement.name);
+  
   formData.append('topManagementTemplate' , JSON.stringify(topManagementTemplate));
+  attachements.forEach(attachement =>{
+    formData.append(attachement?.name, attachement , attachement?.name);
+  });
+  
   return this.http.post(this.baseUrl + 'RevisionDetails/SendCompToManagement', formData).pipe(
     map(res => res), catchError(this.handleError)
   );

@@ -57,6 +57,10 @@
                     <button type="button" class="btn btn-primary" style="float: right; width: 100%;"
                     (click)="openSendEmailModal()">Send Email</button>
                     
+                  </div>
+                  <div class="col-sm-2 form-group">
+                    <button type="button" class="btn btn-secondary" style="float: right; width: 100%;"  (click)="openGenerateContract()"
+                   >Generate Supplier Contract</button>
                   </div>     
               </div>
                   
@@ -918,6 +922,37 @@
           </div>
     </div>
 
+     <!-- Generate Supplier Contract Modal -->
+  <div class="modal fade" id="generateContractModal" tabindex="-1" aria-labelledby="generateContractModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="generateContractModalLabel">Generate Supplier Contract</h5>
+          <button type="button" class="btn-close" (click)="CloseContractModal()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-12 form-group">
+              Select Supplier
+              <ng-select [items]="supplierList"
+              bindLabel="supName" [(ngModel)]="selectedSupplier">
+                
+              </ng-select>
+            </div>
+              
+          </div>
+          <div class="modal-footer customFooter">
+            <button type="button" class="btn btn-secondary" (click)="CloseContractModal()">Close</button>
+            <button type="button" class="btn btn-primary" (click)="generateSupplierContract()">
+               
+              Generate</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
 
      <!-- Assign Package Modal -->
   <div class="modal fade" id="assignPackageModal" tabindex="-1" aria-labelledby="assignPackageLabel" aria-hidden="true">
@@ -970,31 +1005,67 @@
           <h5 class="modal-title" id="modalEmailLabel">Send Email</h5>
           <button type="button" class="btn-close" (click)="CloseSendEmailModal()" aria-label="Close"></button>
         </div>
+        <form [formGroup]="formEmailTemplate" (ngSubmit)="sendEmail()" *ngIf="formEmailTemplate">
         <div class="modal-body">
           <div class="row">
             <div class="col-sm-12 p-2">
               Select management list
               <div class="multi_default">
               <ng-select [items]="topManagementList"
-              [searchable]="true"
-              [(ngModel)]="selectedTopManagementList"
               
+              formControlName="selectedTopManagementList"
+              [ngClass]="{ 'is-invalid': formEmailSubmitted && f.selectedTopManagementList.errors }"
               [multiple]="true" bindLabel="userName">
                   <ng-template ng-optgroup-tmp let-item="item">
                       {{item.userName}}
                   </ng-template>
               </ng-select>
+              <div *ngIf="formEmailSubmitted && f.selectedTopManagementList.errors" class="invalid-feedback">
+               
+                <div *ngIf="f.selectedTopManagementList.errors.required">*Required</div>
+                
             </div>
             </div>
-            <div class="col-sm-12 form-group">
-              Template
-              <angular-editor [config]="editorConfig" [(ngModel)]="emailTemplate"></angular-editor>
-              </div>
-              
+            </div>
             <div class="col-sm-12 p-2">
-              Attachement
-              <input type="file" id="topManagementAttachement" name="topManagementAttachement"
-               class="form-control" (change)="onFileSelect($event)">
+              CC 
+              <tag-input formControlName="listCC" [modelAsStrings]="true"></tag-input>
+            </div>
+            <div class="col-sm-12 p-2">
+              Language
+              <select class="form-select" formControlName="language" (change)="onLanguageChange($event)"
+                [ngClass]="{ 'is-invalid': formEmailSubmitted && f.language.errors }">
+                  <option></option>
+                  <option *ngFor="let lan of languages" [value]="lan">{{lan}}</option>
+                </select>
+              <div *ngIf="formEmailSubmitted && f.language.errors" class="invalid-feedback">
+                <div *ngIf="f.language.errors.required">*Required</div>
+                
+            </div>
+            </div>
+            <div class="col-sm-12 p-2">
+              Template
+              <angular-editor [config]="editorConfig" formControlName="template"></angular-editor>
+              </div>
+              <div class="col-sm-12 p-2">
+                <button type="button" class="btn btn-secondary" (click)="addAttachement()" [disabled]="topManagementAttachements.length > maxAttachements">Add Attachement</button>
+              </div>
+            <div class="col-sm-12 p-2">
+              
+              <table class="table">
+                <tbody>
+                  <tr *ngFor="let attachement of topManagementAttachements; let i = index">
+                    <td>
+                      <input type="file" class="form-control" (change)="onFileSelect($event, i)">
+                    </td>
+                    <td>
+                      <a class="btn btn-link" (click)="removeAttachement(i)"><i class="fas fa-times text-danger"></i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              
+               
             </div>
           </div>
          <!-- <div class="row">
@@ -1005,10 +1076,11 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="CloseSendEmailModal()">Close</button>
-          <button type="button" class="btn btn-primary" (click)="sendEmail()" [disabled]="sendingEmail">
+          <button type="submit" class="btn btn-primary" [disabled]="sendingEmail">
             <i class="fa fa-spinner fa-spin" *ngIf="sendingEmail"></i>
             Send</button>
         </div>
+      </form>
       </div>
     </div>
 
