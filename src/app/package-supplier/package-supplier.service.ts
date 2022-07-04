@@ -149,9 +149,12 @@ export class PackageSupplierService {
     );
  }
 
- sendTechnicalConditions(packId : number)
+ sendTechnicalConditions(packId : number, listCC : string[], userName : string)
  {
-    return this.http.post(this.baseUrl + 'Conditions/SendTechnicalConditions?packId=' + packId, null).pipe(
+  let headers = new HttpHeaders().set('Content-Type','application/json');
+   
+    let body = JSON.stringify(listCC);
+    return this.http.post(this.baseUrl + 'Conditions/SendTechnicalConditions?packId=' + packId + '&userName=' + userName, body, {headers: headers}).pipe(
     map(res => res), catchError(this.handleError)
   );
  }

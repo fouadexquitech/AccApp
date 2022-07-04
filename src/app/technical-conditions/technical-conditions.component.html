@@ -25,9 +25,8 @@
                                 <button class="btn btn-primary" (click)="addTechnicalCondition()">Add</button>
                             </div>
                             <div class="col-3">
-                                <button class="btn btn-info" (click)="sendTechnicalConditions()" [disabled]="isSendingTechConditions">
-                            
-                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="isSendingTechConditions"></span>
+                                <button class="btn btn-info" (click)="openSendTechnicalConditionsModal()">
+                                                                
                                     Send Technical Conditions</button>
                             </div>
                         </div>
@@ -115,6 +114,33 @@
            Submit</button>
         </div>
     </form>
+      </div>
+    </div>
+  </div>
+
+  <!--Send Technical Conditions Modal -->
+  <div class="modal fade" id="sendTechnicalConditionsModal" tabindex="-1" aria-labelledby="sendTechnicalConditionsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="sendTechnicalConditionsModalLabel">Send Technical Conditions</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+                <div class="col-sm-12 p-2">
+                CC List    
+                <tag-input [(ngModel)]="listCC" [modelAsStrings]="true"></tag-input>
+                          
+                </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeSendTechnicalConditionsModal()">Close</button>
+          <button type="button" class="btn btn-primary" (click)="sendTechnicalConditions()" [disabled]="isSendingTechConditions">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="isSendingTechConditions"></span>
+           Send</button>
+        </div>
       </div>
     </div>
   </div>

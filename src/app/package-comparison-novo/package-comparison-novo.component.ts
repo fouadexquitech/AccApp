@@ -128,6 +128,7 @@ listCC : string[] = [];
 maxAttachements : number = 5;
 supplierList : SupplierList[] = [];
 selectedSupplier : SupplierList = null;
+generatingContract : boolean = false;
   
   constructor(private router: Router, 
     private packageComparisonService: PackageComparisonService,
@@ -498,7 +499,7 @@ selectedSupplier : SupplierList = null;
       {
         selectedTopManagementList : [null, Validators.required],
         listCC :[null,[]],
-        language: [null, Validators.required],
+        //language: [null, Validators.required],
         template: [null, Validators.required]
       }
       
@@ -511,6 +512,7 @@ selectedSupplier : SupplierList = null;
     this.getManagementEmail();
 
     $("#modalEmail").modal('show');
+    this.getEmailTemplate('0');
   }
 
   onLanguageChange(event : any)
@@ -664,7 +666,7 @@ selectedSupplier : SupplierList = null;
           return;
       }
 
-      this.packageComparisonService.generateSuppliersContractsExcel(this.packageId, this.selectedSupplier?.supID, this.SearchInput).subscribe(res=>{
+      this.packageComparisonService.generateSuppliersContractsExcel(this.packageId, this.SearchInput).subscribe(res=>{
           if(res)
           {
             let a = document.createElement('a');
@@ -689,8 +691,36 @@ selectedSupplier : SupplierList = null;
 
   openGenerateContract()
   {
-    this.selectedSupplier = null;
-    $('#generateContractModal').modal('show');
+    
+      this.generatingContract = true;
+      
+      this.packageComparisonService.generateSuppliersContractsExcel(this.packageId, this.SearchInput).subscribe(res=>{
+        this.generatingContract = false;
+        if(res)
+        {
+          let a = document.createElement('a');
+          a.id = 'downloader';
+          a.target = '_blank'; 
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          let arr : string[] = res;
+          arr.forEach(path=>{
+            a.href = environment.baseApiUrl +'api/RevisionDetails/DownloadFile?filename=' + path;
+            a.click();
+
+          });
+          
+          
+         
+        }
+        else
+        {
+            this.toastr.error('Error Downloading File');
+        }
+    });
+
+    
+    
   }
 
   sendEmail()
