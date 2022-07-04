@@ -130,10 +130,10 @@ export class PackageComparisonService {
  }
 
  
- generateSuppliersContractsExcel(packId: number, supId : number, searchInput : SearchInput) : Observable<any> 
+ generateSuppliersContractsExcel(packId: number, searchInput : SearchInput) : Observable<any> 
  {
    let body = JSON.stringify(searchInput);
-   return this.http.post(this.baseUrl + 'RevisionDetails/GenerateSuppliersContracts_Excel?packageId=' + packId + '&supId=' + supId, body,{headers: new HttpHeaders().set('Content-Type','application/json')}).pipe(
+   return this.http.post(this.baseUrl + 'RevisionDetails/GenerateSuppliersContracts_Excel?packageId=' + packId, body,{headers: new HttpHeaders().set('Content-Type','application/json')}).pipe(
      map(res => res), catchError(this.handleError)
    );
  }
