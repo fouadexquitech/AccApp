@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
+import { LoginService } from '../login/login.service';
 import { TblTechCond, TechConditionGroup, TechConditions } from '../package-comparison/package-comparison.model';
 import { PackageComparisonService } from '../package-comparison/package-comparison.service';
 import { ComparisonPackageGroup } from '../package-groups/package-groups.model';
@@ -28,10 +29,11 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
   packageName : string;
   filter : string = '';
   isSendingTechConditions : boolean = false;
+  listCC : string[] = [];
   technicalConditionsModalLabel : string = '';
   constructor(private router: Router, private packageComparisonService : PackageComparisonService, private packageSupplierService : PackageSupplierService,
     private packageGroupsService : PackageGroupsService, private formBuilder: FormBuilder,
-    private route : ActivatedRoute, private toastrService : ToastrService) {
+    private route : ActivatedRoute, private toastrService : ToastrService, private loginService : LoginService) {
     /*if (this.router.getCurrentNavigation().extras.state != undefined) {
       this.packageId = this.router.getCurrentNavigation().extras.state.packageId;
       this.packageName = this.router.getCurrentNavigation().extras.state.pkgeName;
@@ -53,15 +55,33 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
      });
   }
 
+  openSendTechnicalConditionsModal()
+  {
+    
+    this.listCC = [];
+    $("#sendTechnicalConditionsModal").modal('show');
+    
+  }
+
+  closeSendTechnicalConditionsModal()
+  {
+    
+    
+    $("#sendTechnicalConditionsModal").modal('hide');
+    
+  }
+
   sendTechnicalConditions()
   {
+
     this.isSendingTechConditions = true;
-    this.packageSupplierService.sendTechnicalConditions(Number(this.packageId)).subscribe(data=>{
+    this.packageSupplierService.sendTechnicalConditions(Number(this.packageId), this.listCC, this.loginService.userValue?.usrId).subscribe(data=>{
       this.isSendingTechConditions = false;
         if(data)
         {
-          this.toastrService.success("Technical conditions sent successfully");
           
+          this.toastrService.success("Technical conditions sent successfully");
+          $("#sendTechnicalConditionsModal").modal('hide');
           
         }
         else

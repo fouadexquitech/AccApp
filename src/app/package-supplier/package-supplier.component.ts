@@ -218,7 +218,7 @@ maxAttachements : number = 5;
   sendTechnicalConditions()
   {
       this.isSendingTechConditions = true;
-      this.packageSupplierService.sendTechnicalConditions(Number(this.PackageId)).subscribe(data=>{
+      this.packageSupplierService.sendTechnicalConditions(Number(this.PackageId), [], this.loginService.userValue?.usrId).subscribe(data=>{
         this.isSendingTechConditions = false;
           if(data)
           {
