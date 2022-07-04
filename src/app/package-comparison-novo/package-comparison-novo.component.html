@@ -1079,7 +1079,7 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="CloseSendEmailModal()">Close</button>
           <button type="submit" class="btn btn-primary" [disabled]="sendingEmail">
-            <i class="fa fa-spinner fa-spin" *ngIf="sendingEmail"></i>
+                <span *ngIf="sendingEmail" class="spinner-border spinner-border-sm mr-1"></span>
             Send</button>
         </div>
       </form>
