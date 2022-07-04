@@ -498,7 +498,7 @@ generatingContract : boolean = false;
     this.formEmailTemplate =  this.formBuilder.group(
       {
         selectedTopManagementList : [null, Validators.required],
-        listCC :[null,[]],
+        listCC :[[],[]],
         //language: [null, Validators.required],
         template: [null, Validators.required]
       }
@@ -738,7 +738,7 @@ generatingContract : boolean = false;
         this.toastr.error('Please add your attachement', '');
           return;
       }*/
-
+      console.log(this.f.listCC.value);
       this.sendingEmail = true;
       let topManagementTemplate : TopManagementTemplate = { packageId : this.packageId, 
         topManagements : this.f.selectedTopManagementList?.value, 
