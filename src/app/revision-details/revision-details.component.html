@@ -1,122 +1,181 @@
+<app-nav></app-nav>
+<section>
+  <nav aria-label="breadcrumb" class="p-2">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page"><a [routerLink]="['/package-list']">Packages List</a></li>
+      <li class="breadcrumb-item active" aria-current="page"><a
+          style="color:#0d6efd; cursor: pointer; text-decoration: underline;" (click)="goBack()">{{packageName}}</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page"><strong>Revision Details</strong></li>
 
-  
-        <app-nav></app-nav>
-      <section>
-        <nav aria-label="breadcrumb" class="p-2">
-          <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
-              <li class="breadcrumb-item active" aria-current="page"><a [routerLink]="['/package-list']">Packages List</a></li>
-              <li class="breadcrumb-item active" aria-current="page"><a style="color:#0d6efd; cursor: pointer; text-decoration: underline;" (click)="goBack()">{{packageName}}</a></li>
-              <li class="breadcrumb-item active" aria-current="page"><strong>Revision Details</strong></li>
-             
-          </ol>
-        </nav>
-    <div class="container-fluid">
+    </ol>
+  </nav>
+  <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-12 card">
-            <div class="card-header">
-             
-                <h3 *ngIf="supplierPackage && Revision">Supplier {{supplierPackage.psSupName}} | Revision {{Revision.prRevNo}} | {{Revision.prRevDate | date:'dd-MM-YYYY'}}</h3>
-                <div class="row">
-                    <div class="col-sm-3 form-group p-2">
-                        <label>Item</label>
-                        <input type="text" class="form-control" id="filterItemDesc">
-                    </div>
-                    <div class="col-sm-3 form-group p-2" [ngStyle]="{'display': (psByBoq == 0) ? 'block' : 'none'}">
-                        <label>Resource</label>
-                        <input type="text" class="form-control" id="filterResource">
-                    </div>
-                    <div class="col-sm-3 form-group p-2">
-                        <br>
-                        <button class="btn btn-primary" (click)="searchRevDetails()">Search</button>
-                    </div>
-                    <div class="col-sm-3 form-group p-2">
-                      <br>
-                      <button class="btn btn-secondary" (click)="goBack()">Back to Package Supplier</button>
-                  </div>
-                </div>
+      <div class="col-sm-12 card">
+        <div class="card-header">
+
+          <h3 *ngIf="supplierPackage && Revision">Supplier {{supplierPackage.psSupName}} | Revision {{Revision.prRevNo}}
+            | {{Revision.prRevDate | date:'dd-MM-YYYY'}}</h3>
+          <div class="row">
+            <div class="col-sm-3 form-group p-2">
+              <label>Item</label>
+              <input type="text" class="form-control" id="filterItemDesc">
             </div>
-            <div class="card-body">
-                <table *ngIf="RevisionDetailsList.length > 0 && psByBoq == 1" class="table" [id]="'tblRevisionDtl-' + Revision.prRevId">
-                    <thead>
-                      <tr>
-                        
-                        <th>Item Description</th>
-                        <th>Price</th>
-                    </tr>
-                    </thead>
+            <div class="col-sm-3 form-group p-2" [ngStyle]="{'display': (psByBoq == 0) ? 'block' : 'none'}">
+              <label>Resource</label>
+              <input type="text" class="form-control" id="filterResource">
+            </div>
+            <div class="col-sm-3 form-group p-2">
+              <br>
+              <button class="btn btn-primary" (click)="searchRevDetails()">Search</button>
+            </div>
+            <div class="col-sm-3 form-group p-2">
+              <br>
+              <button class="btn btn-secondary" (click)="goBack()">Back to Package Supplier</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-body">
+          <table *ngIf="RevisionDetailsList.length > 0 && psByBoq == 1" class="table"
+            [id]="'tblRevisionDtl-' + Revision.prRevId">
+            <thead>
+              <tr>
+                <th>Item Description</th>
+                <th>Quantity</th>
+                <th>U. Price</th>
+                <th>Discount %</th>
+                <th>Final U. Price</th>
+                <th>Total Price</th>
+                <th>Reason For Fill Missing Price</th>
+                <th>Added Item</th>
+                <th>Added Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let dt of RevisionDetailsList; let k = index">
+                <td>{{dt.rdItemDescription}}</td>
+                <td>{{dt.rdQty | number }}</td>
+                <td style="width: 10% ;">
+                  <input type="hidden" [value]="dt.rdResourceSeq">
+                  <input type="hidden" [value]="dt.rdBoqItem">
+                  <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdPrice" type="number"
+                    [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
+                  <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdPrice | number }}</span>
+                </td>
+                <td  style="width: 8% ;">
+                  <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdDiscount" type="number"
+                    [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
+                  <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdDiscount}}</span>
+                </td>
+                <td>
+                  <span>{{dt.rdPriceAfterDiscount | number}}</span>
+                </td>
+                <td>
+                  <span>{{dt.rdTotalPrice | number }}</span>
+                </td>
+                <td>
+                  <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdMissedPriceReason" type="text" id="txtReason"
+                    [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
+                </td>
+                <td>
+                  <ng-container *ngIf="dt.rdAddedItem == 1"> 
+                    <span> Yes </span>
+                  </ng-container> 
+                </td>
+                <td>
+                  <span>{{dt.rdAddedItemOn | date: 'dd/MM/yyyy'}}</span>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td></td>
+                <td colspan="6" style="text-align: right;">
+                  <button class="btn btn-success btn-block" [disabled]="saving"
+                    (click)="UpdateRevisionPricesByBoq(Revision.prRevId, 'tblRevisionDtl-' + Revision.prRevId)">
+                    <i class="fa fa-spinner fa-spin" *ngIf="saving"></i>
+                    Update Prices</button>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <table *ngIf="RevisionDetailsList.length > 0 && psByBoq == 0" class="table"
+            [id]="'tblRevisionDtl-' + Revision.prRevId">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Resources</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let it of RevisionDetailsBoqItems; let that = index">
+                <td width="50%">
+                  {{it.descriptionO}}
+                </td>
+                <td>
+                  <table class="table" *ngIf="checkIfItemExistsInResources(RevisionDetailsList, it.itemO) > 0">
                     <tbody>
-                        <tr *ngFor="let dt of RevisionDetailsList; let k = index">
-                          <td>{{dt.rdItemDescription}}</td>
-                          <td>
-                            <input type="hidden" [value]="dt.rdResourceSeq">  
-                            <input type="hidden" [value]="dt.rdBoqItem">
-                            <input *ngIf="dt.rdMissedPrice == 1" 
-                            [value]="dt.rdPrice" type="number"
-                            [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                            <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdPrice}}</span></td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                      <tr>
-                        <td></td>
-                        <td style="text-align: right;">
-                          <button class="btn btn-success btn-block" [disabled]="saving"
-                          (click)="UpdateRevisionPricesByBoq(Revision.prRevId, 'tblRevisionDtl-' + Revision.prRevId)">
-                          <i class="fa fa-spinner fa-spin" *ngIf="saving"></i>
-                          Update Prices</button>
+                      <tr *ngFor="let dt of getResourcesPerItem(RevisionDetailsList, it.itemO)">
+                        <td>
+                          {{dt.rdItemDescription}}
                         </td>
-                      </tr>
-                    </tfoot>
-                  </table>
-                  <table *ngIf="RevisionDetailsList.length > 0 && psByBoq == 0" class="table" [id]="'tblRevisionDtl-' + Revision.prRevId">
-                    <thead>
-                      <tr>
-                        <th>Item</th>
-                        <th>Resources</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let it of RevisionDetailsBoqItems; let that = index">
-                        <td width="50%">
-                          {{it.descriptionO}}
+                        <td>{{dt.rdQty}}</td>
+                        <td style="width:30%">
+                          <input type="hidden" [value]="dt.rdResourceSeq">
+                          <input *ngIf="dt.rdMissedPrice == 1"
+                            [id]="'price-' + dt.rdResourceSeq + '-' + + Revision.prRevId" [value]="dt.rdPrice"
+                            type="number"
+                            [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
+                        </td>
+                        <td  style="width: 8% ;">
+                          <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdDiscount" type="number"
+                            [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
+                          <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdDiscount}}</span>
                         </td>
                         <td>
-                          <table class="table" *ngIf="checkIfItemExistsInResources(RevisionDetailsList, it.itemO) > 0">
-                              
-                              <tbody>
-                                <tr *ngFor="let dt of getResourcesPerItem(RevisionDetailsList, it.itemO)">
-                                  <td>
-                                    {{dt.rdItemDescription}}
-                                  </td>
-                                  <td style="width:30%">
-                                    <input type="hidden" [value]="dt.rdResourceSeq">
-                                    <input *ngIf="dt.rdMissedPrice == 1" [id]="'price-' + dt.rdResourceSeq + '-' + + Revision.prRevId"
-                                    [value]="dt.rdPrice" type="number"
-                                    [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                                    <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdPrice | number : '1.2-2'}}</span></td>
-                                </tr>
-                              </tbody>
-                          </table>
-                          
+                          <span>{{dt.rdPriceAfterDiscount}}</span>
                         </td>
-
+                        <td>
+                          <span>{{dt.rdTotalPrice}}</span>
+                        </td>
+                        <td>
+                          <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdMissedPriceReason" type="text" id="txtReason"
+                            [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
+                        </td>
+                        <td>
+                          <ng-container *ngIf="dt.rdAddedItem == 1"> 
+                            <span> Yes </span>
+                          </ng-container> 
+                        </td>
+                        <td>
+                          <span>{{dt.rdAddedItemOn | date: 'dd/MM/yyyy'}}</span>
+                        </td>
                       </tr>
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td></td>
-                      <td style="text-align: right;">
-                        <button class="btn btn-success btn-block" [disabled]="saving"
-                        (click)="UpdateRevisionPrices(Revision.prRevId, 'tblRevisionDtl-' + Revision.prRevId)">
-                        <span class="spinner-border spinner-border-sm" *ngIf="saving"></span>
-                        Update Prices</button>
-                      </td>
-                    </tr>
-                  </tfoot>
+                    </tbody>
                   </table>
-            </div>
+
+                </td>
+
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td></td>
+                <td style="text-align: right;">
+                  <button class="btn btn-success btn-block" [disabled]="saving"
+                    (click)="UpdateRevisionPrices(Revision.prRevId, 'tblRevisionDtl-' + Revision.prRevId)">
+                    <span class="spinner-border spinner-border-sm" *ngIf="saving"></span>
+                    Update Prices</button>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
         </div>
+      </div>
     </div>
   </div>
-  </section>
+</section>

@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { LoginService } from '../login/login.service';
-import { TblTechCond, TechConditionGroup, TechConditions } from '../package-comparison/package-comparison.model';
+import { TechCondModel,AccConditions, TblTechCond, TechConditionGroup, TechConditions } from '../package-comparison/package-comparison.model';
 import { PackageComparisonService } from '../package-comparison/package-comparison.service';
 import { ComparisonPackageGroup } from '../package-groups/package-groups.model';
 import { PackageGroupsService } from '../package-groups/package-groups.service';
@@ -50,7 +50,7 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
       
       this.packageId = Number(params["packageId"]);
       this.packageName = params["packageName"];
-     
+    
       this.getTechnicalConditionsList();
      });
   }
@@ -65,24 +65,45 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
 
   closeSendTechnicalConditionsModal()
   {
-    
-    
-    $("#sendTechnicalConditionsModal").modal('hide');
-    
+    $("#sendTechnicalConditionsModal").modal('hide'); 
   }
 
   sendTechnicalConditions()
   {
+    
+    let CondList : AccConditions[] = [];
+    let table = document.getElementById("tbl1") as HTMLTableElement;
+    let rows = table.rows;
+
+    for (let i = 1; i < rows.length - 1; i++)
+    {
+      let row = rows[i];
+      let cell1 = row.cells[0];
+      let condId = cell1.textContent;
+      let cell2 = row.cells[2];
+      let accCondition = cell2.childNodes[0] as HTMLInputElement;
+
+      console.log(condId);
+
+      let condList: AccConditions=
+      {
+        condId : Number(condId),
+        AccCondition:String(accCondition.value)
+      };
+      CondList.push(condList);
+    }
+
+    console.log(1);
+    let techCondModel:TechCondModel = {AccCondList:CondList,ListCC:this.listCC};
+    console.log(3);
 
     this.isSendingTechConditions = true;
-    this.packageSupplierService.sendTechnicalConditions(Number(this.packageId), this.listCC, this.loginService.userValue?.usrId).subscribe(data=>{
+    this.packageSupplierService.sendTechnicalConditions(Number(this.packageId), techCondModel, this.loginService.userValue?.usrId).subscribe(data=>{
       this.isSendingTechConditions = false;
         if(data)
-        {
-          
+        {      
           this.toastrService.success("Technical conditions sent successfully");
-          $("#sendTechnicalConditionsModal").modal('hide');
-          
+          $("#sendTechnicalConditionsModal").modal('hide');     
         }
         else
         {
@@ -165,7 +186,6 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
       if(this.mode == 'add')
       {
             
-
           let condition : TechConditions = {
             tcDescription : this.f.tcDescription?.value,
             tcPackId : this.packageId,

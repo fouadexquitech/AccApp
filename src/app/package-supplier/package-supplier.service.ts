@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { SearchInput } from '../assign-package/assign-package.model';
-import { TechConditions } from '../package-comparison/package-comparison.model';
+import { AccConditions, TechConditions, TechCondModel } from '../package-comparison/package-comparison.model';
 import { AssignPackageTemplate, SupplierInput, SupplierInputList } from './package-supplier.model';
 
 @Injectable({
@@ -102,16 +102,17 @@ export class PackageSupplierService {
   }
 
 
-  AddRevision(PackageSupplierId: number, PackSuppDate: string, input: File, CurrencyId : number, ExchangeRate : number): Observable<any> {
+  AddRevision(PackageSupplierId: number, PackSuppDate: string, input: File, CurrencyId : number, ExchangeRate : number, discount : number, addedItem : number): Observable<any> {
     const formData = new FormData();
     formData.append('ExcelFile' , input , input.name)
     return this.http.post(this.baseUrl + 'RevisionDetails/AddRevision?PackageSupplierId=' + 
     PackageSupplierId + '&PackSuppDate=' + 
     PackSuppDate + '&curId=' + 
-    CurrencyId + '&ExchRate=' + ExchangeRate, formData).pipe(
+    CurrencyId + '&ExchRate=' + ExchangeRate+ '&Discount=' + discount+'&AddedItem=' + addedItem, formData).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
+  
 
   GetRevisionDetails(RevisionId : number, itemDesc : string, resource : string)
   {
@@ -149,11 +150,11 @@ export class PackageSupplierService {
     );
  }
 
- sendTechnicalConditions(packId : number, listCC : string[], userName : string)
+ sendTechnicalConditions(packId : number, techCondModel : TechCondModel, userName : string)
  {
   let headers = new HttpHeaders().set('Content-Type','application/json');
    
-    let body = JSON.stringify(listCC);
+    let body = JSON.stringify(techCondModel);
     return this.http.post(this.baseUrl + 'Conditions/SendTechnicalConditions?packId=' + packId + '&userName=' + userName, body, {headers: headers}).pipe(
     map(res => res), catchError(this.handleError)
   );
@@ -212,7 +213,6 @@ export class PackageSupplierService {
 
  delTechConditions(item : TechConditions)
  {
-   
     return this.http.post(this.baseUrl + 'Conditions/DelTechConditions?id=' + item.tcSeq, null).pipe(
     map(res => res), catchError(this.handleError)
   );

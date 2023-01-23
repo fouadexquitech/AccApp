@@ -26,6 +26,8 @@ export class GroupingResource
     public isChecked : boolean = false;
     public qty : number = 0;
     public unitPrice : number = 0;
+    public discount : number = 0;
+    public uPriceAfterDiscount : number = 0;
     public totalPrice : number = 0;
     public validPerc : boolean = true;
     public groupingPackageSuppliersPrices : GroupingPackageSupplierPrice[] = [];
@@ -41,6 +43,8 @@ export class GroupingBoq
     public unit : string = null;
     public qty : number = 0;
     public unitPrice : number = 0;
+    public discount : number = 0;
+    public uPriceAfterDiscount : number = 0;
     public totalPrice : number = 0;
     public validPerc : boolean = true;
     public groupingPackageSuppliersPrices : GroupingPackageSupplierPrice[] = [];
@@ -69,4 +73,6 @@ export class GroupingPackageSupplierPrice
     public assignedPercentage : number = 0;
     public assignedQty : number = 0;
     public exchRateNow : number = 0;
+    public discount : number = 0;
+    public uPriceAfterDiscount : number = 0;
 }

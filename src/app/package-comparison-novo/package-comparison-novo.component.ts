@@ -718,9 +718,6 @@ generatingContract : boolean = false;
             this.toastr.error('Error Downloading File');
         }
     });
-
-    
-    
   }
 
   sendEmail()
@@ -805,16 +802,19 @@ generatingContract : boolean = false;
           resource.validPerc = true;
           this.supplierResourceQty = [];
           sups.forEach((sup, j)=>{
+          if (sup.supplierName != "Ideal"){
             totalQty += sup.assignedQty;
-            this.supplierResourceQty.push({supID : sup.supplierId, qty : sup.assignedQty});
+          }
+            this.supplierResourceQty.push({supID : sup.supplierId, qty : sup.assignedQty});        
           });
           
+          //console.log(totalQty);
+
           //alert(totalPerc);
           if(totalQty != resource.qty)
           { 
               qtyIsValid = false;
               resource.validPerc = false;
-              
           }
        
           
@@ -822,7 +822,6 @@ generatingContract : boolean = false;
             resourceID : resourceId,
             supplierPercents : [],
             supplierQtys : this.supplierResourceQty
-
           };
           this.supplierResrouces.push(newSupplierResource);
         }
@@ -884,10 +883,12 @@ generatingContract : boolean = false;
           boq.validPerc = true;
           this.supplierBoqQty = [];
           sups.forEach((sup, j)=>{
+             if (sup.supplierName != "Ideal"){
             totalQty += sup.assignedQty;
+             }
             this.supplierBoqQty.push({supID : sup.supplierId, qty : sup.assignedQty});
           });
-          
+
           //alert(totalPerc);
           if(totalQty != boq.qty)
           { 

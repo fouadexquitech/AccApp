@@ -51,6 +51,7 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
   public isValidatingExcel : boolean = false;
   selectedPackageSupplier : SupplierPackagesList;
   exchangeRate : number = 1;
+  discount : number = 0;
   exchangeRates : ExchangeRate[];
   selectedLanguage : string = '';
   selectedEmailTemplate : EmailTemplate | null;
@@ -156,7 +157,6 @@ maxAttachements : number = 5;
         if(data)
         {
             this.groups = data;
-            
         }
     });
   }
@@ -190,8 +190,6 @@ maxAttachements : number = 5;
           return;
         }
     });
-
-    
     chkAll.checked = allChecked;
   }
 
@@ -210,15 +208,12 @@ maxAttachements : number = 5;
           });
         }
     });
-    
-
-    
   }
 
   sendTechnicalConditions()
   {
       this.isSendingTechConditions = true;
-      this.packageSupplierService.sendTechnicalConditions(Number(this.PackageId), [], this.loginService.userValue?.usrId).subscribe(data=>{
+      this.packageSupplierService.sendTechnicalConditions(Number(this.PackageId), null, this.loginService.userValue?.usrId).subscribe(data=>{
         this.isSendingTechConditions = false;
           if(data)
           {
@@ -238,7 +233,6 @@ maxAttachements : number = 5;
     let result = arr.find(obj => {
       return obj.id === val
     });
-
     return result?.name;
   }
 
@@ -255,8 +249,7 @@ maxAttachements : number = 5;
     $('#fieldsListModal').modal('show');
       this.selectedSupplierName = psSupName;
       this.selectedRevisionNb = prRevNo;
-      this.getFields(revisionId);
-     
+      this.getFields(revisionId); 
   }
 
   getFields(revisionId : any)
@@ -601,7 +594,6 @@ maxAttachements : number = 5;
 
   onFileSelect(event: any) {
     if (event.target.files.length > 0) {
-
       const file = event.target.files[0];
       this.selectedFile = file;
     }
@@ -610,9 +602,18 @@ maxAttachements : number = 5;
   AddRevision() {
     this.addingRevision = true;
     var date = document.getElementById("revisionDate") as HTMLInputElement;
+    var discount = document.getElementById("discount") as HTMLInputElement;
+    var checkAddedItem= document.getElementById("addedItems") as HTMLInputElement;
     //var exchangeRate = document.getElementById("exchangeRate") as HTMLInputElement;
+    
+    let addedItem: number = 0;
+
+    if(checkAddedItem.type == 'checkbox'){
+    if (checkAddedItem.checked)
+    addedItem=1;
+    }
+  
     if (date.value) {
-      
       if(this.selectedCurrencyId > 0)
       {
         if(this.exchangeRate)
@@ -620,7 +621,7 @@ maxAttachements : number = 5;
       if (this.selectedFile != null) 
         {
           this.addingRevision = true;
-          this.packageSupplierService.AddRevision(this.selectedPsId, date.value, this.selectedFile, this.selectedCurrencyId, this.exchangeRate).subscribe((data) => {
+          this.packageSupplierService.AddRevision(this.selectedPsId, date.value, this.selectedFile, this.selectedCurrencyId, this.exchangeRate,Number(discount.value),Number(addedItem)).subscribe((data) => {
             if (data) {
               // Refresh Supplier Package Revision List
               this.addingRevision = false;
@@ -871,7 +872,9 @@ maxAttachements : number = 5;
                rowNumber : 0,
                scope : 0,
                unitO : '',
-               unitRate : 0
+               unitRate : 0,
+               assignedPackage:'',
+               qtyScope : 0
             };
             //const found = this.RevisionDetailsBoqItems.find(elem => elem.itemO === rev.rdBoqItem);
             //console.log(found);

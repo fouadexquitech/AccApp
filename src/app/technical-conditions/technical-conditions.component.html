@@ -33,11 +33,14 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table">
+                            <table class="table"  id="tbl1">
                                 <thead>
                                     <tr>
                                         <th>
                                             Description
+                                        </th>
+                                        <th>
+                                            ACC Condition
                                         </th>
                                         <th colspan="2">
                                             Actions
@@ -46,10 +49,18 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let item of list">
-                                        <td>{{item.tcDescription}}</td>
+                                        <td hidden="true">
+                                            {{item.tcSeq}}
+                                        </td> 
+                                        <td>
+                                            {{item.tcDescription}}
+                                        </td>                                                                                                          
+                                        <td>
+                                            <input type="text" id="txtAccCond" class="form-control" >
+                                        </td>
                                         <td>
                                             <a class="btn btn-link" title="Edit" (click)="editTechCond(item)"><i class="fa-solid fa-edit"></i></a>
-                                        </td>
+                                        </td>                                     
                                         <td>
                                             <a class="btn btn-link text-danger" title="Delete" (click)="deleteTechCond(item)"><i class="fa-solid fa-times"></i></a>
                                         </td>
@@ -69,7 +80,7 @@
 
 
         
-        <!--Technical Conditions Modal -->
+   <!--Technical Conditions Modal -->
    <div class="modal fade" id="technicalConditionsModal" tabindex="-1" aria-labelledby="technicalConditionsModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">

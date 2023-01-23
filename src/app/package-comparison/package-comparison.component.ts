@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
-import { BOQDivList, OriginalBoqModel, PackageList, RESDivList, RESPackageList, RESTypeList, SearchInput, SheetDescList } from '../assign-package/assign-package.model';
+import { BOQDivList,BOQLevelList, OriginalBoqModel, PackageList, RESDivList, RESPackageList, RESTypeList, SearchInput, SheetDescList } from '../assign-package/assign-package.model';
 import { AssignPackageService } from '../assign-package/assign-package.service';
 import { SupplierPackagesList } from '../package-supplier/package-supplier.model';
 import { FieldType } from '../_models';
@@ -39,7 +39,10 @@ export class PackageComparisonComponent implements OnInit {
   isShown: boolean = false; // hidden by default
   SearchInput = new SearchInput();
   BOQDivList: BOQDivList[] = [];
-  selectedBOQDivList : BOQDivList[] = []; RESDivList: RESDivList[] = [];
+  selectedBOQDivList : BOQDivList[] = []; 
+  BOQLevelList: BOQLevelList[] = [];
+  selectedBOQLevel2List : BOQLevelList[] = []; 
+  RESDivList: RESDivList[] = [];
   selectedRESDivList : RESDivList[] = [];
   RESTypeList: RESTypeList[] = [];
   selectedRESTypeList : RESTypeList[] = [];
@@ -388,11 +391,11 @@ export class PackageComparisonComponent implements OnInit {
           rowNumber : 0,
           scope : 0,
           unitO : '',
-          unitRate : 0
+          unitRate : 0,
+          assignedPackage:'',
+          qtyScope : 0
        };
        this.RevisionDetailsBoqItems.push(item);
-       
-       
       });
       //remove duplication
       this.RevisionDetailsBoqItems.forEach((el, index)=>{

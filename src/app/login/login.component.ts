@@ -108,7 +108,7 @@ export class LoginComponent implements OnInit {
     getProjects(event: any)
     {
         let select = event.target as HTMLSelectElement;
-        let dbSeq = Number(select.options[select.selectedIndex].getAttribute("ng-reflect-ng-value"));
+        let dbSeq = +this.f.country.value;
         this.loginService.getProjects(dbSeq).subscribe((data) => {
             if (data) {
               this.projects = data;

@@ -6,7 +6,7 @@
             <div class="row g-0">
               <div class="col-md-6 col-lg-5 d-none d-md-block">
                 <img
-                  src="../../assets/img/img2.webp"
+                  src="assets/img/img2.webp"
                   alt="login form"
                   class="img-responsive img-fluid" style="border-radius: 0 0 0 0; min-height: 100%;"
                 />
@@ -16,7 +16,7 @@
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <div class="d-flex align-items-center mb-3 pb-1">
                 
-                <span class="h1 fw-bold mb-0"><img src="../../assets/img/acc_logo.png"></span>
+                <span class="h1 fw-bold mb-0"><img src="assets/img/acc_logo.png"></span>
               </div>
 
               <div class="form-outline mb-4">
@@ -25,7 +25,7 @@
                 [ngClass]="{ 'is-invalid': submitted && f.country.errors }" *ngIf="countries"
                 (change)="getProjects($event)">
                    
-                        <option *ngFor="let country of countries" [ngValue]="country.dbSeq">{{ country.dbLocation }}
+                        <option *ngFor="let country of countries" [value]="country.dbSeq">{{ country.dbLocation }}
                         </option>
                     </select>
                 <div *ngIf="submitted && f.country.errors" class="invalid-feedback">

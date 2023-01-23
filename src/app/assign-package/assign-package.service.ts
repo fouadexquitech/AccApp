@@ -20,6 +20,12 @@ export class AssignPackageService {
         );
     }
 
+    GetBOQLevel2List(): Observable<any> {
+        return this.http.get(this.baseUrl + 'Search/GetBOQLevel2List').pipe(
+            map(res => res), catchError(this.handleError)
+        );
+    }
+
     GetRESDivList(): Observable<any> {
         return this.http.get(this.baseUrl + 'Search/GetRESDivList').pipe(
             map(res => res), catchError(this.handleError)
@@ -75,9 +81,16 @@ export class AssignPackageService {
         );
     }
  
-
     handleError(error: any): Promise<any> {
         console.error('An error occurred', error);
         return Promise.reject(error.message || error);
     }
+
+    ExportBoqExcel(input: AssignPackages) : Observable<any> 
+    {
+      return this.http.post(this.baseUrl + 'Package/ExportBoqExcel', input).pipe(
+        map(res => res), catchError(this.handleError)
+    );
+    }
+    
 }

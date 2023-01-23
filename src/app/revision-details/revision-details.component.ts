@@ -85,10 +85,19 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
     for(let i = 1; i < rows.length - 1; i++)
     {
       let row = rows[i];
-      let cell = row.cells[1];
+      let cell = row.cells[2];
       let rdResourceSeq = cell.childNodes[0] as HTMLInputElement;
       let rdBoqItem = cell.childNodes[1] as HTMLInputElement;
       let rdPrice = cell.childNodes[2] as HTMLInputElement;
+
+      let cel3 = row.cells[3];
+      let discount = cel3.childNodes[0] as HTMLInputElement;
+
+      let cel6 = row.cells[6];
+      let missedPriceReason = cel6.childNodes[0] as HTMLInputElement;
+
+      console.log(rdPrice.value);
+
       if(rdResourceSeq.type == 'hidden' && rdBoqItem.type == 'hidden' && rdPrice.type == 'number')
             {
                //console.log(rdResourceSeq.value);
@@ -96,11 +105,17 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
                   rdBoqItem : rdBoqItem.value,
                   rdBoqItemDescription : '',
                   rdItemDescription : '',
+                  rdQty:0,
                   rdMissedPrice : 1,
                   rdPrice : Number(rdPrice.value),
                   rdResourceSeq : Number(rdResourceSeq.value),
-                  rdRevisionId : revId
-
+                  rdRevisionId : revId,
+                  rdMissedPriceReason:String(missedPriceReason.value),
+                  rdDiscount : Number(discount.value),
+                  rdPriceAfterDiscount : 0,
+                  rdTotalPrice : 0,
+                  rdAddedItem : 0,
+                  rdAddedItemOn : null
                };
 
                revisionDetails.push(revD);
@@ -139,6 +154,9 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
             let cell2 = row2.cells[1];
             let rdResourceSeq = cell2.firstElementChild as HTMLInputElement;
             let rdPrice = cell2.lastElementChild as HTMLInputElement;
+            let missedPriceReason = cell2.childNodes[2] as HTMLInputElement;
+            let discount = row.cells[2].childNodes[0] as HTMLInputElement;
+
             if(rdResourceSeq.type == 'hidden' && rdPrice.type == 'number')
             {
                //console.log(rdResourceSeq.value);
@@ -146,18 +164,20 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
                   rdBoqItem : '0',
                   rdBoqItemDescription : '',
                   rdItemDescription : '',
+                  rdQty:0,
                   rdMissedPrice : 1,
                   rdPrice : Number(rdPrice.value),
                   rdResourceSeq : Number(rdResourceSeq.value),
-                  rdRevisionId : revId
-
+                  rdRevisionId : revId,
+                  rdMissedPriceReason:String(missedPriceReason),
+                  rdDiscount : Number(discount.value),
+                  rdPriceAfterDiscount : 0,
+                  rdTotalPrice : 0,
+                  rdAddedItem : 0,
+                  rdAddedItemOn : null
                };
-
                revisionDetails.push(revD);
-
-            }
-            
-           
+            }  
         }
       }
 
@@ -178,10 +198,8 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
   }
 
   checkIfItemExistsInResources(arrRevDetails : RevisionDetailsList[], itemO : string)
-  {
-      
-      let arr = arrRevDetails.filter(element=>element.rdBoqItem == itemO);
-      
+  {    
+      let arr = arrRevDetails.filter(element=>element.rdBoqItem == itemO);    
       return arr.length;
   }
 
@@ -210,10 +228,12 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
                rowNumber : 0,
                scope : 0,
                unitO : '',
-               unitRate : 0
+               unitRate : 0,
+               assignedPackage:'',
+               qtyScope:0
             };
             //const found = this.RevisionDetailsBoqItems.find(elem => elem.itemO === rev.rdBoqItem);
-            //console.log(found);
+            //console.log(found); 
             //if(found == undefined)
               this.RevisionDetailsBoqItems.push(item);
             }
@@ -232,9 +252,7 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
             // isPresentInSet variable
             return !isPresentInSet;
           });
-          this.RevisionDetailsBoqItems = filteredArr;
-          
-          
+          this.RevisionDetailsBoqItems = filteredArr;     
           }
       });
   }

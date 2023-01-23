@@ -30,12 +30,17 @@
   </div>
   <br>
   <div class="row">
-    <div class="col-sm-3 form-group" *ngIf="FilePath == null">
-      <button style="width: 100%;" type="button" 
-      class="btn btn-success"
-      [disabled]="(FilePath != null || isValidatingExcel)"
+    <div class="col-sm-3 form-group" >
+      <button style="width: 100%;" type="button" class="btn btn-success" 
       (click)="validateExcelBeforeAssign()">
-      <i class="fa fa-spinner fa-spin" *ngIf="isValidatingExcel"></i>
+      <!-- <div class="col-sm-3 form-group" *ngIf="FilePath == null"> 
+        <button style="width: 100%;" type="button" class="btn btn-success"
+      [disabled]="(FilePath != null || isValidatingExcel)"
+      (click)="validateExcelBeforeAssign()"> -->
+      <!-- <i class="fa fa-spinner fa-spin" *ngIf="isValidatingExcel"></i>
+      Validate Excel</button> -->
+      
+      <i class="fa fa-spinner fa-spin" ></i>
       Validate Excel</button>
       
     </div>
@@ -126,8 +131,7 @@
                 <th>Total Price</th>
                 <th>Currency</th>
                 <th colspan="3" style="text-align: center;">Action</th>
-              </tr>
-            </thead>
+              </thead>
             <tbody *ngFor="let rev of SupplierPackagesRevList; let j = index">
               <tr>
                 <td>{{rev.prRevId}}</td>
@@ -226,14 +230,13 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="addRevisionLabel">Upload File</h5>
+          <h5 class="modal-title" id="addRevisionLabel">Import Supplier Quotation</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" style="height: 460px;">
           <div class="row">
             <div class="col-sm-12 form-group">
-              <label for="revisionDate">Revision Date</label>
-           
+              <label for="revisionDate">Revision Date</label>           
               <input type="date" id="revisionDate" name="revisionDate" 
               class="form-control">
             </div>
@@ -255,19 +258,32 @@
         <br>
         <div class="row">
           <div class="col-sm-12 form-group">
-            <label for="exchangeRate">Exchange Rate ({{projectCurrency?.curCode}})</label>
+            <label for="exchangeRate">Exchange Rate  (Project Currency: {{projectCurrency?.curCode}})</label>
             <input type="number" id="exchangeRate" name="exchangeRate" [(ngModel)]="exchangeRate" class="form-control">
           </div>
         </div>
+
         <br>
-          <div class="row">
-            
+        <div class="row">
+          <div class="col-sm-12 form-group">
+            <label for="discount">Discount %</label>
+            <input type="number" id="discount" name="discount"  [(ngModel)]="discount" class="form-control">
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-sm-12 form-group">
+          <input class="form-check-input" type="checkbox" id="addedItems"> 
+          <label class="form-check-label" for="addedItems">Add Items To Last Revision</label>
+        </div>
+        </div>
+        <br>
+          <div class="row"> 
               <div class="col-sm-12 form-group">
                 <form>
-                <input type="file" class="form-control-file" id="excelFile" (change)="onFileSelect($event)">
-              </form>
+                  <input type="file" class="form-control-file" id="excelFile" (change)="onFileSelect($event)">
+                </form>
               </div>
-           
           </div>
         </div>
         <div class="modal-footer">
@@ -299,8 +315,8 @@
           <div class="row">
             <div class="col-sm-12 form-group">
               <label>Value</label>
-              <input type="text" class="form-control" id="valueInput"
-                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+              <input type="number" class="form-control" id="valueInput">
+               <!-- oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"> -->
             </div>
           </div>
           <br>

@@ -7,6 +7,8 @@ export class OriginalBoqModel {
     public qtyO: number = 0;
     public unitRate: number = 0;
     public scope: number = 0;
+    public assignedPackage: string = "";
+    public qtyScope: number = 0;
 }
 
 export class BoqModel {
@@ -23,6 +25,8 @@ export class BoqModel {
     public isSelected : boolean = true;
     public boqItem : string = null;
     public totalUnitPrice : number = 0;
+    public assignedPackage: string = "";
+    public qtyScope: number = 0;
 }
 
 export class SearchInput {
@@ -38,10 +42,16 @@ export class SearchInput {
     public toRow: string = null;
     public sheetDesc: string = null;
     public itemO: string = null;
+    public boqLevel2: string[] = [];
+    public boqLevel3: string = null;
 }
 
 export class BOQDivList {
     public sectionO: string = null;
+}
+
+export class BOQLevelList {
+    public level: string = null;
 }
 
 export class PackageList {
@@ -81,3 +91,4 @@ export class AssignPackages {
     public assignOriginalBoqList: AssignOriginalBoqList[] = [];
     public assignBoqList: AssignBoqList[] = [];
 }
+

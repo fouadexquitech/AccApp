@@ -35,7 +35,7 @@ export class SupplierPackagesList {
     public psId: number = 0;
     public psPackId: number = 0;
     public psSuppId: number = 0;
-    public psSupName: number = 0;
+    public psSupName: string = '';
     public psByBoq : number = 0;
     public tecCondSent : boolean = false;
 }
@@ -58,6 +58,13 @@ export class RevisionDetailsList {
     public rdBoqItem : string = null;
     public rdBoqItemDescription : string = null;
     public rdItemDescription : string = null;
+    public rdQty: number = 0;
+    public rdMissedPriceReason : string = null;
+    public rdDiscount : number = 0;
+    public rdPriceAfterDiscount : number = 0;
+    public rdTotalPrice : number = 0;
+    public rdAddedItem : number = 0;
+    public rdAddedItemOn : Date = null;
 }
 
 export class CurrencyList {

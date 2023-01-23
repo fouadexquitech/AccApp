@@ -120,6 +120,7 @@ export class TblSuppTechCondReply
     public tcPackageSupliersId : number = 0;
     public tcComConID : number = 0;
     public tcSuppReply : string = null;
+    public tcAccCond : string = null;
 }
 
 export class TblSuppComCondReply
@@ -196,7 +197,19 @@ export class TopManagementAttachement
 {
     public id : number = 0;
     public file : File = null;
+    
 }
 
+//abed
+export class AccConditions
+{
+    public condId : number = 0;
+    public AccCondition : String="";
+}
 
+export class TechCondModel
+{
+    public AccCondList : AccConditions[] = [];
+    public ListCC : string[] = [];
+}
 
