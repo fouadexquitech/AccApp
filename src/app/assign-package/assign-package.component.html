@@ -319,7 +319,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col">
-                                        <input type="checkbox" #checkboxes class="form-check-input" (change)="checkAllOriginalBoq($event)">
+                                        <input type="checkbox" [(ngModel)]="checkboxesAll" class="form-check-input" (change)="checkAllOriginalBoq($event)">
                                     </th>
                                     <th scope="col">Row#</th>
                                     <th scope="col">Div</th>
