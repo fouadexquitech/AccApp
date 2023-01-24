@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
-import { AssignPackages, SearchInput } from './assign-package.model';
+import { AssignPackages, SearchInput ,OriginalBoqModel,BoqModel} from './assign-package.model';
 
 @Injectable()
 export class AssignPackageService {
@@ -89,6 +89,13 @@ export class AssignPackageService {
     ExportBoqExcel(input: AssignPackages) : Observable<any> 
     {
       return this.http.post(this.baseUrl + 'Package/ExportBoqExcel', input).pipe(
+        map(res => res), catchError(this.handleError)
+    );
+    }
+
+    updateOriginalBoqQty(item : OriginalBoqModel)
+    {
+      return this.http.post(this.baseUrl + 'Package/updateOriginalBoqQty', item).pipe(
         map(res => res), catchError(this.handleError)
     );
     }

@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
 import { DataTableDirective} from 'angular-datatables';
 import {environment} from '../../environments/environment';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ModalDismissReasons, NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 declare var $: any;
 
 @Component({
@@ -59,10 +60,17 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   @ViewChildren("checkboxes") checkboxes!: QueryList<ElementRef>;
   mode : string = 'add';
   EditBoqQtyModalLabel : string = '';
-  formBoqQty!: FormGroup;
+  formEdit: FormGroup;
+  submitted : boolean = false;
+  updating : boolean = false;
+  currentOrigBoq : OriginalBoqModel;
+  modalReference : any;
+  modalOptions:NgbModalOptions;
+  closeResult: string;
+
 
   constructor(private assignPackageService: AssignPackageService, 
-    private spinner: NgxSpinnerService , 
+    private modalService: NgbModal,private spinner: NgxSpinnerService , 
     private toastr: ToastrService,
     private router : Router,
     private formBuilder: FormBuilder) { }
@@ -276,7 +284,6 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
           let checkbox = row.firstChild.firstChild as HTMLInputElement;
           if(checkbox)
           {
-            
               checkbox.checked = check;
               let boqRow = this.BoqList[index - 1];
               if(check)
@@ -324,19 +331,14 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   checkOriginalBoq()
   {
-    
       this.OriginalBoqList.forEach((item, index)=>{
-        
-          let arr = this.SelectedBoqList.filter(x=>x.boqItem === item.itemO);
+      let arr = this.SelectedBoqList.filter(x=>x.boqItem === item.itemO);
           
           if(arr.length == 0)
-          {
-            
+          {   
             this.SelectedOriginalBoqList = this.SelectedOriginalBoqList.filter(x=>x.rowNumber != item.rowNumber);
-            this.removeSelectedOriginalBoq(index);
-          
-          }
-         
+            this.removeSelectedOriginalBoq(index);   
+          }   
       });
 
       //console.log(this.SelectedOriginalBoqList);
@@ -412,12 +414,9 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
                     this.editDisplayedBoqList(this.BoqList, false);
                     }
-                  });
-                  
+                  });                 
                 }
-             
-              }
-            
+              }           
           }
       }
     }
@@ -534,19 +533,15 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
                   let boqArr : BoqModel[] = data;
                   
                   boqArr.forEach(function(element : BoqModel){
-                    
-                    selectedBoqArr.push({ boqSeq: element.boqSeq, boqScope: selectedPackage, boqResSeq : element.boqResSeq, boqItem : element.boqItem });
-                    
+                    selectedBoqArr.push({ boqSeq: element.boqSeq, boqScope: selectedPackage, boqResSeq : element.boqResSeq, boqItem : element.boqItem });                
                   });
                   
                   this.editDisplayedBoqList(this.BoqList, false);
-                  //console.log(boqArr.length);
-                   
+                  //console.log(boqArr.length);            
                 }
               });
           }
       }
-
       //console.log(this.SelectedBoqList);
   }
 
@@ -753,18 +748,65 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     });
   }
 
-  editOriginalBoqQty(item : OriginalBoqModel)
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return  `with: ${reason}`;
+    }
+  }
+
+  
+    //convenience getter for easy access to form fields
+    get f() { return this.formEdit.controls; }
+
+
+  editOriginalBoqQty(content : any, item : OriginalBoqModel)
   {
     this.mode = 'edit';
     this.SelectedOriginalBoqRow = item;
     this.EditBoqQtyModalLabel = 'Edit Original Boq Qty';
-    this.formBoqQty = this.formBuilder.group({
-        tcDescription : [item.qtyScope,[Validators.required]],
-        techConditionGroups:  [null,[Validators.required]]
-    });
 
-    // this.getGroups(item.techConditionGroups);
-    $("#EditBoqQtyModal").modal('show');
+    this.formEdit = this.formBuilder.group({
+      // boq: [item.itemO, Validators.required],
+      QtyScope: [item.qtyScope, [Validators.required]]     
+    });
+    this.currentOrigBoq = item;
+    this.modalReference = this.modalService.open(content, this.modalOptions);
+    this.modalReference.result.then((result : any) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason : any) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+  
+
+
+  onEditSubmit()
+  {
+    this.submitted = true;
+      // stop here if form is invalid
+    if (this.formEdit.invalid) { return;}
+
+    this.updating = true;
+    this.currentOrigBoq.qtyScope = this.f.qtyScope.value;
+
+    this.assignPackageService.updateOriginalBoqQty(this.currentOrigBoq).subscribe(response=>{
+      this.updating = false;
+        if(response)
+        {
+          this.toastr.success('Updated successfuly');
+          this.onSearch();
+          this.modalReference.close();
+        }
+        else
+        {
+          this.toastr.error('An error occured');
+        }
+    });
   }
 
+  
 }

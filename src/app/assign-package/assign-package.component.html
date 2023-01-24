@@ -346,7 +346,7 @@
                                     <td>{{item.unitO}}</td>
                                     <!-- <td>{{item.qtyO | number: '.2' }}</td> -->
                                     <td>{{item.qtyScope | number: '.2' }}
-                                        <a class="btn btn-link" title="Edit" (click)="editOriginalBoqQty(item)"><i class="fa-solid fa-edit"></i></a>
+                                        <a class="btn btn-link" title="Edit" (click)="editOriginalBoqQty(editModal,item)"><i class="fa-solid fa-edit"></i></a>
                                     </td>
                                     <td>{{item.unitRate | number: '.2' }}</td>
                                     <td [ngClass]="item.assignedPackage != '' ? 'text-danger' : ''" >{{item.assignedPackage}}</td>
@@ -403,7 +403,7 @@
                                 <td>{{item.resDescription}}</td>
                                 <td>{{item.boqUnitMesure}}</td>
                                 <!-- <td>{{item.boqQty | number: '.2'}}</td> -->
-                                <td>{{item.qtyScope | number: '.2' }}</td>
+                                <td>{{item.boqQtyScope | number: '.2' }}</td>
                                 <td>{{item.boqUprice | number: '.2'}}</td>
                                 <td>{{item.boqQty * item.boqUprice | number: '.2' }}</td>
                                 <td>{{item.totalUnitPrice | number: '.2' }}</td>
@@ -440,53 +440,36 @@
         </div>
     </div>
 
-    <!--Edit Boq Qty Modal -->
-  <!--  <div class="modal fade" id="EditBoqQtyModal" tabindex="-1" aria-labelledby="EditBoqQtyModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        
-        <div class="modal-header">
-          <h5 class="modal-title" id="EditBoqQtyModalLabel">{{technicalConditionsModalLabel}}</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form name="formTechCond" [formGroup]="formTechCond" (ngSubmit)="onFormTechCondSubmit()" novalidate *ngIf="formTechCond">
+
+   <!--Edit Modal-->
+   <ng-template #editModal let-modal>
+    <form [formGroup]="formEdit" (ngSubmit)="onEditSubmit()">
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Edit Qty</h4>
+      <button type="button" class="btn close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    
         <div class="modal-body">
-            <div class="row">
-                <div class="col-sm-12 p-2">
-                    Description
-                    <input class="form-control" formControlName="tcDescription"
-                    [ngClass]="{ 'is-invalid': submitted && f.tcDescription.errors }">
-                    <div *ngIf="submitted && f.tcDescription.errors" class="invalid-feedback">
-                        <div *ngIf="f.tcDescription.errors.required">Required Field</div>
-                        
-                    </div>
+        <div class="row">
+            <div class="form-group p-2">
+                <label>Qty</label>
+                <input type="number" class="form-control" formControlName="QtyScope"
+                [ngClass]="{ 'is-invalid': submitted && f.QtyScope.errors }">
+                <div *ngIf="submitted && f.QtyScope.errors" class="invalid-feedback">
+                    <div *ngIf="f.QtyScope.errors?.required">Qty is required</div>
                 </div>
-              </div>
-              <div class="row">
-                <div class="col-sm-12 p-2">
-                    Group
-                    <ng-select [items]="groups" 
-                    bindLabel="name" 
-                    formControlName="techConditionGroups"
-                    [multiple]="true"
-                    [ngClass]="{ 'is-invalid': submitted && f.techConditionGroups.errors }"
-                    [placeholder]="'Select group'"> </ng-select>
-                    <div *ngIf="submitted && f.techConditionGroups.errors" class="invalid-feedback">
-                        <div *ngIf="f.techConditionGroups.errors.required">Required Field</div>
-                        
-                    </div>
-                </div>
-              </div>
+            </div>
+        </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="closeTechnicalConditionsModal()">Close</button>
-          <button type="submit" class="btn btn-primary" [disabled]="submitting">
-            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="submitting"></span>
-           Submit</button>
+        <button type="submit" class="btn btn-primary" [disabled]="updating">
+            <span *ngIf="updating" class="spinner-border spinner-border-sm mr-1"></span>
+            Update</button>
+        <button type="button" class="btn btn-secondary" (click)="modal.close('Cancel click')">Cancel</button>
         </div>
     </form>
-      </div>
-    </div>
-  </div> -->
+  </ng-template>
 
 </section>

@@ -248,8 +248,6 @@ export class ManagementUsersComponent implements OnInit {
           this.toastrService.error('An error occured');
         }
     });
-
-
   }
 
 }

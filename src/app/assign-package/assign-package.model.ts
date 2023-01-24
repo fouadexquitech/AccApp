@@ -26,7 +26,7 @@ export class BoqModel {
     public boqItem : string = null;
     public totalUnitPrice : number = 0;
     public assignedPackage: string = "";
-    public qtyScope: number = 0;
+    public boqQtyScope: number = 0;
 }
 
 export class SearchInput {
