@@ -771,7 +771,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
     this.formEdit = this.formBuilder.group({
       // boq: [item.itemO, Validators.required],
-      QtyScope: [item.qtyScope, [Validators.required]]     
+      QtyScope: [item.scopeQtyO, [Validators.required]]     
     });
     this.currentOrigBoq = item;
     this.modalReference = this.modalService.open(content, this.modalOptions);
@@ -791,7 +791,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     if (this.formEdit.invalid) { return;}
 
     this.updating = true;
-    this.currentOrigBoq.qtyScope = this.f.qtyScope.value;
+    this.currentOrigBoq.scopeQtyO = this.f.scopeQtyO.value;
 
     this.assignPackageService.updateOriginalBoqQty(this.currentOrigBoq).subscribe(response=>{
       this.updating = false;

@@ -393,7 +393,8 @@ export class PackageComparisonComponent implements OnInit {
           unitO : '',
           unitRate : 0,
           assignedPackage:'',
-          qtyScope : 0
+          scopeQtyO : 0,
+          billQtyO:0
        };
        this.RevisionDetailsBoqItems.push(item);
       });

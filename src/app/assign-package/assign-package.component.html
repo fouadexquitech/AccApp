@@ -326,7 +326,9 @@
                                     <th scope="col">BOQ Item</th>
                                     <th scope="col">BOQ Description</th>
                                     <th scope="col">Unit</th>
-                                    <th scope="col">BOQ Qty</th>
+                                    <th scope="col">Bill Qty</th>
+                                    <th scope="col">Final Qty</th>
+                                    <th scope="col">Qty</th>
                                     <th scope="col">Unit Price</th>
                                     <th scope="col">Assigned Package</th>
                                     <!--<th scope="col">Package</th>-->
@@ -344,8 +346,9 @@
                                     <td>{{item.itemO}}</td>
                                     <td>{{item.descriptionO}}</td>
                                     <td>{{item.unitO}}</td>
-                                    <!-- <td>{{item.qtyO | number: '.2' }}</td> -->
-                                    <td>{{item.qtyScope | number: '.2' }}
+                                    <td>{{item.billQtyO | number: '.2' }}</td>
+                                    <td>{{item.qtyO | number: '.2' }}</td>
+                                    <td>{{item.scopeQtyO | number: '.2' }}
                                         <a class="btn btn-link" title="Edit" (click)="editOriginalBoqQty(editModal,item)"><i class="fa-solid fa-edit"></i></a>
                                     </td>
                                     <td>{{item.unitRate | number: '.2' }}</td>
@@ -385,12 +388,14 @@
                                 <th scope="col">Type</th>
                                 <th scope="col">Resource Description</th>
                                 <th scope="col">Unit</th>
-                                <th scope="col">Res. Qty</th>
+                                <th scope="col">Bill Qty</th>
+                                <th scope="col">Final Qty</th>
+                                <th scope="col">Qty</th>
                                 <th scope="col">Unit Price</th>
                                 <th scope="col">Final Net Amount</th>
                                 <th scope="col">Total Unit Price</th>
                                 <th scope="col">Div.</th>
-                                <th scope="col">Res.Package</th>
+                                <!-- <th scope="col">Res.Package</th> -->
                                 <th scope="col">Assigned Package</th>
                                 <!--<th scope="col">Package</th>-->
                             </tr>
@@ -402,13 +407,14 @@
                                 <td>{{item.boqCtg}}</td>
                                 <td>{{item.resDescription}}</td>
                                 <td>{{item.boqUnitMesure}}</td>
-                                <!-- <td>{{item.boqQty | number: '.2'}}</td> -->
-                                <td>{{item.boqQtyScope | number: '.2' }}</td>
+                                <td>{{item.boqBillQty | number: '.2'}}</td>
+                                <td>{{item.boqQty | number: '.2'}}</td>
+                                <td>{{item.boqScopeQty | number: '.2' }}</td>
                                 <td>{{item.boqUprice | number: '.2'}}</td>
-                                <td>{{item.boqQty * item.boqUprice | number: '.2' }}</td>
+                                <td>{{item.boqScopeQty * item.boqUprice | number: '.2' }}</td>
                                 <td>{{item.totalUnitPrice | number: '.2' }}</td>
                                 <td>{{item.boqDiv}}</td>
-                                <td>{{item.boqPackage}}</td>
+                                <!-- <td>{{item.boqPackage}}</td> -->
                                 <td [ngClass]="item.assignedPackage != '' ? 'text-danger' : ''" >{{item.assignedPackage}}</td>
                                 <!--<td *ngIf="PackageList" width="20%">
                                 <ng-select2 width="100%" [allowClear]="true" [placeholder]="" [(ngModel)]="item.boqScope">

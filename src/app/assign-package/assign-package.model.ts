@@ -4,11 +4,12 @@ export class OriginalBoqModel {
     public itemO: string = "";
     public descriptionO: string = "";
     public unitO: string = "";
-    public qtyO: number = 0;
     public unitRate: number = 0;
     public scope: number = 0;
     public assignedPackage: string = "";
-    public qtyScope: number = 0;
+    public qtyO: number = 0;
+    public billQtyO: number = 0;
+    public scopeQtyO: number = 0;
 }
 
 export class BoqModel {
@@ -16,7 +17,6 @@ export class BoqModel {
     public boqResSeq: string = "";
     public boqCtg: string = "";
     public boqUnitMesure: string = "";
-    public boqQty: number = 0;
     public boqUprice: number = 0;
     public boqDiv: string = "";
     public boqPackage: string = "";
@@ -26,7 +26,9 @@ export class BoqModel {
     public boqItem : string = null;
     public totalUnitPrice : number = 0;
     public assignedPackage: string = "";
-    public boqQtyScope: number = 0;
+    public boqBillQty: number = 0;
+    public boqQty: number = 0;
+    public boqScopeQty: number = 0;
 }
 
 export class SearchInput {
