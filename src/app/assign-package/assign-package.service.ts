@@ -99,5 +99,12 @@ export class AssignPackageService {
         map(res => res), catchError(this.handleError)
     );
     }
+
+    updateBoqResQty(item : BoqModel)
+    {
+      return this.http.post(this.baseUrl + 'Package/updateBoqResQty', item).pipe(
+        map(res => res), catchError(this.handleError)
+    );
+    }
     
 }

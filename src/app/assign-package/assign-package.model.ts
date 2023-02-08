@@ -7,7 +7,7 @@ export class OriginalBoqModel {
     public unitRate: number = 0;
     public scope: number = 0;
     public assignedPackage: string = "";
-    public qtyO: number = 0;
+    public qtyO: number = 0;  //Final Qty
     public billQtyO: number = 0;
     public scopeQtyO: number = 0;
 }
@@ -26,8 +26,8 @@ export class BoqModel {
     public boqItem : string = null;
     public totalUnitPrice : number = 0;
     public assignedPackage: string = "";
+    public boqQty: number = 0;  //Final Qty
     public boqBillQty: number = 0;
-    public boqQty: number = 0;
     public boqScopeQty: number = 0;
 }
 

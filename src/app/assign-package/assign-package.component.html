@@ -328,7 +328,8 @@
                                     <th scope="col">Unit</th>
                                     <th scope="col">Bill Qty</th>
                                     <th scope="col">Final Qty</th>
-                                    <th scope="col">Qty</th>
+                                    <th scope="col">RFQ. Qty</th>
+                                    <th scope="col"></th>
                                     <th scope="col">Unit Price</th>
                                     <th scope="col">Assigned Package</th>
                                     <!--<th scope="col">Package</th>-->
@@ -348,9 +349,8 @@
                                     <td>{{item.unitO}}</td>
                                     <td>{{item.billQtyO | number: '.2' }}</td>
                                     <td>{{item.qtyO | number: '.2' }}</td>
-                                    <td>{{item.scopeQtyO | number: '.2' }}
-                                        <a class="btn btn-link" title="Edit" (click)="editOriginalBoqQty(editModal,item)"><i class="fa-solid fa-edit"></i></a>
-                                    </td>
+                                    <td>{{item.scopeQtyO | number: '.2' }}</td>
+                                    <td><a class="btn btn-link" title="Edit" (click)="editOriginalBoqQty(editModal,item)"><i class="fa-solid fa-edit"></i></a></td>
                                     <td>{{item.unitRate | number: '.2' }}</td>
                                     <td [ngClass]="item.assignedPackage != '' ? 'text-danger' : ''" >{{item.assignedPackage}}</td>
                                     <!--<td *ngIf="PackageList" width="20%">
@@ -373,7 +373,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
         <br>
@@ -386,15 +385,16 @@
                             <tr>
                                 <th scope="col"></th>
                                 <th scope="col">Type</th>
+                                <th scope="col">Div.</th>
                                 <th scope="col">Resource Description</th>
                                 <th scope="col">Unit</th>
                                 <th scope="col">Bill Qty</th>
                                 <th scope="col">Final Qty</th>
-                                <th scope="col">Qty</th>
+                                <th scope="col">RFQ. Qty</th>
+                                <th scope="col"></th>
                                 <th scope="col">Unit Price</th>
                                 <th scope="col">Final Net Amount</th>
-                                <th scope="col">Total Unit Price</th>
-                                <th scope="col">Div.</th>
+                                <th scope="col">Total Unit Price</th>                              
                                 <!-- <th scope="col">Res.Package</th> -->
                                 <th scope="col">Assigned Package</th>
                                 <!--<th scope="col">Package</th>-->
@@ -405,15 +405,16 @@
                                 <td><input #checkboxes class="form-check-input" style="cursor: pointer;" type="checkbox"
                                         (change)="OnBoqChecked($event , i)" [checked]="item.isSelected"></td>
                                 <td>{{item.boqCtg}}</td>
+                                <td>{{item.boqDiv}}</td>
                                 <td>{{item.resDescription}}</td>
                                 <td>{{item.boqUnitMesure}}</td>
                                 <td>{{item.boqBillQty | number: '.2'}}</td>
                                 <td>{{item.boqQty | number: '.2'}}</td>
                                 <td>{{item.boqScopeQty | number: '.2' }}</td>
+                                <td><a class="btn btn-link" title="Edit" (click)="editBoqResQty(editRessourcesModal,item)"><i class="fa-solid fa-edit"></i></a></td>
                                 <td>{{item.boqUprice | number: '.2'}}</td>
                                 <td>{{item.boqScopeQty * item.boqUprice | number: '.2' }}</td>
-                                <td>{{item.totalUnitPrice | number: '.2' }}</td>
-                                <td>{{item.boqDiv}}</td>
+                                <td>{{item.totalUnitPrice | number: '.2' }}</td>                           
                                 <!-- <td>{{item.boqPackage}}</td> -->
                                 <td [ngClass]="item.assignedPackage != '' ? 'text-danger' : ''" >{{item.assignedPackage}}</td>
                                 <!--<td *ngIf="PackageList" width="20%">
@@ -423,7 +424,6 @@
                                 </ng-select2>
                             </td>-->
                             </tr>
-
                         </tbody>
                         <tfoot>
                             <tr>
@@ -447,9 +447,9 @@
     </div>
 
 
-   <!--Edit Modal-->
+   <!--Edit Original BOQ Modal-->
    <ng-template #editModal let-modal>
-    <form [formGroup]="formEdit" (ngSubmit)="onEditSubmit()">
+    <form [formGroup]="formEdit" (ngSubmit)="onEditSubmit(true)">
     <div class="modal-header">
       <h4 class="modal-title" id="modal-basic-title">Edit Qty</h4>
       <button type="button" class="btn close" aria-label="Close" (click)="modal.dismiss('Cross click')">
@@ -459,23 +459,100 @@
     
         <div class="modal-body">
         <div class="row">
+
+            <div class="form-group p-2">
+                <label>Bill Qty</label>
+                <br>
+                <ng-container > 
+                    <strong>{{SelectedOriginalBoqRow.billQtyO | number: '.2'}}</strong>
+                 </ng-container> 
+                
+                <!-- <label type="number" class="form-control" formControlName="userName"
+                [ngClass]="{ 'is-invalid': submitted && f.userName.errors }"  >
+                <div *ngIf="submitted && f.userName.errors" class="invalid-feedback">
+                    <div *ngIf="f.userName.errors?.required">Username is required</div>
+                </div> -->
+            </div>
+            <div class="form-group p-2">
+                <label>Final Qty</label>
+                <br>
+                <ng-container > 
+                    <strong>{{SelectedOriginalBoqRow.qtyO | number: '.2'}}</strong>
+                 </ng-container> 
+            </div>
             <div class="form-group p-2">
                 <label>Qty</label>
                 <input type="number" class="form-control" formControlName="QtyScope"
-                [ngClass]="{ 'is-invalid': submitted && f.QtyScope.errors }">
-                <div *ngIf="submitted && f.QtyScope.errors" class="invalid-feedback">
+                [ngClass]="{ 'is-invalid': submitted && f.QtyScope.errors  || (f.QtyScope.value > SelectedOriginalBoqRow.qtyO )}" >
+                <div *ngIf="submitted && f.QtyScope.errors || (f.QtyScope.value > SelectedOriginalBoqRow.qtyO ) " class="invalid-feedback">
                     <div *ngIf="f.QtyScope.errors?.required">Qty is required</div>
+                    <div *ngIf="f.QtyScope.value > SelectedOriginalBoqRow.qtyO">Invalid Qty</div>
                 </div>
             </div>
+
         </div>
         </div>
         <div class="modal-footer">
+            <ng-container *ngIf="f.QtyScope.value <= SelectedOriginalBoqRow.qtyO"> 
         <button type="submit" class="btn btn-primary" [disabled]="updating">
-            <span *ngIf="updating" class="spinner-border spinner-border-sm mr-1"></span>
-            Update</button>
+            <span *ngIf="updating" class="spinner-border spinner-border-sm mr-1"></span>Update</button>
+            </ng-container>
         <button type="button" class="btn btn-secondary" (click)="modal.close('Cancel click')">Cancel</button>
         </div>
     </form>
   </ng-template>
 
+     <!--Edit BOQ Resssources Modal-->
+   <ng-template #editRessourcesModal let-modal>
+    <form [formGroup]="formEdit" (ngSubmit)="onEditSubmit(false)">
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Edit Qty</h4>
+      <button type="button" class="btn close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    
+        <div class="modal-body">
+        <div class="row">
+
+            <div class="form-group p-2">
+                <label>Bill Qty</label>
+                <br>
+                <ng-container > 
+                    <strong>{{SelectedBoqRow.boqBillQty | number: '.2'}}</strong>
+                 </ng-container> 
+                
+                <!-- <label type="number" class="form-control" formControlName="userName"
+                [ngClass]="{ 'is-invalid': submitted && f.userName.errors }"  >
+                <div *ngIf="submitted && f.userName.errors" class="invalid-feedback">
+                    <div *ngIf="f.userName.errors?.required">Username is required</div>
+                </div> -->
+            </div>
+            <div class="form-group p-2">
+                <label>Final Qty</label>
+                <br>
+                <ng-container > 
+                    <strong>{{SelectedBoqRow.boqQty | number: '.2'}}</strong>
+                 </ng-container> 
+            </div>
+            <div class="form-group p-2">
+                <label>Qty</label>
+                <input type="number" class="form-control" formControlName="QtyScope"
+                [ngClass]="{ 'is-invalid': submitted && f.QtyScope.errors  || (f.QtyScope.value > SelectedBoqRow.boqQty )}" >
+                <div *ngIf="submitted && f.QtyScope.errors || (f.QtyScope.value > SelectedBoqRow.boqQty ) " class="invalid-feedback">
+                    <div *ngIf="f.QtyScope.errors?.required">Qty is required</div>
+                    <div *ngIf="f.QtyScope.value > SelectedBoqRow.boqQty">Invalid Qty</div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+        <ng-container *ngIf="f.QtyScope.value <= SelectedBoqRow.boqQty"> 
+        <button type="submit" class="btn btn-primary" [disabled]="updating">
+           <span *ngIf="updating" class="spinner-border spinner-border-sm mr-1"></span>Update</button>
+           </ng-container>
+        <button type="button" class="btn btn-secondary" (click)="modal.close('Cancel click')">Cancel</button>
+        </div>
+    </form>
+  </ng-template>
 </section>

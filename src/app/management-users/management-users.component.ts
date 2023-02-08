@@ -204,7 +204,7 @@ export class ManagementUsersComponent implements OnInit {
   }
 
   //convenience getter for easy access to form fields
-    get f() { return this.formEdit.controls; }
+  get f() { return this.formEdit.controls; }
 
   editUser(content : any, user : TopManagement)
   {
@@ -212,7 +212,6 @@ export class ManagementUsersComponent implements OnInit {
       userName: [user.userName, Validators.required],
       email: [user.mail, [Validators.required, Validators.email]],
       occupation: [user.occupation, Validators.required]
-     
     });
     this.currentUser = user;
     this.modalReference = this.modalService.open(content, this.modalOptions);

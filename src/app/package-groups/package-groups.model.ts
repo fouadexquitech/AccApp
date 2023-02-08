@@ -13,7 +13,6 @@ export class ComparisonPackageGroup
     public name : string = null;
     public package : PackageList = null;
     public userId : string = null;
-    
 }
 
 export class GroupingResource
@@ -31,6 +30,8 @@ export class GroupingResource
     public totalPrice : number = 0;
     public validPerc : boolean = true;
     public groupingPackageSuppliersPrices : GroupingPackageSupplierPrice[] = [];
+    public quotationQty : number = 0;
+    public quotationAmt : number = 0;
 }
 
 export class GroupingBoq
@@ -48,6 +49,8 @@ export class GroupingBoq
     public totalPrice : number = 0;
     public validPerc : boolean = true;
     public groupingPackageSuppliersPrices : GroupingPackageSupplierPrice[] = [];
+    public quotationQty : number = 0;
+    public quotationAmt : number = 0;
 }
 
 export class GroupingBoqGroup

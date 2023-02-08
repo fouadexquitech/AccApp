@@ -670,7 +670,7 @@ maxAttachements : number = 5;
     this.packageSupplierService.validateExcelBeforeAssign(this.PackageId, Number(localStorage.getItem('assignByBoqOnly'))).subscribe((data) => {
       this.isValidatingExcel = false;
       if (data) {
-        //this.spinner.hide();
+        // this.spinner.hide();
         
         this.toastr.success("Validated !!")
         this.GetPackageById(Number(this.PackageId));

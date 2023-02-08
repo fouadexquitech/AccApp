@@ -40,9 +40,8 @@
       <!-- <i class="fa fa-spinner fa-spin" *ngIf="isValidatingExcel"></i>
       Validate Excel</button> -->
       
-      <i class="fa fa-spinner fa-spin" ></i>
+      <i class="fa fa-spinner fa-spin" *ngIf="(isValidatingExcel)" ></i>
       Validate Excel</button>
-      
     </div>
   
     <div class="col-sm-3 form-group form-check form-switch" *ngIf="FilePath == null">

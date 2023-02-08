@@ -690,8 +690,7 @@ generatingContract : boolean = false;
   }
 
   openGenerateContract()
-  {
-    
+  {    
       this.generatingContract = true;
       
       this.packageComparisonService.generateSuppliersContractsExcel(this.packageId, this.SearchInput).subscribe(res=>{
@@ -707,11 +706,7 @@ generatingContract : boolean = false;
           arr.forEach(path=>{
             a.href = environment.baseApiUrl +'api/RevisionDetails/DownloadFile?filename=' + path;
             a.click();
-
-          });
-          
-          
-         
+          });         
         }
         else
         {
@@ -873,7 +868,6 @@ generatingContract : boolean = false;
       let qtyIsValid = true;
       this.comparisonList.forEach((boq : GroupingBoq, i : any)=>{
     
-          
           if(boq.isChecked)
           {
             oneItemChecked = true;
@@ -1117,8 +1111,7 @@ generatingContract : boolean = false;
       let oneItemChecked = false;
       let percIsValid = true;
       this.comparisonList.forEach((boq : GroupingBoq, i : any)=>{
-    
-          
+             
           if(boq.isChecked)
           {
             oneItemChecked = true;
@@ -1292,16 +1285,32 @@ generatingContract : boolean = false;
     else
     {
       this.comparisonList.forEach(item=>{
-        
-          total += item.totalPrice;
-        
+          total += item.totalPrice;   
     });
     }
-
     return total;
   }
 
-  
+  getTotalQuotation()
+  {
+    let totalQotation = 0;
+    if(!this.byBoq)
+    {
+        this.comparisonList.forEach(item=>{
+            item.groupingResources.forEach(resource=>{
+              totalQotation += resource.quotationAmt;
+            });
+        });
+    }
+    else
+    {
+      this.comparisonList.forEach(item=>{
+        totalQotation += item.quotationAmt;   
+    });
+    }
+    // totalQotation=1;
+    return totalQotation;
+  }
 
   Cancel(){
     this.show = false;
@@ -1319,7 +1328,6 @@ generatingContract : boolean = false;
               }
           });
       });
-      
   }
 
   setSupplierPerc(event:any, resource : GroupingResource, sup : GroupingPackageSupplierPrice)
@@ -1334,8 +1342,6 @@ generatingContract : boolean = false;
               }
           });
       });
-      
-      
   }
 
   setSupplierQtyByBoq(event:any, item : GroupingBoq, sup : GroupingPackageSupplierPrice)

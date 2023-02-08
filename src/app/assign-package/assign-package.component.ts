@@ -47,9 +47,9 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   assignPackages = new AssignPackages();
   SelectedPackage: number = 0;
   SelectedOriginalBoqRow = new OriginalBoqModel();
-  SelectedBoqRow = new BoqModel();
   FinalUnitPrice: number = 0;
   FinalTotalPrice : number = 0;
+  SelectedBoqRow = new BoqModel();
   public dtOptions: DataTables.Settings = {};
   public dtTrigger: Subject<any> = new Subject<any>();
   public select2Options : Select2.Options = {};
@@ -65,6 +65,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   submitted : boolean = false;
   updating : boolean = false;
   currentOrigBoq : OriginalBoqModel;
+  currentBoqRes : BoqModel;
   modalReference : any;
   modalOptions:NgbModalOptions;
   closeResult: string;
@@ -547,7 +548,6 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
                 }
               });
           }
-          
       }
       //console.log(this.SelectedBoqList);
   }
@@ -778,7 +778,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
     this.formEdit = this.formBuilder.group({
       // boq: [item.itemO, Validators.required],
-      QtyScope: [item.scopeQtyO, [Validators.required]]     
+      QtyScope: [item.scopeQtyO, [Validators.required]] ,
+      billQtyO :     [item.qtyO] 
     });
     this.currentOrigBoq = item;
     this.modalReference = this.modalService.open(content, this.modalOptions);
@@ -789,31 +790,65 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     });
   }
   
-
-
-  onEditSubmit()
+  editBoqResQty(content : any, item : BoqModel)
   {
+    this.mode = 'edit';
+    this.SelectedBoqRow = item;
+    this.EditBoqQtyModalLabel = 'Edit Boq Qty';
+
+    this.formEdit = this.formBuilder.group({
+      // boq: [item.itemO, Validators.required],
+      QtyScope: [item.boqScopeQty, [Validators.required]] ,
+      billQtyO :     [item.boqBillQty] 
+    });
+    this.currentBoqRes = item;
+    this.modalReference = this.modalService.open(content, this.modalOptions);
+    this.modalReference.result.then((result : any) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason : any) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
+  onEditSubmit(origBoq: boolean) {
     this.submitted = true;
-      // stop here if form is invalid
-    if (this.formEdit.invalid) { return;}
+    // stop here if form is invalid
+    if (this.formEdit.invalid) { return; }
 
     this.updating = true;
-    this.currentOrigBoq.scopeQtyO = this.f.scopeQtyO.value;
 
-    this.assignPackageService.updateOriginalBoqQty(this.currentOrigBoq).subscribe(response=>{
-      this.updating = false;
-        if(response)
-        {
+    if (origBoq) {
+      this.currentOrigBoq.scopeQtyO = this.f.QtyScope.value;
+
+      this.assignPackageService.updateOriginalBoqQty(this.currentOrigBoq).subscribe(response => {
+        this.updating = false;
+        if (response) {
           this.toastr.success('Updated successfuly');
           this.onSearch();
           this.modalReference.close();
         }
-        else
-        {
+        else {
           this.toastr.error('An error occured');
         }
-    });
+      });
+    }
+    else {
+
+      this.currentBoqRes.boqScopeQty = this.f.QtyScope.value;
+
+      this.assignPackageService.updateBoqResQty(this.currentBoqRes).subscribe(response => {
+        this.updating = false;
+        if (response) {
+          this.toastr.success('Updated successfuly');
+          this.onSearch();
+          this.modalReference.close();
+        }
+        else {
+          this.toastr.error('An error occured');
+        }
+      });
+
+    }
   }
 
-  
 }

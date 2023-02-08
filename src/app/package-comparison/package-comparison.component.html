@@ -437,7 +437,6 @@
               <tr *ngFor="let field of supp.fieldLists">
                 
               <td>
-              
                  <span *ngIf="field.type == fieldTypes.AMOUNT_TYPE_ID"> {{field.label}} ({{field.value}})</span>
                  <span *ngIf="field.type == fieldTypes.PERCENTAGE_TYPE_ID"> {{field.label}} ({{field.value}}%)</span>
               </td>
