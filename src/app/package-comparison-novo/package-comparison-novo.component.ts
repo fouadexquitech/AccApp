@@ -22,6 +22,8 @@ declare var $: any;
   templateUrl: './package-comparison-novo.component.html',
   styleUrls: ['./package-comparison-novo.component.css']
 })
+
+
 export class PackageComparisonNovoComponent implements OnInit {
   packageId : number = 0;
   packageName : string = '';
