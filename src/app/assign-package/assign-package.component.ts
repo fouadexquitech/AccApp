@@ -9,6 +9,7 @@ import { DataTableDirective} from 'angular-datatables';
 import {environment} from '../../environments/environment';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalDismissReasons, NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
+import { finalize } from 'rxjs/operators';
 declare var $: any;
 
 @Component({
@@ -214,8 +215,12 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   GetOriginalBoqList(input: SearchInput) {
     //this.spinner.show();
     this.isSearching = true;
-    this.assignPackageService.GetOriginalBoqList(input).subscribe((data) => {
+    this.assignPackageService.GetOriginalBoqList(input)
+    .pipe(finalize(()=>{
       this.isSearching = false;
+    }))
+    .subscribe((data) => {
+      
       this.toggleShow();
       if (data) {
         this.OriginalBoqList = data;
@@ -431,10 +436,9 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   editDisplayedBoqList(BoqList : BoqModel[], add : boolean)
   {
-    //console.log(BoqList);
-    BoqList.forEach(boq=>{
+     BoqList.forEach(boq=>{
         let boqItem = this.OriginalBoqList.find(x=>x.itemO == boq.boqItem);
-        boq.totalUnitPrice = boqItem.unitRate;
+        boq.totalUnitPrice = boqItem?.unitRate;
         let item = this.displayedBoqList.find(a=>a.boqResSeq == boq.boqResSeq);
         
         if(add)
