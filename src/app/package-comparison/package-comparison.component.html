@@ -255,15 +255,12 @@
                         <table class="table">
                           <tr>
                             <td><strong>{{item.totalprice | number : '1.2-2' }}</strong></td>
-                           
                           </tr>
                         </table>
-                        
                       </td>
                     </tr>
                 </table>
               </td>
-              
             </tr>
           </table>
         </td>
@@ -277,20 +274,18 @@
                 <table class="table">
                   <tr>
                     <td *ngFor="let supp of packageSuppliersPrice">
-                      <table class="table" >
+                      <table class="table">
                         <tr *ngFor="let field of supp.fieldLists">
                           <td>
-                           <span *ngIf="field.type == fieldTypes.AMOUNT_TYPE_ID"> {{field.label}} ({{field.value}})</span>
-                           <span *ngIf="field.type == fieldTypes.PERCENTAGE_TYPE_ID"> {{field.label}} ({{field.value}}%)</span>
-                           </td>
-                       
-                      </tr>
+                            <span *ngIf="field.type == fieldTypes.AMOUNT_TYPE_ID"> {{field.label}} ({{field.value}})</span>
+                            <span *ngIf="field.type == fieldTypes.PERCENTAGE_TYPE_ID"> {{field.label}} ({{field.value}}%)</span>
+                          </td>
+                        </tr>
                       </table>
                   </td>
                   </tr>
                 </table>
               </td>
-              
               </tr>
             </table>
           </td>
@@ -420,8 +415,7 @@
           <td colspan="4"><strong>Sub Total</strong></td>
           <td *ngFor="let item of totalPackageSuppliersPrice ;  let i = index">
             <table class="table">
-              <tr>
-                
+              <tr>                
                 <td>
                   <strong>{{item.totalprice | number : '1.2-2' }}</strong>
                 </td>

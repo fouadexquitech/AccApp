@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { LoginService } from './login/login.service';
-import { User } from './_models';
+import { User} from './_models';
 
 @Component({
   selector: 'app-root',
@@ -10,10 +10,9 @@ import { User } from './_models';
   export class AppComponent {
     title = 'AccApp';
     user: User;
-    constructor(private loginService: LoginService) {
-          
-      this.loginService.user.subscribe(x => this.user = x);
-      
-      
+
+  constructor(private loginService: LoginService) 
+  { 
+    this.loginService.user.subscribe(x => this.user = x);
   }
 }

@@ -41,7 +41,7 @@
                     </span>
                                         
                   </h5></div>
-                  <div class="col-sm-3 form-group"><h5 style="display: inline-block;"><span> By Group</span>&nbsp;
+                  <div class="col-sm-2 form-group"><h5 style="display: inline-block;"><span> By Group</span>&nbsp;
                     <span style="float: right; cursor: pointer;user-select: none;" (click)="showByGroup()">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" [checked]="byGroup">                         
@@ -70,7 +70,7 @@
                     (click)="openSendEmailModal()">Send Email</button>
                     
                   </div>
-                  <div class="col-sm-2 form-group">
+                  <div class="col-sm-3 form-group">
                     <button type="button" class="btn btn-secondary" style="float: right; width: 100%;"  (click)="openGenerateContract()" [disabled]="generatingContract">
                     <span *ngIf="generatingContract"> Generating...</span>
                     <span *ngIf="!generatingContract">Generate Contracts BOQ</span>

@@ -6,7 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { SupplierInput, SupplierList, SupplierPackagesList, SupplierPackagesRevList, CurrencyList, ExchangeRate, RevisionFieldsList, RevisionDetailsList, SupplierInputList, ComercialCond, AssignPackageTemplate } from './package-supplier.model';
 import { PackageSupplierService } from './package-supplier.service';
 import { environment } from '../../environments/environment';
-import { ProjectCurrency } from '../login/login.model';
+import { ProjectCurrency,Project } from '../login/login.model';
 import { EmailTemplate, FieldType, Language } from '../_models';
 import { ConfirmationDialogService } from '../_components/confirmation-dialog/confirmation-dialog.service';
 import { OriginalBoqModel } from '../assign-package/assign-package.model';
@@ -37,6 +37,7 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
   SupplierInputList : SupplierInputList[] = [];
   CurrencyList : CurrencyList[] = [];
   projectCurrency : ProjectCurrency;
+  project:Project;
   expandedDetail: boolean = false;
   currentRowIndex: number = -1;
   currentRevRowIndex : number = -1;
@@ -302,6 +303,7 @@ maxAttachements : number = 5;
       this.GetSupplierPackagesList();
       this.assignByBoqOnly = localStorage.getItem('assignByBoqOnly');
       this.projectCurrency = JSON.parse(localStorage.getItem("currency")) as ProjectCurrency;
+      this.project = JSON.parse(localStorage.getItem("project")) as Project;
    });
 
     
@@ -875,7 +877,8 @@ maxAttachements : number = 5;
                unitRate : 0,
                assignedPackage:'',
                scopeQtyO : 0,
-               billQtyO:0
+               billQtyO:0,
+               obTradeDesc:''
             };
             //const found = this.RevisionDetailsBoqItems.find(elem => elem.itemO === rev.rdBoqItem);
             //console.log(found);
@@ -948,9 +951,7 @@ maxAttachements : number = 5;
               //let rate = d[Object.keys(d)[0]];
               
               this.exchangeRate = d.result;
-            }
-            
-            
+            }           
         });
     }
    
@@ -964,6 +965,5 @@ maxAttachements : number = 5;
   {
     let byBoq = (this.SupplierPackagesList[0].psByBoq == 1);
     this.router.navigate(['/package-groups', this.PackageId, this.PackageName, byBoq]);
-    
   }
 }

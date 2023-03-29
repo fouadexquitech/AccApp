@@ -1,5 +1,5 @@
 <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light" *ngIf="user">
-    <a class="navbar-brand p-2" href="#"><img src="../../assets/img/acc_logo.png"></a>
+    <a class="navbar-brand p-2" href="#"><img src="../../assets/img/acc_logo.png"></a>   
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -39,17 +39,21 @@
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-           <i class="fa fa-user"></i> {{user.usrDesc}}
+           <i class="fa fa-user"></i> {{user.usrDesc}}  
           </a>
+          
           <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             <li><a class="dropdown-item text-danger" [routerLink]="" (click)="logout()">
               <i class="fa fa-sign-out"></i>
               Logout</a></li>
           </ul>
         </li>
+       <li class="nav-item active">
+            <a class="nav-link" [routerLink]="['/']">
+              Project: {{user.usrLoggedProjectName}}  </a>
+        </li>
       </ul>
     </div>
     <div>
-      
     </div>
   </nav>

@@ -231,7 +231,8 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
                unitRate : 0,
                assignedPackage:'',
                scopeQtyO:0,
-               billQtyO:0
+               billQtyO:0,
+               obTradeDesc:''
             };
             //const found = this.RevisionDetailsBoqItems.find(elem => elem.itemO === rev.rdBoqItem);
             //console.log(found); 

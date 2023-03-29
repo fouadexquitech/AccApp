@@ -10,6 +10,7 @@ export class OriginalBoqModel {
     public qtyO: number = 0;  //Final Qty
     public billQtyO: number = 0;
     public scopeQtyO: number = 0;
+    public obTradeDesc : string = null;
 }
 
 export class BoqModel {
@@ -45,7 +46,9 @@ export class SearchInput {
     public sheetDesc: string = null;
     public itemO: string = null;
     public boqLevel2: string[] = [];
-    public boqLevel3: string = null;
+    public boqLevel3:  string[] = [];
+    public boqLevel4: string[] = [];
+    public obTradeDesc: string = null;
 }
 
 export class BOQDivList {
@@ -80,6 +83,7 @@ export class SheetDescList {
 export class AssignOriginalBoqList {
     public rowNumber: number = 0;
     public scope: number = 0;
+    public tradeDesc  : string = null;
 }
 
 export class AssignBoqList {
@@ -93,4 +97,6 @@ export class AssignPackages {
     public assignOriginalBoqList: AssignOriginalBoqList[] = [];
     public assignBoqList: AssignBoqList[] = [];
 }
+
+
 

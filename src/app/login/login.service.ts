@@ -6,7 +6,7 @@ import { catchError, map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { User } from '../_models';
-import {ProjectCurrency} from '../login/login.model'
+import {ProjectCurrency,Project} from '../login/login.model'
 
 @Injectable({
   providedIn: 'root'
@@ -15,24 +15,35 @@ export class LoginService {
   baseUrl = '';
   private userSubject: BehaviorSubject<User>;
   private projectCurrencySubject : BehaviorSubject<ProjectCurrency>;
+  private projectSubject : BehaviorSubject<Project>;
+
   public user: Observable<User>;
   public projectCurrency : Observable<ProjectCurrency>;
+  public project : Observable<Project>;
 
   constructor( private router: Router, private http: HttpClient) { 
       this.baseUrl = environment.baseApiUrl + "api/";
       this.userSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('user')));
       this.projectCurrencySubject = new BehaviorSubject<ProjectCurrency>(JSON.parse(localStorage.getItem('currency')));
+      this.projectSubject = new BehaviorSubject<Project>(JSON.parse(localStorage.getItem('projectName')));
+
       this.user = this.userSubject.asObservable();
       this.projectCurrency = this.projectCurrencySubject.asObservable();
+      this.project=this.projectSubject.asObservable();
     }
 
-    public get userValue(): User {
+  public get userValue(): User {
       return this.userSubject.value;
   }
 
   public get projectCurrencyValue() : ProjectCurrency 
   {
     return this.projectCurrencySubject.value;
+  }
+
+  public get projectNameValue() : Project
+  {
+    return this.projectSubject.value;
   }
 
   login(username : string, password : string, projSeq : number) {
@@ -74,9 +85,14 @@ export class LoginService {
 
   getProjects(dbSeq : number): Observable<any> 
   {
-    return this.http.get(this.baseUrl + 'Logon/GetProjects?dbSeq=' + dbSeq).pipe(
-        map(res => res), catchError(this.handleError)
+    return this.http.get(this.baseUrl + 'Logon/GetProjects?dbSeq=' + dbSeq)
+    .pipe(map(res => res), catchError(this.handleError)
     );
+
+    //     return this.http.get(this.baseUrl + 'Logon/GetProjects?dbSeq=' + dbSeq)
+    // .pipe(map(proj => {
+    //   localStorage.setItem('projectName', JSON.stringify(proj));
+    // }), catchError(this.handleError));
   }
 
   handleError(error: any): Promise<any> {

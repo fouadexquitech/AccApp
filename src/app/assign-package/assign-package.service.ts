@@ -14,6 +14,12 @@ export class AssignPackageService {
         this.baseUrl = environment.baseApiUrl + "api/";
     }
 
+    ConnectToDB(connString: string): Observable<any> {
+        return this.http.get(this.baseUrl + 'Logon/ConnectToDB?connString='+connString).pipe(
+            map(res => res), catchError(this.handleError)
+        );
+    }
+
     GetBOQDivList(): Observable<any> {
         return this.http.get(this.baseUrl + 'Search/GetBOQDivList').pipe(
             map(res => res), catchError(this.handleError)
@@ -22,6 +28,19 @@ export class AssignPackageService {
 
     GetBOQLevel2List(): Observable<any> {
         return this.http.get(this.baseUrl + 'Search/GetBOQLevel2List').pipe(
+            map(res => res), catchError(this.handleError)
+        );
+    }
+
+    
+    GetBOQLevel3List(): Observable<any> {
+        return this.http.get(this.baseUrl + 'Search/GetBOQLevel3List').pipe(
+            map(res => res), catchError(this.handleError)
+        );
+    }
+
+    GetBOQLevel4List(): Observable<any> {
+        return this.http.get(this.baseUrl + 'Search/GetBOQLevel4List').pipe(
             map(res => res), catchError(this.handleError)
         );
     }
@@ -107,4 +126,11 @@ export class AssignPackageService {
     );
     }
     
+    
+    updateBoqTradeDesc(originalBoqList: OriginalBoqModel[], tradeDesc:string): Observable<any> {
+        return this.http.post(this.baseUrl + 'Package/updateBoqTradeDesc?tradeDesc=' + tradeDesc, originalBoqList).pipe(
+            map(res => res), catchError(this.handleError)
+        );
+    }
+
 }

@@ -28,3 +28,24 @@ th {
    display: inline-block;
    vertical-align: middle;
  }
+
+ /* ::ng-deep mat-autocomplete {
+   width: fit-content !important;
+} */
+
+/* ::ng-deep .cdk-overlay-pane {
+   width: auto !important;
+} */
+
+
+::ng-deep .mat-select-value {
+   max-width: 100%;
+   min-width: 100%;
+   width: auto;
+ }
+ ::ng-deep .mat-form-field-infix {
+   width: auto !important;
+   min-width: 180px !important;
+   padding-right: 13px !important;
+ } 
+

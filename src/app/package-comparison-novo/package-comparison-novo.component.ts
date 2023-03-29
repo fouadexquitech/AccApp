@@ -882,15 +882,16 @@ generatingContract : boolean = false;
              if (sup.supplierName != "Ideal"){
             totalQty += sup.assignedQty;
              }
+             if(totalQty <= boq.quotationQty){
             this.supplierBoqQty.push({supID : sup.supplierId, qty : sup.assignedQty});
+          }
           });
 
           //alert(totalPerc);
-          if(totalQty != boq.qty)
+          if(totalQty != boq.quotationQty)
           { 
               qtyIsValid = false;
               boq.validPerc = false;
-              
           }
        
           
@@ -898,14 +899,11 @@ generatingContract : boolean = false;
             boqItemID : itemO,
             supplierPercents : [],
             supplierQtys : this.supplierBoqQty
-
           };
           this.supplierBoq.push(newSupplierBoq);
         }
-         
-        
-      
     });
+
     if(oneItemChecked)
     {
     if (!qtyIsValid) 
@@ -914,7 +912,6 @@ generatingContract : boolean = false;
         this.supplierBoq = [];
         this.supplierBoqQty = [];
         qtyIsValid = true;
-        
     } 
     else {
         this.isAssigningSupplierBoq = true;
@@ -929,7 +926,6 @@ generatingContract : boolean = false;
         checkAll.checked = false;
         this.onSearch();
         this.Cancel();
-        
         }
       });
     }
@@ -971,9 +967,6 @@ generatingContract : boolean = false;
                     this.supplierGroupQty.push({supID : sup.supplierId, qty : sup.assignedQty});
                   });
 
-                  
-               
-                  
                   const newSupplierGroups : SupplierGroups = {
                     groupId : groupId,
                     supplierPercents : [],

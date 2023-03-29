@@ -42,6 +42,7 @@ export class PackageComparisonComponent implements OnInit {
   selectedBOQDivList : BOQDivList[] = []; 
   BOQLevelList: BOQLevelList[] = [];
   selectedBOQLevel2List : BOQLevelList[] = []; 
+  selectedBOQLevel4List : BOQLevelList[] = []; 
   RESDivList: RESDivList[] = [];
   selectedRESDivList : RESDivList[] = [];
   RESTypeList: RESTypeList[] = [];
@@ -394,7 +395,8 @@ export class PackageComparisonComponent implements OnInit {
           unitRate : 0,
           assignedPackage:'',
           scopeQtyO : 0,
-          billQtyO:0
+          billQtyO:0,
+          obTradeDesc:''
        };
        this.RevisionDetailsBoqItems.push(item);
       });

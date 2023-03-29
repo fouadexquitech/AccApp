@@ -10,6 +10,10 @@ import {environment} from '../../environments/environment';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalDismissReasons, NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { finalize } from 'rxjs/operators';
+// AH28032023
+import { LoginService } from '../login/login.service';
+import { User } from '../_models';
+// AH28032023.
 declare var $: any;
 
 @Component({
@@ -26,6 +30,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   public selectedBOQDivList : BOQDivList[] = [];
   BOQLevelList: BOQLevelList[] = [];
   public selectedBOQLevel2List : BOQLevelList[] = [];
+  public selectedBOQLevel3List : BOQLevelList[] = [];
+  public selectedBOQLevel4List : BOQLevelList[] = [];
   RESDivList: RESDivList[] = [];
   selectedRESDivList : RESDivList[] = [];
   RESTypeList: RESTypeList[] = [];
@@ -70,15 +76,25 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   modalReference : any;
   modalOptions:NgbModalOptions;
   closeResult: string;
+  form: FormGroup;
+  formTrade:FormGroup;
 
+  public user : User;
 
   constructor(private assignPackageService: AssignPackageService, 
     private modalService: NgbModal,private spinner: NgxSpinnerService , 
     private toastr: ToastrService,
     private router : Router,
-    private formBuilder: FormBuilder) { }
+    private formBuilder: FormBuilder,
+    private loginService: LoginService
+    )
+     {this.loginService.user.subscribe(x => this.user = x); }
 
   ngOnInit(): void {
+    this.formTrade = this.formBuilder.group({
+      tradeDesc: ['', Validators.required]
+  });
+
     this.select2Options = {
       multiple : true
     };
@@ -111,9 +127,12 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         }
       }
     };
-
+    
+    // this.ConnectToDB(this.user.usrLoggedConnString);
     this.GetBOQDivList();
     this.GetBOQLevel2List();
+    this.GetBOQLevel3List();
+    this.GetBOQLevel4List();
     this.GetRESDivList();
     this.GetRESTypeList();
     this.GetPackageList();
@@ -122,6 +141,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.GetOriginalBoqList(this.SearchInput);
   }
 
+  
   rerender(): void {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
@@ -146,6 +166,14 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.isExportShown = !this.isExportShown;
   }
 
+  // AH28032023
+  ConnectToDB(connString: string) {
+    this.assignPackageService.ConnectToDB(connString).subscribe((data) => {
+      
+    });
+  }
+// AH28032023.
+
   GetBOQDivList() {
     this.assignPackageService.GetBOQDivList().subscribe((data) => {
       if (data) {
@@ -161,6 +189,26 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       if (data) {
         this.BOQLevelList = data;
         this.selectedBOQLevel2List = data;
+        //console.log(data)
+      }
+    });
+  }
+
+  GetBOQLevel3List() {
+    this.assignPackageService.GetBOQLevel3List().subscribe((data) => {
+      if (data) {
+        this.BOQLevelList = data;
+        this.selectedBOQLevel3List = data;
+        //console.log(data)
+      }
+    });
+  }
+
+  GetBOQLevel4List() {
+    this.assignPackageService.GetBOQLevel4List().subscribe((data) => {
+      if (data) {
+        this.BOQLevelList = data;
+        this.selectedBOQLevel4List = data;
         //console.log(data)
       }
     });
@@ -220,7 +268,6 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       this.isSearching = false;
     }))
     .subscribe((data) => {
-      
       this.toggleShow();
       if (data) {
         this.OriginalBoqList = data;
@@ -312,7 +359,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   OnOriginalBoqChecked(evt: any, index: number) {
     this.SelectedOriginalBoqRow = this.OriginalBoqList[index];
     if (evt.target.checked) {
-      this.SelectedOriginalBoqList.push({ rowNumber: this.SelectedOriginalBoqRow.rowNumber, scope: this.SelectedPackage });
+      this.SelectedOriginalBoqList.push({ rowNumber: this.SelectedOriginalBoqRow.rowNumber, scope: this.SelectedPackage,tradeDesc: null });
     } else {
       const newIndex = this.SelectedOriginalBoqList.findIndex(x => x.rowNumber === this.SelectedOriginalBoqRow.rowNumber);
       if (newIndex > -1) {
@@ -372,7 +419,6 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   }
 
   selectRow(event: any, index: any) {
-
     this.CurrentRowIndex = index;
     this.SelectedBoqQty = this.OriginalBoqList[index]["qtyO"];
     let rowNumber = this.OriginalBoqList[index]["rowNumber"];
@@ -394,7 +440,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
               this.SelectedOriginalBoqRow = this.OriginalBoqList[index];
               if(checkbox.checked)
               {
-                this.SelectedOriginalBoqList.push({ rowNumber: this.SelectedOriginalBoqRow.rowNumber, scope: this.SelectedPackage });
+                this.SelectedOriginalBoqList.push({ rowNumber: this.SelectedOriginalBoqRow.rowNumber, scope: this.SelectedPackage,tradeDesc: null });
                 this.GetBoqList(this.OriginalBoqList[index]["itemO"], this.SearchInput);
               }
                else 
@@ -504,13 +550,15 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       }
   }
 
+
   checkAllOriginalBoq(event : any) {
     this.SelectedOriginalBoqList = [];
     this.SelectedBoqList = [];
     this.BoqList = [];
     this.displayedBoqList = [];
-      const checkbox = event.target as HTMLInputElement;
-      let originalBOQTable = document.getElementById('originalBOQTable') as HTMLTableElement;
+    const checkbox = event.target as HTMLInputElement;
+    let originalBOQTable = document.getElementById('originalBOQTable') as HTMLTableElement;
+
       if(originalBOQTable)
       {
           for(let index = 1; index < originalBOQTable.rows.length; index ++)
@@ -526,7 +574,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
                 let currentBoqRow = this.OriginalBoqList[index - 1];
                 if(checkbox.checked)
                 {
-                  this.SelectedOriginalBoqList.push({ rowNumber: currentBoqRow.rowNumber, scope: this.SelectedPackage });               
+                  this.SelectedOriginalBoqList.push({ rowNumber: currentBoqRow.rowNumber, scope: this.SelectedPackage, tradeDesc: null });               
                 }
             }
           }
@@ -690,6 +738,32 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.selectedBOQLevel2List = result;
   }
   
+  filterBOQLevel3(event: KeyboardEvent)
+  {
+    const txt = event.target as HTMLInputElement;
+    
+    let result: BOQLevelList[] = [];
+    for(let a of this.BOQLevelList){
+      if(a.level.toLowerCase().indexOf(txt.value.toLowerCase()) > -1){
+        result.push(a)
+      }
+    }
+    this.selectedBOQLevel3List = result;
+  }
+
+  filterBOQLevel4(event: KeyboardEvent)
+  {
+    const txt = event.target as HTMLInputElement;
+    
+    let result: BOQLevelList[] = [];
+    for(let a of this.BOQLevelList){
+      if(a.level.toLowerCase().indexOf(txt.value.toLowerCase()) > -1){
+        result.push(a)
+      }
+    }
+    this.selectedBOQLevel4List = result;
+  }
+
   filterRESDiv(event: KeyboardEvent)
   {
     const txt = event.target as HTMLInputElement;
@@ -851,8 +925,34 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
           this.toastr.error('An error occured');
         }
       });
-
     }
+  }
+
+  // convenience getter for easy access to form fields
+  get fn() { return this.formTrade.controls; }
+
+  updateBoqTradeDescription() {
+    this.isAssigning = true;
+    //this.assignPackages.assignOriginalBoqList = this.OriginalBoqList;
+    //this.assignPackages.assignBoqList = null;
+    let desc=this.fn.tradeDesc.value;
+
+    this.assignPackageService.updateBoqTradeDesc(this.OriginalBoqList,desc).subscribe((data) => {
+      if (data) {
+       // this.SelectedBoqList = [];
+       // this.SelectedOriginalBoqList = [];
+       // this.BoqList = [];
+      //  this.displayedBoqList = [];
+        this.isAssigning = false;
+        this.toastr.success("Trade Description Updated")
+        //this.uncheckAll();
+        //this.SelectedPackage = 0;
+        //this.FinalUnitPrice = 0;
+        //this.FinalTotalPrice = 0;
+        //this.router.navigate(['/package-supplier', this.SelectedPackage]);
+        this.GetOriginalBoqList(this.SearchInput);
+      }
+    });
   }
 
 }
