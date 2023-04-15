@@ -324,7 +324,6 @@ maxAttachements : number = 5;
       if (data) {
         this.PackageName = data.packageName;
         this.FilePath = data.filePath;
-     
       }
     });
   }
@@ -684,19 +683,15 @@ maxAttachements : number = 5;
         document.body.appendChild(a);
         a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
         a.click();
-        
       }
     });
-
   }
 
-  
 
   OpenFieldModal(prRevId: number) {
     $("#addFieldModal").modal('show')
     this.selectedRevisionId = prRevId;
   }
-  
 
   CloseFieldModal() {
     $("#addFieldModal").modal('hide');
@@ -707,7 +702,6 @@ maxAttachements : number = 5;
     valueInput.value = null;
     valueType.selectedIndex = 0;
     this.selectedRevisionId = 0;
-
   }
 
   openUpdateCommercialCondModal(packageSupplier : SupplierPackagesList)

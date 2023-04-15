@@ -13,6 +13,7 @@ import { finalize } from 'rxjs/operators';
 // AH28032023
 import { LoginService } from '../login/login.service';
 import { User } from '../_models';
+import { PackageSupplierService } from '../package-supplier/package-supplier.service';
 // AH28032023.
 declare var $: any;
 
@@ -78,7 +79,11 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   closeResult: string;
   form: FormGroup;
   formTrade:FormGroup;
-
+  public isValidatingExcel : boolean = false;
+  PackageName = "";
+  FilePath = "";
+  assignByBoqOnly : string;
+  
   public user : User;
 
   constructor(private assignPackageService: AssignPackageService, 
@@ -86,7 +91,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     private toastr: ToastrService,
     private router : Router,
     private formBuilder: FormBuilder,
-    private loginService: LoginService
+    private loginService: LoginService,
+    private packageSupplierService: PackageSupplierService, 
     )
      {this.loginService.user.subscribe(x => this.user = x); }
 
@@ -625,6 +631,62 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       }
     });
   }
+
+//AH03042023
+  validateExcelBeforeAssign(){
+    //this.spinner.show();
+    this.isValidatingExcel = true;
+    
+    let flexSwitchCheckDefault = document.getElementById("flexSwitchCheckDefault") as HTMLInputElement;
+    if(flexSwitchCheckDefault)
+    {
+      if(flexSwitchCheckDefault.type == 'checkbox' && flexSwitchCheckDefault.checked)
+      {
+          localStorage.setItem('assignByBoqOnly', '1');
+      }      
+    }
+    
+    this.packageSupplierService.validateExcelBeforeAssign(this.SelectedPackage, Number(localStorage.getItem('assignByBoqOnly'))).subscribe((data) => {
+      this.isValidatingExcel = false;
+      if (data) {
+        // this.spinner.hide();
+        
+        this.toastr.success("Validated !!")
+        this.GetPackageById(Number(this.SelectedPackage));
+
+        let a = document.createElement('a');
+        a.id = 'downloader';
+        a.target = '_blank'; 
+        a.style.visibility = "hidden";
+        document.body.appendChild(a);
+        a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
+        a.click();
+        this.isValidatingExcel = false;
+        this.router.navigate(['/package-supplier', this.SelectedPackage]);
+      }
+    });
+  }
+
+  GetPackageById(IdPkge: number) {
+    this.packageSupplierService.GetPackageById(IdPkge).subscribe((data) => {
+      if (data) {
+        this.PackageName = data.packageName;
+        this.FilePath = data.filePath;
+     
+      }
+    });
+  }
+
+  flexSwitchCheckDefaultChange(event : any)
+  {
+      let checkbox = event.target as HTMLInputElement;
+      if(checkbox.type == 'checkbox')
+      {
+          let val = checkbox.checked? '1' : '0';
+          localStorage.setItem('assignByBoqOnly', val)
+      }
+  }
+//AH03042023.
 
   onSearch() {
     this.BoqList = [];

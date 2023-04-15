@@ -319,10 +319,8 @@
 
                             <div class="col-sm-6 form-group">
                                 <form [formGroup]="formTrade">
-
                                     <label>Trade Description</label>
                                     <input type="text" formControlName="tradeDesc" class="form-control">
-
                                 </form>
                             </div>
                     </div>
@@ -330,15 +328,38 @@
                         <hr>
 
                         <div class="row">
-                            <div class="col-sm-6 form-group">
+                            <div class="col-sm-2 form-group">
                                 <button [disabled]="isAssigning" type="button" class="btn btn-primary"
                                     style="float: right; width: 100%;"
-                                    [disabled]="SelectedOriginalBoqList.length == 0 && SelectedBoqList.length == 0"
+                                    [disabled]="(SelectedOriginalBoqList.length == 0 && SelectedBoqList.length == 0) || this.SelectedPackage==0"
                                     (click)="AssignPackages()">
                                     <span *ngIf="isAssigning" class="spinner-border spinner-border-sm mr-1"></span>
-                                    Assign
+                                    Assign Package
                                 </button>
                             </div>
+
+                            <div class="col-sm-2 form-group" >
+                                <button style="width: 100%;" type="button" class="btn btn-success" 
+                                [disabled]="this.SelectedPackage==0"
+                                (click)="validateExcelBeforeAssign()">
+                                <!-- <div class="col-sm-3 form-group" *ngIf="FilePath == null"> 
+                                  <button style="width: 100%;" type="button" class="btn btn-success"
+                                [disabled]="(FilePath != null || isValidatingExcel)"
+                                (click)="validateExcelBeforeAssign()"> -->
+                                <!-- <i class="fa fa-spinner fa-spin" *ngIf="isValidatingExcel"></i>
+                                Validate Excel</button> -->
+                                
+                                <i class="fa fa-spinner fa-spin" *ngIf="(isValidatingExcel)" ></i>
+                                Validate Excel</button>
+                              </div>
+                            
+                              <div class="col-sm-2 form-group form-check form-switch"  >
+                                <input class="form-check-input" type="checkbox" 
+                                id="flexSwitchCheckDefault" name="flexSwitchCheckDefault" [checked]="assignByBoqOnly == '1'"
+                                (change)="flexSwitchCheckDefaultChange($event)">
+                                <label class="form-check-label" for="flexSwitchCheckDefault">By Boq Item Only</label>
+                              </div>
+
 
                             <div class="col-sm-6 form-group">
                                 <button   type="button" class="btn btn-secondary"

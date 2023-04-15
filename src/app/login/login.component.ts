@@ -61,7 +61,7 @@ export class LoginComponent implements OnInit {
                 
                     if(data)
                     {
-                        this.loginService.getProjectCurrency().pipe(first())
+                        this.loginService.getProjectCurrency(projSeq).pipe(first())
                         .subscribe(data => {
                             if(data)
                             {

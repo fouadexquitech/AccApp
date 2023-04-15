@@ -72,9 +72,9 @@ export class LoginService {
     );
   }
 
-  getProjectCurrency()
+  getProjectCurrency(projSeq : number)
   {
-    return this.http.get<ProjectCurrency>(environment.baseApiUrl + 'api/Logon/GetProjectCurrency')
+    return this.http.get<ProjectCurrency>(environment.baseApiUrl + 'api/Logon/GetProjectCurrency?projSeq=' + projSeq)
     .pipe(map(currency => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
         localStorage.setItem('currency', JSON.stringify(currency));

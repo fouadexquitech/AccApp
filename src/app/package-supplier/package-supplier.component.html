@@ -16,16 +16,14 @@
   <div class="container-fluid">
 
   <div class="row">
-    <div class="col-sm-12 form-group" *ngIf="SupplierPackagesList.length == 0 && FilePath != null">
-     
-       
-      <mat-form-field style="width: 100%;" appearance="fill">
-        <mat-label>Suppliers</mat-label>
-        <mat-select multiple [(ngModel)]="selectedSuppliers">
-          <mat-option *ngFor="let item of SupplierList" [value]="item.supID">{{item.supName}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-         
+    <!-- <div class="col-sm-12 form-group" *ngIf="SupplierPackagesList.length == 0 && FilePath != null"> -->
+    <div class="col-sm-12 form-group">
+        <mat-form-field style="width: 100%;" appearance="fill">
+          <mat-label>Suppliers</mat-label>
+          <mat-select multiple [(ngModel)]="selectedSuppliers">
+            <mat-option *ngFor="let item of SupplierList" [value]="item.supID">{{item.supName}}</mat-option>
+          </mat-select>
+        </mat-form-field> 
       </div>
   </div>
   <br>
