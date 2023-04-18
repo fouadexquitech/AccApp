@@ -16,7 +16,6 @@ export class ManagementUsersService {
   addManagementEmail(list : TopManagement[])
   {
     return this.http.post(environment.baseApiUrl + 'api/Logon/AddManagementEmail', list);
-    
   }
 
   deleteManagementEmail(id : number)

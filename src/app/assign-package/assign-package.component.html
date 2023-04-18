@@ -18,7 +18,6 @@
                             hide</span>
                     </div>
 
-
                     <div class="card-body" *ngIf="isShown">
                         <div class="row" >
 
@@ -377,13 +376,56 @@
         </div>
         <br>
 
+        <!-- <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-body table-responsive">
+                        
+                        <table id="originalBOQTable"  datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+                            <thead>
+                                <tr *ngIf="loading">
+                                    <td style="text-align: center;" colspan="6">
+                                        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="col">ID#</th>
+                                    <th scope="col">Supplier</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col" >Actions</th>  
+                                    <th scope="col"></th>
+                                    <th scope="col" *ngIf="false"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of OriginalBoqList ; let i = index" style="cursor: pointer;">
+                                    <td id="pckId">{{ item.rowNumber }}</td>
+                                    <td>{{ item.sectionO }}</td>
+                                    <td>{{ item.itemO }}</td>
+                                    <td>{{item.descriptionO}}</td>                                  
+                                    <td></td>
+                                    <td *ngIf="false">   </td>                                                                     
+                                </tr>
+                            </tbody>
+                            <tfoot *ngIf="isSearching && OriginalBoqList.length == 0">
+                                <tr>
+                                    <td colspan="6" style="text-align: center;">
+                                        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-body">
 
-                        <table id="originalBOQTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
-                            class="row-border hover">
+                        <table id="originalBOQTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
                             <thead>
                                 <tr>
                                     <th scope="col">
@@ -401,11 +443,11 @@
                                     <th scope="col"></th>
                                     <th scope="col">Unit Price</th>
                                     <th scope="col">Assigned Package</th>
-                                    <!--<th scope="col">Package</th>-->
+                                    <th scope="col"></th>
+                                    <th scope="col" *ngIf="false"></th>
                                 </tr>
                             </thead>
                             <tbody>
-
                                 <tr *ngFor="let item of OriginalBoqList ; let i = index" style="cursor: pointer;"
                                     (click)="selectRow($event, i)" [ngClass]="{'HighlightedRow': i === CurrentRowIndex }">
                                     <td><input disabled #checkboxes class="form-check-input" style="cursor: pointer;" type="checkbox"></td>
@@ -421,27 +463,25 @@
                                     <td><a class="btn btn-link" title="Edit" (click)="editOriginalBoqQty(editModal,item)"><i class="fa-solid fa-edit"></i></a></td>
                                     <td>{{item.unitRate | number: '.2' }}</td>
                                     <td [ngClass]="item.assignedPackage != '' ? 'text-danger' : ''" >{{item.assignedPackage}}</td>
-                                    <!--<td *ngIf="PackageList" width="20%">
-                                    <ng-select2 width="100%" [allowClear]="true" [placeholder]="" [(ngModel)]="item.scope">
-                                        <option selected></option>
-                                        <option *ngFor="let pitem of PackageList" [ngValue]="pitem.idPkge">{{ pitem.pkgeName }}
-                                        </option>
-                                    </ng-select2>
-                                </td>-->
+
+                                    <td></td>
+                                    <td *ngIf="false"> </td>                                   
                                 </tr>
                             </tbody>
-                            <!--<tfoot *ngIf="isSearching && OriginalBoqList.length == 0">
+                            <tfoot *ngIf="isSearching && OriginalBoqList.length == 0">
                                 <tr>
-                                    <td colspan="8" style="text-align: center;">
+                                    <td colspan="15" style="text-align: center;">
                                         <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
                                     </td>
                                 </tr>
-                            </tfoot>-->
+                            </tfoot>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
+
+
 
         <br>
         <div class="row">

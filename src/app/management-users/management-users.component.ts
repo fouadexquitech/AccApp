@@ -12,8 +12,8 @@ import { ManagementUsersService } from './management-users.service';
   templateUrl: './management-users.component.html',
   styleUrls: ['./management-users.component.css']
 })
-export class ManagementUsersComponent implements OnInit {
 
+export class ManagementUsersComponent implements OnInit {
   list : TopManagement[] = [];
   addedList : TopManagement[] = [];
   filter : string = '';
@@ -29,16 +29,18 @@ export class ManagementUsersComponent implements OnInit {
   submitted : boolean = false;
   updating : boolean = false;
   currentUser : TopManagement;
-  constructor(private packageComparisonService : PackageComparisonService,
+
+  constructor(
+    private packageComparisonService : PackageComparisonService,
     private modalService: NgbModal, private toastrService : ToastrService, 
     private managementUsersService : ManagementUsersService,
-    private formBuilder: FormBuilder,) {
+    private formBuilder: FormBuilder,) 
+    {
       this.modalOptions = {
         backdrop:'static',
         backdropClass:'customBackdrop',
         size : 'lg'
       }
-
      }
 
   ngOnInit(): void {

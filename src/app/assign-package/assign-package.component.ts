@@ -2,9 +2,9 @@ import { Component, ElementRef, OnInit, OnDestroy, QueryList, ViewChildren, View
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
+import { Subject } from 'rxjs';
 import { AssignBoqList, AssignOriginalBoqList, AssignPackages, BOQDivList,BOQLevelList, BoqModel, OriginalBoqModel, PackageList, RESDivList, RESPackageList, RESTypeList, SearchInput, SheetDescList } from './assign-package.model';
 import { AssignPackageService } from './assign-package.service';
-import { Subject } from 'rxjs';
 import { DataTableDirective} from 'angular-datatables';
 import {environment} from '../../environments/environment';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -22,8 +22,8 @@ declare var $: any;
   templateUrl: './assign-package.component.html',
   styleUrls: ['./assign-package.component.css']
 })
-export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit {
 
+export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit {
   isShown: boolean = false; // hidden by default
   isAssignShown: boolean = false; // hidden by default
   isExportShown: boolean = false; // hidden by default
@@ -58,8 +58,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   FinalUnitPrice: number = 0;
   FinalTotalPrice : number = 0;
   SelectedBoqRow = new BoqModel();
-  public dtOptions: DataTables.Settings = {};
-  public dtTrigger: Subject<any> = new Subject<any>();
+  // public dtOptions: DataTables.Settings = {};
+  // public dtTrigger: Subject<any> = new Subject<any>();
   public select2Options : Select2.Options = {};
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective;
@@ -83,8 +83,17 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   PackageName = "";
   FilePath = "";
   assignByBoqOnly : string;
-  
   public user : User;
+  loading : boolean = false;
+
+  public dtOptions: DataTables.Settings = {
+    pagingType: 'full_numbers',
+    pageLength: 10,
+    searching : true,
+    destroy : true,
+    responsive : true
+  };
+  public dtTrigger: Subject<any> = new Subject<any>();
 
   constructor(private assignPackageService: AssignPackageService, 
     private modalService: NgbModal,private spinner: NgxSpinnerService , 
@@ -268,6 +277,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   GetOriginalBoqList(input: SearchInput) {
     //this.spinner.show();
+    this.loading = true;
     this.isSearching = true;
     this.assignPackageService.GetOriginalBoqList(input)
     .pipe(finalize(()=>{
@@ -275,11 +285,14 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     }))
     .subscribe((data) => {
       this.toggleShow();
+      this.loading = false;
       if (data) {
         this.OriginalBoqList = data;
         //this.spinner.hide();
+        // this.dtTrigger.next();
         this.rerender();
       }
+     
     });
   }
 

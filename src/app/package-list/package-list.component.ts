@@ -13,6 +13,7 @@ import { PackageListService } from './package-list.service';
 export class PackageListComponent implements OnInit, OnDestroy {
 
   PackageList: PackageList[] = [];
+  
   public dtOptions: DataTables.Settings = {
     pagingType: 'full_numbers',
     pageLength: 10,
@@ -22,6 +23,7 @@ export class PackageListComponent implements OnInit, OnDestroy {
   };
   public dtTrigger: Subject<any> = new Subject<any>();
   isSearching : boolean = false;
+
   constructor(private packageListService: PackageListService , private router: Router , private spinner: NgxSpinnerService,) { }
 
   ngOnInit(): void {

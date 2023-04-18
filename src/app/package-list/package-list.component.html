@@ -1,17 +1,16 @@
-
-    <!--<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-beat">
+<!--<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-beat">
         <p style="font-size: 20px; color: white">Loading...</p>
     </ngx-spinner>-->
-    <app-nav></app-nav>
+<app-nav></app-nav>
 <section>
-    
+
     <nav aria-label="breadcrumb" class="p-2">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
             <li class="breadcrumb-item active" aria-current="page">Packages List</li>
         </ol>
-      </nav>
-   
+    </nav>
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
@@ -22,9 +21,9 @@
                                 <th scope="col">Id</th>
                                 <th scope="col">Description</th>
                                 <th scope="col"></th>
-                                
+
                                 <th scope="col" *ngIf="false"></th>
-                                
+
                             </tr>
                         </thead>
                         <tbody>
@@ -32,19 +31,22 @@
                                 <td id="pckId">{{ item.idPkge }}</td>
                                 <td>{{ item.pkgeName }}</td>
                                 <td>
-                                    <a class="btn btn-primary" [routerLink]="['/package-supplier', item.idPkge]">Assign To
+                                    <a class="btn btn-primary" [routerLink]="['/package-supplier', item.idPkge]">Assign
+                                        To
                                         Suppliers</a>
                                 </td>
-                               
+
                                 <td *ngIf="false">
-                                    <button type="button" class="btn btn-secondary" (click)="routeToTechnicalConditions(item.idPkge, item.pkgeName)">Technical Conditions</button>
+                                    <button type="button" class="btn btn-secondary"
+                                        (click)="routeToTechnicalConditions(item.idPkge, item.pkgeName)">Technical
+                                        Conditions</button>
                                 </td>
                             </tr>
                         </tbody>
                         <tfoot *ngIf="isSearching && PackageList.length == 0">
-                            <tr> 
+                            <tr>
                                 <td colspan="5" style="text-align: center;">
-                                    <mat-progress-bar  [mode]="'indeterminate'"></mat-progress-bar>
+                                    <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
                                 </td>
                             </tr>
                         </tfoot>
@@ -52,6 +54,6 @@
                 </div>
             </div>
         </div>
-    
-</div>
+
+    </div>
 </section>
