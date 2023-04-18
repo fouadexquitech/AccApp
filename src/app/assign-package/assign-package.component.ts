@@ -58,7 +58,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   FinalUnitPrice: number = 0;
   FinalTotalPrice : number = 0;
   SelectedBoqRow = new BoqModel();
-  // public dtOptions: DataTables.Settings = {};
+  public dtOptions: DataTables.Settings = {};
   // public dtTrigger: Subject<any> = new Subject<any>();
   public select2Options : Select2.Options = {};
   @ViewChild(DataTableDirective, {static: false})
@@ -86,13 +86,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   public user : User;
   loading : boolean = false;
 
-  public dtOptions: DataTables.Settings = {
-    pagingType: 'full_numbers',
-    pageLength: 10,
-    searching : true,
-    destroy : true,
-    responsive : true
-  };
+
   public dtTrigger: Subject<any> = new Subject<any>();
 
   constructor(private assignPackageService: AssignPackageService, 
@@ -115,15 +109,15 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     };
 
     this.dtOptions = {
-      //pagingType: 'full_numbers',
-      //pageLength: 10,
-      paging : false,
-      info : false,
+      pagingType: 'full_numbers',
+      pageLength: 10,
+      paging : true,
       searching : false,
       destroy : true,
       scrollY: "300px",
       scrollCollapse: true,
-      rowCallback: (row: Node, data: any[] | Object, index: number) => {
+  
+      /*rowCallback: (row: Node, data: any[] | Object, index: number) => {
         let checkbox = row.firstChild.firstChild as HTMLInputElement;
         let rowNumberCell = row.childNodes[1] as HTMLTableCellElement;
         let rowNumber = Number(rowNumberCell.innerHTML);
@@ -135,12 +129,13 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
                this.SelectedOriginalBoqList.forEach(function (item) {
                   if(item.rowNumber === rowNumber)
                   {
+                    
                     checkbox.checked = true;
                   }
                 });
             }
         }
-      }
+      }*/
     };
     
     // this.ConnectToDB(this.user.usrLoggedConnString);
@@ -437,7 +432,11 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     }
   }
 
-  selectRow(event: any, index: any) {
+  selectRow(event: any, i: any) {
+    let currentPageIndex = +document.getElementsByClassName('paginate_button current')[0].innerHTML - 1;
+    let currentPageSizeSelect = document.getElementsByName('originalBOQTable_length')[0] as HTMLSelectElement;
+    let currentPageSize = +currentPageSizeSelect.value;
+    let index = i - (currentPageIndex * currentPageSize);
     this.CurrentRowIndex = index;
     this.SelectedBoqQty = this.OriginalBoqList[index]["qtyO"];
     let rowNumber = this.OriginalBoqList[index]["rowNumber"];

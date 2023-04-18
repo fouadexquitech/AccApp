@@ -444,9 +444,16 @@
                                     <th scope="col">Unit Price</th>
                                     <th scope="col">Assigned Package</th>
                                     <th scope="col"></th>
-                                    <th scope="col" *ngIf="false"></th>
+                                    <th scope="col"></th>
                                 </tr>
                             </thead>
+                            <!--<tbody *ngIf="isSearching && OriginalBoqList.length == 0">
+                                <tr>
+                                    <td colspan="15" style="text-align: center;">
+                                        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+                                    </td>
+                                </tr>
+                            </tbody>-->
                             <tbody>
                                 <tr *ngFor="let item of OriginalBoqList ; let i = index" style="cursor: pointer;"
                                     (click)="selectRow($event, i)" [ngClass]="{'HighlightedRow': i === CurrentRowIndex }">
@@ -465,16 +472,10 @@
                                     <td [ngClass]="item.assignedPackage != '' ? 'text-danger' : ''" >{{item.assignedPackage}}</td>
 
                                     <td></td>
-                                    <td *ngIf="false"> </td>                                   
+                                    <td> </td>                                   
                                 </tr>
                             </tbody>
-                            <tfoot *ngIf="isSearching && OriginalBoqList.length == 0">
-                                <tr>
-                                    <td colspan="15" style="text-align: center;">
-                                        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
-                                    </td>
-                                </tr>
-                            </tfoot>
+                            
                         </table>
                     </div>
                 </div>
