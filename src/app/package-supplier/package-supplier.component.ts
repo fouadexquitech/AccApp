@@ -10,7 +10,7 @@ import { ProjectCurrency,Project } from '../login/login.model';
 import { EmailTemplate, FieldType, Language } from '../_models';
 import { ConfirmationDialogService } from '../_components/confirmation-dialog/confirmation-dialog.service';
 import { OriginalBoqModel } from '../assign-package/assign-package.model';
-import { Group, TblComCond, TechConditions, TopManagementAttachement } from '../package-comparison/package-comparison.model';
+import { Group, TblComCond, TechConditions, TopManagementAttachement} from '../package-comparison/package-comparison.model';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { ComparisonPackageGroup } from '../package-groups/package-groups.model';
 import { PackageGroupsService } from '../package-groups/package-groups.service';
@@ -22,6 +22,7 @@ declare var $: any;
   templateUrl: './package-supplier.component.html',
   styleUrls: ['./package-supplier.component.css']
 })
+
 export class PackageSupplierComponent implements OnInit, OnDestroy {
   params : any;
   PackageId: number = 0;
@@ -61,11 +62,9 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
   formEmailTemplate: FormGroup = new FormGroup({
     language: new FormControl(''),
     template: new FormControl(''),
-    
   });
   addedTechConditions : TechConditions[] = [];
   groups : ComparisonPackageGroup[] = [];
-
   formEmailSubmitted = false;
   assignByBoqOnly : string;
   fieldTypes : any[] = [{id : FieldType.AMOUNT_TYPE_ID, name : FieldType.AMOUNT_TYPE_NAME}, 
@@ -77,6 +76,7 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
   comConditions : TblComCond[] = [];
   techConditions : TechConditions[] = [];
   isUpdatingCommercialConditions : boolean = false;
+  listCC : string[] = [];
   dtOptions = {
     //pagingType: 'full_numbers',
     //pageLength: 10,
@@ -105,7 +105,6 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
       defaultFontSize: '',
       fonts: [
         {class: 'calibri', name: 'Calibri'},
-     
       ],
       customClasses: [
       {
@@ -151,9 +150,12 @@ maxAttachements : number = 5;
     }*/
   }
 
+  // onKey(event : any) {
+  //   this.ccList.push (event.target.value);
+  // }
+
   getGroups()
   {
-    
     this.packageGroupsService.getGroups(this.PackageId).subscribe((data) => {
         if(data)
         {
@@ -164,7 +166,6 @@ maxAttachements : number = 5;
 
   onGroupChange(event : any)
   {
-
   }
 
   checkAllComCond(event : any)
@@ -243,6 +244,7 @@ maxAttachements : number = 5;
     this.revisionFieldsList = [];
     this.selectedSupplierName = null;
     this.selectedRevisionNb = null;
+    this.listCC=null;
   }
 
   openFieldsListModal(revisionId : any, prRevNo : any, psSupName : any)
@@ -293,20 +295,16 @@ maxAttachements : number = 5;
         localStorage.setItem('assignByBoqOnly', '0');
       }
    
-
       if (this.PackageId != null && this.PackageId != 0) {
         this.GetPackageById(Number(this.PackageId));
       }
 
       this.GetSupplierList(Number(this.PackageId));
-
       this.GetSupplierPackagesList();
       this.assignByBoqOnly = localStorage.getItem('assignByBoqOnly');
       this.projectCurrency = JSON.parse(localStorage.getItem("currency")) as ProjectCurrency;
       this.project = JSON.parse(localStorage.getItem("project")) as Project;
    });
-
-    
   }
 
   flexSwitchCheckDefaultChange(event : any)
@@ -345,20 +343,16 @@ maxAttachements : number = 5;
         this.SupplierList = data;
       }
     });
-    
   }
 
   checkIfItemExistsInResources(arrRevDetails : RevisionDetailsList[], itemO : string)
   {
-      
       let arr = arrRevDetails.filter(element=>element.rdBoqItem == itemO);
-      
       return arr.length;
   }
 
   getResourcesPerItem(arrRevDetails : RevisionDetailsList[], itemO : string)
   {
-    
       return arrRevDetails.filter(element=>element.rdBoqItem === itemO);
   }
 
@@ -374,7 +368,6 @@ maxAttachements : number = 5;
   onAttachementSelect(event : any, index : number)
   {
     if (event.target.files.length > 0) {
-
       const file = event.target.files[0];
       this.topManagementAttachements[index].file = file;
     }
@@ -398,10 +391,12 @@ maxAttachements : number = 5;
     this.lstLanguages = Language.languages;
     this.topManagementAttachements = [];
     this.SupplierInputList = [];
+    this.listCC = [];
     this.formEmailTemplate = this.formBuilder.group(
       {
         language: ['', Validators.required],
-        template: ['', Validators.required]
+        template: ['', Validators.required],
+        listCC :[[],[]]
       }
       
     );
@@ -417,7 +412,6 @@ maxAttachements : number = 5;
   {
     $("#emailTemplateModal").modal('hide');
     this.selectedEmailTemplate = null;
-    
   }
 
   onEmailTemplateSubmit(){
@@ -427,21 +421,19 @@ maxAttachements : number = 5;
     }
     else
     {
+      // let ccList=this.ccList;
       this.AssignSuppliers();
     }
-
   }
 
   onLanguageChange(event : any)
   {
       let select = event.target as HTMLInputElement;
       let lang = select.value;
-    
       this.formEmailTemplate.controls['template'].setValue('');
       this.packageSupplierService.GetEmailTemplate(lang).subscribe((data) => {
       this.selectedEmailTemplate = data;
       this.formEmailTemplate.controls['template'].setValue(this.selectedEmailTemplate?.etContent || '');
-        
       });
   }
 
@@ -454,11 +446,8 @@ maxAttachements : number = 5;
             console.log(this.techConditions);
             $("#viewTechnicalConditionsModal").modal('show');
           }
-         
       });*/
-
-      this.router.navigate(['technical-conditions', this.PackageId, this.PackageName]);
-      
+      this.router.navigate(['technical-conditions', this.PackageId, this.PackageName]);    
   }
 
   closeViewTechnicalConditionsModal()
@@ -487,11 +476,12 @@ maxAttachements : number = 5;
         this.SupplierInputList.push({supplierInput : supplier, comercialCondList : comercialCond, emailTemplate : null, filePath : this.FilePath});
       });
 
-
       if (this.SupplierInputList.length > 0) {
         this.SupplierInputList.forEach(sup=>{
           sup.emailTemplate = this.f.template.value;
         });
+
+        console.log(this.listCC);
 
         let assignPackageTemplate : AssignPackageTemplate = {
           byBoq : Number(localStorage.getItem('assignByBoqOnly')),
@@ -511,7 +501,6 @@ maxAttachements : number = 5;
           this.isAssigning = false;
           if (data) {
             //this.spinner.hide();
-            
             this.toastr.success("Supplier(s) assigned successfuly");
             this.GetSupplierPackagesList();
             this.CloseEmailTemplateModal();

@@ -376,9 +376,7 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="CloseFieldsListModal()">
             Close</button>
-          
-        </div>
-  
+        </div> 
       </div>
     </div>
   </div>
@@ -392,9 +390,17 @@
           <h5 class="modal-title" id="emailTemplateModalLabel"><strong>Email Template</strong></h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="CloseEmailTemplateModal()"></button>
         </div>
+        
         <form [formGroup]="formEmailTemplate" (ngSubmit)="onEmailTemplateSubmit()">
-        <div class="modal-body">
-            <div class="row">
+          <div class="modal-body">
+          <!-- <div class="row">
+            <div class="col-sm-12 p-2">
+              CC List    
+              <tag-input [(ngModel)]="listCC" [modelAsStrings]="true"></tag-input>            
+              </div>
+          </div> -->
+
+          <div class="row">
               <div class="col-sm-12 form-group">
                 Language
                 <select class="form-select" formControlName="language" (change)="onLanguageChange($event)"
@@ -403,13 +409,12 @@
                   <option *ngFor="let lan of lstLanguages" [value]="lan">{{lan}}</option>
                 </select>
                 <div *ngIf="formEmailSubmitted && f.language.errors" class="invalid-feedback">
-                  <div *ngIf="f.language.errors.required">*Required</div>
-                  
+                  <div *ngIf="f.language.errors.required">*Required</div>              
               </div>
               </div>
-              
             </div>
-            <br>
+
+            <!-- <br> -->
             <div class="row">
               <div class="col-sm-12 form-group">
                 Template
@@ -423,7 +428,7 @@
               </div>
               </div>
             </div>
-            <br>
+            <!-- <br> -->
             <div class="row">
               <div class="col-sm-12 p-2">
                 <button type="button" class="btn btn-secondary" (click)="addAttachement()" [disabled]="topManagementAttachements.length > maxAttachements">Add Attachement</button>
@@ -446,10 +451,9 @@
                
             </div>
             </div>
-            <br>
+            <!-- <br> -->
             <div class="row">
               <div class="col-sm-12 form-group">
-               
                 <table class="table">
                     <thead>
                       <tr>
@@ -484,7 +488,6 @@
             Send & Proceed</button>
           <button type="button" class="btn btn-secondary" (click)="CloseEmailTemplateModal()">
             Close</button>
-          
         </div>
       </form>
       </div>

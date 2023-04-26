@@ -5,6 +5,7 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { ManagementUsersComponent } from './management-users/management-users.component';
 import { SuppliersComponent } from './suppliers/suppliers.component';
+import { PackagesComponent } from './packages/packages.component';
 import { PackageComparisonNovoComponent } from './package-comparison-novo/package-comparison-novo.component';
 import { PackageComparisonComponent } from './package-comparison/package-comparison.component';
 import { PackageGroupsComponent } from './package-groups/package-groups.component';
@@ -28,6 +29,7 @@ const routes: Routes = [
   { path: 'revision-details/:revisionId/:psId/:psByBoq/:packageId/:packageName', component: RevisionDetailsComponent, canActivate: [AuthGuard] },
   { path: 'management-users', component: ManagementUsersComponent, canActivate: [AuthGuard] },
   { path: 'suppliers', component: SuppliersComponent, canActivate: [AuthGuard] },
+  { path: 'packages', component: PackagesComponent, canActivate: [AuthGuard] },
   { path: 'technical-conditions/:packageId/:packageName', component: TechnicalConditionsComponent, canActivate: [AuthGuard] },
   { path: 'package-groups/:packageId/:pkgeName/:byBoq', component: PackageGroupsComponent, canActivate: [AuthGuard] },
 

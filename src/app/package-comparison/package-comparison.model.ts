@@ -104,7 +104,6 @@ export class TblTechCond
     public tcPackId : number = 0;
     public tcDescription : string = null;
     public tcSelected : number;
-
 }
 
 export class TblComCond
@@ -212,4 +211,3 @@ export class TechCondModel
     public AccCondList : AccConditions[] = [];
     public ListCC : string[] = [];
 }
-

@@ -87,9 +87,8 @@ export class AssignPackageTemplate
     public packId : number = 0;
     public byBoq : number = 0;
     public userName : string = null;
-    public listCC : string[] = [];
+    listCC : string[] = [];
     public listAttach : string[] = [];
 }
-
 
 

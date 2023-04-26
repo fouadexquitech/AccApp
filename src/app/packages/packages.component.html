@@ -1,0 +1,175 @@
+<!--<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-beat">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>-->
+    <app-nav></app-nav>
+    <section>
+    
+        <nav aria-label="breadcrumb" class="p-2">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Packages</li>
+            </ol>
+        </nav>
+    
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-body table-responsive">
+    
+                        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+                            <thead>
+                                <tr *ngIf="loading">
+                                    <td style="text-align: center;" colspan="6">
+                                        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="col">ID#</th>
+                                    <th scope="col">Package</th>
+                                    <th scope="col">Division</th>
+                                    <th scope="col">Actions</th>
+                                    <th scope="col"></th>
+                                    <th scope="col" *ngIf="false"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of list ; let i = index" style="cursor: pointer;">
+                                    <td id="pckId">{{ item.pkgeId }}</td>
+                                    <td>{{ item.pkgeName }}</td>
+                                    <td>{{ item.division }}</td>
+                                    <td>
+                                        <a class="btn btn-link" title="Edit" (click)="editUser(editModal, item)">
+                                            <i class="fa fa-edit text-primary"></i>
+                                        </a>
+                                        <a class="btn btn-link" title="Delete" (click)="deleteUser(item.pkgeId)"
+                                            [ngStyle]="deleting? {'pointer-events': 'none'} : {'pointer-events': ''}">
+                                            <i class="fa fa-times text-danger"></i>
+                                        </a>
+                                    </td>
+                                    <td></td>
+                                    <td *ngIf="false"> </td>
+                                </tr>
+                            </tbody>
+                            <tfoot *ngIf="list.length == 0">
+                                <tr>
+                                    <td colspan="6" style="text-align: center;">
+                                        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <ng-template #modalUser let-modal>
+            <div class="modal-header">
+                <h4 class="modal-title" id="modal-basic-title">{{modalTitle}}</h4>
+                <button type="button" class="btn close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+    
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group p-2">
+                        <button type="button" class="btn btn-primary" title="Add" (click)="addUserRow()">+</button>
+                    </div>
+                    <div class="form-group p-2">
+                        <table class="table" id="bulkTable">
+                            <thead>
+                                <tr>
+                                    <th>package</th>
+                                    <th>Division</th>
+                                    <!-- <th>Occupation</th> -->
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let user of addedList; let i = index">
+                                    <td>
+                                        <input class="form-control" [value]="user.pkgeName" placeholder="pkgeName"
+                                            (change)="NameValueChanged($event, i)">
+                                    </td>
+                                    <td>
+                                        <input type="Division" class="form-control" [value]="user.division"
+                                            placeholder="Division" (change)="mailValueChanged($event, i)">
+                                    </td>
+                                    <!-- <td>
+                                    <input class="form-control" [value]="user.occupation" placeholder="Occupation" (change)="occupationValueChanged($event, i)">
+                                </td> -->
+                                    <td>
+                                        <a class="btn btn-link" title="Delete" (click)="deleteRowAt(i)">
+                                            <i class="fa-solid fa-times text-danger"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot *ngIf="addedList.length == 0">
+                                <tr>
+                                    <td colspan="4" class="text-center">No data available</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="saveBulk()" [disabled]="savingBulk">
+                    <span *ngIf="savingBulk" class="spinner-border spinner-border-sm mr-1"></span>
+                    Save</button>
+                <button type="button" class="btn btn-secondary" (click)="modal.close('Cancel click')">Cancel</button>
+            </div>
+        </ng-template>
+    
+    
+        <!--Edit Modal-->
+        <ng-template #editModal let-modal>
+            <form [formGroup]="formEdit" (ngSubmit)="onEditSubmit()">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modal-basic-title">Edit User</h4>
+                    <button type="button" class="btn close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+    
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group p-2">
+                            <label>Suplier Name</label>
+                            <input type="text" class="form-control" formControlName="pkgeName"
+                                [ngClass]="{ 'is-invalid': submitted && f.pkgeName.errors }">
+                            <div *ngIf="submitted && f.pkgeName.errors" class="invalid-feedback">
+                                <div *ngIf="f.pkgeName.errors?.required">package Name is required</div>
+                            </div>
+                        </div>
+                        <div class="form-group p-2">
+                            <label>Division</label>
+                            <input type="Division" class="form-control" formControlName="Division" [Division]="true"
+                                [ngClass]="{ 'is-invalid': submitted && f.Division.errors }">
+                            <div *ngIf="submitted && f.Division.errors" class="invalid-feedback">
+                                <div *ngIf="f.Division.errors?.required">Division is required</div>
+                                <div *ngIf="f.Division.errors?.Division">Invalid Division format</div>
+                            </div>
+                        </div>
+                        <!-- <div class="form-group p-2">
+                    <label>Occupation</label>
+                    <input type="text" class="form-control" formControlName="occupation"
+                    [ngClass]="{ 'is-invalid': submitted && f.occupation.errors }">
+                    <div *ngIf="submitted && f.occupation.errors" class="invalid-feedback">
+                        <div *ngIf="f.occupation.errors?.required">Occupation is required</div>
+                    </div>
+                </div> -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" [disabled]="updating">
+                        <span *ngIf="updating" class="spinner-border spinner-border-sm mr-1"></span>
+                        Update</button>
+                    <button type="button" class="btn btn-secondary" (click)="modal.close('Cancel click')">Cancel</button>
+                </div>
+            </form>
+        </ng-template>
+    
+    </section>

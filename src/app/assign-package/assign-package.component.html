@@ -20,7 +20,6 @@
 
                     <div class="card-body" *ngIf="isShown">
                         <div class="row" >
-
                             <div class="col-sm-2 form-group">
                                 <!--<label>BOQ Div</label>
                                 <ng-select2 [(ngModel)]="SearchInput.bOQDiv" width="100%" [options]="select2Options" *ngIf="BOQDivList">
@@ -278,7 +277,6 @@
                 </div>
             </div>
         </div>
-        <br>
 
         <div class="row">
             <div class="col-12">
@@ -374,51 +372,6 @@
             </div>
 
         </div>
-        <br>
-
-        <!-- <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card card-body table-responsive">
-                        
-                        <table id="originalBOQTable"  datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
-                            <thead>
-                                <tr *ngIf="loading">
-                                    <td style="text-align: center;" colspan="6">
-                                        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="col">ID#</th>
-                                    <th scope="col">Supplier</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col" >Actions</th>  
-                                    <th scope="col"></th>
-                                    <th scope="col" *ngIf="false"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let item of OriginalBoqList ; let i = index" style="cursor: pointer;">
-                                    <td id="pckId">{{ item.rowNumber }}</td>
-                                    <td>{{ item.sectionO }}</td>
-                                    <td>{{ item.itemO }}</td>
-                                    <td>{{item.descriptionO}}</td>                                  
-                                    <td></td>
-                                    <td *ngIf="false">   </td>                                                                     
-                                </tr>
-                            </tbody>
-                            <tfoot *ngIf="isSearching && OriginalBoqList.length == 0">
-                                <tr>
-                                    <td colspan="6" style="text-align: center;">
-                                        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div> -->
 
         <div class="row">
             <div class="col-sm-12">

@@ -57,10 +57,8 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
 
   openSendTechnicalConditionsModal()
   {
-    
     this.listCC = [];
     $("#sendTechnicalConditionsModal").modal('show');
-    
   }
 
   closeSendTechnicalConditionsModal()
