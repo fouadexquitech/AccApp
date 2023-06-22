@@ -325,9 +325,19 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       this.loading = false;
       if (data) {
         this.OriginalBoqList = data;
+        
+        this.OriginalBoqList.forEach(item=>{
+          let _item = this.SelectedOriginalBoqList.find(x=>x.rowNumber === item.rowNumber);
+          if(_item)
+          {
+            item.isSelected = true;
+          }
+        });
         //this.spinner.hide();
         // this.dtTrigger.next();
         this.rerender();
+
+        this.checkboxesAll = this.SelectedOriginalBoqList.length == this.OriginalBoqList.length;
       }
      
     });
@@ -498,6 +508,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
           if(checkbox.type == 'checkbox')
           { 
               checkbox.checked = !checkbox.checked;
+              this.OriginalBoqList[i].isSelected = checkbox.checked;
               this.SelectedOriginalBoqRow = this.OriginalBoqList[index];
               if(checkbox.checked)
               {
@@ -797,6 +808,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   onSearch() {
     this.BoqList = [];
+    this.checkboxesAll = false;
     this.GetOriginalBoqList(this.SearchInput);
    
   }
