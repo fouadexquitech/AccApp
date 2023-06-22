@@ -49,6 +49,8 @@ export class SearchInput {
     public boqLevel3:  string[] = [];
     public boqLevel4: string[] = [];
     public obTradeDesc: string = null;
+    public isItemsAssigned: number = 0;
+    public boqResourceSeq: string = "";
 }
 
 export class BOQDivList {
@@ -62,6 +64,11 @@ export class BOQLevelList {
 export class PackageList {
     public idPkge: number = 0;
     public pkgeName: string = null;
+}
+
+export class RessourceList {
+    public resSeq: number = 0;
+    public resDesc: string = null;
 }
 
 export class RESDivList {

@@ -1,5 +1,5 @@
 export class Package {
-    public supID: number = 0;
-    public supName: string = null;
-    public supEmail: string = null;
+    public pkgeId: number = 0;
+    public pkgeName: string = null;
+    public division: string = null;
 }

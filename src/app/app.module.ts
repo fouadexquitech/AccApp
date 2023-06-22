@@ -43,6 +43,7 @@ import { PackageGroupsComponent } from './package-groups/package-groups.componen
 import { PackageComparisonNovoComponent } from './package-comparison-novo/package-comparison-novo.component';
 import { TagInputModule } from 'ngx-chips';
 import { SuppliersComponent } from './suppliers/suppliers.component';
+import { PackagesComponent } from './packages/packages.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { SuppliersComponent } from './suppliers/suppliers.component';
     TechnicalConditionsComponent,
     PackageGroupsComponent,
     PackageComparisonNovoComponent,
-    SuppliersComponent
+    SuppliersComponent,
+    PackagesComponent
   ],
   imports: [
     BrowserModule,

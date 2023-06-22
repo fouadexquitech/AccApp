@@ -80,7 +80,7 @@
                         <table class="table" id="bulkTable">
                             <thead>
                                 <tr>
-                                    <th>package</th>
+                                    <th>Package</th>
                                     <th>Division</th>
                                     <!-- <th>Occupation</th> -->
                                     <th></th>
@@ -137,7 +137,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="form-group p-2">
-                            <label>Suplier Name</label>
+                            <label>Package Name</label>
                             <input type="text" class="form-control" formControlName="pkgeName"
                                 [ngClass]="{ 'is-invalid': submitted && f.pkgeName.errors }">
                             <div *ngIf="submitted && f.pkgeName.errors" class="invalid-feedback">
@@ -146,11 +146,10 @@
                         </div>
                         <div class="form-group p-2">
                             <label>Division</label>
-                            <input type="Division" class="form-control" formControlName="Division" [Division]="true"
-                                [ngClass]="{ 'is-invalid': submitted && f.Division.errors }">
-                            <div *ngIf="submitted && f.Division.errors" class="invalid-feedback">
-                                <div *ngIf="f.Division.errors?.required">Division is required</div>
-                                <div *ngIf="f.Division.errors?.Division">Invalid Division format</div>
+                            <input type="text" class="form-control" formControlName="division" 
+                                [ngClass]="{ 'is-invalid': submitted && f.division.errors }">
+                            <div *ngIf="submitted && f.division.errors" class="invalid-feedback">
+                                <div *ngIf="f.division.errors?.required">Division is required</div>
                             </div>
                         </div>
                         <!-- <div class="form-group p-2">

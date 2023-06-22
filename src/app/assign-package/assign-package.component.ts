@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
-import { AssignBoqList, AssignOriginalBoqList, AssignPackages, BOQDivList,BOQLevelList, BoqModel, OriginalBoqModel, PackageList, RESDivList, RESPackageList, RESTypeList, SearchInput, SheetDescList } from './assign-package.model';
+import { AssignBoqList, AssignOriginalBoqList, AssignPackages, BOQDivList,BOQLevelList, BoqModel, OriginalBoqModel, PackageList, RESDivList, RESPackageList, RessourceList, RESTypeList, SearchInput, SheetDescList } from './assign-package.model';
 import { AssignPackageService } from './assign-package.service';
 import { DataTableDirective} from 'angular-datatables';
 import {environment} from '../../environments/environment';
@@ -37,9 +37,15 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   selectedRESDivList : RESDivList[] = [];
   RESTypeList: RESTypeList[] = [];
   selectedRESTypeList : RESTypeList[] = [];
+
   PackageList: PackageList[] = [];
   selectedPackages: PackageList[];
   selectedFilterPackages : PackageList[];
+
+  ressourceList: RessourceList[] = [];
+  selectedRessources: RessourceList[];
+  selectedFilterRessources : RessourceList[];
+
   RESPackageList: RESPackageList[] = [];
   selectedFilterResPackages : RESPackageList[] = [];
   SheetDescList: SheetDescList[] = [];
@@ -86,6 +92,11 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   public user : User;
   loading : boolean = false;
 
+  public boqPackagesData: Object[] = [
+    { id: 0, desc: 'All Items' },
+    { id: 1, desc: 'With Assigned Packages' },
+    { id: 2, desc: 'Without Assigned Packages' }
+];
 
   public dtTrigger: Subject<any> = new Subject<any>();
 
@@ -108,35 +119,45 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       multiple : true
     };
 
+    // for EnablePaging 
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 10,
+      pageLength: 300,
       paging : true,
       searching : false,
       destroy : true,
       scrollY: "300px",
       scrollCollapse: true,
-  
-      /*rowCallback: (row: Node, data: any[] | Object, index: number) => {
-        let checkbox = row.firstChild.firstChild as HTMLInputElement;
-        let rowNumberCell = row.childNodes[1] as HTMLTableCellElement;
-        let rowNumber = Number(rowNumberCell.innerHTML);
-        if(checkbox)
-        {
-            if(checkbox.type == 'checkbox')
-            { 
-              checkbox.checked = false;
-               this.SelectedOriginalBoqList.forEach(function (item) {
-                  if(item.rowNumber === rowNumber)
-                  {
-                    
-                    checkbox.checked = true;
-                  }
-                });
-            }
-        }
-      }*/
     };
+
+    // this.dtOptions = {
+    //   //pagingType: 'full_numbers',
+    //   //pageLength: 10,
+    //   paging : false,
+    //   info : false,
+    //   searching : false,
+    //   destroy : true,
+    //   scrollY: "300px",
+    //   scrollCollapse: true,
+    //   rowCallback: (row: Node, data: any[] | Object, index: number) => {
+    //     let checkbox = row.firstChild.firstChild as HTMLInputElement;
+    //     let rowNumberCell = row.childNodes[1] as HTMLTableCellElement;
+    //     let rowNumber = Number(rowNumberCell.innerHTML);
+    //     if(checkbox)
+    //     {
+    //         if(checkbox.type == 'checkbox')
+    //         { 
+    //           checkbox.checked = false;
+    //            this.SelectedOriginalBoqList.forEach(function (item) {
+    //               if(item.rowNumber === rowNumber)
+    //               {
+    //                 checkbox.checked = true;
+    //               }
+    //             });
+    //         }
+    //     }
+    //   }
+    // };
     
     // this.ConnectToDB(this.user.usrLoggedConnString);
     this.GetBOQDivList();
@@ -149,6 +170,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.GetRESPackageList();
     this.GetSheetDescList();
     this.GetOriginalBoqList(this.SearchInput);
+    this.GetRessourcesList();
   }
 
   
@@ -248,6 +270,16 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         this.PackageList = data;
         this.selectedPackages = this.PackageList;
         this.selectedFilterPackages = data;
+      }
+    });
+  }
+
+  GetRessourcesList() {
+    this.assignPackageService.GetRessourcesList().subscribe((data) => {
+      if (data) {
+        this.ressourceList = data;
+        this.selectedRessources = this.ressourceList;
+        this.selectedFilterRessources = data;
       }
     });
   }
@@ -512,6 +544,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
           if(item)
           {
             item.boqQty += boq.boqQty;   
+            item.boqBillQty+=boq.boqBillQty;
+            item.boqScopeQty+=boq.boqScopeQty;
             item.totalUnitPrice += boq.totalUnitPrice;
           }
           else
@@ -529,6 +563,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
                 if((item.boqQty - boq.boqQty) > 0)
                 {
                   item.boqQty -= boq.boqQty;
+                  item.boqBillQty-=boq.boqBillQty;
+                  item.boqScopeQty-=boq.boqScopeQty;
                   item.totalUnitPrice -= boq.totalUnitPrice;
                 }
                 else
@@ -771,6 +807,19 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       }
     }
     this.selectedFilterPackages = result;
+  }
+
+  filterSearchRessources(event: KeyboardEvent)
+  {
+    const txt = event.target as HTMLInputElement;
+    
+    let result: RessourceList[] = [];
+    for(let a of this.ressourceList){
+      if(a.resDesc.toLowerCase().indexOf(txt.value.toLowerCase()) > -1){
+        result.push(a)
+      }
+    }
+    this.selectedFilterRessources = result;
   }
 
   filterSearchRESPackage(event: KeyboardEvent)

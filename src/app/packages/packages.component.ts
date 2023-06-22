@@ -85,7 +85,7 @@ export class PackagesComponent implements OnInit {
 
   addUserRow()
   {
-    this.addedList.push({supID : 0, supName : null, supEmail : null});
+    this.addedList.push({pkgeId : 0, pkgeName : null, division : null});
   }
 
   deleteRowAt(index : number)
@@ -129,7 +129,7 @@ export class PackagesComponent implements OnInit {
       this.addedList.forEach((Package, index)=>
         {
           bulkTable.rows[index + 1].style.borderColor = '';
-            if(Package.supName == null || Package.supEmail == null)
+            if(Package.pkgeName == null || Package.division == null)
             {
               valid = false;
               this.toastrService.error('Required fields');
@@ -159,13 +159,13 @@ export class PackagesComponent implements OnInit {
   NameValueChanged(event : any, index : number)
   {
       let value = event.target.value;
-      this.addedList[index].supName = value;
+      this.addedList[index].pkgeName = value;
   }
 
   mailValueChanged(event : any, index : number)
   {
     let value = event.target.value;
-    this.addedList[index].supEmail = value;
+    this.addedList[index].division = value;
   }
 
   deleteUser(id : number)
@@ -212,8 +212,8 @@ export class PackagesComponent implements OnInit {
   editUser(content : any, user : Package)
   {
     this.formEdit = this.formBuilder.group({
-      supName: [user.supName, Validators.required],
-      email: [user.supEmail, [Validators.required, Validators.email]]
+      pkgeName: [user.pkgeName, Validators.required],
+      division: [user.division, Validators.required]
     });
     this.currentUser = user;
     this.modalReference = this.modalService.open(content, this.modalOptions);
@@ -233,8 +233,8 @@ export class PackagesComponent implements OnInit {
     }
 
     this.updating = true;
-    this.currentUser.supEmail = this.f.email.value;
-    this.currentUser.supName = this.f.supName.value;
+    this.currentUser.pkgeName = this.f.pkgeName.value;
+    this.currentUser.division = this.f.division.value;
     this.packagesService.updatepackage(this.currentUser).subscribe(response=>{
       this.updating = false;
         if(response)
