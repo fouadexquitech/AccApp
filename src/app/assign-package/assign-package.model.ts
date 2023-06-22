@@ -11,6 +11,7 @@ export class OriginalBoqModel {
     public billQtyO: number = 0;
     public scopeQtyO: number = 0;
     public obTradeDesc : string = null;
+    public isSelected : boolean = false;
 }
 
 export class BoqModel {

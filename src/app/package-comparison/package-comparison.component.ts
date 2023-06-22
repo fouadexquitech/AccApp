@@ -396,7 +396,8 @@ export class PackageComparisonComponent implements OnInit {
           assignedPackage:'',
           scopeQtyO : 0,
           billQtyO:0,
-          obTradeDesc:''
+          obTradeDesc:'',
+          isSelected : false
        };
        this.RevisionDetailsBoqItems.push(item);
       });

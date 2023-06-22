@@ -424,7 +424,7 @@
                                 <tr>
                                     <th scope="col">
                                         <input type="checkbox" [(ngModel)]="checkboxesAll" class="form-check-input"
-                                            (change)="checkAllOriginalBoq($event)">
+                                            (change)="checkAllOriginalBoq2($event)">
                                     </th>
                                     <th scope="col">Row#</th>
                                     <th scope="col">Div</th>
@@ -453,7 +453,7 @@
                                 <tr *ngFor="let item of OriginalBoqList ; let i = index" style="cursor: pointer;"
                                     (click)="selectRow($event, i)"
                                     [ngClass]="{'HighlightedRow': i === CurrentRowIndex }">
-                                    <td><input disabled #checkboxes class="form-check-input" style="cursor: pointer;" type="checkbox"></td>
+                                    <td><input disabled #checkboxes class="form-check-input" style="cursor: pointer;" type="checkbox" [checked]="item.isSelected"></td>
                                     <td>{{item.rowNumber}}</td>
                                     <td>{{item.sectionO}}</td>
                                     <td>{{item.itemO}}</td>

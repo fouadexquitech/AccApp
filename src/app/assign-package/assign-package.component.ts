@@ -122,12 +122,22 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     // for EnablePaging 
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 300,
+      lengthMenu: [
+        [10, 25, 50, 100, 300, 500],
+        [10, 25, 50, 100, 300, 500],
+      ],
+      pageLength: 100,
       paging : true,
       searching : false,
       destroy : true,
       scrollY: "300px",
       scrollCollapse: true,
+      columnDefs: [
+        { targets: [0], orderable: false},
+      ],
+      rowCallback: (row: Node, data: any[] | Object, index: number) => {
+        //console.log(row);
+      }
     };
 
     // this.dtOptions = {
@@ -464,6 +474,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     }
   }
 
+  
   selectRow(event: any, i: any) {
     let currentPageIndex = +document.getElementsByClassName('paginate_button current')[0].innerHTML - 1;
     let currentPageSizeSelect = document.getElementsByName('originalBOQTable_length')[0] as HTMLSelectElement;
@@ -523,7 +534,14 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
           }
       }
     }
-
+    if(this.SelectedOriginalBoqList.length != this.OriginalBoqList.length || this.SelectedOriginalBoqList.length == 0)
+    {
+        this.checkboxesAll = false;
+    }
+    else
+    {
+      this.checkboxesAll = true;
+    }
     //console.log(this.SelectedBoqList);
   
   }
@@ -604,59 +622,100 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       }
   }
 
-
-  checkAllOriginalBoq(event : any) {
+  checkAllOriginalBoq2(event : any) {
     this.SelectedOriginalBoqList = [];
     this.SelectedBoqList = [];
     this.BoqList = [];
     this.displayedBoqList = [];
     const checkbox = event.target as HTMLInputElement;
-    let originalBOQTable = document.getElementById('originalBOQTable') as HTMLTableElement;
 
-      if(originalBOQTable)
-      {
-          for(let index = 1; index < originalBOQTable.rows.length; index ++)
-          {
-            let row = originalBOQTable.rows[index] as HTMLTableRowElement;
-            let rowCheckbox = row.firstChild.firstChild as HTMLInputElement;
-            let rowNumberCell = row.childNodes[1] as HTMLTableCellElement;
-            let rowNumber = Number(rowNumberCell.innerHTML);
-           
-            if(rowCheckbox)
-            {
-                rowCheckbox.checked = checkbox.checked;
-                let currentBoqRow = this.OriginalBoqList[index - 1];
-                if(checkbox.checked)
-                {
-                  this.SelectedOriginalBoqList.push({ rowNumber: currentBoqRow.rowNumber, scope: this.SelectedPackage, tradeDesc: null });               
-                }
-            }
+    this.OriginalBoqList.forEach(el=>{
+        el.isSelected = checkbox.checked;
+        if(checkbox.checked)
+        {
+          this.SelectedOriginalBoqList.push({ rowNumber: el.rowNumber, scope: this.SelectedPackage, tradeDesc: null });
+        }
+    });
+
+    this.displayedBoqList = [];
+    this.FinalTotalPrice = 0;
+    this.FinalUnitPrice = 0;
+
+    if(checkbox.checked)
+    {
+        /* select All BOQ List*/
+        this.assignPackageService.GetAllBoqList(this.SearchInput).subscribe((data) => {
+          if (data) {
+            
+            let selectedBoqArr = this.SelectedBoqList;
+            let selectedPackage = this.SelectedPackage;
+            let boqArr : BoqModel[] = data;
+            
+            boqArr.forEach(function(element : BoqModel){
+              selectedBoqArr.push({ boqSeq: element.boqSeq, boqScope: selectedPackage, boqResSeq : element.boqResSeq, boqItem : element.boqItem });                
+            });
+            
+            this.editDisplayedBoqList(boqArr, true);
+            //console.log(boqArr.length);            
           }
-          this.displayedBoqList = [];
-          this.FinalTotalPrice = 0;
-          this.FinalUnitPrice = 0;
-          if(checkbox.checked)
-          {
-              /* select All BOQ List*/
-              this.assignPackageService.GetAllBoqList(this.SearchInput).subscribe((data) => {
-                if (data) {
-                  
-                  let selectedBoqArr = this.SelectedBoqList;
-                  let selectedPackage = this.SelectedPackage;
-                  let boqArr : BoqModel[] = data;
-                  
-                  boqArr.forEach(function(element : BoqModel){
-                    selectedBoqArr.push({ boqSeq: element.boqSeq, boqScope: selectedPackage, boqResSeq : element.boqResSeq, boqItem : element.boqItem });                
-                  });
-                  
-                  this.editDisplayedBoqList(boqArr, true);
-                  //console.log(boqArr.length);            
-                }
-              });
-          }
-      }
-      //console.log(this.SelectedBoqList);
+        });
+    }
+
   }
+
+
+  // checkAllOriginalBoq(event : any) {
+  //   this.SelectedOriginalBoqList = [];
+  //   this.SelectedBoqList = [];
+  //   this.BoqList = [];
+  //   this.displayedBoqList = [];
+  //   const checkbox = event.target as HTMLInputElement;
+  //   let originalBOQTable = document.getElementById('originalBOQTable') as HTMLTableElement;
+
+  //     if(originalBOQTable)
+  //     {
+  //         for(let index = 1; index < originalBOQTable.rows.length; index ++)
+  //         {
+  //           let row = originalBOQTable.rows[index] as HTMLTableRowElement;
+  //           let rowCheckbox = row.firstChild.firstChild as HTMLInputElement;
+  //           let rowNumberCell = row.childNodes[1] as HTMLTableCellElement;
+  //           let rowNumber = Number(rowNumberCell.innerHTML);
+           
+  //           if(rowCheckbox)
+  //           {
+  //               rowCheckbox.checked = checkbox.checked;
+  //               let currentBoqRow = this.OriginalBoqList[index - 1];
+  //               if(checkbox.checked)
+  //               {
+  //                 this.SelectedOriginalBoqList.push({ rowNumber: currentBoqRow.rowNumber, scope: this.SelectedPackage, tradeDesc: null });               
+  //               }
+  //           }
+  //         }
+  //         this.displayedBoqList = [];
+  //         this.FinalTotalPrice = 0;
+  //         this.FinalUnitPrice = 0;
+  //         if(checkbox.checked)
+  //         {
+  //             /* select All BOQ List*/
+  //             this.assignPackageService.GetAllBoqList(this.SearchInput).subscribe((data) => {
+  //               if (data) {
+                  
+  //                 let selectedBoqArr = this.SelectedBoqList;
+  //                 let selectedPackage = this.SelectedPackage;
+  //                 let boqArr : BoqModel[] = data;
+                  
+  //                 boqArr.forEach(function(element : BoqModel){
+  //                   selectedBoqArr.push({ boqSeq: element.boqSeq, boqScope: selectedPackage, boqResSeq : element.boqResSeq, boqItem : element.boqItem });                
+  //                 });
+                  
+  //                 this.editDisplayedBoqList(boqArr, true);
+  //                 //console.log(boqArr.length);            
+  //               }
+  //             });
+  //         }
+  //     }
+  //     console.log(this.SelectedOriginalBoqList);
+  // }
 
   AssignPackages() {
     this.isAssigning = true;
