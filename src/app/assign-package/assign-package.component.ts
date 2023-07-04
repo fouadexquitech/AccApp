@@ -1027,6 +1027,20 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     });
   }
 
+  ExportExcelPackagesCost(){
+      this.assignPackageService.ExportExcelPackagesCost().subscribe((data) => {
+        if (data) {
+          let a = document.createElement('a');
+          a.id = 'downloader';
+          a.target = '_blank'; 
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
+          a.click();     
+        }
+      });
+    }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';

@@ -118,6 +118,13 @@ export class AssignPackageService {
     );
     }
 
+    ExportExcelPackagesCost() : Observable<any> 
+    {
+      return this.http.get(this.baseUrl + 'Package/ExportExcelPackagesCost').pipe(
+        map(res => res), catchError(this.handleError)
+    );
+    }
+
     updateOriginalBoqQty(item : OriginalBoqModel)
     {
       return this.http.post(this.baseUrl + 'Package/updateOriginalBoqQty', item).pipe(
