@@ -308,9 +308,15 @@
                             </div>
                             <div class="col-sm-2 form-group">
                                 <button class="btn btn-success" (click)="ExportExcelBoq()" [disabled]="isSearching"
-                                    style="width: 250px;">
+                                    style="width: 200px;font-size: small;">
                                     <!-- <i class="fa fa-spinner fa-spin" *ngIf="isSearching"></i> -->
                                     Export Selected Ressources
+                                </button>
+                            </div>
+                            <div class="col-sm-2 form-group">
+                                <button class="btn btn-success" (click)="ExportExcelPackagesCost()" [disabled]="isSearching"
+                                    style="width: 250px;font-size: small;">
+                                    Export Assigned Packages Dry Cost
                                 </button>
                             </div>
                         </div>
