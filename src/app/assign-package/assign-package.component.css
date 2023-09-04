@@ -37,6 +37,19 @@ th {
    width: auto !important;
 } */
 
+.selected-input {
+   color: red !important;
+}
+
+/*::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex 
+{
+   background-color: rgb(243, 202, 202) !important;
+}*/
+
+::ng-deep .mat-select-value {
+   color: red !important;
+}
+
 
 ::ng-deep .mat-select-value {
    max-width: 100%;

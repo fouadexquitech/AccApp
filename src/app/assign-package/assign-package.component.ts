@@ -180,7 +180,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.GetRESPackageList();
     this.GetSheetDescList();
     this.GetOriginalBoqList(this.SearchInput);
-    this.GetRessourcesList();
+    this.GetRessourcesListByLevels();
   }
 
   
@@ -286,6 +286,22 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   GetRessourcesList() {
     this.assignPackageService.GetRessourcesList().subscribe((data) => {
+      if (data) {
+        this.ressourceList = data;
+        this.selectedRessources = this.ressourceList;
+        this.selectedFilterRessources = data;
+      }
+    });
+  }
+
+  GetRessourcesListByLevels() {
+  
+    let body : any = {
+      level2 : this.SearchInput.boqLevel2,
+      level3 : this.SearchInput.boqLevel3,
+      level4 : this.SearchInput.boqLevel4
+    };
+    this.assignPackageService.GetRessourcesListByLevels(body).subscribe((data) => {
       if (data) {
         this.ressourceList = data;
         this.selectedRessources = this.ressourceList;

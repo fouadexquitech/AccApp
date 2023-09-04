@@ -46,7 +46,7 @@
                             <div class="col-sm-2 form-group">
                                 <mat-form-field appearance="fill" class="full-width-field" style="font-size: smaller ;">
                                     <mat-label>Level 2</mat-label>
-                                    <mat-select [(ngModel)]="SearchInput.boqLevel2" multiple>
+                                    <mat-select [(ngModel)]="SearchInput.boqLevel2" multiple (ngModelChange)="GetRessourcesListByLevels()">
                                         <input matInput type="text" focused="'true'" (keyup)="filterBOQLevel($event)"
                                             class="mat-filter">
                                         <span class="fa fa-search input-icon"></span>
@@ -65,7 +65,7 @@
                             <div class="col-sm-2 form-group">
                                 <mat-form-field appearance="fill" class="full-width-field" style="font-size: smaller ;">
                                     <mat-label>Level 3</mat-label>
-                                    <mat-select [(ngModel)]="SearchInput.boqLevel3" multiple>
+                                    <mat-select [(ngModel)]="SearchInput.boqLevel3" multiple (ngModelChange)="GetRessourcesListByLevels()">
                                         <input matInput type="text" focused="'true'" (keyup)="filterBOQLevel3($event)"
                                             class="mat-filter">
                                         <span class="fa fa-search input-icon"></span>
@@ -81,7 +81,7 @@
                             <div class="col-sm-2 form-group">
                                 <mat-form-field appearance="fill" class="full-width-field" style="font-size: smaller ;">
                                     <mat-label>Level 4</mat-label>
-                                    <mat-select [(ngModel)]="SearchInput.boqLevel4" multiple>
+                                    <mat-select [(ngModel)]="SearchInput.boqLevel4" multiple (ngModelChange)="GetRessourcesListByLevels()">
                                         <input matInput type="text" focused="'true'" (keyup)="filterBOQLevel4($event)"
                                             class="mat-filter">
                                         <span class="fa fa-search input-icon"></span>
@@ -96,13 +96,13 @@
 
                             <div class="col-sm-2 form-group">
                                 <label style="font-size: smaller ;">BOQ Item</label>
-                                <input type="text" class="form-control" [(ngModel)]="SearchInput.bOQItem"
+                                <input type="text" class="form-control" [(ngModel)]="SearchInput.bOQItem" [ngClass]="{'selected-input': SearchInput.bOQItem }"
                                     style="font-size: smaller ;height: 25px;">
                             </div>
 
                             <div class="col-sm-2 form-group">
                                 <label style="font-size: smaller ;">BOQ Desc</label>
-                                <input type="text" class="form-control" [(ngModel)]="SearchInput.bOQDesc"
+                                <input type="text" class="form-control" [(ngModel)]="SearchInput.bOQDesc" [ngClass]="{'selected-input': SearchInput.bOQDesc }"
                                     style="font-size: smaller ;height: 25px;">
                             </div>
                         </div>
@@ -110,19 +110,19 @@
                         <div class="row">
                             <div class="col-sm-1 form-group">
                                 <label style="font-size: smaller ;">From Row</label>
-                                <input type="text" class="form-control" [(ngModel)]="SearchInput.fromRow"
+                                <input type="text" class="form-control" [(ngModel)]="SearchInput.fromRow" [ngClass]="{'selected-input': SearchInput.fromRow }"
                                     style="font-size: smaller ;height: 25px;">
                             </div>
 
                             <div class="col-sm-1 form-group">
                                 <label style="font-size: smaller ;">To Row</label>
-                                <input type="text" class="form-control" [(ngModel)]="SearchInput.toRow"
+                                <input type="text" class="form-control" [(ngModel)]="SearchInput.toRow" [ngClass]="{'selected-input': SearchInput.toRow }"
                                     style="font-size: smaller ;height: 25px;">
                             </div>
 
                             <div class="col-sm-2 form-group">
                                 <label style="font-size: smaller ;">Trade Description</label>
-                                <input type="text" class="form-control" [(ngModel)]="SearchInput.obTradeDesc"
+                                <input type="text" class="form-control" [(ngModel)]="SearchInput.obTradeDesc" [ngClass]="{'selected-input': SearchInput.obTradeDesc }"
                                     style="font-size: smaller ;height: 25px;">
                             </div>
 
@@ -249,14 +249,14 @@
 
                             <div class="col-sm-2 form-group">
                                 <label style="font-size: smaller ;">RES Description</label>
-                                <input type="text" class="form-control" [(ngModel)]="SearchInput.rESDesc"
+                                <input type="text" class="form-control" [(ngModel)]="SearchInput.rESDesc" [ngClass]="{'selected-input': SearchInput.rESDesc }"
                                     style="font-size: smaller ;height: 25px;">
                             </div>
 
                             <div class="col-sm-2 form-group">
                                 <mat-form-field appearance="fill" class="full-width-field" style="font-size: smaller;">
                                     <mat-label style="font-size:14px;font-weight: bold ;">Ressources</mat-label>
-                                    <mat-select [(ngModel)]="SearchInput.boqResourceSeq" multiple>
+                                    <mat-select [(ngModel)]="SearchInput.boqResourceSeq" multiple class="custom-color">
                                         <input matInput type="text" focused="'true'" (keyup)="filterSearchRessources($event)" class="mat-filter">
                                         <span class="fa fa-search input-icon"></span>
                                         <mat-divider></mat-divider>

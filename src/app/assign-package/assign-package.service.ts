@@ -75,6 +75,12 @@ export class AssignPackageService {
         );
     }
 
+    GetRessourcesListByLevels(body : any): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetRessourcesListByLevels', body).pipe(
+            map(res => res), catchError(this.handleError)
+        );
+    }
+
     GetSheetDescList(): Observable<any> {
         return this.http.get(this.baseUrl + 'Search/GetSheetDescList').pipe(
             map(res => res), catchError(this.handleError)
