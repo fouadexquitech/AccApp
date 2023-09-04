@@ -51,7 +51,7 @@ export class SearchInput {
     public boqLevel4: string[] = [];
     public obTradeDesc: string = null;
     public isItemsAssigned: number = 0;
-    public boqResourceSeq: string = "";
+    public boqResourceSeq: string[] = [];
 }
 
 export class BOQDivList {
