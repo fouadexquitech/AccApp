@@ -45,6 +45,24 @@ export class AssignPackageService {
         );
     }
 
+    GetBOQLevel3ListByLevel2(body : any): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetBOQLevel3ListByLevel2', body).pipe(
+            map(res => res), catchError(this.handleError)
+        );
+    }
+    
+    GetBOQLevel4ListByLevel3(body : any): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetBOQLevel4ListByLevel3', body).pipe(
+            map(res => res), catchError(this.handleError)
+        );
+    }
+
+    GetRessourcesListByLevels(body : any): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetRessourcesListByLevels', body).pipe(
+            map(res => res), catchError(this.handleError)
+        );
+    }
+
     GetRESDivList(): Observable<any> {
         return this.http.get(this.baseUrl + 'Search/GetRESDivList').pipe(
             map(res => res), catchError(this.handleError)
@@ -75,11 +93,7 @@ export class AssignPackageService {
         );
     }
 
-    GetRessourcesListByLevels(body : any): Observable<any> {
-        return this.http.post(this.baseUrl + 'Search/GetRessourcesListByLevels', body).pipe(
-            map(res => res), catchError(this.handleError)
-        );
-    }
+
 
     GetSheetDescList(): Observable<any> {
         return this.http.get(this.baseUrl + 'Search/GetSheetDescList').pipe(
