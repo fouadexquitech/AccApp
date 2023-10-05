@@ -485,6 +485,7 @@
                                     (click)="selectRow($event, i)"
                                     [ngClass]="{'HighlightedRow': i === CurrentRowIndex }">
                                     <td><input disabled #checkboxes class="form-check-input" style="cursor: pointer;" type="checkbox" [checked]="item.isSelected"></td>
+                                    <!-- <td><input #checkboxes class="form-check-input" style="cursor: pointer;" type="checkbox" [checked]="item.isSelected"></td> -->
                                     <td>{{item.rowNumber}}</td>
                                     <td>{{item.sectionO}}</td>
                                     <td>{{item.itemO}}</td>
@@ -540,8 +541,7 @@
                         <tbody>
                             
                             <tr *ngFor="let item of displayedBoqList; let i = index">
-                                <td><input #checkboxes class="form-check-input" style="cursor: pointer;" type="checkbox"
-                                        (change)="OnBoqChecked($event , i)" [checked]="item.isSelected"></td>
+                                <td><input #checkboxes class="form-check-input" style="cursor: pointer;" type="checkbox" (change)="OnBoqChecked($event , i)" [checked]="item.isSelected"></td>
                                 <td>{{item.boqItem}}</td>
                                 <td>{{item.boqCtg}}</td>
                                 <td>{{item.resDescription}}</td>
