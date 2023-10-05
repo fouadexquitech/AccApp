@@ -135,9 +135,19 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
        this.SearchInput.rESPackage= '';
        this.SearchInput.isRessourcesAssigned= 0;
 
-       this.OriginalBoqList = [];
+       this.clearTable();
        this.displayedBoqList = [];
      }
+
+     clearTable(): void {
+      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        dtInstance.clear().draw(); // Add this  line to clear all rows..
+        dtInstance.destroy();      
+        // dtTrigger la reconstruye
+        this.OriginalBoqList = [];
+        this.dtTrigger.next();      
+      });
+    }
 // AH28032023
      
   ngOnInit(): void {
