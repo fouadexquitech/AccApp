@@ -52,7 +52,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   selectedSheetDescList : SheetDescList[] = [];
   OriginalBoqList: OriginalBoqModel[] = [];
   BoqList: BoqModel[] = [];
-  displayedBoqList : BoqModel[] = [];
+  displayedResList : BoqModel[] = [];
   SelectedOriginalBoqList: AssignOriginalBoqList[] = [];
   SelectedBoqList: AssignBoqList[] = [];
   CurrentRowIndex: number = 0;
@@ -136,7 +136,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
        this.SearchInput.isRessourcesAssigned= 0;
 
        this.clearTable();
-       this.displayedBoqList = [];
+       this.displayedResList = [];
      }
 
      clearTable(): void {
@@ -385,7 +385,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   GetOriginalBoqList(input: SearchInput) {
     this.OriginalBoqList = [];
-    this.displayedBoqList = [];
+    this.displayedResList = [];
     
     //this.spinner.show();
     this.loading = true;
@@ -510,7 +510,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   OnBoqChecked(evt: any, index: number) {
     this.checkboxesAll = false;
-    this.SelectedBoqRow = this.displayedBoqList[index];
+    this.SelectedBoqRow = this.displayedResList[index];
     
     if (!evt.target.checked)
     {
@@ -518,7 +518,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       this.FinalUnitPrice -= this.SelectedBoqRow.totalUnitPrice;
       this.SelectedBoqList = this.SelectedBoqList.filter(x=>x.boqSeq != this.SelectedBoqRow.boqSeq);
 
-      // this.displayedBoqList.splice(index, 1);
+      // this.displayedResList.splice(index, 1);
       this.checkOriginalBoq();
     }
   }
@@ -636,7 +636,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
      BoqList.forEach(boq=>{
         let boqItem = this.OriginalBoqList.find(x=>x.itemO == boq.boqItem);
         boq.totalUnitPrice = boqItem?.unitRate;
-        let item = this.displayedBoqList.find(a=>a.boqSeq == boq.boqSeq);
+        let item = this.displayedResList.find(a=>a.boqSeq == boq.boqSeq);
         
         if(add)
         {
@@ -654,7 +654,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
           // {
           //AH14092023
             boq.isSelected = true;
-            this.displayedBoqList.push(boq);
+            this.displayedResList.push(boq);
           //AH14092023
           // }  
            //AH14092023     
@@ -676,7 +676,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
                 // else
                 // {
                  //AH14092023  
-                  this.displayedBoqList.splice(this.displayedBoqList.indexOf(item), 1)
+                  this.displayedResList.splice(this.displayedResList.indexOf(item), 1)
                 //AH14092023  
                 // }              
             // }
@@ -692,7 +692,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.SelectedOriginalBoqList = [];
     this.SelectedBoqList = [];
     this.BoqList = [];
-    this.displayedBoqList = [];
+    this.displayedResList = [];
     this.FinalUnitPrice = 0;
     this.FinalTotalPrice = 0;
     let originalBOQTable = document.getElementById('originalBOQTable') as HTMLTableElement;
@@ -717,7 +717,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.SelectedOriginalBoqList = [];
     this.SelectedBoqList = [];
     this.BoqList = [];
-    this.displayedBoqList = [];
+    this.displayedResList = [];
     const checkbox = event.target as HTMLInputElement;
 
     this.OriginalBoqList.forEach(el=>{
@@ -728,7 +728,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         }
     });
 
-    this.displayedBoqList = [];
+    this.displayedResList = [];
     this.FinalTotalPrice = 0;
     this.FinalUnitPrice = 0;
 
@@ -759,7 +759,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   //   this.SelectedOriginalBoqList = [];
   //   this.SelectedBoqList = [];
   //   this.BoqList = [];
-  //   this.displayedBoqList = [];
+  //   this.displayedResList = [];
   //   const checkbox = event.target as HTMLInputElement;
   //   let originalBOQTable = document.getElementById('originalBOQTable') as HTMLTableElement;
 
@@ -782,7 +782,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   //               }
   //           }
   //         }
-  //         this.displayedBoqList = [];
+  //         this.displayedResList = [];
   //         this.FinalTotalPrice = 0;
   //         this.FinalUnitPrice = 0;
   //         if(checkbox.checked)
@@ -817,7 +817,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         this.SelectedBoqList = [];
         this.SelectedOriginalBoqList = [];
         this.BoqList = [];
-        this.displayedBoqList = [];
+        this.displayedResList = [];
         this.isAssigning = false;
         this.toastr.success("Package assigned")
         this.uncheckAll();
@@ -890,7 +890,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   onSearch() {
     this.OriginalBoqList = [];
-    this.displayedBoqList = [];
+    this.displayedResList = [];
 
     this.BoqList = [];
     this.checkboxesAll = false;
@@ -1235,7 +1235,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
        // this.SelectedBoqList = [];
        // this.SelectedOriginalBoqList = [];
        // this.BoqList = [];
-      //  this.displayedBoqList = [];
+      //  this.displayedResList = [];
         this.isAssigning = false;
         this.toastr.success("Trade Description Updated")
         //this.uncheckAll();

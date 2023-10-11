@@ -517,7 +517,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="table-wrapper-scroll-y my-second-scrollbar-table table-responsive"
-                    *ngIf="displayedBoqList.length > 0">
+                    *ngIf="displayedResList.length > 0">
                     <table class="table mb-0 boqTable">
                         <thead>
                             <tr>
@@ -540,7 +540,7 @@
                         </thead>
                         <tbody>
                             
-                            <tr *ngFor="let item of displayedBoqList; let i = index">
+                            <tr *ngFor="let item of displayedResList; let i = index">
                                 <td><input #checkboxes class="form-check-input" style="cursor: pointer;" type="checkbox" (change)="OnBoqChecked($event , i)" [checked]="item.isSelected"></td>
                                 <td>{{item.boqItem}}</td>
                                 <td>{{item.boqCtg}}</td>
@@ -580,7 +580,7 @@
                         </tfoot>
                     </table>
                 </div>
-                <div *ngIf="displayedBoqList.length == 0">
+                <div *ngIf="displayedResList.length == 0">
                     <h3>No resources have been selected</h3>
                 </div>
             </div>
