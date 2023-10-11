@@ -50,15 +50,26 @@ th {
    color: red !important;
 }
 
+/* 
 
-::ng-deep .mat-select-value {
-   max-width: 100%;
-   min-width: 100%;
-   width: auto;
- }
  ::ng-deep .mat-form-field-infix {
    width: auto !important;
    min-width: 180px !important;
    padding-right: 13px !important;
  } 
+ */
 
+ ::ng-deep .mat-select-value {
+   max-width: 100%;
+   min-width: 100%;
+   font-size: 13px;
+ }
+
+ .small-height-input{
+   max-height: 6px; 
+   border-radius: 4px;
+   font-size: 9px !important; 
+   .mat-input-element{ 
+     font-size: 12px !important;  
+   }
+ }

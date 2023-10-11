@@ -148,6 +148,10 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         this.dtTrigger.next();      
       });
     }
+
+    clearSelRes(){
+      this.SearchInput.boqResourceSeq= [];
+    }
 // AH28032023
      
   ngOnInit(): void {
@@ -339,7 +343,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     let body : any = {
       level2 : this.SearchInput.boqLevel2,
       level3 : this.SearchInput.boqLevel3,
-      level4 : this.SearchInput.boqLevel4
+      level4 : this.SearchInput.boqLevel4,
+      resType: this.SearchInput.rESType
     };
 
     this.assignPackageService.GetRessourcesListByLevels(body).subscribe((data) => {
@@ -712,6 +717,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
           }
       }
   }
+  
 
   checkAllOriginalBoq2(event : any) {
     this.SelectedOriginalBoqList = [];
@@ -817,6 +823,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         this.SelectedBoqList = [];
         this.SelectedOriginalBoqList = [];
         this.BoqList = [];
+        this.clearTable();
         this.displayedResList = [];
         this.isAssigning = false;
         this.toastr.success("Package assigned")
@@ -890,6 +897,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   onSearch() {
     this.OriginalBoqList = [];
+    this.clearTable();
     this.displayedResList = [];
 
     this.BoqList = [];
