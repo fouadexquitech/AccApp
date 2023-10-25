@@ -128,7 +128,6 @@ export class PackageSupplierService {
   }
 
   downloadFile(fileName: string): Observable<any> {
-    
    return this.http.get(this.baseUrl + 'SupplierPackages/DownloadFile?filename=' + fileName).pipe(
     map(res => res), catchError(this.handleError)
   );

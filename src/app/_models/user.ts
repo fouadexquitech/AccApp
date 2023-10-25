@@ -9,6 +9,7 @@
     // AH
     usrLoggedProjectName: string = null;
     usrLoggedConnString: string = null;
+    usrLoggedCostDB: string = null;
 }
 
 // export class Project {

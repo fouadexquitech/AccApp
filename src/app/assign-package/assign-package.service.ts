@@ -93,17 +93,15 @@ export class AssignPackageService {
         );
     }
 
-
-
     GetSheetDescList(): Observable<any> {
         return this.http.get(this.baseUrl + 'Search/GetSheetDescList').pipe(
             map(res => res), catchError(this.handleError)
         );
     }
 
-    GetOriginalBoqList(input: SearchInput): Observable<any> {
+    GetOriginalBoqList(input: SearchInput , costDB :string): Observable<any> {
         return this.http.post(
-            this.baseUrl + 'Package/GetOriginalBoqList', input).pipe(
+            this.baseUrl + 'Package/GetOriginalBoqList?costDB=' + costDB, input).pipe(
                 map(res => res), catchError(this.handleError)
             );
     }
@@ -159,11 +157,10 @@ export class AssignPackageService {
     );
     }
     
-    
-    updateBoqTradeDesc(originalBoqList: OriginalBoqModel[], tradeDesc:string): Observable<any> {
+    updateBoqTradeDesc(originalBoqList: OriginalBoqModel[], tradeDesc:string): Observable<any> 
+    {
         return this.http.post(this.baseUrl + 'Package/updateBoqTradeDesc?tradeDesc=' + tradeDesc, originalBoqList).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
-
 }

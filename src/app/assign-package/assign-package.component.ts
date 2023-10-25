@@ -395,7 +395,10 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     //this.spinner.show();
     this.loading = true;
     this.isSearching = true;
-    this.assignPackageService.GetOriginalBoqList(input)
+    
+    let costDB=this.user.usrLoggedCostDB;
+
+    this.assignPackageService.GetOriginalBoqList(input,costDB)
     .pipe(finalize(()=>{
       this.isSearching = false;
     }))
