@@ -591,6 +591,34 @@
                 <div *ngIf="displayedResList.length == 0">
                     <h3>No resources have been selected</h3>
                 </div>
+                <div>
+                    <table datatable [dtOptions]="dtOptions2" class="row-border hover">
+                        <thead>
+                            <tr>
+                                <th>BOQ</th>
+                                <th>Type</th>
+                                <th>Resource Description</th>
+                                <th>Unit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let b of boqsList">
+                                <td>
+                                    {{b.boqItem}}
+                                </td>
+                                <td>
+                                    {{b.boqCtg}}
+                                </td>
+                                <td>
+                                    {{b.resDescription}}
+                                </td>
+                                <td>
+                                    {{b.boqUnitMesure}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

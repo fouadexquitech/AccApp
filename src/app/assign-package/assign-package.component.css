@@ -73,3 +73,7 @@ th {
      font-size: 12px !important;  
    }
  }
+
+ ::ng-deep .dataTables_empty{
+   display: none
+   }
