@@ -675,8 +675,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       responsive : true,
       order : [[ 0, 'asc' ]],
       lengthMenu: [
-        [5, 10, 25, 50, 100],
-        [5, 10, 25, 50, 100]
+        [10, 25, 50, 100],
+        [10, 25, 50, 100]
       ],
       ordering : false,
       pageLength: 10,
