@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
@@ -161,6 +161,15 @@ export class AssignPackageService {
     {
         return this.http.post(this.baseUrl + 'Package/updateBoqTradeDesc?tradeDesc=' + tradeDesc, originalBoqList).pipe(
             map(res => res), catchError(this.handleError)
+        );
+    }
+
+    getBoqResourceRecords(dataTablesParameters: any) : Observable<any>
+    {
+        const header = new HttpHeaders()
+        .set('Content-type', 'application/json');
+        const body = JSON.stringify(dataTablesParameters);
+        return this.http.post<any>(this.baseUrl + 'Package/GetBoqResourceRecords',body, { headers: header }
         );
     }
 }

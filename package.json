@@ -3,13 +3,12 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "set NODE_OPTIONS=--openssl-legacy-provider && ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "aot": "node --max-old-space-size=8192 ./node_modules/@angular/cli/bin/ng build --prod --aot"
   },
-  
   "private": true,
   "dependencies": {
     "@angular/animations": "^12.2.15",
