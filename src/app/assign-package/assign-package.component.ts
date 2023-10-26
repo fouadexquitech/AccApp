@@ -575,11 +575,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     }
   }
 
-  selectRowV2(item : any)
-  {
-     console.log(item);
-  }
-
+  
   
   selectRow(event: any, i: any) {
     
