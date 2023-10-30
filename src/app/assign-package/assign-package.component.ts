@@ -106,6 +106,10 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   boqsList : any[] = [];
   selectedBoqsV2 : any[] = [];
+  selectedBoqsResV2 : any[] = [];
+  boqSeqs : any[] = [];
+
+  resourcesSelected : boolean = false;
 
   constructor(private assignPackageService: AssignPackageService, 
     private modalService: NgbModal,private spinner: NgxSpinnerService , 
@@ -608,17 +612,21 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
               if(checkbox.checked)
               {
                 this.selectedBoqsV2.push(itemO);
+                this.selectedBoqsResV2.push(itemO);
+                
                 this.SelectedOriginalBoqList.push({ rowNumber: this.SelectedOriginalBoqRow.rowNumber, scope: this.SelectedPackage,tradeDesc: null });
                 this.GetBoqList(this.OriginalBoqList[index]["itemO"], this.SearchInput);
               }
                else 
               {
                 const iiindex = this.selectedBoqsV2.findIndex(x=>x == itemO);
+                const iiResIndex = this.selectedBoqsResV2.findIndex(x=>x == itemO);
                 const newIndex = this.SelectedOriginalBoqList.findIndex(x => x.rowNumber === this.SelectedOriginalBoqRow.rowNumber);
                 
                 if (newIndex > -1) {
                   this.SelectedOriginalBoqList.splice(newIndex, 1);
                   this.selectedBoqsV2.splice(iiindex, 1);
+                  this.selectedBoqsResV2.splice(iiResIndex, 1);
                   //uncheck all children
                   let selectedBoqArr = this.SelectedBoqList;
                                  
@@ -660,7 +668,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
  
     this.dtElements.toArray()[1].dtInstance.then((dtInstance: DataTables.Api) => {
       
-      dtInstance.ajax.reload();
+      dtInstance.ajax.reload(undefined, false);
       
     });
   }
@@ -682,13 +690,18 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       pageLength: 10,
       serverSide: true,
       processing: true,
+      searching : false,
       ajax: (dataTablesParameters: any, callback) => {
-        console.log(this.selectedBoqsV2);
+        
         dataTablesParameters.boqIds = this.selectedBoqsV2.join();
+        dataTablesParameters.selectedBoqIds = this.selectedBoqsResV2.join();
         this.assignPackageService.getBoqResourceRecords(dataTablesParameters).subscribe(resp => {
             that.boqsList = resp.data;
-            
+            this.resourcesSelected = that.boqsList.length > 0;
             // Calling the DT trigger to manually render the table
+            this.FinalTotalPrice = resp.finalTotalPrice;
+            this.FinalUnitPrice = resp.finalUnitPrice;
+            this.boqSeqs = resp.boqSeqs;
             
             callback({
               recordsTotal: resp.recordsTotal,
@@ -697,17 +710,37 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
             });
           });
       },
-      columns: [
+      // columns: [
+      //   { data : null},
+      //   { title : 'BOQ', data: 'boqItem', name : 'boqItem'},
+      //   { title : 'Type', data: 'boqCtg', name : 'boqCtg'},
+      //   { title : 'Resource Description', data: 'resDescription', name : 'resDescription'},
+      //   { title : 'Unit', data: 'boqUnitMesure', name : 'boqUnitMesure'},
+      //   { title : 'boqBillQty', data: 'boqBillQty', name : 'boqBillQty'},
+      //   { title : 'boqQty', data: 'boqQty', name : 'boqQty'},
+      //   { title : 'boqScopeQty', data: 'boqScopeQty', name : 'boqScopeQty'},
         
-        { title : 'BOQ', data: 'boqItem', name : 'boqItem'},
-        { title : 'Type', data: 'boqCtg', name : 'boqCtg'},
-        { title : 'Resource Description', data: 'resDescription', name : 'resDescription'},
-        { title : 'Unit', data: 'boqUnitMesure', name : 'boqUnitMesure'},
-      ]
+      // ]
     };
   }
 
-  
+  boqResChange(item : any, event : any)
+  {
+     let checked = event.target.checked;
+
+     if(checked)
+     {
+          this.selectedBoqsResV2.push(item.itemO);
+     }
+     else
+     {
+       let index = this.selectedBoqsResV2.indexOf(item.itemO);
+    
+       this.selectedBoqsResV2.splice(index, 1);
+     }
+
+     this.reloadBoqResources();
+  }
 
   editDisplayedBoqList(BoqList : BoqModel[], add : boolean)
   {
@@ -771,6 +804,9 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.SelectedBoqList = [];
     this.BoqList = [];
     this.displayedResList = [];
+    this.selectedBoqsV2 = [];
+    this.selectedBoqsResV2 = [];
+    this.reloadBoqResources();
     this.FinalUnitPrice = 0;
     this.FinalTotalPrice = 0;
     let originalBOQTable = document.getElementById('originalBOQTable') as HTMLTableElement;
@@ -795,6 +831,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   checkAllOriginalBoq2(event : any) {
     let that = this;
     this.selectedBoqsV2 = [];
+    this.selectedBoqsResV2 = [];
     this.SelectedOriginalBoqList = [];
     this.SelectedBoqList = [];
     this.BoqList = [];
@@ -827,7 +864,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
             
             boqArr.forEach(function(element : BoqModel){
               selectedBoqArr.push({ boqSeq: element.boqSeq, boqScope: selectedPackage, boqResSeq : element.boqResSeq, boqItem : element.boqItem });  
-              that.selectedBoqsV2.push(element.boqItem);              
+              that.selectedBoqsV2.push(element.boqItem);
+              that.selectedBoqsResV2.push(element.boqItem);           
             });
             
             //fouadddddddddddddddddddddddddddd
@@ -908,7 +946,13 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.isAssigning = true;
     this.assignPackages.assignOriginalBoqList = this.SelectedOriginalBoqList;
     this.assignPackages.assignBoqList = this.SelectedBoqList;
-    this.assignPackageService.AssignPackage(this.assignPackages).subscribe((data) => {
+    this.assignPackages.boqSeqs = this.boqSeqs;
+    this.assignPackages.packageId = this.SelectedPackage;
+    this.assignPackageService.AssignPackage(this.assignPackages)
+    .pipe(finalize(()=>{
+      this.isAssigning = false;
+    }))
+    .subscribe((data) => {
       if (data) {
         this.SelectedBoqList = [];
         this.SelectedOriginalBoqList = [];
@@ -925,6 +969,11 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         // this.router.navigate(['/package-supplier', this.SelectedPackage]);
 //AH13092023
         this.GetOriginalBoqList(this.SearchInput);
+        this.selectedBoqsV2 = [];
+        this.selectedBoqsResV2 = [];
+        this.boqsList = [];
+        this.boqSeqs = [];
+        this.resourcesSelected = false;
       }
     });
   }
@@ -991,6 +1040,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.displayedResList = [];
 
     this.BoqList = [];
+    this.boqsList = [];
+    this.resourcesSelected = false;
     this.checkboxesAll = false;
     this.GetOriginalBoqList(this.SearchInput);
    
@@ -1273,6 +1324,10 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.currentBoqRes = item;
     this.modalReference = this.modalService.open(content, this.modalOptions);
     this.modalReference.result.then((result : any) => {
+      if(!result)
+      {
+          this.reloadBoqResources();
+      }
       this.closeResult = `Closed with: ${result}`;
     }, (reason : any) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;

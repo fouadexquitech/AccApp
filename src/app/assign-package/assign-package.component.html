@@ -576,7 +576,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="6">Total</th>
+                                <th colspan="9">Total</th>
                                 <th>
                                     <strong>{{FinalTotalPrice | number: '.2' }}</strong>
                                 </th>
@@ -588,21 +588,31 @@
                         </tfoot>
                     </table>
                 </div>
-                <div *ngIf="displayedResList.length == 0">
+                <div *ngIf="!resourcesSelected">
                     <h3>No resources have been selected</h3>
                 </div>
-                <div>
-                    <table datatable [dtOptions]="dtOptions2" class="row-border hover">
+                <div [style.visibility]="resourcesSelected ? 'visible' : 'hidden'">
+                    <table datatable [dtOptions]="dtOptions2" class="row-border hover" style="width:100%">
                         <thead>
                             <tr>
+                                <th></th>
                                 <th>BOQ</th>
                                 <th>Type</th>
                                 <th>Resource Description</th>
                                 <th>Unit</th>
+                                <th>Bill Qty</th>
+                                <th>Final Qty</th>
+                                <th>RFQ. Qty</th>
+                                <th></th>
+                                <th>Unit Price</th>
+                                <th>Final Net Amount</th>
+                                <th>Total Unit Price</th>
+                                <th>Assigned Package</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let b of boqsList">
+                                <td><input type="checkbox" [checked]="b.isSelected" (change)="boqResChange(b, $event)"></td>
                                 <td>
                                     {{b.boqItem}}
                                 </td>
@@ -615,10 +625,34 @@
                                 <td>
                                     {{b.boqUnitMesure}}
                                 </td>
+                                <td>{{b.boqBillQty | number: '.2'}}</td>
+                                <td>{{b.boqQty | number: '.2'}}</td>
+                                <td>{{b.boqScopeQty | number: '.2' }}</td>
+                                <td><a class="btn btn-link" title="Edit"
+                                    (click)="editBoqResQty(editRessourcesModal,b)"><i
+                                            class="fa-solid fa-edit"></i></a></td>
+                                <td>{{b.boqUprice | number: '.2'}}</td>
+                                <td>{{b.boqScopeQty * b.boqUprice | number: '.2' }}</td>
+                                <td>{{b.totalUnitPrice | number: '.2' }}</td>
+                                <td [ngClass]="b.assignedPackage != '' ? 'text-danger' : ''">{{b.assignedPackage}}
                             </tr>
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="9"></th>
+                                <th>Total</th>
+                                <th>
+                                    <strong>{{FinalTotalPrice | number: '.2' }}</strong>
+                                </th>
+                                <th>
+                                    <strong>{{FinalUnitPrice | number: '.2' }}</strong>
+                                </th>
+                                <th colspan="1"></th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
+                
             </div>
         </div>
     </div>

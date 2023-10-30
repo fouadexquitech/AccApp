@@ -107,6 +107,8 @@ export class AssignBoqList {
 export class AssignPackages {
     public assignOriginalBoqList: AssignOriginalBoqList[] = [];
     public assignBoqList: AssignBoqList[] = [];
+    public boqSeqs : number[] = [];
+    public packageId : number = 0;
 }
 
 
