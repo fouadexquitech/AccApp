@@ -14,6 +14,7 @@ import { finalize } from 'rxjs/operators';
 import { LoginService } from '../login/login.service';
 import { User } from '../_models';
 import { PackageSupplierService } from '../package-supplier/package-supplier.service';
+import { BoqListTableComponent } from '../boq-list-table/boq-list-table.component';
 // AH28032023.
 declare var $: any;
 
@@ -24,6 +25,7 @@ declare var $: any;
 })
 
 export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit {
+  @ViewChild('boqListTable') boqListTable : BoqListTableComponent;
   isShown: boolean = false; // hidden by default
   isAssignShown: boolean = false; // hidden by default
   isExportShown: boolean = false; // hidden by default
@@ -458,8 +460,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         });*/
 
         //this.manageChildren(true);
-        //this.editDisplayedBoqList(this.BoqList, true);
-        this.reloadBoqResources();
+        this.editDisplayedBoqList(this.BoqList, true);
+        //this.reloadBoqResources();
       }
     });
   }
@@ -643,8 +645,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
                     });
 
                     
-                    //this.editDisplayedBoqList(this.BoqList, false);
-                    this.reloadBoqResources();
+                    this.editDisplayedBoqList(this.BoqList, false);
+                    //this.reloadBoqResources();
                     }
                   });                 
                 }
@@ -739,7 +741,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
        this.selectedBoqsResV2.splice(index, 1);
      }
 
-     this.reloadBoqResources();
+     //this.reloadBoqResources();
   }
 
   editDisplayedBoqList(BoqList : BoqModel[], add : boolean)
@@ -870,18 +872,18 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
             
             //fouadddddddddddddddddddddddddddd
             //this.getBoqResourceRecords();
-            
-            
+           
+            this.boqListTable?.setData(boqArr);
             //this.editDisplayedBoqList(boqArr, true);
-            this.reloadBoqResources();
+            //this.reloadBoqResources();
             //console.log(boqArr.length);            
           }
         });
     }
     else
     {
-
-      this.reloadBoqResources();
+      this.boqListTable?.setData([]);
+      //this.reloadBoqResources();
     }
 
     
@@ -1326,7 +1328,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.modalReference.result.then((result : any) => {
       if(!result)
       {
-          this.reloadBoqResources();
+          //this.reloadBoqResources();
       }
       this.closeResult = `Closed with: ${result}`;
     }, (reason : any) => {

@@ -1,0 +1,26 @@
+:host {
+    justify-content: flex-start;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  app-scroll-container {
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+  
+  app-scroll-container.full {
+    flex-basis: auto;
+  }
+  
+  app-scroll-container.part {
+    flex-basis: 200px;
+  }
+  
+  .buttons {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1000;
+  }
+  

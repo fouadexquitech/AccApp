@@ -588,7 +588,7 @@
                         </tfoot>
                     </table>
                 </div>
-                <div *ngIf="!resourcesSelected">
+                <div *ngIf="displayedResList.length == 0">
                     <h3>No resources have been selected</h3>
                 </div>
                 <div [style.visibility]="resourcesSelected ? 'visible' : 'hidden'">
@@ -652,7 +652,7 @@
                         </tfoot>
                     </table>
                 </div>
-                
+                <app-boq-list-table #boqListTable></app-boq-list-table>
             </div>
         </div>
     </div>
