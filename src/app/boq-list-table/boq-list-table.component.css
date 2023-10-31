@@ -1,0 +1,29 @@
+:host {
+    display: block;
+    position: relative;
+  }
+  
+  table {
+    width: 100%;
+    margin-top: 80px;
+  }
+  
+  table th {
+    font-weight: bold;
+    color: rgb(15, 124, 128);
+  }
+  
+  .reset-button-wrapper {
+    position: fixed;
+    top: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: white;
+    width: 100%;
+  
+    box-shadow: 0px 11px 5px -1px rgba(168, 168, 168, 0.75);
+    -webkit-box-shadow: 0px 11px 5px -1px rgba(168, 168, 168, 0.75);
+    -moz-box-shadow: 0px 11px 5px -1px rgba(179, 148, 148, 0.75);
+  }
+  

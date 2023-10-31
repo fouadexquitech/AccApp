@@ -23,7 +23,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatCardModule} from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatSelect} from '@angular/material/select';
+import {MatTableModule} from '@angular/material/table';
 import {MatDividerModule} from '@angular/material/divider';
 import { PackageComparisonComponent } from './package-comparison/package-comparison.component';
 import { JwtInterceptor, ErrorInterceptor } from './_helpers';
@@ -44,6 +44,9 @@ import { PackageComparisonNovoComponent } from './package-comparison-novo/packag
 import { TagInputModule } from 'ngx-chips';
 import { SuppliersComponent } from './suppliers/suppliers.component';
 import { PackagesComponent } from './packages/packages.component';
+import { ScrollNearEndDirectiveDirective } from './_directives/scroll-near-end-directive.directive';
+import { BoqListTableComponent } from './boq-list-table/boq-list-table.component';
+
 
 @NgModule({
   declarations: [
@@ -63,7 +66,10 @@ import { PackagesComponent } from './packages/packages.component';
     PackageGroupsComponent,
     PackageComparisonNovoComponent,
     SuppliersComponent,
-    PackagesComponent
+    PackagesComponent,
+    ScrollNearEndDirectiveDirective,
+    BoqListTableComponent
+
   ],
   imports: [
     BrowserModule,
@@ -90,7 +96,8 @@ import { PackagesComponent } from './packages/packages.component';
     DataTablesModule,
     NgbModule,
     AngularEditorModule,
-    TagInputModule
+    TagInputModule,
+    MatTableModule
     ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
