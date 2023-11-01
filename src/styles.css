@@ -27,7 +27,7 @@ select {
 
 .HighlightedRow{ background-color: #F0F8FF; }
 
-html, body { height: 100%; }
+html, body { max-height: calc(100vh - 100px); }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .hiddenRow {

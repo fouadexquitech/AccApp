@@ -6,7 +6,7 @@
   [class.full]="full"
   [class.part]="!full"
 >
-  <mat-table [dataSource]="dataSource">
+  <mat-table [dataSource]="dataSource" *ngIf="dataSource?.filteredData.length > 0">
     <ng-container matColumnDef="select">
       <mat-header-cell *matHeaderCellDef>
         
@@ -116,8 +116,9 @@
     <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
     
   </mat-table>
-  <div *ngIf="dataSource?.filteredData.length === 0" class="p-3 text-center">
-    No items selected
+  <div *ngIf="!dataSource || dataSource?.filteredData.length === 0" class="p-3 text-center">
+    <h5>No items selected</h5>
   </div>
+
 </app-scroll-container>
 
