@@ -25,6 +25,7 @@ declare var $: any;
 })
 
 export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit {
+  @ViewChild('editRessourcesModal') editRessourcesModal : any;
   @ViewChild('boqListTable') boqListTable : BoqListTableComponent;
   isShown: boolean = false; // hidden by default
   isAssignShown: boolean = false; // hidden by default
@@ -434,6 +435,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         this.rerender();
 
         this.checkboxesAll = this.SelectedOriginalBoqList.length == this.OriginalBoqList.length;
+        
       }
      
     });
@@ -537,13 +539,60 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     
     if (!evt.target.checked)
     {
-      this.FinalTotalPrice -= this.SelectedBoqRow.boqUprice * this.SelectedBoqRow.boqQty;
+      this.FinalTotalPrice -= this.SelectedBoqRow.boqUprice * this.SelectedBoqRow.boqScopeQty;
       this.FinalUnitPrice -= this.SelectedBoqRow.totalUnitPrice;
       this.SelectedBoqList = this.SelectedBoqList.filter(x=>x.boqSeq != this.SelectedBoqRow.boqSeq);
 
       // this.displayedResList.splice(index, 1);
       this.checkOriginalBoq();
     }
+  }
+
+  openQtyEditModal(event : any)
+  {
+    this.mode = 'edit';
+    this.SelectedBoqRow = event.boqItem;
+    this.EditBoqQtyModalLabel = 'Edit Boq Qty';
+
+    this.formEdit = this.formBuilder.group({
+      // boq: [item.itemO, Validators.required],
+      QtyScope: [event.boqItem.boqScopeQty, [Validators.required]] ,
+      billQtyO :     [event.boqItem.boqBillQty] 
+    });
+    this.currentBoqRes = event.boqItem;
+    this.modalReference = this.modalService.open(this.editRessourcesModal, this.modalOptions);
+    this.modalReference.result.then((result : any) => {
+      if(!result)
+      {
+          
+      }
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason : any) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
+  onSelectBoqOnTable(event : any)
+  {
+    
+    this.SelectedBoqRow = event.boqItem;
+    
+    if (!this.SelectedBoqRow.isSelected)
+    {
+      this.FinalTotalPrice -= this.SelectedBoqRow.boqUprice * this.SelectedBoqRow.boqScopeQty;
+      this.FinalUnitPrice -= this.SelectedBoqRow.totalUnitPrice;
+      let index = this.SelectedBoqList.findIndex(x=>x.boqSeq === this.SelectedBoqRow.boqSeq);
+      this.SelectedBoqList.splice(index,1);
+
+    }
+    else
+    {
+      this.FinalTotalPrice += this.SelectedBoqRow.boqUprice * this.SelectedBoqRow.boqScopeQty;
+      this.FinalUnitPrice += this.SelectedBoqRow.totalUnitPrice;
+      this.SelectedBoqList.push(this.SelectedBoqRow);
+    }
+    
+    //this.checkOriginalBoq();
   }
 
   checkOriginalBoq()
@@ -753,7 +802,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         
         if(add)
         {
-          this.FinalTotalPrice += (boq.boqQty * boq.boqUprice);
+          this.FinalTotalPrice += (boq.boqScopeQty * boq.boqUprice);
           this.FinalUnitPrice += (boq.totalUnitPrice);
           //AH14092023
           // if(item)
@@ -774,7 +823,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         }
         else
         {
-            this.FinalTotalPrice -= (boq.boqQty * boq.boqUprice);
+            this.FinalTotalPrice -= (boq.boqScopeQty * boq.boqUprice);
             this.FinalUnitPrice -= (boq.totalUnitPrice);
              //AH14092023
             // if(item)
@@ -797,6 +846,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         }
     });
 
+    this.boqListTable?.setData(this.displayedResList);
+    this.boqListTable?.setFinalTotalPrice(this.FinalTotalPrice);
   }
 
   clearAllSelections()
@@ -842,6 +893,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
     this.OriginalBoqList.forEach(el=>{
         el.isSelected = checkbox.checked;
+   
         if(checkbox.checked)
         {
           this.SelectedOriginalBoqList.push({ rowNumber: el.rowNumber, scope: this.SelectedPackage, tradeDesc: null });
@@ -873,8 +925,9 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
             //fouadddddddddddddddddddddddddddd
             //this.getBoqResourceRecords();
            
-            this.boqListTable?.setData(boqArr);
-            //this.editDisplayedBoqList(boqArr, true);
+            //this.boqListTable?.setData(boqArr);
+            this.editDisplayedBoqList(boqArr, true);
+            
             //this.reloadBoqResources();
             //console.log(boqArr.length);            
           }
@@ -883,6 +936,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     else
     {
       this.boqListTable?.setData([]);
+      this.boqListTable?.setFinalTotalPrice(0);
       //this.reloadBoqResources();
     }
 
@@ -948,8 +1002,6 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.isAssigning = true;
     this.assignPackages.assignOriginalBoqList = this.SelectedOriginalBoqList;
     this.assignPackages.assignBoqList = this.SelectedBoqList;
-    this.assignPackages.boqSeqs = this.boqSeqs;
-    this.assignPackages.packageId = this.SelectedPackage;
     this.assignPackageService.AssignPackage(this.assignPackages)
     .pipe(finalize(()=>{
       this.isAssigning = false;
@@ -976,6 +1028,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         this.boqsList = [];
         this.boqSeqs = [];
         this.resourcesSelected = false;
+        this.boqListTable.setData([]);
       }
     });
   }
@@ -1336,6 +1389,21 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     });
   }
 
+  recalculateFinalTotals()
+  {
+    this.FinalTotalPrice = 0;
+    
+    this.displayedResList.forEach(el=>{
+      
+      if(el.isSelected)
+      {
+        
+        this.FinalTotalPrice += el.boqUprice * el.boqScopeQty;
+      }
+    });
+    this.boqListTable.setFinalTotalPrice(this.FinalTotalPrice);
+  }
+
   onEditSubmit(origBoq: boolean) {
     this.submitted = true;
     // stop here if form is invalid
@@ -1350,7 +1418,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         this.updating = false;
         if (response) {
           this.toastr.success('Updated successfuly');
-          this.onSearch();
+          //this.onSearch();
+          this.recalculateFinalTotals();
           this.modalReference.close();
         }
         else {
@@ -1366,7 +1435,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         this.updating = false;
         if (response) {
           this.toastr.success('Updated successfuly');
-          this.onSearch();
+          //this.onSearch();
+          this.recalculateFinalTotals();
           this.modalReference.close();
         }
         else {

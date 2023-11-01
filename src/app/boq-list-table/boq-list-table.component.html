@@ -7,20 +7,117 @@
   [class.part]="!full"
 >
   <mat-table [dataSource]="dataSource">
-    <ng-container
-      *ngFor="let column of displayedColumns" [matColumnDef]="column">
+    <ng-container matColumnDef="select">
+      <mat-header-cell *matHeaderCellDef>
+        
+      </mat-header-cell>
+      <mat-cell *matCellDef="let item; let i = index">
+        <input class="form-check-input" style="cursor: pointer;" type="checkbox" [checked]="item.isSelected" (change)="OnBoqChecked($event , i)">
+      </mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+    </ng-container>
+    <ng-container matColumnDef="boqItem">
       <mat-header-cell *matHeaderCellDef>
         BOQ
       </mat-header-cell>
-      <mat-cell *matCellDef="let item">{{ item.itemO }}</mat-cell>
+      <mat-cell *matCellDef="let item">{{ item.boqItem }}</mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+    </ng-container>
+    <ng-container matColumnDef="boqCtg">
+      <mat-header-cell *matHeaderCellDef>
+        Type
+      </mat-header-cell>
+      <mat-cell *matCellDef="let item">{{ item.boqCtg }}</mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+    </ng-container>
+    <ng-container matColumnDef="resDescription">
+      <mat-header-cell *matHeaderCellDef>
+        Resource Description
+      </mat-header-cell>
+      <mat-cell *matCellDef="let item">{{ item.resDescription }}</mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+    </ng-container>
+    <ng-container matColumnDef="boqUnitMesure">
+      <mat-header-cell *matHeaderCellDef>
+        Unit
+      </mat-header-cell>
+      <mat-cell *matCellDef="let item">{{ item.boqUnitMesure }}</mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="boqBillQty">
+      <mat-header-cell *matHeaderCellDef>
+        Bill Qty
+      </mat-header-cell>
+      <mat-cell *matCellDef="let item">{{ item.boqBillQty | number: '.2' }}</mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="boqQty">
+      <mat-header-cell *matHeaderCellDef>
+        Final Qty
+      </mat-header-cell>
+      <mat-cell *matCellDef="let item">{{ item.boqQty | number: '.2' }}</mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="boqScopeQty">
+      <mat-header-cell *matHeaderCellDef>
+        RFQ. Qty
+      </mat-header-cell>
+      <mat-cell *matCellDef="let item">{{ item.boqScopeQty | number: '.2' }} 
+        <a class="btn btn-link p-2" title="Edit" (click)="editQty(item)" *ngIf="item.isSelected"><i class="fa fa-edit"></i></a>
+    </mat-cell>
+    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="boqUprice">
+      <mat-header-cell *matHeaderCellDef>
+        Unit Price
+      </mat-header-cell>
+      <mat-cell *matCellDef="let item">{{ item.boqUprice | number: '.2' }}</mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="finalNetAmount">
+      <mat-header-cell *matHeaderCellDef>
+        Final Net Amount
+      </mat-header-cell>
+      <mat-cell *matCellDef="let item">{{item.boqScopeQty * item.boqUprice | number: '.2' }}</mat-cell>
+      <mat-footer-cell *matFooterCellDef>
+        <span class="fw-bolder">{{finalTotalPrice | number: '.2' }}</span>
+      </mat-footer-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="totalUnitPrice">
+      <mat-header-cell *matHeaderCellDef>
+        Total Unit Price
+      </mat-header-cell>
+      <mat-cell *matCellDef="let item">{{item.totalUnitPrice | number: '.2' }}</mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="assignedPackage">
+      <mat-header-cell *matHeaderCellDef>
+        Assigned Package
+      </mat-header-cell>
+      <mat-cell *matCellDef="let item">
+        <span [ngClass]="item.assignedPackage != '' ? 'text-danger' : ''">{{item.assignedPackage}}</span>
+      </mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
     <mat-header-row
-      *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+      *matHeaderRowDef="displayedColumns; sticky: true">
+    </mat-header-row>
+    <mat-footer-row *matFooterRowDef="displayedColumns">
+
+    </mat-footer-row>
     <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    
   </mat-table>
+  <div *ngIf="dataSource?.filteredData.length === 0" class="p-3 text-center">
+    No items selected
+  </div>
 </app-scroll-container>
 
-<div class="buttons">
-  <button (click)="full = !full">{{ full ? 'Part' : 'Full' }}</button>
-</div>
