@@ -37,3 +37,31 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 section {
     margin-top: 100px;
 }
+
+.full-width-field {
+    width: 100%;
+ }
+
+ .mat-form-field{
+    font-size: 14px;
+ }
+
+ .mat-option
+ {
+    font-size: 14px;
+ }
+
+ .input-icon {
+    float: right;
+    margin-right: 6px;
+    margin-top: -25px;
+    position: relative;
+    z-index: 2;
+   
+ }
+
+ .mat-filter {
+  
+    height: 35px !important;
+
+ }
