@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { ConfirmBoxInitializer, DialogLayoutDisplay } from '@costlydeveloper/ngx-awesome-popup';
 import { ModalDismissReasons, NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
 import { Package } from '../packages/packages.models';
 import { packagesService } from './packages.service';
+import { DataTableDirective } from 'angular-datatables';
 
 @Component({
   selector: 'app-packages',
@@ -14,8 +15,12 @@ import { packagesService } from './packages.service';
 })
 
 export class PackagesComponent implements OnInit {
+  @ViewChild(DataTableDirective, {static: false})
+  dtElement: DataTableDirective | undefined;
+  dtInstance: Promise<DataTables.Api> | undefined;
   list : Package[] = [];
   addedList : Package[] = [];
+  packages : any[] = [];
   filter : string = '';
   loading : boolean = false;
   modalTitle = 'Add Bulk Management Users';
@@ -30,13 +35,7 @@ export class PackagesComponent implements OnInit {
   updating : boolean = false;
   currentUser : Package;
 
-  public dtOptions: DataTables.Settings = {
-    pagingType: 'full_numbers',
-    pageLength: 10,
-    searching : true,
-    destroy : true,
-    responsive : true
-  };
+  public dtOptions: DataTables.Settings;
   public dtTrigger: Subject<any> = new Subject<any>();
   // isSearching : boolean = false;
   
@@ -54,7 +53,45 @@ export class PackagesComponent implements OnInit {
   }
   
   ngOnInit(): void {
-    this.getpackagesList();
+    this.fetchData();
+  }
+
+  fetchData()
+  {
+    const that = this;
+
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      responsive : true,
+      lengthMenu: [
+        [5, 10, 25, 50, 100],
+        [5, 10, 25, 50, 100]
+      ],
+      language: {
+        infoFiltered:"",
+        
+      },
+      pageLength: 10,
+      serverSide: true,
+      processing: true,
+      ajax: (dataTablesParameters: any, callback) => {
+       
+        this.packagesService.Getpackages(dataTablesParameters).subscribe(resp => {
+            that.packages = resp.data;
+            callback({
+              recordsTotal: resp.recordsTotal - 1,
+              recordsFiltered: resp.recordsFiltered,
+              data: []
+            });
+          });
+      },
+      columns: [
+        { title : 'Package ID', data: 'idPkge', name : 'idPkge' }, 
+        { title : 'Package Name', data: 'pkgeName', name : 'pkgeName' }, 
+        { title : 'Division', data: 'division', name : 'division' }, 
+        { title : '', data: null, name : 'action', orderable : false }, 
+      ]
+    };
   }
 
   getpackagesList()
@@ -194,7 +231,7 @@ export class PackagesComponent implements OnInit {
         if(data)
         {
             this.toastrService.success('Deleted successfuly');
-            this.getpackagesList();
+            //this.getpackagesList();
             this.modalReference.close();
         }
         else
@@ -240,13 +277,19 @@ export class PackagesComponent implements OnInit {
         if(response)
         {
           this.toastrService.success('Updated successfuly');
-          this.getpackagesList();
+          //this.getpackagesList();
           this.modalReference.close();
         }
         else
         {
           this.toastrService.error('An error occured');
         }
+    });
+  }
+
+  reload() {
+    this.dtElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload(undefined, false);
     });
   }
 

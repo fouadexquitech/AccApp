@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { ConfirmBoxInitializer, DialogLayoutDisplay } from '@costlydeveloper/ngx-awesome-popup';
 import { ModalDismissReasons, NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
 import { Supplier } from '../suppliers/suppliers.models';
 import { SuppliersService } from './suppliers.service';
+import { DataTableDirective } from 'angular-datatables';
 
 @Component({
   selector: 'app-suppliers',
@@ -14,6 +15,12 @@ import { SuppliersService } from './suppliers.service';
 })
 
 export class SuppliersComponent implements OnInit {
+  @ViewChild('modalUser') modalUser : any;
+  @ViewChild('editModal') editModal : any;
+  @ViewChild(DataTableDirective, {static: false})
+  dtElement: DataTableDirective | undefined;
+  dtInstance: Promise<DataTables.Api> | undefined;
+  suppliers : any[] = [];
   list : Supplier[] = [];
   addedList : Supplier[] = [];
   filter : string = '';
@@ -30,13 +37,7 @@ export class SuppliersComponent implements OnInit {
   updating : boolean = false;
   currentUser : Supplier;
 
-  public dtOptions: DataTables.Settings = {
-    pagingType: 'full_numbers',
-    pageLength: 10,
-    searching : true,
-    destroy : true,
-    responsive : true
-  };
+  public dtOptions: DataTables.Settings;
   public dtTrigger: Subject<any> = new Subject<any>();
   // isSearching : boolean = false;
   
@@ -55,7 +56,46 @@ export class SuppliersComponent implements OnInit {
   
 
   ngOnInit(): void {
-    this.getSuppliersList();
+    this.fetchData();
+  }
+
+  fetchData()
+  {
+    const that = this;
+
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      responsive : true,
+      lengthMenu: [
+        [5, 10, 25, 50, 100],
+        [5, 10, 25, 50, 100]
+      ],
+      language: {
+        infoFiltered:"",
+        
+      },
+      pageLength: 10,
+      serverSide: true,
+      processing: true,
+      ajax: (dataTablesParameters: any, callback) => {
+       
+        this.suppliersService.GetSuppliers(dataTablesParameters).subscribe(resp => {
+            that.suppliers = resp.data;
+            callback({
+              recordsTotal: resp.recordsTotal - 1,
+              recordsFiltered: resp.recordsFiltered,
+              data: []
+            });
+          });
+      },
+      columns: [
+        { title : 'Supplier ID', data: 'supID', name : 'supID' }, 
+        { title : 'Supplier Name', data: 'supName', name : 'supName' }, 
+        { title : 'Supplier Email', data: 'supEmail', name : 'supEmail' }, 
+        { title : '', data: null, name : 'action', orderable : false }, 
+        
+      ]
+    };
   }
 
   getSuppliersList()
@@ -117,6 +157,12 @@ export class SuppliersComponent implements OnInit {
     }
   }
 
+  reload() {
+    this.dtElement?.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload(undefined, false);
+    });
+  }
+
   saveBulk()
   {
       if(this.addedList.length == 0)
@@ -146,7 +192,7 @@ export class SuppliersComponent implements OnInit {
                 if(data)
                 {
                     this.toastrService.success('List added successfuly');
-                    this.getSuppliersList();
+                    //this.getSuppliersList();
                     this.modalReference.close();
                 }
                 else
@@ -225,6 +271,21 @@ export class SuppliersComponent implements OnInit {
     });
   }
 
+  editSupplier(supplier : Supplier)
+  {
+    this.formEdit = this.formBuilder.group({
+      supName: [supplier.supName, Validators.required],
+      email: [supplier.supEmail, [Validators.required, Validators.email]]
+    });
+    this.currentUser = supplier;
+    this.modalReference = this.modalService.open(this.editModal, this.modalOptions);
+    this.modalReference.result.then((result : any) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason : any) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
   onEditSubmit()
   {
       this.submitted = true;
@@ -241,7 +302,8 @@ export class SuppliersComponent implements OnInit {
         if(response)
         {
           this.toastrService.success('Updated successfuly');
-          this.getSuppliersList();
+          //this.getSuppliersList();
+          this.reload();
           this.modalReference.close();
         }
         else

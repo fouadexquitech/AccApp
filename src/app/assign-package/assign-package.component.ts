@@ -136,6 +136,9 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       this.assignPackageFilter.clearFilter();
       //  this.textInput.nativeElement.value = '';
       //  this.textInput1.nativeElement.value = '';
+       this.SearchInput.itemO = null;
+       this.SearchInput.bOQDesc = null;
+       this.SearchInput.bOQItem = null;
        this.SearchInput.fromRow='';
        this.SearchInput.toRow='';
        this.SearchInput.obTradeDesc='';

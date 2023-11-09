@@ -81,7 +81,7 @@
 
     <ng-container matColumnDef="finalNetAmount">
       <mat-header-cell *matHeaderCellDef>
-        Final Net Amount
+        Final Net Amount ({{finalTotalPrice | number: '.2' }})
       </mat-header-cell>
       <mat-cell *matCellDef="let item">{{item.boqScopeQty * item.boqUprice | number: '.2' }}</mat-cell>
       <mat-footer-cell *matFooterCellDef>

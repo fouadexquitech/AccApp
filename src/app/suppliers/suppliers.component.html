@@ -16,47 +16,33 @@
                 <div class="col-12">
                     <div class="card card-body table-responsive">
                         
-                        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+                        <table datatable [dtOptions]="dtOptions" class="row-border hover">
                             <thead>
-                                <tr *ngIf="loading">
-                                    <td style="text-align: center;" colspan="6">
-                                        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="col">ID#</th>
-                                    <th scope="col">Supplier</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col" >Actions</th>  
+                                 <tr>
+                                    <th scope="col">Supplier ID</th>
+                                    <th scope="col">Supplier Name</th>
+                                    <th scope="col">Supplier Email</th>
                                     <th scope="col"></th>
-                                    <th scope="col" *ngIf="false"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let item of list ; let i = index" style="cursor: pointer;">
-                                    <td id="pckId">{{ item.supID }}</td>
-                                    <td>{{ item.supName }}</td>
-                                    <td>{{ item.supEmail }}</td>
+                                <tr *ngFor="let supplier of suppliers; let i = index">
+                                    <td>{{ supplier.supID }}</td>
                                     <td>
-                                        <a class="btn btn-link" title="Edit" (click)="editUser(editModal, item)">
-                                            <i class="fa fa-edit text-primary"></i> 
-                                        </a>
-                                        <a class="btn btn-link" title="Delete" (click)="deleteUser(item.supID)"
+                                        {{supplier.supName}}
+                                    </td>
+                                    <td>
+                                        {{supplier.supEmail}}
+                                    </td>
+                                    <td>
+                                        <a class="edit" title="Edit" (click)="editSupplier(supplier)"><i class="fa fa-edit"></i></a>
+                                        <a class="btn btn-link" title="Delete" (click)="deleteUser(supplier.supID)"
                                         [ngStyle]="deleting? {'pointer-events': 'none'} : {'pointer-events': ''}">
                                             <i class="fa fa-times text-danger"></i>
                                         </a>
                                     </td>
-                                    <td></td>
-                                    <td *ngIf="false">   </td>                                                                     
                                 </tr>
                             </tbody>
-                            <tfoot *ngIf="list.length == 0">
-                                <tr>
-                                    <td colspan="6" style="text-align: center;">
-                                        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
-                                    </td>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
                 </div>

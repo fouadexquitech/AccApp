@@ -305,6 +305,30 @@ export class AssignPackageFilterComponent implements OnInit {
     this.selectedFilterRessources = result;
   }
 
+  get isClearedActive()
+  {
+     return ( (this.SearchInput.bOQDesc == null || this.SearchInput.bOQDesc == '') &&
+      this.SearchInput.bOQDiv.length == 0 &&
+      (this.SearchInput.bOQItem == null || this.SearchInput.bOQItem == '') &&
+      this.SearchInput.boqLevel2.length == 0 &&
+      this.SearchInput.boqLevel3.length == 0 &&
+      this.SearchInput.boqLevel4.length == 0 &&
+      this.SearchInput.boqResourceSeq.length == 0 &&
+      (this.SearchInput.fromRow == null || this.SearchInput.fromRow == '') &&
+      (this.SearchInput.toRow == null || this.SearchInput.toRow == '') &&
+      this.SearchInput.isItemsAssigned == 0 &&
+      (this.SearchInput.itemO == null || this.SearchInput.itemO == '') &&
+      (this.SearchInput.obTradeDesc == null || this.SearchInput.obTradeDesc == '') &&
+      this.SearchInput.package == 0 &&
+      (this.SearchInput.rESDesc == null || this.SearchInput.rESDesc == '') &&
+      this.SearchInput.rESDiv.length == 0 &&
+      (this.SearchInput.rESPackage == null || this.SearchInput.rESPackage == '') &&
+      this.SearchInput.rESType.length == 0 &&
+      (this.SearchInput.sheetDesc == null || this.SearchInput.sheetDesc == '') &&
+      this.SearchInput.isRessourcesAssigned == 0);
+
+  }
+
   public clearFilter()
   {
       this.SearchInput.bOQDesc = null;
@@ -325,6 +349,7 @@ export class AssignPackageFilterComponent implements OnInit {
       this.SearchInput.rESType = [];
       this.SearchInput.sheetDesc = null;
       this.SearchInput.toRow = null;
+      this.SearchInput.isRessourcesAssigned = 0;
       //this.searchEvent.emit(this.SearchInput);
   }
 

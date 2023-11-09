@@ -1,8 +1,15 @@
-<div
-
-    style="top: 150px; position: fixed; right : 5px"
+<div *ngIf="isClearedActive"
+    style="top: 150px; position: fixed; right : 5px;"
     (mouseover)="assignPackageFilter.toggle()">
-    <i class="fa fa-search fa-beat text-danger fa-2x" style="--fa-beat-scale: 2.0;"></i>
+    <i class="fa fa-search fa-beat text-danger fa-2x" style="--fa-beat-scale: 2.0;" ></i>
+    
+</div>
+
+<div *ngIf="!isClearedActive"
+    style="top: 150px; position: fixed; right : 5px;"
+    (mouseover)="assignPackageFilter.toggle()">
+    <i class="fa fa-search fa-beat text-success fa-2x" style="--fa-beat-scale: 2.0;" ></i>
+    
 </div>
 
 <fuse-drawer style="transition: all 1s ease-in-out; max-width: 800px !important;
@@ -12,10 +19,10 @@ width: 800px !important; min-width: 0px !important;" fixed
 >
 <div class="container" style="padding-top: 100px; padding-left: 0px; padding-right: 0px;">
     <div class="card">
-    <div class="card-header">
+    <div class="card-header bg-white">
       <div class="d-flex justify-content-between">
         <div>
-          <h3>Filter</h3>
+          <h3>Filter {{SearchInput.fromRow}}</h3>
         </div>
         <div style="text-align: end;">
        

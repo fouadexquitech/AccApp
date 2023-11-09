@@ -16,47 +16,34 @@
                 <div class="col-12">
                     <div class="card card-body table-responsive">
     
-                        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+                        <table datatable [dtOptions]="dtOptions" class="row-border hover">
                             <thead>
-                                <tr *ngIf="loading">
-                                    <td style="text-align: center;" colspan="6">
-                                        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
-                                    </td>
-                                </tr>
+                                
                                 <tr>
                                     <th scope="col">ID#</th>
                                     <th scope="col">Package</th>
                                     <th scope="col">Division</th>
-                                    <th scope="col">Actions</th>
-                                    <th scope="col"></th>
-                                    <th scope="col" *ngIf="false"></th>
+                                    <td></td>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let item of list ; let i = index" style="cursor: pointer;">
-                                    <td id="pckId">{{ item.pkgeId }}</td>
-                                    <td>{{ item.pkgeName }}</td>
-                                    <td>{{ item.division }}</td>
+                                <tr *ngFor="let package of packages; let i = index">
                                     <td>
-                                        <a class="btn btn-link" title="Edit" (click)="editUser(editModal, item)">
+                                        {{package.idPkge}}
+                                    </td>
+                                    <td>{{ package.pkgeName }}</td>
+                                    <td>{{ package.division }}</td>
+                                    <td>
+                                        <a class="btn btn-link" title="Edit" (click)="editUser(editModal, package)">
                                             <i class="fa fa-edit text-primary"></i>
                                         </a>
-                                        <a class="btn btn-link" title="Delete" (click)="deleteUser(item.pkgeId)"
+                                        <a class="btn btn-link" title="Delete" (click)="deleteUser(package.idPkge)"
                                             [ngStyle]="deleting? {'pointer-events': 'none'} : {'pointer-events': ''}">
                                             <i class="fa fa-times text-danger"></i>
                                         </a>
                                     </td>
-                                    <td></td>
-                                    <td *ngIf="false"> </td>
                                 </tr>
                             </tbody>
-                            <tfoot *ngIf="list.length == 0">
-                                <tr>
-                                    <td colspan="6" style="text-align: center;">
-                                        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
-                                    </td>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
                 </div>

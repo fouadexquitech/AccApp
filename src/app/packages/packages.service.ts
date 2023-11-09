@@ -19,10 +19,11 @@ export class packagesService {
     this.baseUrl = environment.baseApiUrl + "api/";
   }
 
-  Getpackages(filter : string): Observable<any> {
-    return this.http.get(this.baseUrl + 'package/Getpackages?filter=' + filter).pipe(
-      map(res => res), catchError(this.handleError)
-    );
+  Getpackages(dataTablesParameters: any): Observable<any> {
+    const header = new HttpHeaders()
+    .set('Content-type', 'application/json');
+    const body = JSON.stringify(dataTablesParameters);
+    return this.http.post<any>(environment.baseApiUrl + 'api/package/Getpackages', body, { headers: header });
   }
 
   addpackage(list : Package[])
