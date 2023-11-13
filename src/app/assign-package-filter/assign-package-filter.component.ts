@@ -350,6 +350,7 @@ export class AssignPackageFilterComponent implements OnInit {
       this.SearchInput.sheetDesc = null;
       this.SearchInput.toRow = null;
       this.SearchInput.isRessourcesAssigned = 0;
+      this. GetRessourcesListByLevels();
       //this.searchEvent.emit(this.SearchInput);
   }
 

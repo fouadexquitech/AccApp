@@ -139,7 +139,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-body">
-
+                        <mat-progress-bar mode="indeterminate" *ngIf="isSearching"></mat-progress-bar>
                         <table id="originalBOQTable"  datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
                             class="row-border hover">
                             <thead>
@@ -159,11 +159,14 @@
                                     <th scope="col">RFQ. Qty</th>
                                     <th scope="col"></th>
                                     <th scope="col">Unit Price</th>
+                                    <th scope="col">Final Total ({{boqFinalTotal | number: '.2'}})</th>
                                     <th scope="col">Assigned Package</th>
                                     <th scope="col">Status</th>
                                     <th scope="col"></th>
                                 </tr>
                             </thead>
+                           
+                            
                             <!--<tbody *ngIf="isSearching && OriginalBoqList.length == 0">
                                 <tr>
                                     <td colspan="15" style="text-align: center;">
@@ -189,6 +192,7 @@
                                     <td><a class="btn btn-link" title="Edit"
                                             (click)="editOriginalBoqQty(editModal,item)"><i class="fa-solid fa-edit"></i></a></td>
                                     <td>{{item.unitRate | number: '.2' }}</td>
+                                    <td>{{(item.unitRate * item.qtyO) | number: '.2' }}</td>
                                     <td [ngClass]="item.assignedPackage != '' ? 'text-danger' : ''">
                                         {{item.assignedPackage}}</td>
                                     <td [ngClass]="item.boqStatus != '' ? 'text-danger' : ''"> {{item.boqStatus}}</td>

@@ -116,6 +116,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   resourcesSelected : boolean = false;
 
+  boqFinalTotal : number = 0;
+
   constructor(private assignPackageService: AssignPackageService, 
     private modalService: NgbModal,private spinner: NgxSpinnerService , 
     private toastr: ToastrService,
@@ -167,6 +169,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         dtInstance.destroy();      
         // dtTrigger la reconstruye
         this.OriginalBoqList = [];
+        this.boqFinalTotal = 0;
         this.dtTrigger.next();      
       });
     }
@@ -417,7 +420,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   GetOriginalBoqList(input: SearchInput) {
     this.OriginalBoqList = [];
     this.displayedResList = [];
-    
+    this.boqFinalTotal = 0;
     //this.spinner.show();
     this.loading = true;
     this.isSearching = true;
@@ -436,6 +439,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         
         this.OriginalBoqList.forEach(item=>{
           let _item = this.SelectedOriginalBoqList.find(x=>x.rowNumber === item.rowNumber);
+          this.boqFinalTotal += item.unitRate * item.qtyO;
           if(_item)
           {
             item.isSelected = true;

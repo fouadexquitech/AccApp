@@ -6,8 +6,11 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { LoginService } from './login.service';
 import { Country, Project, ProjectCurrency } from './login.model';
 import { ToastrService } from 'ngx-toastr';
-
-@Component({ templateUrl: 'login.component.html' })
+@Component({
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.css']
+  })
 export class LoginComponent implements OnInit {
     form: FormGroup;
     loading = false;
@@ -15,7 +18,7 @@ export class LoginComponent implements OnInit {
     returnUrl: string;
     countries : Country[] = [];
     projects : Project[] = [];
-   
+    fieldTextType: boolean=false;
     public selectedProject : number = 0
 
     constructor(
@@ -41,6 +44,10 @@ export class LoginComponent implements OnInit {
         this.getProjectCountries();
     }
 
+    toggleFieldTextType() {
+        this.fieldTextType = !this.fieldTextType;
+      }
+
     // convenience getter for easy access to form fields
     get f() { return this.form.controls; }
 
@@ -54,14 +61,15 @@ export class LoginComponent implements OnInit {
         this.loading = true;
         //this.spinner.show();
         let projSeq = this.selectedProject;
-        this.loginService.login(this.f.username.value, this.f.password.value, projSeq)
+        console.log(this.f.project.value);
+        this.loginService.login(this.f.username.value, this.f.password.value, this.f.project.value)
             .pipe(first())
             .subscribe(data => {
                 this.loading = false;
                 
                     if(data)
                     {
-                        this.loginService.getProjectCurrency(projSeq).pipe(first())
+                        this.loginService.getProjectCurrency(this.f.project.value).pipe(first())
                         .subscribe(data => {
                             if(data)
                             {
