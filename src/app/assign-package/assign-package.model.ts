@@ -55,6 +55,7 @@ export class SearchInput {
     public boqResourceSeq: string[] = [];
     public isRessourcesAssigned: number = 0;
     public costDB :string='';
+    public boqStatus: string = "";
 }
 
 export class BOQDivList {

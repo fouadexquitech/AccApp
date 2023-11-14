@@ -130,9 +130,24 @@
             
                                 <div class="col-sm-2 form-group">
                                     <!-- <label style="font-size: smaller ;">Trade Description</label> -->
-                                    <input type="text" class="form-control" [(ngModel)]="SearchInput.obTradeDesc" placeholder="Trade Description"
+                                    <!-- <input type="text" class="form-control" [(ngModel)]="SearchInput.obTradeDesc" placeholder="Trade Description"
                                         [ngClass]="{'selected-input': SearchInput.obTradeDesc }"
-                                        style="font-size: smaller ;height: 25px;">
+                                        style="font-size: smaller ;height: 25px;"> -->
+
+                                        <mat-form-field  class="full-width-field" style="width: 100%;font-size:10px;">
+                                            <mat-label style="font-size:14px; ">BOQ Status</mat-label>
+                                            <mat-select style="font-size:14px;" [(ngModel)]="SearchInput.boqStatus">
+                                                <!-- <input matInput type="text" focused="'true'"
+                                                            (keyup)="filterSearchPackages($event)" class="mat-filter"> -->
+                                                <!-- <span class="fa fa-search input-icon"></span> -->
+                                                <mat-divider></mat-divider>
+                                                <mat-option [value]="" > </mat-option>
+                                                <mat-option [value]="1">Assigned</mat-option>
+                                                <mat-option [value]="2">Not Assigned</mat-option>
+                                                <mat-option [value]="3">Missing</mat-option>
+                                                <mat-option [value]="4">Mix</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
                                 </div>
             
                                 <div class="col-sm-2 form-group">
@@ -161,11 +176,11 @@
                                 <div class="col-sm-2 form-group">
                                     <!--<label>Sheet Desc</label>
                                                        
-                                                            <ng-select2 [(ngModel)]="SearchInput.sheetDesc" width="100%" [allowClear]="true" [placeholder]="" *ngIf="SheetDescList">
-                                                                <option selected value=""></option>
-                                                                <option *ngFor="let item of SheetDescList" [ngValue]="item.obSheetDesc">{{
-                                                                    item.obSheetDesc }}</option>
-                                                            </ng-select2>-->
+                                    <ng-select2 [(ngModel)]="SearchInput.sheetDesc" width="100%" [allowClear]="true" [placeholder]="" *ngIf="SheetDescList">
+                                        <option selected value=""></option>
+                                        <option *ngFor="let item of SheetDescList" [ngValue]="item.obSheetDesc">{{
+                                            item.obSheetDesc }}</option>
+                                    </ng-select2>-->
                                     <mat-form-field  class="full-width-field" style="width: 100%;font-size:10px;">
                                         <mat-label style="font-size:14px; ">Assigned BOQ</mat-label>
                                         <mat-select style="font-size:14px;" [(ngModel)]="SearchInput.isItemsAssigned">
@@ -471,7 +486,7 @@
                                     <th scope="col">Div</th>
                                     <th scope="col">BOQ Item</th>
                                     <th scope="col" style="width: 30%;">BOQ Description</th>
-                                    <th scope="col">Trade Description</th>
+                                    <!-- <th scope="col">Trade Description</th> -->
                                     <th scope="col">Unit</th>
                                     <th scope="col">Bill Qty</th>
                                     <th scope="col">Final Qty</th>
@@ -500,7 +515,7 @@
                                     <td>{{item.sectionO}}</td>
                                     <td>{{item.itemO}}</td>
                                     <td>{{item.descriptionO}}</td>
-                                    <td>{{item.obTradeDesc}}</td>
+                                    <!-- <td>{{item.obTradeDesc}}</td> -->
                                     <td>{{item.unitO}}</td>
                                     <td>{{item.billQtyO | number: '.2' }}</td>
                                     <td>{{item.qtyO | number: '.2' }}</td>

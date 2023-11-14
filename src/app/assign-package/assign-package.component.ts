@@ -1299,11 +1299,12 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   //       localStorage.setItem('assignByBoqOnly', '1');
   //    }      
   //  }
+  let costDB=this.user.usrLoggedCostDB;
   this.assignPackages.assignOriginalBoqList = this.SelectedOriginalBoqList;
   this.assignPackages.assignBoqList = this.SelectedBoqList;
   //this.assignPackageService.AssignPackage(this.assignPackages).subscribe((data) => {
 
-    this.assignPackageService.ExportBoqExcel(this.assignPackages).subscribe((data) => {
+    this.assignPackageService.ExportBoqExcel(this.SearchInput,costDB).subscribe((data) => {
       if (data) {
         let a = document.createElement('a');
         a.id = 'downloader';

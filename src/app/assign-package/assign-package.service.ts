@@ -129,9 +129,9 @@ export class AssignPackageService {
         return Promise.reject(error.message || error);
     }
 
-    ExportBoqExcel(input: AssignPackages) : Observable<any> 
+    ExportBoqExcel(input: SearchInput , costDB :string) : Observable<any> 
     {
-      return this.http.post(this.baseUrl + 'Package/ExportBoqExcel', input).pipe(
+      return this.http.post(this.baseUrl + 'Package/ExportBoqExcel?costDB=' + costDB, input).pipe(
         map(res => res), catchError(this.handleError)
     );
     }
