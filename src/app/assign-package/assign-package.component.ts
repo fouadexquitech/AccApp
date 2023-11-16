@@ -797,7 +797,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   {
      BoqList.forEach(boq=>{
         let boqItem = this.OriginalBoqList.find(x=>x.itemO == boq.boqItem);
-        boq.totalUnitPrice = boqItem?.unitRate;
+        boq.totalUnitPrice = boqItem?.unitRateO;
         let item = this.displayedResList.find(a=>a.boqSeq == boq.boqSeq);
         
         if(add)
@@ -1317,6 +1317,24 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     });
   }
 
+  ExportNotAssigned(){
+    let costDB=this.user.usrLoggedCostDB;
+    this.assignPackages.assignOriginalBoqList = this.SelectedOriginalBoqList;
+    this.assignPackages.assignBoqList = this.SelectedBoqList;
+    //this.assignPackageService.AssignPackage(this.assignPackages).subscribe((data) => {
+  
+      this.assignPackageService.ExportNotAssigned(this.SearchInput,costDB).subscribe((data) => {
+        if (data) {
+          let a = document.createElement('a');
+          a.id = 'downloader';
+          a.target = '_blank'; 
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
+          a.click();     
+        }
+      });
+    }
   ExportExcelPackagesCost(){
       this.assignPackageService.ExportExcelPackagesCost().subscribe((data) => {
         if (data) {
@@ -1330,6 +1348,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         }
       });
     }
+
 
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {

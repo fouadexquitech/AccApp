@@ -136,6 +136,13 @@ export class AssignPackageService {
     );
     }
 
+    ExportNotAssigned(input: SearchInput , costDB :string) : Observable<any> 
+    {
+      return this.http.post(this.baseUrl + 'Package/ExportNotAssigned?costDB=' + costDB, input).pipe(
+        map(res => res), catchError(this.handleError)
+    );
+    }
+
     ExportExcelPackagesCost() : Observable<any> 
     {
       return this.http.get(this.baseUrl + 'Package/ExportExcelPackagesCost').pipe(

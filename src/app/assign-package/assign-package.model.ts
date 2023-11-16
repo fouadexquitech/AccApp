@@ -4,8 +4,8 @@ export class OriginalBoqModel {
     public itemO: string = "";
     public descriptionO: string = "";
     public unitO: string = "";
-    public unitRate: number = 0;
-    public scope: number = 0;
+    public unitRateO: number = 0;
+    public scopeO: number = 0;
     public assignedPackage: string = "";
     public qtyO: number = 0;  //Final Qty
     public billQtyO: number = 0;

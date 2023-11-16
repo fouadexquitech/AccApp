@@ -356,17 +356,26 @@
                                         Selections</button>
                                 </div>
                                 <div class="col-sm-2 form-group">
-                                    <button class="btn btn-success" (click)="ExportExcelBoq()" [disabled]="isSearching"
-                                        style="width: 200px;font-size: small;">
+                                    <button class="btn btn-success" (click)="ExportExcelBoq()" 
+                                        style="font-size: small;">
                                         <!-- <i class="fa fa-spinner fa-spin" *ngIf="isSearching"></i> -->
-                                        Export Selected Ressources
+                                        Export Searched Ressources
+                                    </button>
+                                    <!-- [disabled]="isSearching" -->
+                                </div>
+                                <div class="col-sm-2 form-group">
+                                    <button class="btn btn-success" (click)="ExportExcelPackagesCost()" 
+                                        style="width: 200px;font-size:small;">
+                                        Export Packages Dry Cost
                                     </button>
                                 </div>
                                 <div class="col-sm-2 form-group">
-                                    <button class="btn btn-success" (click)="ExportExcelPackagesCost()" [disabled]="isSearching"
-                                        style="width: 250px;font-size: small;">
-                                        Export Assigned Packages Dry Cost
+                                    <button class="btn btn-success" (click)="ExportNotAssigned()" 
+                                        style="font-size: small;">
+                                        Export Not Assigned Items 
                                     </button>
+
+                                    <!-- [disabled]="isSearching" -->
                                 </div>
                             </div>
             
@@ -522,7 +531,7 @@
                                     <td>{{item.scopeQtyO | number: '.2' }}</td>
                                     <td><a class="btn btn-link" title="Edit"
                                             (click)="editOriginalBoqQty(editModal,item)"><i class="fa-solid fa-edit"></i></a></td>
-                                    <td>{{item.unitRate | number: '.2' }}</td>
+                                    <td>{{item.unitRateO | number: '.2' }}</td>
                                     <td [ngClass]="item.assignedPackage != '' ? 'text-danger' : ''">
                                         {{item.assignedPackage}}</td>
                                     <td [ngClass]="item.boqStatus != '' ? 'text-danger' : ''"> {{item.boqStatus}}</td>
