@@ -160,6 +160,9 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
        this.clearTable();
        this.displayedResList = [];
+       this.checkboxesAll = false;
+       this.boqListTable?.setData(this.displayedResList);
+       this.boqListTable?.setFinalTotalPrice(0);
     
      }
 
@@ -490,10 +493,10 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         this.OriginalBoqList.forEach(item=>{
           let _item = this.SelectedOriginalBoqList.find(x=>x.rowNumber === item.rowNumber);
           this.boqFinalTotal += item.unitRateO * item.qtyO;
-          if(_item)
-          {
-            item.isSelected = true;
-          }
+          // if(_item)
+          // {
+          //   item.isSelected = true;
+          // }
         });
         //this.spinner.hide();
         // this.dtTrigger.next();
@@ -1158,7 +1161,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.OriginalBoqList = [];
     this.clearTable();
     this.displayedResList = [];
-
+    this.SelectedOriginalBoqList = [];
     this.BoqList = [];
     this.boqsList = [];
     this.resourcesSelected = false;
