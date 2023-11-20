@@ -228,18 +228,26 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     // };
     
     // this.ConnectToDB(this.user.usrLoggedConnString);
+    let body : any = {
+      level2 : this.SearchInput.boqLevel2,
+      level3 : this.SearchInput.boqLevel3,
+      level4 : this.SearchInput.boqLevel4,
+      resType: this.SearchInput.rESType
+    };
+
+
     this.GetBOQDivList();
-    this.GetBOQLevel2List();
-    this.GetBOQLevel3List();
-    this.GetBOQLevel4List();
+    this.GetBOQLevel2List(body);
+    this.GetBOQLevel3List(body);
+    this.GetBOQLevel4List(body);
     this.GetRESDivList();
-    this.GetRESTypeList();
+    this.GetRESTypeList(body);
     this.GetPackageList();
     this.GetRESPackageList();
     this.GetSheetDescList();
     this.GetOriginalBoqList(this.SearchInput);
-    // this.GetRessourcesList();
-    this.GetRessourcesListByLevels();
+    this.GetRessourcesList(body);
+    // this.GetRessourcesListByLevels();
   }
 
   
@@ -286,8 +294,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     });
   }
 
-  GetBOQLevel2List() {
-    this.assignPackageService.GetBOQLevel2List().subscribe((data) => {
+  GetBOQLevel2List(body : any) {
+    this.assignPackageService.GetBOQLevel2List(body).subscribe((data) => {
       if (data) {
         this.BOQLevelList = data;
         this.selectedBOQLevel2List = data;
@@ -296,8 +304,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     });
   }
 
-  GetBOQLevel3List() {
-    this.assignPackageService.GetBOQLevel3List().subscribe((data) => {
+  GetBOQLevel3List(body : any) {
+    this.assignPackageService.GetBOQLevel3List(body).subscribe((data) => {
       if (data) {
         this.BOQLevelList = data;
         this.selectedBOQLevel3List = data;
@@ -306,8 +314,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     });
   }
 
-  GetBOQLevel4List() {
-    this.assignPackageService.GetBOQLevel4List().subscribe((data) => {
+  GetBOQLevel4List(body : any) {
+    this.assignPackageService.GetBOQLevel4List(body).subscribe((data) => {
       if (data) {
         this.BOQLevelList = data;
         this.selectedBOQLevel4List = data;
@@ -325,8 +333,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     });
   }
 
-  GetRESTypeList() {
-    this.assignPackageService.GetRESTypeList().subscribe((data) => {
+  GetRESTypeList(body : any) {
+    this.assignPackageService.GetRESTypeList(body).subscribe((data) => {
       if (data) {
         this.RESTypeList = data;
         this.selectedRESTypeList = data;
@@ -344,8 +352,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     });
   }
 
-  GetRessourcesList() {
-    this.assignPackageService.GetRessourcesList().subscribe((data) => {
+  GetRessourcesList(body : any) {
+    this.assignPackageService.GetRessourcesList(body).subscribe((data) => {
       if (data) {
         this.ressourceList = data;
         this.selectedRessources = this.ressourceList;
@@ -354,7 +362,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     });
   }
 
-  GetRessourcesListByLevels() {
+  L2_AfterUpdate()
+  {
     let body : any = {
       level2 : this.SearchInput.boqLevel2,
       level3 : this.SearchInput.boqLevel3,
@@ -362,27 +371,68 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       resType: this.SearchInput.rESType
     };
 
-    this.assignPackageService.GetRessourcesListByLevels(body).subscribe((data) => {
-      if (data) {
-        this.ressourceList = data;
-        this.selectedRessources = this.ressourceList;
-        this.selectedFilterRessources = data;
-      }
-    });
+    this.GetBOQLevel3List(body);
+    this.GetBOQLevel4List(body);
+    this.GetRESTypeList(body);
+    this.GetRessourcesList(body) ;
+  }
 
-    this.assignPackageService.GetBOQLevel3ListByLevel2(body).subscribe((data) => {
-      if (data) {
-        this.BOQLevelList = data;
-        this.selectedBOQLevel3List = data;
-      }
-    });
-    
-    this.assignPackageService.GetBOQLevel4ListByLevel3(body).subscribe((data) => {
-      if (data) {
-        this.BOQLevelList = data;
-        this.selectedBOQLevel4List = data;
-      }
-    });
+  L3_AfterUpdate()
+  {
+    let body : any = {
+      level2 : this.SearchInput.boqLevel2,
+      level3 : this.SearchInput.boqLevel3,
+      level4 : this.SearchInput.boqLevel4,
+      resType: this.SearchInput.rESType
+    };
+
+    this.GetBOQLevel2List(body);
+    this.GetBOQLevel4List(body);
+    this.GetRESTypeList(body);
+    this.GetRessourcesList(body) ;
+  }
+
+  L4_AfterUpdate()
+  {
+    let body : any = {
+      level2 : this.SearchInput.boqLevel2,
+      level3 : this.SearchInput.boqLevel3,
+      level4 : this.SearchInput.boqLevel4,
+      resType: this.SearchInput.rESType
+    };
+
+    this.GetBOQLevel2List(body);
+    this.GetBOQLevel3List(body);
+    this.GetRESTypeList(body);
+    this.GetRessourcesList(body) ;
+  }
+
+  ResType_AfterUpdate(){
+    let body : any = {
+      level2 : this.SearchInput.boqLevel2,
+      level3 : this.SearchInput.boqLevel3,
+      level4 : this.SearchInput.boqLevel4,
+      resType: this.SearchInput.rESType
+    };
+
+    this.GetBOQLevel2List(body);
+    this.GetBOQLevel3List(body);
+    this.GetBOQLevel4List(body);
+    this.GetRessourcesList(body) ;
+  }
+
+  Ressources_AfterUpdate(){
+    let body : any = {
+      level2 : this.SearchInput.boqLevel2,
+      level3 : this.SearchInput.boqLevel3,
+      level4 : this.SearchInput.boqLevel4,
+      resType: this.SearchInput.rESType
+    };
+
+    this.GetBOQLevel2List(body);
+    this.GetBOQLevel3List(body);
+    this.GetBOQLevel4List(body);
+    this.GetRESTypeList(body);
   }
 
   GetRESPackageList() {
@@ -435,9 +485,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         this.rerender();
 
         this.checkboxesAll = this.SelectedOriginalBoqList.length == this.OriginalBoqList.length;
-        
       }
-     
     });
   }
 

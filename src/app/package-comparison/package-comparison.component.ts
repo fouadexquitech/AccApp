@@ -257,7 +257,7 @@ export class PackageComparisonComponent implements OnInit {
   }
 
   GetRESTypeList() {
-    this.assignPackageService.GetRESTypeList().subscribe((data) => {
+    this.assignPackageService.GetRESTypeList(null).subscribe((data) => {
       if (data) {
         this.RESTypeList = data;
         this.selectedRESTypeList = data;

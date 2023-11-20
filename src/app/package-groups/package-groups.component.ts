@@ -78,7 +78,6 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
         if(data)
         {
             this.groups = data;
-            
         }
     });
   }
@@ -237,7 +236,7 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
   }
 
   GetRESTypeList() {
-    this.assignPackageService.GetRESTypeList().subscribe((data) => {
+    this.assignPackageService.GetRESTypeList(null).subscribe((data) => {
       if (data) {
         this.RESTypeList = data;
         this.selectedRESTypeList = data;

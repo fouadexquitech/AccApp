@@ -26,21 +26,40 @@ export class AssignPackageService {
         );
     }
 
-    GetBOQLevel2List(): Observable<any> {
-        return this.http.get(this.baseUrl + 'Search/GetBOQLevel2List').pipe(
+    GetBOQLevel2List(body : any): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetBOQLevel2List',body).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
+    
+    GetBOQLevel3List(body : any): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetBOQLevel3List',body).pipe(
+            map(res => res), catchError(this.handleError)
+        );
+    }
+
+    GetBOQLevel4List(body : any): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetBOQLevel4List',body).pipe(
+            map(res => res), catchError(this.handleError)
+        );
+    }
+
+    GetRESTypeList(body : any): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetResTypeList', body).pipe(
+            map(res => res), catchError(this.handleError)
+        );
+    }
+
+    GetRessourcesList(body : any): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetRessourcesList', body).pipe(
+            map(res => res), catchError(this.handleError)
+        );
+    }
+
 
     
-    GetBOQLevel3List(): Observable<any> {
-        return this.http.get(this.baseUrl + 'Search/GetBOQLevel3List').pipe(
-            map(res => res), catchError(this.handleError)
-        );
-    }
-
-    GetBOQLevel4List(): Observable<any> {
-        return this.http.get(this.baseUrl + 'Search/GetBOQLevel4List').pipe(
+    GetBOQLevel2ListBy(body : any): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetBOQLevel2ListBy',body).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
@@ -69,12 +88,6 @@ export class AssignPackageService {
         );
     }
 
-    GetRESTypeList(): Observable<any> {
-        return this.http.get(this.baseUrl + 'Search/GetRESTypeList').pipe(
-            map(res => res), catchError(this.handleError)
-        );
-    }
-
     GetPackageList(): Observable<any> {
         return this.http.get(this.baseUrl + 'Search/PackageList').pipe(
             map(res => res), catchError(this.handleError)
@@ -83,12 +96,6 @@ export class AssignPackageService {
 
     GetRESPackageList(): Observable<any> {
         return this.http.get(this.baseUrl + 'Search/GetRESPackageList').pipe(
-            map(res => res), catchError(this.handleError)
-        );
-    }
-
-    GetRessourcesList(): Observable<any> {
-        return this.http.get(this.baseUrl + 'Search/GetRessourcesList').pipe(
             map(res => res), catchError(this.handleError)
         );
     }
