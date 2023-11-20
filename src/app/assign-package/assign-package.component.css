@@ -2,27 +2,14 @@ th {
     background: white;
     position: sticky;
     top: 0;
-    z-index: 999;
+  
   }
 
-  .full-width-field {
-    width: 100%;
- }
+ 
 
- .mat-filter {
-  
-    height: 35px !important;
+ 
 
- }
-
- .input-icon {
-   float: right;
-   margin-right: 6px;
-   margin-top: -25px;
-   position: relative;
-   z-index: 2;
-  
-}
+ 
 
 .mat-progress-spinner {
    display: inline-block;
@@ -77,3 +64,6 @@ th {
  ::ng-deep .dataTables_empty{
    display: none
    }
+
+ 
+ 

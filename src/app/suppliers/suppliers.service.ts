@@ -19,10 +19,13 @@ export class SuppliersService {
     this.baseUrl = environment.baseApiUrl + "api/";
   }
 
-  GetSuppliers(filter : string): Observable<any> {
-    return this.http.get(this.baseUrl + 'Supplier/GetSuppliers?filter=' + filter).pipe(
-      map(res => res), catchError(this.handleError)
-    );
+  GetSuppliers(dataTablesParameters: any): Observable<any> {
+
+    const header = new HttpHeaders()
+    .set('Content-type', 'application/json');
+    const body = JSON.stringify(dataTablesParameters);
+
+    return this.http.post<any>(environment.baseApiUrl + 'api/Supplier/GetSuppliers', body, { headers: header });
   }
 
   addSupplier(list : Supplier[])

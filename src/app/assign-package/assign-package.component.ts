@@ -15,6 +15,7 @@ import { LoginService } from '../login/login.service';
 import { User } from '../_models';
 import { PackageSupplierService } from '../package-supplier/package-supplier.service';
 import { BoqListTableComponent } from '../boq-list-table/boq-list-table.component';
+import { AssignPackageFilterComponent } from '../assign-package-filter/assign-package-filter.component';
 // AH28032023.
 declare var $: any;
 
@@ -25,6 +26,7 @@ declare var $: any;
 })
 
 export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit {
+  @ViewChild('assignPackageFilter') assignPackageFilter : AssignPackageFilterComponent;
   @ViewChild('editRessourcesModal') editRessourcesModal : any;
   @ViewChild('boqListTable') boqListTable : BoqListTableComponent;
   isShown: boolean = false; // hidden by default
@@ -114,6 +116,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   resourcesSelected : boolean = false;
 
+  boqFinalTotal : number = 0;
+
   constructor(private assignPackageService: AssignPackageService, 
     private modalService: NgbModal,private spinner: NgxSpinnerService , 
     private toastr: ToastrService,
@@ -124,11 +128,19 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     )
      {this.loginService.user.subscribe(x => this.user = x); }
 
+     openFilterDrawer(){
+        this.assignPackageFilter.openDrawer();
+     }
+
 // AH28032023
    clearAllSearch()
      {
-       this.textInput.nativeElement.value = '';
-       this.textInput1.nativeElement.value = '';
+      this.assignPackageFilter.clearFilter();
+      //  this.textInput.nativeElement.value = '';
+      //  this.textInput1.nativeElement.value = '';
+       this.SearchInput.itemO = null;
+       this.SearchInput.bOQDesc = null;
+       this.SearchInput.bOQItem = null;
        this.SearchInput.fromRow='';
        this.SearchInput.toRow='';
        this.SearchInput.obTradeDesc='';
@@ -148,6 +160,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
        this.clearTable();
        this.displayedResList = [];
+    
      }
 
      clearTable(): void {
@@ -156,6 +169,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         dtInstance.destroy();      
         // dtTrigger la reconstruye
         this.OriginalBoqList = [];
+        this.boqFinalTotal = 0;
         this.dtTrigger.next();      
       });
     }
@@ -456,7 +470,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   GetOriginalBoqList(input: SearchInput) {
     this.OriginalBoqList = [];
     this.displayedResList = [];
-    
+    this.boqFinalTotal = 0;
     //this.spinner.show();
     this.loading = true;
     this.isSearching = true;
@@ -475,6 +489,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         
         this.OriginalBoqList.forEach(item=>{
           let _item = this.SelectedOriginalBoqList.find(x=>x.rowNumber === item.rowNumber);
+          this.boqFinalTotal += item.unitRate * item.qtyO;
           if(_item)
           {
             item.isSelected = true;
@@ -765,6 +780,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   reloadBoqResources() {
  
+    
     this.dtElements.toArray()[1].dtInstance.then((dtInstance: DataTables.Api) => {
       
       dtInstance.ajax.reload(undefined, false);
@@ -907,7 +923,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.displayedResList = [];
     this.selectedBoqsV2 = [];
     this.selectedBoqsResV2 = [];
-    this.reloadBoqResources();
+    //this.reloadBoqResources();
+    this.editDisplayedBoqList([], false);
     this.FinalUnitPrice = 0;
     this.FinalTotalPrice = 0;
     let originalBOQTable = document.getElementById('originalBOQTable') as HTMLTableElement;
@@ -1539,6 +1556,12 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         this.GetOriginalBoqList(this.SearchInput);
       }
     });
+  }
+
+  searchFromDrawer(event : SearchInput)
+  {
+    this.SearchInput = event;
+    this.onSearch();
   }
 
 }

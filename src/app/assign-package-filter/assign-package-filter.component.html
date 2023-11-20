@@ -1,0 +1,255 @@
+<div *ngIf="isClearedActive"
+    style="top: 150px; position: fixed; right : 5px;"
+    (mouseover)="assignPackageFilter.toggle()">
+    <i class="fa fa-search fa-beat text-danger fa-2x" style="--fa-beat-scale: 2.0;" ></i>
+    
+</div>
+
+<div *ngIf="!isClearedActive"
+    style="top: 150px; position: fixed; right : 5px;"
+    (mouseover)="assignPackageFilter.toggle()">
+    <i class="fa fa-search fa-beat text-success fa-2x" style="--fa-beat-scale: 2.0;" ></i>
+    
+</div>
+
+<fuse-drawer style="transition: all 1s ease-in-out; max-width: 800px !important;
+width: 800px !important; min-width: 0px !important;" fixed
+[mode]="'over'" [name]="'assignPackageFilter'" 
+[position]="'right'" #assignPackageFilter [ngClass]="{'drawer': opened, 'drawer-rtl': false}"
+>
+<div class="container" style="padding-top: 100px; padding-left: 0px; padding-right: 0px;">
+    <div class="card">
+    <div class="card-header bg-white">
+      <div class="d-flex justify-content-between">
+        <div>
+          <h3>Filter {{SearchInput.fromRow}}</h3>
+        </div>
+        <div style="text-align: end;">
+       
+            <button type="button" class="btn btn-primary btn-space-10" (click)="search()"
+             [disabled]="submitting"
+            [title]="'Search'">
+            <i class="fas fa-spinner fa-spin" *ngIf="submitting"></i>
+            <i class="fa fa-search"></i>
+              </button>&nbsp;
+          <button type="button" class="btn btn-danger" [title]="'Close'" (click)="closeDrawer()">
+            <i class="fa fa-times"></i>
+          </button>
+        
+        </div>
+      </div>
+    </div>
+    <div class="card-body" style="max-height : calc(100vh - 200px); overflow: auto;">
+        <div class="row p-2">
+            <div class="col-lg-6 form-group">
+                <mat-form-field class="full-width-field">
+                    <mat-label>BOQ Div</mat-label>
+                    <mat-select [(ngModel)]="SearchInput.bOQDiv" multiple>
+                        <input matInput type="text" focused="'true'" (keyup)="filterBOQDiv($event)"
+                            class="mat-filter">
+                        <span class="fa fa-search input-icon"></span>
+                        <mat-divider></mat-divider>
+
+                        <mat-option *ngFor="let item of selectedBOQDivList" [value]="item.sectionO">{{
+                            item.sectionO }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6 form-group">
+                <!-- appearance="fill" -->
+                <mat-form-field  class="full-width-field">  
+                    <mat-label>Level 2</mat-label>
+                    <mat-select [(ngModel)]="SearchInput.boqLevel2" multiple
+                        (ngModelChange)="GetRessourcesListByLevels()">
+                        <input matInput type="text" focused="'true'" (keyup)="filterBOQLevel($event)"
+                            class="mat-filter">
+                        <span class="fa fa-search input-icon"></span>
+                        <mat-divider></mat-divider>
+
+                        <mat-option *ngFor="let item of selectedBOQLevel2List" [value]="item.level">{{
+                            item.level }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            
+
+            
+            
+        </div>
+
+        <div class="row p-2">
+            <div class="col-lg-6 form-group">
+                <mat-form-field  class="full-width-field">
+                    <mat-label>Level 3</mat-label>
+                    <mat-select [(ngModel)]="SearchInput.boqLevel3" multiple
+                        (ngModelChange)="GetRessourcesListByLevels()">
+                        <input matInput type="text" focused="'true'" (keyup)="filterBOQLevel3($event)"
+                            class="mat-filter">
+                        <span class="fa fa-search input-icon"></span>
+                        <mat-divider></mat-divider>
+
+                        <mat-option *ngFor="let item of selectedBOQLevel3List" [value]="item.level">{{
+                            item.level }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6 form-group">
+                <mat-form-field class="full-width-field">
+                    <mat-label>Level 4</mat-label>
+                    <mat-select [(ngModel)]="SearchInput.boqLevel4" multiple
+                        (ngModelChange)="GetRessourcesListByLevels()">
+                        <input matInput type="text" focused="'true'" (keyup)="filterBOQLevel4($event)"
+                            class="mat-filter">
+                        <span class="fa fa-search input-icon"></span>
+                        <mat-divider></mat-divider>
+
+                        <mat-option style="font-size:12px;" *ngFor="let item of selectedBOQLevel4List" [value]="item.level">{{
+                            item.level }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row p-2">
+            <div class="col-lg-6 p-2 form-group">
+                <input type="text" #inputText class="form-control" [(ngModel)]="SearchInput.bOQItem" placeholder="BOQ Item"
+                    [ngClass]="{'selected-input': SearchInput.bOQItem }">
+            </div>
+            <div class="col-lg-6 p-2 form-group">
+                <input type="text" #inputText1 class="form-control" [(ngModel)]="SearchInput.bOQDesc" placeholder="BOQ Desc"
+                                        [ngClass]="{'selected-input': SearchInput.bOQDesc }"
+                                       >
+            </div>
+        </div>
+        <div class="row p-2">
+            <div class="col-lg-3 p-2 form-group">
+              <input id="fromRow" type="text" class="form-control" [(ngModel)]="SearchInput.fromRow" placeholder="From Row"
+                    [ngClass]="{'selected-input': SearchInput.fromRow }">
+            </div>
+            <div class="col-lg-3 p-2 form-group">
+                <input type="text" class="form-control" [(ngModel)]="SearchInput.toRow" placeholder="To Row"
+                    [ngClass]="{'selected-input': SearchInput.toRow }">
+            </div>
+            <div class="col-lg-6 p-2 form-group">
+                <input type="text" class="form-control" [(ngModel)]="SearchInput.obTradeDesc" placeholder="Trade Description"
+                     [ngClass]="{'selected-input': SearchInput.obTradeDesc }" >
+             </div>
+        </div>
+        <div class="row p-2">
+            <div class="col-lg-6 form-group">
+          
+                <mat-form-field  class="full-width-field">
+                    <mat-label >Sheet Desc</mat-label>
+                    <mat-select [(ngModel)]="SearchInput.sheetDesc">
+                        <input matInput type="text" focused="'true'" (keyup)="filterSheetDesc($event)"
+                            class="mat-filter">
+                        <span class="fa fa-search input-icon"></span>
+                        <mat-divider></mat-divider>
+                        <mat-option></mat-option>
+                        <mat-option *ngFor="let item of selectedSheetDescList" [value]="item.obSheetDesc">{{
+                            item.obSheetDesc }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6 form-group">
+   
+                <mat-form-field  class="full-width-field">
+                    <mat-label >Assigned BOQ</mat-label>
+                    <mat-select [(ngModel)]="SearchInput.isItemsAssigned">
+                
+                        <mat-divider></mat-divider>
+                        <mat-option [value]="0"> </mat-option>
+                        <mat-option [value]="1"> With Assigned Packages</mat-option>
+                        <mat-option [value]="2"> Without Assigned Packages</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row p-2">
+            <div class="col-lg-6 form-group">
+               <mat-form-field  class="full-width-field">
+                    <mat-label>Packages</mat-label>
+                    <mat-select [(ngModel)]="SearchInput.package">
+                        <input matInput type="text" focused="'true'" (keyup)="filterSearchPackages($event)"
+                            class="mat-filter">
+                        <span class="fa fa-search input-icon"></span>
+                        <mat-divider></mat-divider>
+                        <mat-option></mat-option>
+                        <mat-option *ngFor="let pitem of selectedFilterPackages" [value]="pitem.idPkge">
+                            {{ pitem.pkgeName }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6 form-group">
+        
+                <mat-form-field class="full-width-field">
+                    <mat-label>RES Div</mat-label>
+                    <mat-select [(ngModel)]="SearchInput.rESDiv" multiple>
+                        <input matInput type="text" focused="'true'" (keyup)="filterRESDiv($event)"
+                            class="mat-filter">
+                        <span class="fa fa-search input-icon"></span>
+                        <mat-divider></mat-divider>
+
+                        <mat-option *ngFor="let item of selectedRESDivList" [value]="item.boqDiv">{{
+                            item.boqDiv }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+
+            </div>
+        </div>
+        <div class="row p-2">
+            <div class="col-lg-6 form-group">
+                <mat-form-field  class="full-width-field">
+                    <mat-label>RES Type</mat-label>
+                    <mat-select [(ngModel)]="SearchInput.rESType"  (ngModelChange)="GetRessourcesListByLevels()" multiple>
+                        <input matInput type="text" focused="'true'" (keyup)="filterSearchRESType($event)"
+                            class="mat-filter">
+                        <span class="fa fa-search input-icon"></span>
+                        <mat-divider></mat-divider>
+
+                        <mat-option *ngFor="let item of selectedRESTypeList" [value]="item.boqCtg">{{
+                            item.boqCtg }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+            </div>
+            <div class="col-lg-6 form-group">
+             <input type="text" class="form-control" [(ngModel)]="SearchInput.rESDesc" placeholder="RES Description"
+                    [ngClass]="{'selected-input': SearchInput.rESDesc }">
+            </div>
+        </div>
+        <div class="row p-2">
+            <div class="col-lg-6">
+                <mat-form-field  class="full-width-field">
+                    <mat-label>Ressources Selected</mat-label>
+                    <mat-select [(ngModel)]="SearchInput.boqResourceSeq" multiple class="custom-color">
+                        <input matInput type="text" focused="'true'" (keyup)="filterSearchRessources($event)"
+                            class="mat-filter">
+                        <span class="fa fa-search input-icon"></span>
+                        <mat-divider></mat-divider>
+                        <mat-option></mat-option>
+                        <mat-option *ngFor="let pitem of selectedFilterRessources" [value]="pitem.resSeq">
+                            {{ pitem.resDesc }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6">
+                <mat-form-field  class="full-width-field">
+                    <mat-label>Assigned Ressources</mat-label>
+                    <mat-select [(ngModel)]="SearchInput.isRessourcesAssigned">
+                     <mat-divider></mat-divider>
+                        <mat-option   [value]="0"></mat-option>
+                        <mat-option   [value]="1"> With Assigned Ressources</mat-option>
+                        <mat-option  [value]="2"> Without Assigned Ressources</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

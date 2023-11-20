@@ -1,23 +1,23 @@
-﻿<section style="background-color: #cab268;">
+﻿<section>
     <div class="container py-5">
       <div class="row d-flex justify-content-center align-items-center">
-        <div class="col col-xl-10">
+        <div class="col col-xl-4">
           <div class="card" style="border-radius: 1rem;">
             <div class="row g-0">
-              <div class="col-md-6 col-lg-5 d-none d-md-block">
+              <!-- <div class="col-md-6 col-lg-5 d-none d-md-block">
                 <img
                   src="assets/img/img2.jpg"
                   alt="login form"
                   class="img-responsive img-fluid" style="border-radius: 0 0 0 0; min-height: 100%;"
                 />
-              </div>
-              <div class="col-md-6 col-lg-7 d-flex align-items-center">
+              </div> -->
+              <div class="col-md-12 d-flex align-items-center">
                 <div class="card-body p-4 text-black">
                     
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
-            <div class="d-flex align-items-center mb-3 pb-1">
+            <div class="d-flex align-items-center">
                 
-                <span class="h1 fw-bold mb-0"><img src="assets/img/acc_logo.png"></span>
+                <img src="assets/img/acc_logo.png">
               </div>
 
               <div class="form-outline mb-4">
@@ -35,7 +35,7 @@
             </div>
             <div class="form-outline mb-4">
                 <label for="project">Project</label>
-                <select [(ngModel)]="selectedProject" formControlName="project" class="form-select" [ngClass]="{ 'is-invalid': submitted && f.project.errors }">
+                <select formControlName="project" class="form-select" [ngClass]="{ 'is-invalid': submitted && f.project.errors }">
                     
                         <option *ngFor="let project of projects" [ngValue]="project.seq">{{ project.prjCostDatabase }}
                         </option>
@@ -53,13 +53,22 @@
             </div>
             <div class="form-outline mb-4">
                 <label for="password">Password</label>
-                <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+                
+                <div class="input-group mb-3">
+                    <input [type]="fieldTextType ? 'text' : 'password'" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+                    <div class="input-group-append">
+                      <button class="btn btn-light " type="button" id="basic-addon2" (click)="toggleFieldTextType()">
+                        <span *ngIf="fieldTextType"><i class="fa fa-eye"></i></span>
+                        <span *ngIf="!fieldTextType"><i class="fa fa-eye-slash" ></i></span>
+                    </button>
+                    </div>
+                  </div>
                 <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
                     <div *ngIf="f.password.errors.required">Password is required</div>
                 </div>
             </div>
-            <div class="pt-1 mb-4">
-                <button [disabled]="loading" class="btn btn-dark btn-lg btn-block">
+            <div class="d-grid gap-2">
+                <button [disabled]="loading" class="btn btn-primary">
                     
                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="loading"></span>
                     <span *ngIf="loading">Logging in...</span>

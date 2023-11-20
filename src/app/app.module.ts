@@ -49,6 +49,8 @@ import { SuppliersComponent } from './suppliers/suppliers.component';
 import { PackagesComponent } from './packages/packages.component';
 import { ScrollContainerComponent } from './_components/scroll-container/scroll-container.component';
 import { BoqListTableComponent } from './boq-list-table/boq-list-table.component';
+import { AssignPackageFilterComponent } from './assign-package-filter/assign-package-filter.component';
+import { FuseDrawerModule } from './@fuse/drawer';
 
 @NgModule({
   declarations: [
@@ -70,7 +72,8 @@ import { BoqListTableComponent } from './boq-list-table/boq-list-table.component
     SuppliersComponent,
     PackagesComponent,
     ScrollContainerComponent,
-    BoqListTableComponent
+    BoqListTableComponent,
+    AssignPackageFilterComponent
   ],
   imports: [
     BrowserModule,
@@ -101,7 +104,8 @@ import { BoqListTableComponent } from './boq-list-table/boq-list-table.component
     MatTableModule,
     MatSortModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    FuseDrawerModule
     ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

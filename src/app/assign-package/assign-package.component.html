@@ -8,381 +8,38 @@
         </ol>
     </nav>
     <div class="container-fluid">
-        <div class="row"  >     
-                <div class="col-12">
-            
-                    <div class="card">
-                        <div class="card-header" style="height: 30px;">
-                            <h5 style="display: inline-block;">Search</h5>
-                            <span style="float: right; cursor: pointer;user-select: none;" (click)="toggleShow()">show /
-                                hide</span>
-                        </div>
-            
-                        <div class="card-body" *ngIf="isShown">
-                            <div class="row" style="height: 35px;" >
-                                <div class="col-sm-2 form-group" >
-                                    <!--<label>BOQ Div</label>
-                                            <ng-select2 [(ngModel)]="SearchInput.bOQDiv" width="100%" [options]="select2Options" *ngIf="BOQDivList">
-                                                <option value="" selected></option>
-                                                <option *ngFor="let item of BOQDivList" [ngValue]="item.sectionO">{{ item.sectionO }}
-                                                </option>
-                                            </ng-select2>-->
-            
-                                    <mat-form-field class="full-width-field" style="width: 100%;font-size:10px;"  >
-                                        <mat-label>BOQ Div</mat-label>
-                                        <mat-select style="font-size:12px;" [(ngModel)]="SearchInput.bOQDiv" multiple>
-                                            <input matInput type="text" focused="'true'" (keyup)="filterBOQDiv($event)"
-                                                class="mat-filter">
-                                            <span class="fa fa-search input-icon"></span>
-                                            <mat-divider></mat-divider>
-            
-                                            <mat-option style="font-size:14px;" *ngFor="let item of selectedBOQDivList" [value]="item.sectionO">{{
-                                                item.sectionO }}
-                                            </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                </div>
-            
-                                <div class="col-sm-2 form-group">
-                                    <!-- appearance="fill" -->
-                                    <mat-form-field  class="full-width-field" style="width: 100%;font-size:10px;" >  
-                                        <mat-label>Level 2</mat-label>
-                                        <mat-select style="font-size:12px;" [(ngModel)]="SearchInput.boqLevel2" multiple
-                                            (ngModelChange)="L2_AfterUpdate()">
-                                            <input matInput type="text" focused="'true'" (keyup)="filterBOQLevel($event)"
-                                                class="mat-filter">
-                                            <span class="fa fa-search input-icon"></span>
-                                            <mat-divider></mat-divider>
-            
-                                            <mat-option style="font-size:14px;" *ngFor="let item of selectedBOQLevel2List" [value]="item.level">{{
-                                                item.level }}
-                                            </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                </div>
-                                <!-- <div class="col-sm-2 form-group" >
-                                            <label style="font-size: smaller ;" >Level 3</label>
-                                            <input type="text" class="form-control" [(ngModel)]="SearchInput.boqLevel3" style="font-size: smaller ;height: 25px;"  >
-                                        </div> -->
-                                <div class="col-sm-2 form-group">
-                                    <mat-form-field  class="full-width-field" style="width: 100%;font-size:10px;" >
-                                        <mat-label>Level 3</mat-label>
-                                        <mat-select style="font-size:12px;" [(ngModel)]="SearchInput.boqLevel3" multiple
-                                            (ngModelChange)="L3_AfterUpdate()">
-                                            <input matInput type="text" focused="'true'" (keyup)="filterBOQLevel3($event)"
-                                                class="mat-filter">
-                                            <span class="fa fa-search input-icon"></span>
-                                            <mat-divider></mat-divider>
-            
-                                            <mat-option style="font-size:14px;" *ngFor="let item of selectedBOQLevel3List" [value]="item.level">{{
-                                                item.level }}
-                                            </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                </div>
-            
-                                <div class="col-sm-2 form-group">
-                                    <mat-form-field class="full-width-field" style="width: 100%;font-size:10px;" >
-                                        <mat-label>Level 4</mat-label>
-                                        <mat-select style="font-size:12px;" [(ngModel)]="SearchInput.boqLevel4" multiple
-                                            (ngModelChange)="L4_AfterUpdate()">
-                                            <input matInput type="text" focused="'true'" (keyup)="filterBOQLevel4($event)"
-                                                class="mat-filter">
-                                            <span class="fa fa-search input-icon"></span>
-                                            <mat-divider></mat-divider>
-            
-                                            <mat-option style="font-size:14px;" *ngFor="let item of selectedBOQLevel4List" [value]="item.level">{{
-                                                item.level }}
-                                            </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                </div>
-            
-                                <div class="col-sm-2 form-group">
-                                    <!-- <label style="font-size: smaller ;">BOQ Item</label> -->
-                                    <input type="text" #inputText class="form-control" [(ngModel)]="SearchInput.bOQItem" placeholder="BOQ Item"
-                                        [ngClass]="{'selected-input': SearchInput.bOQItem }"
-                                        style="font-size: smaller ;height: 25px;" >
-                                </div>
-            
-                                <div class="col-sm-2 form-group">
-                                    <!-- <label style="font-size: smaller ;">BOQ Desc</label> -->
-                                    <input type="text" #inputText1 class="form-control" [(ngModel)]="SearchInput.bOQDesc" placeholder="BOQ Desc"
-                                        [ngClass]="{'selected-input': SearchInput.bOQDesc }"
-                                        style="font-size: smaller ;height: 25px;">
-                                </div>
-                            </div>
-            
-                            <div class="row" style="height: 35px;">
-                                <div class="col-sm-1 form-group">
-                                    <!-- <label style="font-size: smaller ;">From Row</label> -->
-                                    <input id="fromRow" type="text" class="form-control" [(ngModel)]="SearchInput.fromRow" placeholder="From Row"
-                                        [ngClass]="{'selected-input': SearchInput.fromRow }"
-                                        style="font-size: smaller ;height: 25px;">
-                                </div>
-            
-                                <div class="col-sm-1 form-group">
-                                    <!-- <label style="font-size: smaller ;">To Row</label> -->
-                                    <input type="text" class="form-control" [(ngModel)]="SearchInput.toRow" placeholder="To Row"
-                                        [ngClass]="{'selected-input': SearchInput.toRow }"
-                                        style="font-size: smaller ;height: 25px;">
-                                </div>
-            
-                                <div class="col-sm-2 form-group">
-                                    <!-- <label style="font-size: smaller ;">Trade Description</label> -->
-                                    <!-- <input type="text" class="form-control" [(ngModel)]="SearchInput.obTradeDesc" placeholder="Trade Description"
-                                        [ngClass]="{'selected-input': SearchInput.obTradeDesc }"
-                                        style="font-size: smaller ;height: 25px;"> -->
+        <div class="row p-4">
+            <!-- <div class="col-sm-2 form-group">
+                <button type="button" class="btn btn-primary" [disabled]="isSearching"
+                    style="float: right; width: 100%;font-size: small" (click)="onSearch()">
+                    <i class="fa fa-spinner fa-spin" *ngIf="isSearching"></i>
+                    Search</button>
 
-                                        <mat-form-field  class="full-width-field" style="width: 100%;font-size:10px;">
-                                            <mat-label style="font-size:14px; ">BOQ Status</mat-label>
-                                            <mat-select style="font-size:14px;" [(ngModel)]="SearchInput.boqStatus">
-                                                <!-- <input matInput type="text" focused="'true'"
-                                                            (keyup)="filterSearchPackages($event)" class="mat-filter"> -->
-                                                <!-- <span class="fa fa-search input-icon"></span> -->
-                                                <mat-divider></mat-divider>
-                                                <mat-option [value]="" > </mat-option>
-                                                <mat-option [value]="1">Assigned</mat-option>
-                                                <mat-option [value]="2">Not Assigned</mat-option>
-                                                <mat-option [value]="3">Missing</mat-option>
-                                                <mat-option [value]="4">Mix</mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                </div>
-            
-                                <div class="col-sm-2 form-group">
-                                    <!--                         
-                                        <label>Package</label>
-                            
-                                <ng-select2 [(ngModel)]="SearchInput.package" *ngIf="PackageList" width="100%">
-                                    <option selected value=""></option>
-                                    <option *ngFor="let item of PackageList" [ngValue]="item.idPkge">{{ item.pkgeName}}
-                                    </option>
-                                </ng-select2>-->
-                                    <mat-form-field  class="full-width-field" style="width: 100%;font-size:10px;">
-                                        <mat-label style="font-size:14px; ">Sheet Desc</mat-label>
-                                        <mat-select style="font-size:12px;" [(ngModel)]="SearchInput.sheetDesc">
-                                            <input matInput type="text" focused="'true'" (keyup)="filterSheetDesc($event)"
-                                                class="mat-filter">
-                                            <span class="fa fa-search input-icon"></span>
-                                            <mat-divider></mat-divider>
-                                            <mat-option></mat-option>
-                                            <mat-option style="font-size:14px;" *ngFor="let item of selectedSheetDescList" [value]="item.obSheetDesc">{{
-                                                item.obSheetDesc }}</mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                </div>
-            
-                                <div class="col-sm-2 form-group">
-                                    <!--<label>Sheet Desc</label>
-                                                       
-                                    <ng-select2 [(ngModel)]="SearchInput.sheetDesc" width="100%" [allowClear]="true" [placeholder]="" *ngIf="SheetDescList">
-                                        <option selected value=""></option>
-                                        <option *ngFor="let item of SheetDescList" [ngValue]="item.obSheetDesc">{{
-                                            item.obSheetDesc }}</option>
-                                    </ng-select2>-->
-                                    <mat-form-field  class="full-width-field" style="width: 100%;font-size:10px;">
-                                        <mat-label style="font-size:14px; ">Assigned BOQ</mat-label>
-                                        <mat-select style="font-size:14px;" [(ngModel)]="SearchInput.isItemsAssigned">
-                                            <!-- <input matInput type="text" focused="'true'"
-                                                        (keyup)="filterSearchPackages($event)" class="mat-filter"> -->
-                                            <!-- <span class="fa fa-search input-icon"></span> -->
-                                            <mat-divider></mat-divider>
-                                            <mat-option [value]="0"> </mat-option>
-                                            <mat-option [value]="1"> With Assigned Packages</mat-option>
-                                            <mat-option [value]="2"> Without Assigned Packages</mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                </div>
-            
-                                <div class="col-sm-4 form-group">
-                                    <!--<label>Sheet Desc</label>
-                                                       
-                                                            <ng-select2 [(ngModel)]="SearchInput.sheetDesc" width="100%" [allowClear]="true" [placeholder]="" *ngIf="SheetDescList">
-                                                                <option selected value=""></option>
-                                                                <option *ngFor="let item of SheetDescList" [ngValue]="item.obSheetDesc">{{
-                                                                    item.obSheetDesc }}</option>
-                                                            </ng-select2>-->
-                                    <mat-form-field  class="full-width-field" style="width: 100%;font-size:10px;">
-                                        <mat-label style="font-size:14px; ">Packages</mat-label>
-                                        <mat-select style="font-size:12px;" [(ngModel)]="SearchInput.package">
-                                            <input matInput type="text" focused="'true'" (keyup)="filterSearchPackages($event)"
-                                                class="mat-filter">
-                                            <span class="fa fa-search input-icon"></span>
-                                            <mat-divider></mat-divider>
-                                            <mat-option></mat-option>
-                                            <mat-option style="font-size:14px;" *ngFor="let pitem of selectedFilterPackages" [value]="pitem.idPkge">
-                                                {{ pitem.pkgeName }}</mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                </div>
-            
-                            </div>
-            
-                            <div class="row" style="height: 35px;">
-                                <div class="col-sm-2 form-group">
-            
-                                    <!-- <label>RES Div</label>
-                            
-                                <ng-select2 [(ngModel)]="SearchInput.rESDiv" *ngIf="RESDivList" width="100%" [allowClear]="true" [placeholder]="">
-                                    <option selected value=""></option>
-                                    <option *ngFor="let item of RESDivList" [ngValue]="item.boqDiv">{{item.boqDiv}}</option>
-                                </ng-select2>-->
-            
-                                    <mat-form-field class="full-width-field" style="width: 100%;font-size:10px;">
-                                        <mat-label style="font-size:14px;">RES Div</mat-label>
-                                        <mat-select style="font-size:12px;" [(ngModel)]="SearchInput.rESDiv" multiple>
-                                            <input matInput type="text" focused="'true'" (keyup)="filterRESDiv($event)"
-                                                class="mat-filter">
-                                            <span class="fa fa-search input-icon"></span>
-                                            <mat-divider></mat-divider>
-            
-                                            <mat-option style="font-size:14px;" *ngFor="let item of selectedRESDivList" [value]="item.boqDiv">{{
-                                                item.boqDiv }}</mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-            
-            
-                                </div>
-            
-                                <div class="col-sm-2 form-group">
-            
-                                    <!-- <label>RES Type</label>
-                            
-                                <ng-select2 [(ngModel)]="SearchInput.rESType" width="100%" [allowClear]="true" [placeholder]="" *ngIf="RESTypeList">
-                                    <option selected value=""></option>
-                                    <option *ngFor="let item of RESTypeList" [ngValue]="item.boqCtg">{{item.boqCtg}}
-                                    </option>
-                                </ng-select2>-->
-            
-                                    <mat-form-field  class="full-width-field" style="width: 100%;font-size:10px;">
-                                        <mat-label style="font-size:14px; ">RES Type</mat-label>
-                                        <mat-select style="font-size:12px;" [(ngModel)]="SearchInput.rESType"  (ngModelChange)="ResType_AfterUpdate()" multiple>
-                                            <input matInput type="text" focused="'true'" (keyup)="filterSearchRESType($event)"
-                                                class="mat-filter">
-                                            <span class="fa fa-search input-icon"></span>
-                                            <mat-divider></mat-divider>
-            
-                                            <mat-option style="font-size:14px;" *ngFor="let item of selectedRESTypeList" [value]="item.boqCtg">{{
-                                                item.boqCtg }}</mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-            
-                                </div>
-            
-                                <div class="col-sm-2 form-group">
-                                    <!-- <label style="font-size: smaller ;">RES Description</label> -->
-                                    <input type="text" class="form-control" [(ngModel)]="SearchInput.rESDesc" placeholder="RES Description"
-                                        [ngClass]="{'selected-input': SearchInput.rESDesc }"
-                                        style="font-size: smaller ;height: 25px;">
-                                </div>
-            
-                                <div class="col-sm-2 form-group">
-                                    <table>
-                                        <tr><td>
-                                    <mat-form-field  class="full-width-field" style="width: 100%;font-size:10px;">
-                                        <mat-label style="font-size:14px; ">Ressources Selected</mat-label>
-                                        <mat-select style="font-size:12px;" [(ngModel)]="SearchInput.boqResourceSeq" multiple class="custom-color">
-                                            <input matInput type="text" focused="'true'" (keyup)="filterSearchRessources($event)"
-                                                class="mat-filter">
-                                            <span class="fa fa-search input-icon"></span>
-                                            <mat-divider></mat-divider>
-                                            <mat-option></mat-option>
-                                            <mat-option style="font-size:14px;" *ngFor="let pitem of selectedFilterRessources" [value]="pitem.resSeq">
-                                                {{ pitem.resDesc }}</mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                    
-                                </td>
-                            <td>
-                                <!-- <button type="button" class="btn btn-primary" style="width: 10%;font-size:10px;"  (click)="clearSelRes()">Clear</button> -->
-                            </td>
-                            </tr>
-                                </table>
-                                </div>
-            
-                                <div class="col-sm-4 form-group">
-                                    <!--<label>RES Package</label>
-                            
-                                <ng-select2 [(ngModel)]="SearchInput.rESPackage" width="100%" [allowClear]="true" [placeholder]="" *ngIf="RESPackageList">
-                                    <option selected value=""></option>
-                                    <option *ngFor="let item of RESPackageList" [ngValue]="item.boqPackage">{{
-                                        item.boqPackage }}</option>
-                                </ng-select2>-->
-            
-                                    <!-- <mat-form-field appearance="fill" class="full-width-field" style="font-size: smaller ;">
-                                        <mat-label>RES Package</mat-label>
-                                        <mat-select [(ngModel)]="SearchInput.rESPackage">
-                                            <input matInput type="text" focused="'true'" (keyup)="filterSearchRESPackage($event)"
-                                                class="mat-filter">
-                                            <span class="fa fa-search input-icon"></span>
-                                            <mat-divider></mat-divider>
-                                            <mat-option></mat-option>
-                                            <mat-option *ngFor="let item of selectedFilterResPackages" [value]="item.boqPackage">{{
-                                                item.boqPackage }}</mat-option>
-                                        </mat-select>
-                                    </mat-form-field> -->
-
-                                    <mat-form-field  class="full-width-field" style="width: 100%;font-size:10px;">
-                                        <mat-label style="font-size:14px; ">Assigned Ressources</mat-label>
-                                        <mat-select style="font-size:14px;" [(ngModel)]="SearchInput.isRessourcesAssigned">
-                                            <!-- <input matInput type="text" focused="'true'"
-                                                        (keyup)="filterSearchPackages($event)" class="mat-filter"> -->
-                                            <!-- <span class="fa fa-search input-icon"></span> -->
-                                            <mat-divider></mat-divider>
-                                            <mat-option   [value]="0"></mat-option>
-                                            <mat-option   [value]="1"> With Assigned Ressources</mat-option>
-                                            <mat-option  [value]="2"> Without Assigned Ressources</mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                </div>
-                            </div>
-            
-                            <!-- <hr> -->
-                            <div class="row">
-                                <div class="col-sm-2 form-group">
-                                    <button type="button" class="btn btn-primary" [disabled]="isSearching"
-                                        style="float: right; width: 100%;font-size: small" (click)="onSearch()">
-                                        <i class="fa fa-spinner fa-spin" *ngIf="isSearching"></i>
-                                        Search</button>
-                                </div>
-                                <div class="col-sm-2 form-group">
-                                    <button type="button" class="btn btn-primary" style="float: right; width: 100%;font-size: small"
-                                        (click)="clearAllSearch()">Clear Search</button>
-                                </div>
-                                <div class="col-sm-2 form-group">
-                                    <button type="button" class="btn btn-danger" style="float: right; width: 100%;font-size: small"
-                                        (click)="clearAllSelections()" [disabled]="SelectedOriginalBoqList.length == 0">Clear All
-                                        Selections</button>
-                                </div>
-                                <div class="col-sm-2 form-group">
-                                    <button class="btn btn-success" (click)="ExportExcelBoq()" 
-                                        style="font-size: small;">
-                                        <!-- <i class="fa fa-spinner fa-spin" *ngIf="isSearching"></i> -->
-                                        Export Searched Ressources
-                                    </button>
-                                    <!-- [disabled]="isSearching" -->
-                                </div>
-                                <div class="col-sm-2 form-group">
-                                    <button class="btn btn-success" (click)="ExportExcelPackagesCost()" 
-                                        style="width: 200px;font-size:small;">
-                                        Export Packages Dry Cost
-                                    </button>
-                                </div>
-                                <div class="col-sm-2 form-group">
-                                    <button class="btn btn-success" (click)="ExportNotAssigned()" 
-                                        style="font-size: small;">
-                                        Export Not Assigned Items 
-                                    </button>
-
-                                    <!-- [disabled]="isSearching" -->
-                                </div>
-                            </div>
-            
-                        </div>
-                    </div>
-                </div>
+            </div> -->
+            <div class="col-sm-2 form-group">
+                <button type="button" class="btn btn-primary" style="float: right; width: 100%;font-size: small"
+                    (click)="clearAllSearch()">Clear Search</button>
+            </div>
+            <div class="col-sm-2 form-group">
+                <button type="button" class="btn btn-danger" style="float: right; width: 100%;font-size: small"
+                    (click)="clearAllSelections()" [disabled]="SelectedOriginalBoqList.length == 0">Clear All
+                    Selections</button>
+            </div>
+            <div class="col-sm-2 form-group">
+                <button class="btn btn-success" (click)="ExportExcelBoq()" [disabled]="isSearching"
+                    style="width: 200px;font-size: small;">
+                    <!-- <i class="fa fa-spinner fa-spin" *ngIf="isSearching"></i> -->
+                    Export Selected Ressources
+                </button>
+            </div>
+            <div class="col-sm-2 form-group">
+                <button class="btn btn-success" (click)="ExportExcelPackagesCost()" [disabled]="isSearching"
+                    style="width: 250px;font-size: small;">
+                    Export Assigned Packages Dry Cost
+                </button>
+            </div>
         </div>
+        
 
        
         <div class="row" >
@@ -482,13 +139,13 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-body">
-
+                        <mat-progress-bar mode="indeterminate" *ngIf="isSearching"></mat-progress-bar>
                         <table id="originalBOQTable"  datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
                             class="row-border hover">
                             <thead>
                                 <tr>
                                     <th scope="col">
-                                        <input type="checkbox" [(ngModel)]="checkboxesAll" class="form-check-input"
+                                        <input type="checkbox" [(ngModel)]="checkboxesAll" class="form-check-input" *ngIf="OriginalBoqList.length > 0"
                                             (change)="checkAllOriginalBoq2($event)">
                                     </th>
                                     <th scope="col">Row#</th>
@@ -502,11 +159,14 @@
                                     <th scope="col">RFQ. Qty</th>
                                     <th scope="col"></th>
                                     <th scope="col">Unit Price</th>
+                                    <th scope="col">Final Total ({{boqFinalTotal | number: '.2'}})</th>
                                     <th scope="col">Assigned Package</th>
                                     <th scope="col">Status</th>
                                     <th scope="col"></th>
                                 </tr>
                             </thead>
+                           
+                            
                             <!--<tbody *ngIf="isSearching && OriginalBoqList.length == 0">
                                 <tr>
                                     <td colspan="15" style="text-align: center;">
@@ -531,7 +191,8 @@
                                     <td>{{item.scopeQtyO | number: '.2' }}</td>
                                     <td><a class="btn btn-link" title="Edit"
                                             (click)="editOriginalBoqQty(editModal,item)"><i class="fa-solid fa-edit"></i></a></td>
-                                    <td>{{item.unitRateO | number: '.2' }}</td>
+                                    <td>{{item.unitRate | number: '.2' }}</td>
+                                    <td>{{(item.unitRate * item.qtyO) | number: '.2' }}</td>
                                     <td [ngClass]="item.assignedPackage != '' ? 'text-danger' : ''">
                                         {{item.assignedPackage}}</td>
                                     <td [ngClass]="item.boqStatus != '' ? 'text-danger' : ''"> {{item.boqStatus}}</td>
@@ -665,4 +326,7 @@
             </div>
         </form>
     </ng-template>
+
+    <app-assign-package-filter #assignPackageFilter (searchEvent)="searchFromDrawer($event)"></app-assign-package-filter>
 </section>
+
