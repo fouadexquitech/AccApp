@@ -489,7 +489,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         
         this.OriginalBoqList.forEach(item=>{
           let _item = this.SelectedOriginalBoqList.find(x=>x.rowNumber === item.rowNumber);
-          this.boqFinalTotal += item.unitRate * item.qtyO;
+          this.boqFinalTotal += item.unitRateO * item.qtyO;
           if(_item)
           {
             item.isSelected = true;

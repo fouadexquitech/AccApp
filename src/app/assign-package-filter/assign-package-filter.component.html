@@ -61,7 +61,7 @@ width: 800px !important; min-width: 0px !important;" fixed
                 <mat-form-field  class="full-width-field">  
                     <mat-label>Level 2</mat-label>
                     <mat-select [(ngModel)]="SearchInput.boqLevel2" multiple
-                        (ngModelChange)="GetRessourcesListByLevels()">
+                        (ngModelChange)="L2_AfterUpdate()">
                         <input matInput type="text" focused="'true'" (keyup)="filterBOQLevel($event)"
                             class="mat-filter">
                         <span class="fa fa-search input-icon"></span>
@@ -85,7 +85,7 @@ width: 800px !important; min-width: 0px !important;" fixed
                 <mat-form-field  class="full-width-field">
                     <mat-label>Level 3</mat-label>
                     <mat-select [(ngModel)]="SearchInput.boqLevel3" multiple
-                        (ngModelChange)="GetRessourcesListByLevels()">
+                        (ngModelChange)="L3_AfterUpdate()">
                         <input matInput type="text" focused="'true'" (keyup)="filterBOQLevel3($event)"
                             class="mat-filter">
                         <span class="fa fa-search input-icon"></span>
@@ -101,7 +101,7 @@ width: 800px !important; min-width: 0px !important;" fixed
                 <mat-form-field class="full-width-field">
                     <mat-label>Level 4</mat-label>
                     <mat-select [(ngModel)]="SearchInput.boqLevel4" multiple
-                        (ngModelChange)="GetRessourcesListByLevels()">
+                        (ngModelChange)="L4_AfterUpdate()">
                         <input matInput type="text" focused="'true'" (keyup)="filterBOQLevel4($event)"
                             class="mat-filter">
                         <span class="fa fa-search input-icon"></span>
@@ -206,7 +206,7 @@ width: 800px !important; min-width: 0px !important;" fixed
             <div class="col-lg-6 form-group">
                 <mat-form-field  class="full-width-field">
                     <mat-label>RES Type</mat-label>
-                    <mat-select [(ngModel)]="SearchInput.rESType"  (ngModelChange)="GetRessourcesListByLevels()" multiple>
+                    <mat-select [(ngModel)]="SearchInput.rESType"  (ngModelChange)="ResType_AfterUpdate()" multiple>
                         <input matInput type="text" focused="'true'" (keyup)="filterSearchRESType($event)"
                             class="mat-filter">
                         <span class="fa fa-search input-icon"></span>
@@ -227,7 +227,7 @@ width: 800px !important; min-width: 0px !important;" fixed
             <div class="col-lg-6">
                 <mat-form-field  class="full-width-field">
                     <mat-label>Ressources Selected</mat-label>
-                    <mat-select [(ngModel)]="SearchInput.boqResourceSeq" multiple class="custom-color">
+                    <mat-select [(ngModel)]="SearchInput.boqResourceSeq" multiple class="custom-color" (ngModelChange)="Ressources_AfterUpdate()">
                         <input matInput type="text" focused="'true'" (keyup)="filterSearchRessources($event)"
                             class="mat-filter">
                         <span class="fa fa-search input-icon"></span>
