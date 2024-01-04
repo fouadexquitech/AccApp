@@ -10,30 +10,37 @@
                 <li class="breadcrumb-item active" aria-current="page">Suppliers</li>
             </ol>
         </nav>
+        
     
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
                     <div class="card card-body table-responsive">
-                        
+
                         <table datatable [dtOptions]="dtOptions" class="row-border hover">
                             <thead>
-                                 <tr>
+                           
+                                 <tr>   
+                                                           
                                     <th scope="col">Supplier ID</th>
                                     <th scope="col">Supplier Name</th>
                                     <th scope="col">Supplier Email</th>
                                     <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col" colspan="2" >  
+                                        <button type="button" class="btn btn-primary" [disabled]="registerModelList.length == 0" >
+                                        Create Account
+                                    </button>  </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr *ngFor="let supplier of suppliers; let i = index">
-                                    <td>{{ supplier.supID }}</td>
-                                    <td>
-                                        {{supplier.supName}}
-                                    </td>
-                                    <td>
-                                        {{supplier.supEmail}}
-                                    </td>
+
+                                    <td>{{supplier.supID }}</td>
+                                    <td>{{supplier.supName}}</td>
+                                    <td>{{supplier.supEmail}}</td>
+                                    <td>{{supplier.isAccountCreated}}</td>
                                     <td>
                                         <a class="edit" title="Edit" (click)="editSupplier(supplier)"><i class="fa fa-edit"></i></a>
                                         <a class="btn btn-link" title="Delete" (click)="deleteUser(supplier.supID)"
@@ -41,6 +48,11 @@
                                             <i class="fa fa-times text-danger"></i>
                                         </a>
                                     </td>
+                                    <td >
+                                        <input type="checkbox" [checked]="supplier.checked" [disabled]="supplier.isAccountCreated == true"  (change)="selectSupplier($event.target, supplier['supID'])">
+                                        <input type="hidden" [value]="supplier['supID']">
+                                    </td>
+                                    <td colspan="2"></td>
                                 </tr>
                             </tbody>
                         </table>

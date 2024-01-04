@@ -837,7 +837,6 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       //   { title : 'boqBillQty', data: 'boqBillQty', name : 'boqBillQty'},
       //   { title : 'boqQty', data: 'boqQty', name : 'boqQty'},
       //   { title : 'boqScopeQty', data: 'boqScopeQty', name : 'boqScopeQty'},
-        
       // ]
     };
   }
@@ -856,7 +855,6 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     
        this.selectedBoqsResV2.splice(index, 1);
      }
-
      //this.reloadBoqResources();
   }
 
@@ -965,7 +963,6 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         if(checkbox.checked)
         {
           this.SelectedOriginalBoqList.push({ rowNumber: el.rowNumber, scope: this.SelectedPackage, tradeDesc: null });
-         
         }
     });
 
@@ -976,7 +973,6 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     if(checkbox.checked)
     {
         /* select All BOQ List*/
-       
         this.assignPackageService.GetAllBoqList(this.SearchInput).subscribe((data) => {
           if (data) {
             
@@ -1070,8 +1066,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.isAssigning = true;
     this.assignPackages.assignOriginalBoqList = this.SelectedOriginalBoqList;
     this.assignPackages.assignBoqList = this.SelectedBoqList;
-    this.assignPackageService.AssignPackage(this.assignPackages)
-    .pipe(finalize(()=>{
+    
+    this.assignPackageService.AssignPackage(this.assignPackages).pipe(finalize(()=>{
       this.isAssigning = false;
     }))
     .subscribe((data) => {

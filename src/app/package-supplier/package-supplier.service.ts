@@ -44,7 +44,6 @@ export class PackageSupplierService {
   }
 
   AssignPackageSuppliers(assignPackageTemplate : AssignPackageTemplate, attachements : File[]): Observable<any> {
-
     const formData = new FormData();
   
     formData.append('assignPackageTemplate' , JSON.stringify(assignPackageTemplate));

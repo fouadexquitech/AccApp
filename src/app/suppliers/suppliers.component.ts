@@ -4,7 +4,7 @@ import { ConfirmBoxInitializer, DialogLayoutDisplay } from '@costlydeveloper/ngx
 import { ModalDismissReasons, NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
-import { Supplier } from '../suppliers/suppliers.models';
+import { Supplier,RegisterModel } from '../suppliers/suppliers.models';
 import { SuppliersService } from './suppliers.service';
 import { DataTableDirective } from 'angular-datatables';
 
@@ -36,7 +36,10 @@ export class SuppliersComponent implements OnInit {
   submitted : boolean = false;
   updating : boolean = false;
   currentUser : Supplier;
-
+//AH22122023
+  selectedSuppliers : string[] = [];
+  registerModelList: RegisterModel[] = [];
+//AH22122023
   public dtOptions: DataTables.Settings;
   public dtTrigger: Subject<any> = new Subject<any>();
   // isSearching : boolean = false;
@@ -92,8 +95,10 @@ export class SuppliersComponent implements OnInit {
         { title : 'Supplier ID', data: 'supID', name : 'supID' }, 
         { title : 'Supplier Name', data: 'supName', name : 'supName' }, 
         { title : 'Supplier Email', data: 'supEmail', name : 'supEmail' }, 
-        { title : '', data: null, name : 'action', orderable : false }, 
-        
+        { title : 'Account Created', data: 'isAccountCreated', name : 'isAccountCreated' }, 
+        { title : 'Action', data: null, name : 'action', orderable : false }, 
+        { title : 'Select', data: null,  name : 'selSup' },
+        { title : 'aaa', data: null,  name : 'butn' },
       ]
     };
   }
@@ -126,7 +131,7 @@ export class SuppliersComponent implements OnInit {
 
   addUserRow()
   {
-    this.addedList.push({supID : 0, supName : null, supEmail : null});
+    this.addedList.push({supID : 0, supName : null, supEmail : null, isAccountCreated : false,checked:false});
   }
 
   deleteRowAt(index : number)
@@ -313,4 +318,33 @@ export class SuppliersComponent implements OnInit {
     });
   }
 
+//AH22122023
+  selectSupplier(target : any, itemO : string)
+  {
+    let checkbox = target as HTMLInputElement;
+    let cell = checkbox.parentElement as HTMLTableCellElement;
+    let row = cell.parentElement as HTMLTableRowElement;
+    row.style.backgroundColor = (checkbox.checked? '#f1f1f1' : '');
+
+    let registerModelList = [];
+    this.suppliers.forEach(c=>{
+        if(c.checked)
+        {
+          registerModelList.push({ SupplierId:c.supID, FirstName : c.supName,LastName:"" ,PhoneNumber : c.PhoneNumber ,DisplayName:c.supName,Email:c.supEmail});
+        }
+
+    // if(checkbox.checked)
+    // {
+    //   if(this.suppliers.indexOf(itemO) == -1)
+    //   {
+    //     this.registerModelList.push(itemO);
+    //   }
+    // }
+    // else
+    // {
+    //     this.selectedSuppliers.splice(this.selectedSuppliers.indexOf(itemO), 1);
+    // }
+  });
+//AH22122023
+  }
 }

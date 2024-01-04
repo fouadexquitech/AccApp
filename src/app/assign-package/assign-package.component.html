@@ -174,7 +174,6 @@
                                 </tr>
                             </thead>
                            
-                            
                             <!--<tbody *ngIf="isSearching && OriginalBoqList.length == 0">
                                 <tr>
                                     <td colspan="15" style="text-align: center;">
@@ -198,7 +197,7 @@
                                     <td>{{item.qtyO | number: '.2' }}</td>
                                     <td>{{item.scopeQtyO | number: '.2' }}</td>
                                     <td><a class="btn btn-link" title="Edit"
-                                            (click)="editOriginalBoqQty(editModal,item)"><i class="fa-solid fa-edit"></i></a></td>
+                                    (click)="editOriginalBoqQty(editModal,item)"><i class="fa-solid fa-edit"></i></a></td>
                                     <td>{{item.unitRateO | number: '.2' }}</td>
                                     <td>{{(item.unitRateO * item.qtyO) | number: '.2' }}</td>
                                     <td [ngClass]="item.assignedPackage != '' ? 'text-danger' : ''">
