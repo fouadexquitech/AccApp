@@ -43,6 +43,16 @@ export class SuppliersService {
     return this.http.post(environment.baseApiUrl + 'api/Supplier/UpdateSupplier', user);
   }
 
+  createPortalAccount(list : any[])
+  {
+    return this.http.post(environment.portalApiUrl + 'api/Account/Register', list);
+  }
+
+  updatePortalAccountFlag(model : any)
+  {
+    return this.http.post(environment.baseApiUrl + 'api/Supplier/UpdatePortalAccountFlag', model);
+  }
+
   handleError(error: any): Promise<any> {
     console.error('An error occurred', error);
     return Promise.reject(error.message || error);
