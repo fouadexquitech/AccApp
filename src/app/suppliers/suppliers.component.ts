@@ -7,6 +7,7 @@ import { Subject } from 'rxjs';
 import { Supplier,RegisterModel } from '../suppliers/suppliers.models';
 import { SuppliersService } from './suppliers.service';
 import { DataTableDirective } from 'angular-datatables';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-suppliers',
@@ -18,7 +19,7 @@ export class SuppliersComponent implements OnInit {
   @ViewChild('modalUser') modalUser : any;
   @ViewChild('editModal') editModal : any;
   @ViewChild(DataTableDirective, {static: false})
-  dtElement: DataTableDirective | undefined;
+  dtElement: any;
   dtInstance: Promise<DataTables.Api> | undefined;
   suppliers : any[] = [];
   list : Supplier[] = [];
@@ -37,12 +38,13 @@ export class SuppliersComponent implements OnInit {
   updating : boolean = false;
   currentUser : Supplier;
 //AH22122023
-  selectedSuppliers : string[] = [];
+  selectedSuppliers : any[] = [];
   registerModelList: RegisterModel[] = [];
 //AH22122023
-  public dtOptions: DataTables.Settings;
+  public dtOptions: any;
   public dtTrigger: Subject<any> = new Subject<any>();
   // isSearching : boolean = false;
+  creatingAccounts : boolean = false;
   
   constructor(
     private modalService: NgbModal, private toastrService : ToastrService, 
@@ -68,6 +70,7 @@ export class SuppliersComponent implements OnInit {
 
     this.dtOptions = {
       pagingType: 'full_numbers',
+      order: [[ 1, 'asc' ]],
       responsive : true,
       lengthMenu: [
         [5, 10, 25, 50, 100],
@@ -80,7 +83,7 @@ export class SuppliersComponent implements OnInit {
       pageLength: 10,
       serverSide: true,
       processing: true,
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: (dataTablesParameters: any, callback : any) => {
        
         this.suppliersService.GetSuppliers(dataTablesParameters).subscribe(resp => {
             that.suppliers = resp.data;
@@ -91,14 +94,28 @@ export class SuppliersComponent implements OnInit {
             });
           });
       },
+      dom: 'Bfrtip',
+      // Configure the buttons
+      buttons: [
+        {
+          text: 'Create Portal Account',
+          className : 'btn btn-primary',
+          key: '1',
+          enabled: false,
+          action: (e : any, dt: any, node: any, config: any)=> {
+             this.createAccounts();
+          }
+        }
+      ],
       columns: [
-        { title : 'Supplier ID', data: 'supID', name : 'supID' }, 
+        { title : '', data: null,  name : 'selSup', orderable : false },
         { title : 'Supplier Name', data: 'supName', name : 'supName' }, 
-        { title : 'Supplier Email', data: 'supEmail', name : 'supEmail' }, 
-        { title : 'Account Created', data: 'isAccountCreated', name : 'isAccountCreated' }, 
+        { title : 'Email', data: 'supEmail', name : 'supEmail' }, 
+        { title : 'Phone', data: 'phoneNumber', name : 'phoneNumber' }, 
+        { title : 'Has Portal Account', data: 'isAccountCreated', name : 'isAccountCreated' }, 
         { title : 'Action', data: null, name : 'action', orderable : false }, 
-        { title : 'Select', data: null,  name : 'selSup' },
-        { title : 'aaa', data: null,  name : 'butn' },
+        
+       
       ]
     };
   }
@@ -318,33 +335,92 @@ export class SuppliersComponent implements OnInit {
     });
   }
 
-//AH22122023
-  selectSupplier(target : any, itemO : string)
+  //#region select supplier
+  selectSupplier(target : any, supplier : any)
   {
+    
+    let buttons = document.getElementsByClassName("dt-button");
+    
     let checkbox = target as HTMLInputElement;
-    let cell = checkbox.parentElement as HTMLTableCellElement;
-    let row = cell.parentElement as HTMLTableRowElement;
-    row.style.backgroundColor = (checkbox.checked? '#f1f1f1' : '');
+    if(checkbox.checked)
+    {
+        this.selectedSuppliers.push(supplier);
+    }
+    else
+    {
+      let supp = this.selectedSuppliers.find(x=>x.supID === supplier.supID);
+      let i = this.selectedSuppliers.indexOf(supp);
+      this.selectedSuppliers.splice(i, 1);
+    }
+    
+    let b =  buttons[0] as HTMLButtonElement;
+    this.selectedSuppliers.length > 0 ? b.classList.remove('disabled') : b.classList.add('disabled');
+    
+    
 
-    let registerModelList = [];
-    this.suppliers.forEach(c=>{
-        if(c.checked)
+  }
+  //#endregion
+
+  getChecked(supplier : any)
+  {
+      return this.selectedSuppliers.find(x=>x.supID === supplier.supID);
+  }
+
+  createAccounts()
+  {
+    let buttons = document.getElementsByClassName("dt-button");
+    let b =  buttons[0] as HTMLButtonElement;
+    let list : any[] = [];
+    let ids : number[] = [];
+    this.creatingAccounts = true;
+    b.classList.add('disabled');
+   
+    this.selectedSuppliers.forEach(_supplier=>{
+      list.push({
+        supplierId : _supplier.supID,
+        phoneNumber : _supplier.phoneNumber,
+        displayName : _supplier.supName,
+        email : _supplier.supEmail
+
+      });
+      ids.push(_supplier.supID);
+    });
+
+    this.suppliersService.createPortalAccount(list)
+    .subscribe((res : any)=>{
+        if(res.success)
         {
-          registerModelList.push({ SupplierId:c.supID, FirstName : c.supName,LastName:"" ,PhoneNumber : c.PhoneNumber ,DisplayName:c.supName,Email:c.supEmail});
+            this.updatePortalAccountFlag(ids, b);
         }
+        else
+        {
+          this.creatingAccounts = false;
+          b.classList.remove('disabled');
+          this.toastrService.error(res.message);
+        }
+    })
+  }
 
-    // if(checkbox.checked)
-    // {
-    //   if(this.suppliers.indexOf(itemO) == -1)
-    //   {
-    //     this.registerModelList.push(itemO);
-    //   }
-    // }
-    // else
-    // {
-    //     this.selectedSuppliers.splice(this.selectedSuppliers.indexOf(itemO), 1);
-    // }
-  });
-//AH22122023
+  updatePortalAccountFlag(ids : number[], b : HTMLButtonElement)
+  {
+    let body = {
+      suppliers : ids,
+      accountCreated : true
+    };
+    this.suppliersService.updatePortalAccountFlag(body).pipe(finalize(()=>{
+      this.creatingAccounts = false;
+      b.classList.remove('disabled');
+    }))
+    .subscribe((res : any)=>{
+      if(res)
+      {
+          this.toastrService.success(res.message);
+          this.reload();
+      }
+      else
+      {
+        this.toastrService.error("Error While updating flags");
+      }
+  })
   }
 }
