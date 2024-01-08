@@ -166,6 +166,14 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     
      }
 
+     clearFilter(event : boolean)
+     {
+        if(event)
+        {
+            this.clearAllSearch();
+        }
+     }
+
      clearTable(): void {
       this.dtElements.toArray()[0].dtInstance.then((dtInstance: DataTables.Api) => {
         dtInstance.clear().draw(); // Add this  line to clear all rows..
