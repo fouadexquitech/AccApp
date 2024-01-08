@@ -414,7 +414,7 @@ export class SuppliersComponent implements OnInit {
     .subscribe((res : any)=>{
       if(res)
       {
-          this.toastrService.success(res.message);
+          this.toastrService.success("Accounts Created Successfully");
           this.reload();
       }
       else
