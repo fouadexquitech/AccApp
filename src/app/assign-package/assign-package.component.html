@@ -1,12 +1,12 @@
 <app-nav></app-nav>
 <section>
 
-    <nav aria-label="breadcrumb" class="p-2" style="height: 32px;">
+    <!-- <nav aria-label="breadcrumb" class="p-2" style="height: 32px;">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
             <li class="breadcrumb-item active" aria-current="page">Assign Packages</li>
         </ol>
-    </nav>
+    </nav> -->
     <div class="container-fluid">
         <div class="row p-4">
             <!-- <div class="col-sm-2 form-group">
@@ -16,8 +16,8 @@
                     Search</button>
 
             </div> -->
-            <div class="col-sm-2 form-group">
-                <button type="button" class="btn btn-primary" style="float: right; width: 100%;font-size: small"
+            <div class="col-sm-2 form-group" *ngIf="1>2">
+                <button type="button" class="btn btn-primary" style="float: right; width: 100%;font-size: small;"
                     (click)="clearAllSearch()">Clear Search</button>
             </div>
             <div class="col-sm-2 form-group">
@@ -161,13 +161,13 @@
                                     <th scope="col">BOQ Item</th>
                                     <th scope="col" style="width: 30%;">BOQ Description</th>
                                     <!-- <th scope="col">Trade Description</th> -->
-                                    <th scope="col">Unit</th>
-                                    <th scope="col">Bill Qty</th>
-                                    <th scope="col">Final Qty</th>
-                                    <th scope="col">RFQ. Qty</th>
+                                    <th scope="col" class="text-center">Unit</th>
+                                    <th scope="col" class="text-center">Bill Qty</th>
+                                    <th scope="col" class="text-center">Final Qty</th>
+                                    <th scope="col" class="text-center">RFQ. Qty</th>
                                     <th scope="col"></th>
-                                    <th scope="col">Unit Price</th>
-                                    <th scope="col">Final Total ({{boqFinalTotal | number: '.2'}})</th>
+                                    <th scope="col" class="text-center">Unit Price</th>
+                                    <th scope="col" class="text-center">Final Total ({{boqFinalTotal | number: '1.0-0'}})</th>
                                     <th scope="col">Assigned Package</th>
                                     <th scope="col">Status</th>
                                     <th scope="col"></th>
@@ -192,14 +192,14 @@
                                     <td>{{item.itemO}}</td>
                                     <td>{{item.descriptionO}}</td>
                                     <!-- <td>{{item.obTradeDesc}}</td> -->
-                                    <td>{{item.unitO}}</td>
-                                    <td>{{item.billQtyO | number: '.2' }}</td>
-                                    <td>{{item.qtyO | number: '.2' }}</td>
-                                    <td>{{item.scopeQtyO | number: '.2' }}</td>
+                                    <td class="text-center">{{item.unitO}}</td>
+                                    <td class="text-center">{{item.billQtyO | number: '.2' }}</td>
+                                    <td class="text-center">{{item.qtyO | number: '.2' }}</td>
+                                    <td class="text-center">{{item.scopeQtyO | number: '.2' }}</td>
                                     <td><a class="btn btn-link" title="Edit"
                                     (click)="editOriginalBoqQty(editModal,item)"><i class="fa-solid fa-edit"></i></a></td>
-                                    <td>{{item.unitRateO | number: '.2' }}</td>
-                                    <td>{{(item.unitRateO * item.qtyO) | number: '.2' }}</td>
+                                    <td class="text-center">{{item.unitRateO | number: '.2' }}</td>
+                                    <td class="text-center">{{(item.unitRateO * item.qtyO) | number: '.2' }}</td>
                                     <td [ngClass]="item.assignedPackage != '' ? 'text-danger' : ''">
                                         {{item.assignedPackage}}</td>
                                     <td [ngClass]="item.boqStatus != '' ? 'text-danger' : ''"> {{item.boqStatus}}</td>
@@ -334,6 +334,6 @@
         </form>
     </ng-template>
 
-    <app-assign-package-filter #assignPackageFilter (searchEvent)="searchFromDrawer($event)"></app-assign-package-filter>
+    <app-assign-package-filter #assignPackageFilter (searchEvent)="searchFromDrawer($event)" (clearEvent)="clearFilter($event)"></app-assign-package-filter>
 </section>
 

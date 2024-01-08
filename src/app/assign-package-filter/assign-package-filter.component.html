@@ -12,8 +12,8 @@
     
 </div>
 
-<fuse-drawer style="transition: all 1s ease-in-out; max-width: 800px !important;
-width: 800px !important; min-width: 0px !important;" fixed
+<fuse-drawer style="transition: all 1s ease-in-out; max-width: 600px !important;
+width: 600px !important; min-width: 0px !important;" fixed 
 [mode]="'over'" [name]="'assignPackageFilter'" 
 [position]="'right'" #assignPackageFilter [ngClass]="{'drawer': opened, 'drawer-rtl': false}"
 >
@@ -25,6 +25,10 @@ width: 800px !important; min-width: 0px !important;" fixed
           <h3>Filter {{SearchInput.fromRow}}</h3>
         </div>
         <div style="text-align: end;">
+            <button type="button" class="btn btn-secondary" style="float: right; width: 100%;font-size: small"
+                    (click)="clearAllSearch()">Clear Search</button>
+        </div>
+        <div style="text-align: end;">
        
             <button type="button" class="btn btn-primary btn-space-10" (click)="search()"
              [disabled]="submitting"
@@ -32,6 +36,7 @@ width: 800px !important; min-width: 0px !important;" fixed
             <i class="fas fa-spinner fa-spin" *ngIf="submitting"></i>
             <i class="fa fa-search"></i>
               </button>&nbsp;
+              
           <button type="button" class="btn btn-danger" [title]="'Close'" (click)="closeDrawer()">
             <i class="fa fa-times"></i>
           </button>

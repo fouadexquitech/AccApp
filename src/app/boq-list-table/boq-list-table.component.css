@@ -30,3 +30,28 @@
     font-weight: 700;
     color : #000000;
 }
+
+.mat-column-select {
+  flex: none;
+  width : 3% !important;
+}
+
+.mat-column-boqCtg {
+  flex: none;
+  width : 3% !important;
+}
+
+.mat-column-boqUnitMesure {
+  flex: none;
+  width : 3% !important;
+}
+
+.mat-header-cell {
+  text-align: center;
+  justify-content:center;
+}
+
+.mat-cell {
+  text-align: center;
+  justify-content:center;
+}

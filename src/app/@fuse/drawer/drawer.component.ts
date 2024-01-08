@@ -356,7 +356,7 @@ export class FuseDrawerComponent implements OnChanges, OnInit, OnDestroy
         this._player.play();
 
         // Add an event listener to the overlay
-        //this._overlay?.addEventListener('click', this._handleOverlayClick);
+        this._overlay?.addEventListener('click', this._handleOverlayClick);
     }
 
     /**

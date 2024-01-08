@@ -21,6 +21,7 @@ encapsulation: ViewEncapsulation.None
 export class AssignPackageFilterComponent implements OnInit {
   @ViewChild('assignPackageFilter', { static: false }) assignPackageFilter: any;
   @Output() searchEvent : EventEmitter<any> = new EventEmitter<any>();
+  @Output() clearEvent : EventEmitter<any> = new EventEmitter<boolean>();
   opened : boolean = false;
   submitting : boolean = false;
 
@@ -461,5 +462,16 @@ export class AssignPackageFilterComponent implements OnInit {
     this.GetBOQLevel4List(body);
     this.GetRESTypeList(body);
   }
+
+  onLooseFocus()
+  {
+     this.closeDrawer();
+  }
+
+  clearAllSearch()
+  {
+      this.clearEvent.emit(true);
+  }
+
 
 }
