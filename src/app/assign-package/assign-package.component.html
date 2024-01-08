@@ -14,7 +14,6 @@
                     style="float: right; width: 100%;font-size: small" (click)="onSearch()">
                     <i class="fa fa-spinner fa-spin" *ngIf="isSearching"></i>
                     Search</button>
-
             </div> -->
             <div class="col-sm-2 form-group">
                 <button type="button" class="btn btn-primary" style="float: right; width: 100%;font-size: small"
@@ -34,15 +33,22 @@
                 <!-- [disabled]="isSearching" -->
             </div>
             <div class="col-sm-2 form-group">
-                <button class="btn btn-success" (click)="ExportExcelPackagesCost()"
+                <button class="btn btn-success" (click)="ExportExcelPackagesCost(0)"
                     style="width: 200px;font-size:small;">
                     Export Packages Dry Cost
                 </button>
             </div>
             <div class="col-sm-2 form-group">
+                <button class="btn btn-success" (click)="ExportExcelPackagesCost(1)"
+                    style="width: 215px;font-size: small;">
+                    <i class="fa fa-spinner fa-spin" *ngIf="(isExportExcel)"></i>
+                    Export Packages Cost with BOQ
+                </button>
+            </div>
+            <div class="col-sm-2 form-group">
                 <button class="btn btn-success" (click)="ExportNotAssigned()"
-                    style="font-size: small;">
-                    Export Not Assigned Items
+                style="width: 180px;font-size: small;">
+                    Export Not Assigned BOQ
                 </button>
                 <!-- [disabled]="isSearching" -->
             </div>

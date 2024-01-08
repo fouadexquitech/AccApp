@@ -16,20 +16,17 @@ export class PackageGroupsService {
   }
 
   getGroupBoqList(packageId : number, groupId : number, searchInput : SearchInput) : Observable<any>
-  {
-        
+  {     
         return this.http.post(this.baseUrl + 'Package/GetGroupBoqList?packageId=' + packageId + '&groupId=' + groupId, searchInput);
   }
 
   getGroupBoqListOnly(packageId : number, groupId : number, searchInput : SearchInput) : Observable<any>
-  {
-        
+  {      
         return this.http.post(this.baseUrl + 'Package/GetGroupBoqListOnly?packageId=' + packageId + '&groupId=' + groupId, searchInput);
   }
 
   getGroups(packageId : number) : Observable<any>
-  {
-        
+  { 
         return this.http.get(this.baseUrl + 'Package/GetGroups?packageId=' + packageId);
   }
 

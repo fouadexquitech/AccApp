@@ -9,7 +9,6 @@ import { AssignPackages, SearchInput ,OriginalBoqModel,BoqModel} from './assign-
 export class AssignPackageService {
     baseUrl = '';
 
-
     constructor(private http: HttpClient) {
         this.baseUrl = environment.baseApiUrl + "api/";
     }
@@ -56,8 +55,6 @@ export class AssignPackageService {
         );
     }
 
-
-    
     GetBOQLevel2ListBy(body : any): Observable<any> {
         return this.http.post(this.baseUrl + 'Search/GetBOQLevel2ListBy',body).pipe(
             map(res => res), catchError(this.handleError)
@@ -69,7 +66,7 @@ export class AssignPackageService {
             map(res => res), catchError(this.handleError)
         );
     }
-    
+
     GetBOQLevel4ListByLevel3(body : any): Observable<any> {
         return this.http.post(this.baseUrl + 'Search/GetBOQLevel4ListByLevel3', body).pipe(
             map(res => res), catchError(this.handleError)
@@ -150,9 +147,9 @@ export class AssignPackageService {
     );
     }
 
-    ExportExcelPackagesCost() : Observable<any> 
+    ExportExcelPackagesCost(withBoq:number, costDB :string,input: SearchInput) : Observable<any> 
     {
-      return this.http.get(this.baseUrl + 'Package/ExportExcelPackagesCost').pipe(
+      return this.http.post(this.baseUrl + 'Package/ExportExcelPackagesCost?costDB='+costDB+'&withBoq='+withBoq,input).pipe(
         map(res => res), catchError(this.handleError)
     );
     }
