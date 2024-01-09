@@ -150,9 +150,9 @@ export class AssignPackageService {
     );
     }
 
-    ExportExcelPackagesCost() : Observable<any> 
+    ExportExcelPackagesCost(withBoq:number, costDB :string,input: SearchInput) : Observable<any> 
     {
-      return this.http.get(this.baseUrl + 'Package/ExportExcelPackagesCost').pipe(
+      return this.http.post(this.baseUrl + 'Package/ExportExcelPackagesCost?costDB='+costDB+'&withBoq='+withBoq,input).pipe(
         map(res => res), catchError(this.handleError)
     );
     }
