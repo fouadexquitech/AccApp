@@ -34,9 +34,16 @@
                 <!-- [disabled]="isSearching" -->
             </div>
             <div class="col-sm-2 form-group">
-                <button class="btn btn-success" (click)="ExportExcelPackagesCost()"
+                <button class="btn btn-success" (click)="ExportExcelPackagesCost(0)"
                     style="width: 200px;font-size:small;">
                     Export Packages Dry Cost
+                </button>
+            </div>
+            <div class="col-sm-2 form-group">
+                <button class="btn btn-success" (click)="ExportExcelPackagesCost(1)"
+                    style="width: 215px;font-size: small;">
+                    <i class="fa fa-spinner fa-spin" *ngIf="(isExportExcel)"></i>
+                    Export Packages Cost with BOQ
                 </button>
             </div>
             <div class="col-sm-2 form-group">
