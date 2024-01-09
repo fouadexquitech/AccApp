@@ -20,8 +20,8 @@ export class AssignPackageService {
         );
     }
 
-    GetBOQDivList(): Observable<any> {
-        return this.http.get(this.baseUrl + 'Search/GetBOQDivList').pipe(
+    GetBOQDivList(body : any): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetBOQDivList',body).pipe(
             map(res => res), catchError(this.handleError)
         );
     }

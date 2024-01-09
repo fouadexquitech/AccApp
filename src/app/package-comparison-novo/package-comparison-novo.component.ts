@@ -149,8 +149,17 @@ generatingContract : boolean = false;
   }
 
   ngOnInit(): void {
+
+    let body : any = {
+      level2 : this.SearchInput.boqLevel2,
+      level3 : this.SearchInput.boqLevel3,
+      level4 : this.SearchInput.boqLevel4,
+      resType: this.SearchInput.rESType,
+      boqDiv: this.SearchInput.bOQDiv
+    };
+
     this.GetRESDivList();
-    this.GetBOQDivList();
+    this.GetBOQDivList(body);
     this.GetSheetDescList();
     this.GetRESTypeList();
     this.GetSupplierPackagesList();
@@ -1518,8 +1527,8 @@ generatingContract : boolean = false;
     });
   }
 
-  GetBOQDivList() {
-    this.assignPackageService.GetBOQDivList().subscribe((data) => {
+  GetBOQDivList(body:any) {
+    this.assignPackageService.GetBOQDivList(body).subscribe((data) => {
       if (data) {
         this.BOQDivList = data;
         

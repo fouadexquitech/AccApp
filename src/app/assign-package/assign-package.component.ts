@@ -253,25 +253,26 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     // };
     
     // this.ConnectToDB(this.user.usrLoggedConnString);
-    let body : any = {
-      level2 : this.SearchInput.boqLevel2,
-      level3 : this.SearchInput.boqLevel3,
-      level4 : this.SearchInput.boqLevel4,
-      resType: this.SearchInput.rESType
-    };
+    // let body : any = {
+    //   level2 : this.SearchInput.boqLevel2,
+    //   level3 : this.SearchInput.boqLevel3,
+    //   level4 : this.SearchInput.boqLevel4,
+    //   resType: this.SearchInput.rESType,
+    //   boqDiv: this.SearchInput.bOQDiv
+    // };
 
 
-    this.GetBOQDivList();
-    this.GetBOQLevel2List(body);
-    this.GetBOQLevel3List(body);
-    this.GetBOQLevel4List(body);
-    this.GetRESDivList();
-    this.GetRESTypeList(body);
-    this.GetPackageList();
-    this.GetRESPackageList();
-    this.GetSheetDescList();
-    this.GetOriginalBoqList(this.SearchInput);
-    this.GetRessourcesList(body);
+    // this.GetBOQDivList();
+    // this.GetBOQLevel2List(body);
+    // this.GetBOQLevel3List(body);
+    // this.GetBOQLevel4List(body);
+    // this.GetRESDivList();
+    // this.GetRESTypeList(body);
+    // this.GetPackageList();
+    // this.GetRESPackageList();
+    // this.GetSheetDescList();
+    // this.GetOriginalBoqList(this.SearchInput);
+    // this.GetRessourcesList(body);
     // this.GetRessourcesListByLevels();
   }
 
@@ -309,8 +310,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   }
 // AH28032023.
 
-  GetBOQDivList() {
-    this.assignPackageService.GetBOQDivList().subscribe((data) => {
+  GetBOQDivList(body : any) {
+    this.assignPackageService.GetBOQDivList(body).subscribe((data) => {
       if (data) {
         this.BOQDivList = data;
         this.selectedBOQDivList = data;

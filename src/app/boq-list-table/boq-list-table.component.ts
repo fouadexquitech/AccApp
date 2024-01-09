@@ -18,7 +18,7 @@ export class BoqListTableComponent implements OnInit {
   limit: number = 0;
   start: number = 0;
   length: number = 50;
-  displayedColumns: string[] = ['select', 'boqItem', 'boqCtg', 'resDescription', 'boqUnitMesure', 'boqBillQty', 'boqQty',
+  displayedColumns: string[] = ['select', 'boqItem', 'boqDiv','boqCtg', 'resDescription', 'boqUnitMesure', 'boqBillQty', 'boqQty',
   'boqScopeQty', 'boqUprice', 'finalNetAmount', 'totalUnitPrice', 'assignedPackage'];
   full: boolean = true;
   @ViewChild(MatSort) sort: MatSort;

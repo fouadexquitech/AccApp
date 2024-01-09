@@ -61,9 +61,11 @@ export class AssignPackageFilterComponent implements OnInit {
       level2 : this.SearchInput.boqLevel2,
       level3 : this.SearchInput.boqLevel3,
       level4 : this.SearchInput.boqLevel4,
-      resType: this.SearchInput.rESType
+      resType: this.SearchInput.rESType,
+      boqDiv: this.SearchInput.bOQDiv
     };
-    this.GetBOQDivList();
+
+    this.GetBOQDivList(body);
     this.GetBOQLevel2List(body);
     this.GetBOQLevel3List(body);
     this.GetBOQLevel4List(body);
@@ -77,8 +79,8 @@ export class AssignPackageFilterComponent implements OnInit {
   }
 
   
-  GetBOQDivList() {
-    this.assignPackageService.GetBOQDivList().subscribe((data) => {
+  GetBOQDivList(body : any) {
+    this.assignPackageService.GetBOQDivList(body).subscribe((data) => {
       if (data) {
         this.BOQDivList = data;
         this.selectedBOQDivList = data;
@@ -158,7 +160,8 @@ export class AssignPackageFilterComponent implements OnInit {
       level2 : this.SearchInput.boqLevel2,
       level3 : this.SearchInput.boqLevel3,
       level4 : this.SearchInput.boqLevel4,
-      resType: this.SearchInput.rESType
+      resType: this.SearchInput.rESType,
+      boqDiv: this.SearchInput.bOQDiv
     };
 
     this.assignPackageService.GetRessourcesListByLevels(body).subscribe((data) => {
@@ -396,9 +399,11 @@ export class AssignPackageFilterComponent implements OnInit {
       level2 : this.SearchInput.boqLevel2,
       level3 : this.SearchInput.boqLevel3,
       level4 : this.SearchInput.boqLevel4,
-      resType: this.SearchInput.rESType
+      resType: this.SearchInput.rESType,
+      boqDiv: this.SearchInput.bOQDiv
     };
 
+    this.GetBOQDivList(body);
     this.GetBOQLevel3List(body);
     this.GetBOQLevel4List(body);
     this.GetRESTypeList(body);
@@ -411,9 +416,11 @@ export class AssignPackageFilterComponent implements OnInit {
       level2 : this.SearchInput.boqLevel2,
       level3 : this.SearchInput.boqLevel3,
       level4 : this.SearchInput.boqLevel4,
-      resType: this.SearchInput.rESType
+      resType: this.SearchInput.rESType,
+      boqDiv: this.SearchInput.bOQDiv
     };
 
+    this.GetBOQDivList(body);
     this.GetBOQLevel2List(body);
     this.GetBOQLevel4List(body);
     this.GetRESTypeList(body);
@@ -426,9 +433,11 @@ export class AssignPackageFilterComponent implements OnInit {
       level2 : this.SearchInput.boqLevel2,
       level3 : this.SearchInput.boqLevel3,
       level4 : this.SearchInput.boqLevel4,
-      resType: this.SearchInput.rESType
+      resType: this.SearchInput.rESType,
+      boqDiv: this.SearchInput.bOQDiv
     };
 
+    this.GetBOQDivList(body);
     this.GetBOQLevel2List(body);
     this.GetBOQLevel3List(body);
     this.GetRESTypeList(body);
@@ -440,9 +449,11 @@ export class AssignPackageFilterComponent implements OnInit {
       level2 : this.SearchInput.boqLevel2,
       level3 : this.SearchInput.boqLevel3,
       level4 : this.SearchInput.boqLevel4,
-      resType: this.SearchInput.rESType
+      resType: this.SearchInput.rESType,
+      boqDiv: this.SearchInput.bOQDiv
     };
 
+    this.GetBOQDivList(body);
     this.GetBOQLevel2List(body);
     this.GetBOQLevel3List(body);
     this.GetBOQLevel4List(body);
@@ -454,13 +465,31 @@ export class AssignPackageFilterComponent implements OnInit {
       level2 : this.SearchInput.boqLevel2,
       level3 : this.SearchInput.boqLevel3,
       level4 : this.SearchInput.boqLevel4,
-      resType: this.SearchInput.rESType
+      resType: this.SearchInput.rESType,
+      boqDiv: this.SearchInput.bOQDiv
+    };
+
+    this.GetBOQDivList(body);
+    this.GetBOQLevel2List(body);
+    this.GetBOQLevel3List(body);
+    this.GetBOQLevel4List(body);
+    this.GetRESTypeList(body);
+  }
+
+  boqDiv_AfterUpdate(){
+    let body : any = {
+      level2 : this.SearchInput.boqLevel2,
+      level3 : this.SearchInput.boqLevel3,
+      level4 : this.SearchInput.boqLevel4,
+      resType: this.SearchInput.rESType,
+      boqDiv: this.SearchInput.bOQDiv
     };
 
     this.GetBOQLevel2List(body);
     this.GetBOQLevel3List(body);
     this.GetBOQLevel4List(body);
     this.GetRESTypeList(body);
+    this.GetRessourcesList(body) ;
   }
 
   onLooseFocus()

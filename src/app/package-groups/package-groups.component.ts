@@ -88,8 +88,17 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
       this.proceed = false;
       if(event)
       {
+
+        let body : any = {
+          level2 : this.SearchInput.boqLevel2,
+          level3 : this.SearchInput.boqLevel3,
+          level4 : this.SearchInput.boqLevel4,
+          resType: this.SearchInput.rESType,
+          boqDiv: this.SearchInput.bOQDiv
+        };
+        
         this.proceed = true;
-        this.GetBOQDivList();
+        this.GetBOQDivList(body);
         this.GetSheetDescList();
         this.GetRESDivList();
         this.GetRESTypeList();
@@ -217,8 +226,8 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
     this.selectedRESDivList = result;
   }
 
-  GetBOQDivList() {
-    this.assignPackageService.GetBOQDivList().subscribe((data) => {
+  GetBOQDivList(body : any) {
+    this.assignPackageService.GetBOQDivList(body).subscribe((data) => {
       if (data) {
         this.BOQDivList = data;
         

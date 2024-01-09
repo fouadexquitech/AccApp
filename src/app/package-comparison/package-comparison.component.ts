@@ -131,8 +131,17 @@ export class PackageComparisonComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
+    let body : any = {
+      level2 : this.SearchInput.boqLevel2,
+      level3 : this.SearchInput.boqLevel3,
+      level4 : this.SearchInput.boqLevel4,
+      resType: this.SearchInput.rESType,
+      boqDiv: this.SearchInput.bOQDiv
+    };
+
     this.getGroups();
-    this.GetBOQDivList();
+    this.GetBOQDivList(body);
     this.GetSheetDescList();
     this.GetRESDivList();
     this.GetRESTypeList();
@@ -980,8 +989,8 @@ export class PackageComparisonComponent implements OnInit {
     this.selectedFilterResPackages = result;
   }
 
-  GetBOQDivList() {
-    this.assignPackageService.GetBOQDivList().subscribe((data) => {
+  GetBOQDivList(body : any) {
+    this.assignPackageService.GetBOQDivList(body).subscribe((data) => {
       if (data) {
         this.BOQDivList = data;
         this.selectedBOQDivList = data;

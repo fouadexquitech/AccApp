@@ -49,7 +49,7 @@ width: 600px !important; min-width: 0px !important;" fixed
             <div class="col-lg-6 form-group">
                 <mat-form-field class="full-width-field">
                     <mat-label>BOQ Div</mat-label>
-                    <mat-select [(ngModel)]="SearchInput.bOQDiv" multiple>
+                    <mat-select [(ngModel)]="SearchInput.bOQDiv" multiple (ngModelChange)="boqDiv_AfterUpdate()">
                         <input matInput type="text" focused="'true'" (keyup)="filterBOQDiv($event)"
                             class="mat-filter">
                         <span class="fa fa-search input-icon"></span>
