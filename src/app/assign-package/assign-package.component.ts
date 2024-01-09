@@ -1396,8 +1396,10 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.assignPackages.assignOriginalBoqList = this.SelectedOriginalBoqList;
     this.assignPackages.assignBoqList = this.SelectedBoqList;
     //this.assignPackageService.AssignPackage(this.assignPackages).subscribe((data) => {
-  
+      this.isExportExcel=true;
+
       this.assignPackageService.ExportNotAssigned(this.SearchInput,costDB).subscribe((data) => {
+        this.isExportExcel=false;
         if (data) {
           let a = document.createElement('a');
           a.id = 'downloader';
@@ -1414,8 +1416,12 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       let costDB=this.user.usrLoggedCostDB;
       this.isExportExcel=true;
   
-        this.assignPackageService.ExportExcelPackagesCost(withBoq,costDB,this.SearchInput).subscribe((data) => {
+        this.assignPackageService.ExportExcelPackagesCost(withBoq,costDB,this.SearchInput)
+        .pipe(finalize(() =>{
           this.isExportExcel=false;
+        }))
+        .subscribe((data) => {
+          
           if (data) {
             let a = document.createElement('a');
             a.id = 'downloader';
@@ -1424,7 +1430,6 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
             document.body.appendChild(a);
             a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
             a.click();     
-            this.isExportExcel=false;
           }
         });
       }

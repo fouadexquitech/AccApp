@@ -28,6 +28,7 @@
             <div class="col-sm-2 form-group">
                 <button class="btn btn-success" (click)="ExportExcelBoq()"
                     style="font-size: small;">
+                    <i  [ngClass]="isSearching ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
                     <!-- <i class="fa fa-spinner fa-spin" *ngIf="isSearching"></i> -->
                     Export Searched Ressources
                 </button>
@@ -36,19 +37,21 @@
             <div class="col-sm-2 form-group">
                 <button class="btn btn-success" (click)="ExportExcelPackagesCost(0)"
                     style="width: 200px;font-size:small;">
+                    <i  [ngClass]="isExportExcel ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
                     Export Packages Dry Cost
                 </button>
             </div>
             <div class="col-sm-2 form-group">
                 <button class="btn btn-success" (click)="ExportExcelPackagesCost(1)"
                     style="width: 215px;font-size: small;">
-                    <i class="fa fa-spinner fa-spin" *ngIf="(isExportExcel)"></i>
+                    <i  [ngClass]="isExportExcel ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
                     Export Packages Cost with BOQ
                 </button>
             </div>
             <div class="col-sm-2 form-group">
                 <button class="btn btn-success" (click)="ExportNotAssigned()"
                     style="font-size: small;">
+                    <i  [ngClass]="isExportExcel ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
                     Export Not Assigned Items
                 </button>
                 <!-- [disabled]="isSearching" -->
