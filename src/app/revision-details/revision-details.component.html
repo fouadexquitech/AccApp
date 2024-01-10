@@ -18,7 +18,8 @@
 
           <h3 *ngIf="supplierPackage && Revision">Supplier {{supplierPackage.psSupName}} | Revision {{Revision.prRevNo}}
             | {{Revision.prRevDate | date:'dd-MM-YYYY'}}</h3>
-          <div class="row">
+          
+            <div class="row">
             <div class="col-sm-3 form-group p-2">
               <label>Item</label>
               <input type="text" class="form-control" id="filterItemDesc">
@@ -108,7 +109,15 @@
             <thead>
               <tr>
                 <th>Item</th>
-                <th>Resources</th>
+                <th>Resource</th>
+                <th>Qty</th>
+                <th>U. Price</th>
+                <th>Discount %</th>
+                <th>Final U. Price</th>
+                <th>Total Price</th>
+                <th>Added Item</th>
+                <th>Added Date</th>
+                <th>Comment</th>
               </tr>
             </thead>
             <tbody>
@@ -143,16 +152,16 @@
                           <span>{{dt.rdTotalPrice}}</span>
                         </td>
                         <td>
-                          <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdMissedPriceReason" type="text" id="txtReason"
-                            [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                        </td>
-                        <td>
                           <ng-container *ngIf="dt.rdAddedItem == 1"> 
                             <span> Yes </span>
                           </ng-container> 
                         </td>
                         <td>
                           <span>{{dt.rdAddedItemOn | date: 'dd/MM/yyyy'}}</span>
+                        </td>
+                        <td>
+                          <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdMissedPriceReason" type="text" id="txtReason"
+                            [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
                         </td>
                       </tr>
                     </tbody>

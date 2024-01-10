@@ -100,6 +100,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   // AH28032023
   @ViewChild('inputText') textInput: any; 
   @ViewChild('inputText1') textInput1: any; 
+  isExportExcel:boolean=false;
 // AH28032023
   public boqPackagesData: Object[] = [
     { id: 0, desc: 'All Items' },
@@ -253,25 +254,26 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     // };
     
     // this.ConnectToDB(this.user.usrLoggedConnString);
-    let body : any = {
-      level2 : this.SearchInput.boqLevel2,
-      level3 : this.SearchInput.boqLevel3,
-      level4 : this.SearchInput.boqLevel4,
-      resType: this.SearchInput.rESType
-    };
+    // let body : any = {
+    //   level2 : this.SearchInput.boqLevel2,
+    //   level3 : this.SearchInput.boqLevel3,
+    //   level4 : this.SearchInput.boqLevel4,
+    //   resType: this.SearchInput.rESType,
+    //   boqDiv: this.SearchInput.bOQDiv
+    // };
 
 
-    this.GetBOQDivList();
-    this.GetBOQLevel2List(body);
-    this.GetBOQLevel3List(body);
-    this.GetBOQLevel4List(body);
-    this.GetRESDivList();
-    this.GetRESTypeList(body);
-    this.GetPackageList();
-    this.GetRESPackageList();
-    this.GetSheetDescList();
-    this.GetOriginalBoqList(this.SearchInput);
-    this.GetRessourcesList(body);
+    // this.GetBOQDivList();
+    // this.GetBOQLevel2List(body);
+    // this.GetBOQLevel3List(body);
+    // this.GetBOQLevel4List(body);
+    // this.GetRESDivList();
+    // this.GetRESTypeList(body);
+    // this.GetPackageList();
+    // this.GetRESPackageList();
+    // this.GetSheetDescList();
+    // this.GetOriginalBoqList(this.SearchInput);
+    // this.GetRessourcesList(body);
     // this.GetRessourcesListByLevels();
   }
 
@@ -309,8 +311,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   }
 // AH28032023.
 
-  GetBOQDivList() {
-    this.assignPackageService.GetBOQDivList().subscribe((data) => {
+  GetBOQDivList(body : any) {
+    this.assignPackageService.GetBOQDivList(body).subscribe((data) => {
       if (data) {
         this.BOQDivList = data;
         this.selectedBOQDivList = data;
@@ -1394,8 +1396,10 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.assignPackages.assignOriginalBoqList = this.SelectedOriginalBoqList;
     this.assignPackages.assignBoqList = this.SelectedBoqList;
     //this.assignPackageService.AssignPackage(this.assignPackages).subscribe((data) => {
-  
+      this.isExportExcel=true;
+
       this.assignPackageService.ExportNotAssigned(this.SearchInput,costDB).subscribe((data) => {
+        this.isExportExcel=false;
         if (data) {
           let a = document.createElement('a');
           a.id = 'downloader';
@@ -1407,19 +1411,28 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         }
       });
     }
-  ExportExcelPackagesCost(){
-      this.assignPackageService.ExportExcelPackagesCost().subscribe((data) => {
-        if (data) {
-          let a = document.createElement('a');
-          a.id = 'downloader';
-          a.target = '_blank'; 
-          a.style.visibility = "hidden";
-          document.body.appendChild(a);
-          a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
-          a.click();     
-        }
-      });
-    }
+  
+    ExportExcelPackagesCost(withBoq:number){
+      let costDB=this.user.usrLoggedCostDB;
+      this.isExportExcel=true;
+  
+        this.assignPackageService.ExportExcelPackagesCost(withBoq,costDB,this.SearchInput)
+        .pipe(finalize(() =>{
+          this.isExportExcel=false;
+        }))
+        .subscribe((data) => {
+          
+          if (data) {
+            let a = document.createElement('a');
+            a.id = 'downloader';
+            a.target = '_blank'; 
+            a.style.visibility = "hidden";
+            document.body.appendChild(a);
+            a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
+            a.click();     
+          }
+        });
+      }
 
 
   private getDismissReason(reason: any): string {
