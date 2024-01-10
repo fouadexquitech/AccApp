@@ -269,7 +269,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     // this.GetBOQLevel4List(body);
     // this.GetRESDivList();
     // this.GetRESTypeList(body);
-    // this.GetPackageList();
+    this.GetPackageList();
     // this.GetRESPackageList();
     // this.GetSheetDescList();
     // this.GetOriginalBoqList(this.SearchInput);
