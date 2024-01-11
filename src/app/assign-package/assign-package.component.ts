@@ -1376,9 +1376,11 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   let costDB=this.user.usrLoggedCostDB;
   this.assignPackages.assignOriginalBoqList = this.SelectedOriginalBoqList;
   this.assignPackages.assignBoqList = this.SelectedBoqList;
+  this.isExportExcel=true;
   //this.assignPackageService.AssignPackage(this.assignPackages).subscribe((data) => {
 
     this.assignPackageService.ExportBoqExcel(this.SearchInput,costDB).subscribe((data) => {
+      this.isExportExcel=false;
       if (data) {
         let a = document.createElement('a');
         a.id = 'downloader';
@@ -1396,7 +1398,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.assignPackages.assignOriginalBoqList = this.SelectedOriginalBoqList;
     this.assignPackages.assignBoqList = this.SelectedBoqList;
     //this.assignPackageService.AssignPackage(this.assignPackages).subscribe((data) => {
-      this.isExportExcel=true;
+    this.isExportExcel=true;
 
       this.assignPackageService.ExportNotAssigned(this.SearchInput,costDB).subscribe((data) => {
         this.isExportExcel=false;
