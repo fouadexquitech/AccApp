@@ -113,4 +113,25 @@ export class BoqListTableComponent implements OnInit {
    
   }
 
+  checkAll(event : any)
+  {
+     let checkbox = event.target as HTMLInputElement;
+     this.ELEMENT_DATA.forEach(el=>{
+      el.isSelected = checkbox.checked;
+     });
+  }
+
+  get allChecked()
+  {
+      let checked : number= 0;
+      this.ELEMENT_DATA.forEach(el=>{
+          if(el.isSelected)
+          {
+            checked++;
+          }
+       });
+
+       return this.ELEMENT_DATA.length == checked;
+  }
+
 }

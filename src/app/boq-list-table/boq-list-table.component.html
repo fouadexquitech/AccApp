@@ -9,7 +9,7 @@
   <mat-table [dataSource]="dataSource" *ngIf="dataSource?.filteredData.length > 0">
     <ng-container matColumnDef="select">
       <mat-header-cell *matHeaderCellDef>
-        
+        <input class="form-check-input" style="cursor: pointer;" [checked]="allChecked" type="checkbox" (change)="checkAll($event)">
       </mat-header-cell>
       <mat-cell *matCellDef="let item; let i = index">
         <input class="form-check-input" style="cursor: pointer;" type="checkbox" [checked]="item.isSelected" (change)="OnBoqChecked($event , i)">
