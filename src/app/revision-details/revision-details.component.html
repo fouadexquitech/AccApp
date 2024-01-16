@@ -58,24 +58,24 @@
             <tbody>
               <tr *ngFor="let dt of RevisionDetailsList; let k = index">
                 <td>{{dt.rdItemDescription}}</td>
-                <td>{{dt.rdQty | number }}</td>
+                <td>{{dt.rdQty | number : '1.2-2' }}</td>
                 <td style="width: 10% ;">
                   <input type="hidden" [value]="dt.rdResourceSeq">
                   <input type="hidden" [value]="dt.rdBoqItem">
                   <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdPrice" type="number"
                     [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                  <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdPrice | number }}</span>
+                  <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdPrice | number : '1.2-2' }}</span>
                 </td>
                 <td  style="width: 8% ;">
                   <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdDiscount" type="number"
                     [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                  <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdDiscount}}</span>
+                  <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdDiscount }}</span>
                 </td>
                 <td>
-                  <span>{{dt.rdPriceAfterDiscount | number}}</span>
+                  <span>{{dt.rdPriceAfterDiscount | number : '1.2-2'}}</span>
                 </td>
                 <td>
-                  <span>{{dt.rdTotalPrice | number }}</span>
+                  <span>{{dt.rdTotalPrice | number : '1.2-2' }}</span>
                 </td>
                 <td>
                   <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdMissedPriceReason" type="text" id="txtReason"
@@ -132,7 +132,8 @@
                         <td>
                           {{dt.rdItemDescription}}
                         </td>
-                        <td>{{dt.rdQty}}</td>
+                        <td>{{dt.rdQty | number : '1.2-2'}}</td>
+                        <td>{{dt.rdPrice | number : '1.2-2'}}</td>
                         <td style="width:30%">
                           <input type="hidden" [value]="dt.rdResourceSeq">
                           <input *ngIf="dt.rdMissedPrice == 1"
@@ -143,13 +144,13 @@
                         <td  style="width: 8% ;">
                           <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdDiscount" type="number"
                             [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                          <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdDiscount}}</span>
+                          <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdDiscount | number : '1.2-2'}}</span>
                         </td>
                         <td>
-                          <span>{{dt.rdPriceAfterDiscount}}</span>
+                          <span>{{dt.rdPriceAfterDiscount | number : '1.2-2'}}</span>
                         </td>
                         <td>
-                          <span>{{dt.rdTotalPrice}}</span>
+                          <span>{{dt.rdTotalPrice | number : '1.2-2'}}</span>
                         </td>
                         <td>
                           <ng-container *ngIf="dt.rdAddedItem == 1"> 
@@ -166,9 +167,7 @@
                       </tr>
                     </tbody>
                   </table>
-
                 </td>
-
               </tr>
             </tbody>
             <tfoot>
