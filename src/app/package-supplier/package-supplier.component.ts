@@ -600,7 +600,7 @@ maxAttachements : number = 5;
 
     if(checkAddedItem.type == 'checkbox'){
     if (checkAddedItem.checked)
-    addedItem=1;
+      addedItem=1;
     }
   
     if (date.value) {
