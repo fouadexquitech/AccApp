@@ -101,6 +101,9 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   @ViewChild('inputText') textInput: any; 
   @ViewChild('inputText1') textInput1: any; 
   isExportExcel:boolean=false;
+  isExportExcelDry:boolean=false;
+  isExportExcelDryBoq:boolean=false;
+  isExportExcelNotAssigned:boolean=false;
 // AH28032023
   public boqPackagesData: Object[] = [
     { id: 0, desc: 'All Items' },
@@ -1398,10 +1401,10 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.assignPackages.assignOriginalBoqList = this.SelectedOriginalBoqList;
     this.assignPackages.assignBoqList = this.SelectedBoqList;
     //this.assignPackageService.AssignPackage(this.assignPackages).subscribe((data) => {
-    this.isExportExcel=true;
+    this.isExportExcelNotAssigned=true;
 
-      this.assignPackageService.ExportNotAssigned(this.SearchInput,costDB).subscribe((data) => {
-        this.isExportExcel=false;
+      this.assignPackageService.ExportNotAssigned(costDB).subscribe((data) => {
+        this.isExportExcelNotAssigned=false;
         if (data) {
           let a = document.createElement('a');
           a.id = 'downloader';
@@ -1416,11 +1419,18 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   
     ExportExcelPackagesCost(withBoq:number){
       let costDB=this.user.usrLoggedCostDB;
-      this.isExportExcel=true;
+      
+      if (withBoq==1)
+        this.isExportExcelDryBoq=true;
+      else
+        this.isExportExcelDry=true;
   
-        this.assignPackageService.ExportExcelPackagesCost(withBoq,costDB,this.SearchInput)
+        this.assignPackageService.ExportExcelPackagesCost(withBoq,costDB)
         .pipe(finalize(() =>{
-          this.isExportExcel=false;
+          if (withBoq==1)
+            this.isExportExcelDryBoq=false;
+          else
+            this.isExportExcelDry=false;
         }))
         .subscribe((data) => {
           

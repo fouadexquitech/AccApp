@@ -143,16 +143,16 @@ export class AssignPackageService {
     );
     }
 
-    ExportNotAssigned(input: SearchInput , costDB :string) : Observable<any> 
+    ExportNotAssigned(costDB :string) : Observable<any> 
     {
-      return this.http.post(this.baseUrl + 'Package/ExportNotAssigned?costDB=' + costDB, input).pipe(
+      return this.http.post(this.baseUrl + 'Package/ExportNotAssigned?costDB=' + costDB, costDB).pipe(
         map(res => res), catchError(this.handleError)
     );
     }
 
-    ExportExcelPackagesCost(withBoq:number, costDB :string,input: SearchInput) : Observable<any> 
+    ExportExcelPackagesCost(withBoq:number, costDB :string) : Observable<any> 
     {
-      return this.http.post(this.baseUrl + 'Package/ExportExcelPackagesCost?costDB='+costDB+'&withBoq='+withBoq,input).pipe(
+      return this.http.post(this.baseUrl + 'Package/ExportExcelPackagesCost?costDB='+costDB+'&withBoq='+withBoq,withBoq).pipe(
         map(res => res), catchError(this.handleError)
     );
     }
