@@ -104,6 +104,7 @@ export class TblTechCond
     public tcPackId : number = 0;
     public tcDescription : string = null;
     public tcSelected : number;
+    public tcAccCondValue : string = null;
 }
 
 export class TblComCond
@@ -112,6 +113,7 @@ export class TblComCond
     public cmDescription : string = null;
     public cmSelected : number;
     public checked : boolean = false;
+    public cmAccCondValue : string = null;
 }
 
 export class TblSuppTechCondReply
@@ -127,6 +129,7 @@ export class TblSuppComCondReply
     public cdPackageSupliersID : number = 0;
     public cdComConID : number = 0;
     public cdSuppReply : string = null;
+    public cdAccCond : string = null;
 }
 
 export class ConditionsReply
@@ -184,6 +187,8 @@ export class TechConditions
     public tcPackId : number = 0;
     public tcDescription : string  = null;
     public techConditionGroups : TechConditionGroup[] = [];
+    public tcAccCondValue : string  = null;
+    public checked : boolean = false;
 }
 
 export class TechConditionGroup

@@ -50,6 +50,7 @@ export class PackageSupplierService {
     attachements.forEach(attachement =>{
     formData.append(attachement?.name, attachement , attachement?.name);
   });
+  
     return this.http.post(this.baseUrl + 'SupplierPackages/AssignPackageSuppliers', formData).pipe(
       map(res => res), catchError(this.handleError)
     );
@@ -158,20 +159,20 @@ export class PackageSupplierService {
   );
  }
 
- updateTechnicalConditions(packageId : number, packageSupplierId: number, input: File)
+ updateTechnicalConditions(packageId : number, packageSupliersRevisionID: number, input: File)
  {
   const formData = new FormData();
   formData.append('ExcelFile' , input , input.name)
-    return this.http.post(this.baseUrl + 'Conditions/UpdateTechnicalConditions?PackageSupliersID=' + packageSupplierId + '&packageId=' + packageId, formData).pipe(
+    return this.http.post(this.baseUrl + 'Conditions/UpdateTechnicalConditions?PackageSupliersRevisionID=' + packageSupliersRevisionID + '&packageId=' + packageId, formData).pipe(
     map(res => res), catchError(this.handleError)
   );
  }
 
- updateCommercialConditions(packageSupplierId: number, input: File)
+ updateCommercialConditions(packageSupliersRevisionID: number, input: File)
  {
   const formData = new FormData();
   formData.append('ExcelFile' , input , input.name)
-    return this.http.post(this.baseUrl + 'Conditions/UpdateCommercialConditions?PackageSupliersID=' + packageSupplierId, formData).pipe(
+    return this.http.post(this.baseUrl + 'Conditions/UpdateCommercialConditions?PackageSupliersRevisionID=' + packageSupliersRevisionID, formData).pipe(
     map(res => res), catchError(this.handleError)
   );
  }

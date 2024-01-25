@@ -183,12 +183,13 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
       }
       if(this.mode == 'add')
       {
-            
           let condition : TechConditions = {
             tcDescription : this.f.tcDescription?.value,
             tcPackId : this.packageId,
             tcSeq : 0,
-            techConditionGroups : groups
+            techConditionGroups : groups,
+            tcAccCondValue:"",
+            checked:false
           };
             this.submitting = true;
             this.packageSupplierService.addTechConditions(condition).subscribe(data=>{
@@ -207,7 +208,9 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
         tcDescription : this.f.tcDescription?.value,
         tcPackId : this.packageId,
         tcSeq : this.selectedCondition!.tcSeq,
-        techConditionGroups : groups
+        techConditionGroups : groups,
+        tcAccCondValue:"",
+        checked:false
       };
         this.submitting = true;
         this.packageSupplierService.updateTechConditions(condition).subscribe(data=>{

@@ -115,7 +115,27 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
                   rdPriceAfterDiscount : 0,
                   rdTotalPrice : 0,
                   rdAddedItem : 0,
-                  rdAddedItemOn : null
+                  rdAddedItemOn : null,
+
+                  IsAlternative : false,
+                  IsNew :  false,
+                  NewItemId : 0,
+                  NewItemResourceId :  0,
+                  ParentItemO : "",
+                  ParentResourceId : 0,
+
+                  L1:"",
+                  L2:"",
+                  L3:"",
+                  L4:"",
+                  L5:"",
+                  L6:"",
+                  C1:"",
+                  C2:"",
+                  C3:"",
+                  C4:"",
+                  C5:"",
+                  C6:""
                };
 
                revisionDetails.push(revD);
@@ -174,7 +194,27 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
                   rdPriceAfterDiscount : 0,
                   rdTotalPrice : 0,
                   rdAddedItem : 0,
-                  rdAddedItemOn : null
+                  rdAddedItemOn : null,
+
+                  IsAlternative : false,
+                  IsNew :  false,
+                  NewItemId : 0,
+                  NewItemResourceId :  0,
+                  ParentItemO : "",
+                  ParentResourceId : 0,
+                  
+                  L1:"",
+                  L2:"",
+                  L3:"",
+                  L4:"",
+                  L5:"",
+                  L6:"",
+                  C1:"",
+                  C2:"",
+                  C3:"",
+                  C4:"",
+                  C5:"",
+                  C6:""
                };
                revisionDetails.push(revD);
             }  

@@ -443,18 +443,19 @@
                   </tr>
                 </tbody>
               </table>
-              
-               
             </div>
             </div>
-            <!-- <br> -->
+
+            <br>
+
             <div class="row">
               <div class="col-sm-12 form-group">
                 <table class="table">
                     <thead>
                       <tr>
                         <th><input type="checkbox" (change)="checkAllComCond($event)" id="chkAllComCond" name="chkAllComCond"></th>
-                        <th>Commercial Conditions</th>
+                        <th>Commercial Condition</th>
+                        <th>ACC Condition</th>
                       </tr>
                     </thead>
                     <tbody *ngIf="comConditions.length > 0">
@@ -465,9 +466,48 @@
                             <td>
                               {{c.cmDescription}}
                             </td>
+                            <td>
+                              <input type="text" class="form-control" [value]="c.cmAccCondValue" placeholder="ACC Condition"
+                              (change)="updateComAccCondValue($event, i)">
+                            </td>
                         </tr>
                     </tbody>
                     <tfoot *ngIf="comConditions.length == 0">
+                      <tr>
+                        <td class="text-center">
+                          No data available
+                        </td>
+                      </tr>
+                    </tfoot>
+                </table>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-12 form-group">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th><input type="checkbox" (change)="checkAllTechCond($event)" id="chkAllTecCond" name="chkAllTecCond"></th>
+                        <th>Technical Condition</th>
+                        <th>ACC Condition</th>
+                      </tr>
+                    </thead>
+                    <tbody *ngIf="techConditions.length > 0">
+                        <tr *ngFor="let c of techConditions; let i = index">
+                          <td style="width:2%">
+                            <input type="checkbox" [checked]="c.checked" (change)="selectTechCond($event, i)">
+                          </td>
+                            <td>
+                              {{c.tcDescription}}
+                            </td>
+                            <td>
+                              <input type="text" class="form-control" [value]="c.tcAccCondValue" placeholder="ACC Condition"
+                              (change)="updateTechAccCondValue($event, i)">
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot *ngIf="techConditions.length == 0">
                       <tr>
                         <td class="text-center">
                           No data available

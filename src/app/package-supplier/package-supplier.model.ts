@@ -12,18 +12,20 @@ export class SupplierInput {
     public supID: number = 0;
 }
 
-export class ComercialCond 
+export class Condition 
 {
     public id : number = 0;
     public description : string = null;
+    public ACCCondValue : string = null;
 }
 
 export class SupplierInputList
 {
     public supplierInput : SupplierInput = null;
-    public comercialCondList : ComercialCond[] = [];
+    public comercialCondList : Condition[] = [];
     public filePath : string = null;
     public emailTemplate : string = null;
+    public technicalCondList:Condition[]=[];
 }
 
 export class ExchangeRate {
@@ -65,6 +67,26 @@ export class RevisionDetailsList {
     public rdTotalPrice : number = 0;
     public rdAddedItem : number = 0;
     public rdAddedItemOn : Date = null;
+
+    public IsAlternative : boolean = false;
+    public IsNew : boolean = false;
+    public NewItemId : number = 0;
+    public NewItemResourceId : number = 0;
+    public ParentItemO : string = null;
+    public ParentResourceId : number = 0;
+
+    public L1 : string = null;
+    public L2 : string = null;
+    public L3 : string = null;
+    public L4 : string = null;
+    public L5 : string = null;
+    public L6 : string = null;
+    public C1 : string = null;
+    public C2 : string = null;
+    public C3 : string = null;
+    public C4 : string = null;
+    public C5 : string = null;
+    public C6 : string = null;
 }
 
 export class CurrencyList {

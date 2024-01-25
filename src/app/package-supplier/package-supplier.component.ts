@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
-import { SupplierInput, SupplierList, SupplierPackagesList, SupplierPackagesRevList, CurrencyList, ExchangeRate, RevisionFieldsList, RevisionDetailsList, SupplierInputList, ComercialCond, AssignPackageTemplate } from './package-supplier.model';
+import { SupplierInput, SupplierList, SupplierPackagesList, SupplierPackagesRevList, CurrencyList, ExchangeRate, RevisionFieldsList, RevisionDetailsList, SupplierInputList, Condition, AssignPackageTemplate } from './package-supplier.model';
 import { PackageSupplierService } from './package-supplier.service';
 import { environment } from '../../environments/environment';
 import { ProjectCurrency,Project } from '../login/login.model';
@@ -52,6 +52,7 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
   public addingRevision : boolean = false;
   public isValidatingExcel : boolean = false;
   selectedPackageSupplier : SupplierPackagesList;
+  selectedPackageSupplierRevision : SupplierPackagesRevList;
   exchangeRate : number = 1;
   discount : number = 0;
   exchangeRates : ExchangeRate[];
@@ -402,6 +403,9 @@ maxAttachements : number = 5;
     );
     this.getComConditions();
     $("#emailTemplateModal").modal('show');
+//AH24012024
+    this.GetTechnicalConditions();
+//AH24012024
   }
 
   get f(): { [key: string]: AbstractControl } {
@@ -437,6 +441,8 @@ maxAttachements : number = 5;
       });
   }
 
+
+
   viewTechnicalConditions()
   {
       /*this.packageSupplierService.getTechConditions(this.PackageId).subscribe(data=>{
@@ -464,16 +470,25 @@ maxAttachements : number = 5;
         this.SupplierInput.push({ supID: element });
       });
 
-      let comercialCond : ComercialCond[] = [];
+      let comCondList : Condition[] = [];
       this.comConditions.forEach(c=>{
           if(c.checked)
           {
-            comercialCond.push({ id : c.cmSeq, description : c.cmDescription });
+            comCondList.push({ id : c.cmSeq, description : c.cmDescription , ACCCondValue:c.cmAccCondValue });
           }
       });
 
+      //AH24012024
+      let techCondList : Condition[] = [];
+      this.techConditions.forEach(c=>{
+          if(c.checked)
+          {
+            techCondList.push({ id : c.tcSeq, description : c.tcDescription , ACCCondValue:c.tcAccCondValue });
+          }
+      });
+      //AH24012024
       this.SupplierInput.forEach(supplier=>{
-        this.SupplierInputList.push({supplierInput : supplier, comercialCondList : comercialCond, emailTemplate : null, filePath : this.FilePath});
+        this.SupplierInputList.push({supplierInput : supplier, comercialCondList : comCondList, emailTemplate : null, filePath : this.FilePath , technicalCondList:techCondList});
       });
 
       if (this.SupplierInputList.length > 0) {
@@ -760,12 +775,14 @@ maxAttachements : number = 5;
     if(!inputCommercialCondFile.value)
     {
       this.toastr.error('Please select a file');
-      
       return;
     }
 
     this.isUpdatingCommercialConditions = true;
-    this.packageSupplierService.updateCommercialConditions(this.selectedPackageSupplier?.psId, this.selectedCommercialCondFile).subscribe(data=>{
+    //AH18012024
+    // this.packageSupplierService.updateCommercialConditions(this.selectedPackageSupplier?.psId, this.selectedCommercialCondFile).subscribe(data=>{
+    //AH18012024 
+    this.packageSupplierService.updateCommercialConditions(this.selectedPackageSupplierRevision?.prRevId, this.selectedCommercialCondFile).subscribe(data=>{
       this.isUpdatingCommercialConditions = false;  
       if(data)
         {
@@ -790,7 +807,7 @@ maxAttachements : number = 5;
     }
 
     this.isUpdatingTechnicalConditions = true;
-    this.packageSupplierService.updateTechnicalConditions(this.PackageId, this.selectedPackageSupplier?.psId, this.selectedTechnicalCondFile).subscribe(data=>{
+    this.packageSupplierService.updateTechnicalConditions(this.PackageId, this.selectedPackageSupplierRevision?.prRevId, this.selectedTechnicalCondFile).subscribe(data=>{
       this.isUpdatingTechnicalConditions = false;  
       if(data)
         {
@@ -951,4 +968,57 @@ maxAttachements : number = 5;
     let byBoq = (this.SupplierPackagesList[0].psByBoq == 1);
     this.router.navigate(['/package-groups', this.PackageId, this.PackageName, byBoq]);
   }
+
+  //AH24012024
+  updateComAccCondValue(event : any, index : number)
+  {
+      let value = event.target.value;
+      this.comConditions[index].cmAccCondValue = value;
+  }
+
+  updateTechAccCondValue(event : any, index : number)
+  {
+      let value = event.target.value;
+      this.techConditions[index].tcAccCondValue = value;
+  }
+
+  GetTechnicalConditions()
+  {
+      this.packageSupplierService.getTechConditions(this.PackageId).subscribe(data=>{
+          if(data)
+          {
+            this.techConditions = data;
+            // console.log(this.techConditions);
+            // $("#viewTechnicalConditionsModal").modal('show');
+          }
+      });
+    }
+
+    selectTechCond(event : any, index : number)
+    {
+        let chk = event.target as HTMLInputElement;
+        let chkAll = document.getElementById("chkAllTecCond") as HTMLInputElement;
+        let tecCond = this.techConditions[index];
+        tecCond.checked = chk.checked;
+  
+        let allChecked : boolean = true;
+  
+        this.techConditions.forEach(c=>{
+          if(!c.checked)
+          {
+            allChecked = false;
+            return;
+          }
+      });
+      chkAll.checked = allChecked;
+    }
+
+    checkAllTechCond(event : any)
+    {
+        let chk = event.target as HTMLInputElement;
+        this.comConditions.forEach(c=>{
+            c.checked = chk.checked;
+        });
+    }
+//AH24012024
 }
