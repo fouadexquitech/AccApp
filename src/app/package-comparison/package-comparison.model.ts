@@ -113,7 +113,7 @@ export class TblComCond
     public cmDescription : string = null;
     public cmSelected : number;
     public checked : boolean = false;
-    public cmAccCondValue : string = null;
+    public cmAccCondValue : string = "";
 }
 
 export class TblSuppTechCondReply
@@ -139,15 +139,14 @@ export class ConditionsReply
     public condReply : string = null;
     public supId : number = 0;
     public supName : string = null;
+    public accCondValue : string = null;
 }
 
 export class DisplayCondReply
 {
     public supplierId : number = 0;
     public supplierName : string = null;
-
     public conditionId : number = 0;
-
     public reply : string = null;
 }
 

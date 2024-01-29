@@ -70,7 +70,6 @@
     <div class="col-sm-3 form-group" *ngIf="SupplierPackagesList.length > 0 && FilePath != null">
       <button type="button" class="btn btn-secondary"
       (click)="viewTechnicalConditions()">
-     
       View Technical Conditions</button>
       <button type="button" class="btn btn-secondary" *ngIf="false"
       (click)="sendTechnicalConditions()" [disabled]="isSendingTechConditions">
@@ -105,13 +104,12 @@
         <td>{{item.psSupName}}</td>
         <td>{{PackageName}}</td>
         <td class="text-center">
-         
           <button type="button" class="btn btn-primary" (click)="Toggle(item , i)">View</button>
         </td>
         <td class="text-center"> <button type="button" class="btn btn-primary" (click)="OpenModal(item.psId)">Add Revision</button></td>
             
-        <td class="text-center"><button type="button" class="btn btn-secondary" (click)="openUpdateTechnicalCondModal(item)">Upload Technical Conditions</button></td>
-        <td class="text-center"><button type="button" class="btn btn-secondary" (click)="openUpdateCommercialCondModal(item)">Upload Commercial Conditions</button></td>  
+        <td class="text-center"><button type="button" *ngIf="1>2" class="btn btn-secondary" (click)="openUpdateTechnicalCondModal(item)">Upload Technical Conditions</button></td>
+        <td class="text-center"><button type="button" *ngIf="1>2" class="btn btn-secondary" (click)="openUpdateCommercialCondModal(item)">Upload Commercial Conditions</button></td>  
         
       </tr>
       <tr *ngIf="currentRowIndex == i">
@@ -124,7 +122,7 @@
                 <th>Revision Date</th>
                 <th>Total Price</th>
                 <th>Currency</th>
-                <th colspan="3" style="text-align: center;">Action</th>
+                <th colspan="5" style="text-align: center;">Action</th>
               </thead>
             <tbody *ngFor="let rev of SupplierPackagesRevList; let j = index">
               <tr>
@@ -141,6 +139,12 @@
                 </td>
                 <td style="text-align: center;">
                   <button class="btn btn-secondary" (click)="openFieldsListModal(rev.prRevId, rev.prRevNo, item.psSupName)">View Fields</button>
+                </td>
+                <td style="text-align: center;">
+                  <button class="btn btn-secondary" (click)="openComCondReplyListModal(rev.prRevId, rev.prRevNo, item.psSupName)">View Com. Conditions</button>
+                </td>
+                <td style="text-align: center;">
+                  <button class="btn btn-secondary" (click)="openTechCondReplyListModal(rev.prRevId, rev.prRevNo, item.psSupName)">View Tech. Conditions</button>
                 </td>
                 
               </tr>
@@ -377,6 +381,85 @@
     </div>
   </div>
 
+<!-- View Commercial Conditions Reply List Modal -->
+<div class="modal fade" id="comCondReplyListModal" tabindex="-1" aria-labelledby="fieldsListLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="fieldsListLabel"><strong>Supplier: </strong> <label>{{selectedSupplierName}}</label> | <strong>Revision:</strong> <label>{{selectedRevisionNb}}</label> | Commercial Conditions List</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="CloseFieldsListModal()"></button>
+      </div>
+      
+      <div class="modal-body">
+        <h4 *ngIf="conditionsReplyList.length == 0">No Commercial Conditions found</h4>
+          <table class="table" *ngIf="conditionsReplyList.length > 0">
+            <thead>
+              <tr>
+                <th>Condition</th>
+                <th>ACC Condition</th>
+                <th>Supplier Reply</th>
+                <!-- <th></th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let field of conditionsReplyList">
+                <td>{{field.condDesc}}</td>
+                <td>{{field.accCondValue}}</td>
+                <td>{{field.condReply}}</td>
+                <!-- <td>
+                  <button class="btn btn-danger" title="Delete" (click)="deleteField(field.id, field.revisionId)"><i class="fa fa-times"></i></button>
+                </td> -->
+              </tr>
+            </tbody>
+          </table>
+      </div>
+      <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="CloseFieldsListModal()">
+          Close</button>
+      </div>  -->
+    </div>
+  </div>
+</div>
+
+<!-- View Technical Conditions Reply List Modal -->
+<div class="modal fade" id="techCondReplyListModal" tabindex="-1" aria-labelledby="fieldsListLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="fieldsListLabel"><strong>Supplier: </strong> <label>{{selectedSupplierName}}</label> | <strong>Revision:</strong> <label>{{selectedRevisionNb}}</label> | Technical Conditions List</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="CloseFieldsListModal()"></button>
+      </div>
+      
+      <div class="modal-body">
+        <h4 *ngIf="conditionsReplyList.length == 0">No Technical Conditions found</h4>
+          <table class="table" *ngIf="conditionsReplyList.length > 0">
+            <thead>
+              <tr>
+                <th>Condition</th>
+                <th>ACC Condition</th>
+                <th>Supplier Reply</th>
+                <!-- <th></th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let field of conditionsReplyList">
+                <td>{{field.condDesc}}</td>
+                <td>{{field.accCondValue}}</td>
+                <td>{{field.condReply}}</td>
+                <!-- <td>
+                  <button class="btn btn-danger" title="Delete" (click)="deleteField(field.id, field.revisionId)"><i class="fa fa-times"></i></button>
+                </td> -->
+              </tr>
+            </tbody>
+          </table>
+      </div>
+      <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="CloseFieldsListModal()">
+          Close</button>
+      </div>  -->
+    </div>
+  </div>
+</div>
 
   <!-- Email Template Modal -->
   <div class="modal fade" id="emailTemplateModal" tabindex="-1" aria-labelledby="emailTemplateModalLabel" aria-hidden="true">
@@ -467,7 +550,7 @@
                               {{c.cmDescription}}
                             </td>
                             <td>
-                              <input type="text" class="form-control" [value]="c.cmAccCondValue" placeholder="ACC Condition"
+                              <input class="form-control" [value]="c.cmAccCondValue ? '' : c.cmAccCondValue" placeholder="ACC Condition"
                               (change)="updateComAccCondValue($event, i)">
                             </td>
                         </tr>

@@ -221,4 +221,18 @@ export class PackageSupplierService {
     console.error('An error occurred', error);
     return Promise.reject(error.message || error);
   }
+
+  
+  GetComCondReplyByRevision(revisionId: number): Observable<any> {
+    return this.http.get(this.baseUrl + 'Conditions/GetComCondReplyByRevision?revisionid=' + revisionId).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
+  GetTechCondReplyByRevision(revisionId: number): Observable<any> {
+    return this.http.get(this.baseUrl + 'Conditions/GetTechCondReplyByRevision?revisionid=' + revisionId).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
 }

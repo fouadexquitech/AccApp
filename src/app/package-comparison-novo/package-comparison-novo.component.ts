@@ -311,14 +311,12 @@ generatingContract : boolean = false;
   {
      this.packageComparisonService.getTechCondReplies( this.packageId).subscribe(data=>{
         this.techConditionsReplies = data;
-    
-        
      });
   }
 
   getComCondReplies()
   {
-     this.packageComparisonService.getComCondReplies( this.packageId).subscribe(data=>{
+     this.packageComparisonService.getComCondReplies(this.packageId).subscribe(data=>{
         this.comConditionsReplies = data;
      });
   }

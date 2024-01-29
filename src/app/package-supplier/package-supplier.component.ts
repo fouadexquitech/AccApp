@@ -10,7 +10,7 @@ import { ProjectCurrency,Project } from '../login/login.model';
 import { EmailTemplate, FieldType, Language } from '../_models';
 import { ConfirmationDialogService } from '../_components/confirmation-dialog/confirmation-dialog.service';
 import { OriginalBoqModel } from '../assign-package/assign-package.model';
-import { Group, TblComCond, TechConditions, TopManagementAttachement} from '../package-comparison/package-comparison.model';
+import { Group, TblComCond, TechConditions, TopManagementAttachement,ConditionsReply} from '../package-comparison/package-comparison.model';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { ComparisonPackageGroup } from '../package-groups/package-groups.model';
 import { PackageGroupsService } from '../package-groups/package-groups.service';
@@ -75,6 +75,7 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
   revisionFieldsList : RevisionFieldsList[] = [];
   isSendingTechConditions : boolean = false;
   comConditions : TblComCond[] = [];
+  conditionsReplyList: ConditionsReply[] = [];
   techConditions : TechConditions[] = [];
   isUpdatingCommercialConditions : boolean = false;
   listCC : string[] = [];
@@ -1019,6 +1020,36 @@ maxAttachements : number = 5;
         this.comConditions.forEach(c=>{
             c.checked = chk.checked;
         });
+    }
+
+    openComCondReplyListModal(revisionId : any, prRevNo : any, psSupName : any)
+    {
+      $('#comCondReplyListModal').modal('show');
+        this.selectedSupplierName = psSupName;
+        this.selectedRevisionNb = prRevNo;
+        this.getComCondReplyByRevision(revisionId); 
+    }
+
+    getComCondReplyByRevision(revisionId : any)
+    {
+      this.packageSupplierService.GetComCondReplyByRevision(Number(revisionId)).subscribe(data=>{
+        this.conditionsReplyList = data;
+      });
+    }
+
+    openTechCondReplyListModal(revisionId : any, prRevNo : any, psSupName : any)
+    {
+      $('#techCondReplyListModal').modal('show');
+        this.selectedSupplierName = psSupName;
+        this.selectedRevisionNb = prRevNo;
+        this.getTechCondReplyByRevision(revisionId); 
+    }
+
+    getTechCondReplyByRevision(revisionId : any)
+    {
+      this.packageSupplierService.GetTechCondReplyByRevision(Number(revisionId)).subscribe(data=>{
+        this.conditionsReplyList = data;
+      });
     }
 //AH24012024
 }
