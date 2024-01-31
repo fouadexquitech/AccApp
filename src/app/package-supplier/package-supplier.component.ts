@@ -30,6 +30,7 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
   FilePath = "";
   SupplierList: SupplierList[] = [];
   selectedSuppliers: Array<number> = [];
+  checkedSuppliers: Array<number> = [];
   SupplierInput: SupplierInput[] = [];
   SupplierPackagesList: SupplierPackagesList[] = [];
   SupplierPackagesRevList: SupplierPackagesRevList[] = [];
@@ -301,7 +302,10 @@ maxAttachements : number = 5;
         this.GetPackageById(Number(this.PackageId));
       }
 
-      this.GetSupplierList(Number(this.PackageId));
+      //AH30012023
+      // this.GetSupplierList(Number(this.PackageId));
+      this.GetSupplierList_NotAssignetPackage(Number(this.PackageId));
+      //AH30012023
       this.GetSupplierPackagesList();
       this.assignByBoqOnly = localStorage.getItem('assignByBoqOnly');
       this.projectCurrency = JSON.parse(localStorage.getItem("currency")) as ProjectCurrency;
@@ -389,7 +393,8 @@ maxAttachements : number = 5;
       this.topManagementAttachements.push({id : 0, file : null});
   }
 
-  OpenEmailTemplateModal() {
+  OpenEmailTemplateModal(supId: number) 
+  {
     this.lstLanguages = Language.languages;
     this.topManagementAttachements = [];
     this.SupplierInputList = [];
@@ -403,13 +408,19 @@ maxAttachements : number = 5;
       
     );
     this.getComConditions();
+//AH24012024
+    this.GetTechnicalConditionsByPackage();
+    if (supId>0)
+    {
+      this.selectedSuppliers = [];
+      this.selectedSuppliers.push(supId);
+    }
+//AH24012024
     $("#emailTemplateModal").modal('show');
-//AH24012024
-    this.GetTechnicalConditions();
-//AH24012024
   }
 
-  get f(): { [key: string]: AbstractControl } {
+  get f(): { [key: string]: AbstractControl } 
+  {
     return this.formEmailTemplate.controls;
   }
 
@@ -462,10 +473,25 @@ maxAttachements : number = 5;
      $("#viewTechnicalConditionsModal").modal('hide');
   }
 
+  GetSupplierPackagesList() {
+    this.packageSupplierService.GetSupplierPackagesList(this.PackageId).subscribe((data) => {
+      if (data) {
+        this.SupplierPackagesList = data;
+        this.selectedSuppliers = [];
+//AH30012024
+        // this.SupplierPackagesList.forEach(element => {
+        //   this.selectedSuppliers.push(element.psSuppId);
+        // });
+//AH30012024
+      }
+    });
+  }
+
   AssignSuppliers() {
     //this.spinner.show();
     this.isAssigning = true;
-    if (this.selectedSuppliers.length > 0) {
+    if (this.selectedSuppliers.length > 0) 
+    {
       this.SupplierInput = [];
       this.selectedSuppliers.forEach(element => {
         this.SupplierInput.push({ supID: element });
@@ -540,18 +566,6 @@ maxAttachements : number = 5;
       this.packageSupplierService.getComConditions().subscribe(data=>{
           this.comConditions = data;
       });
-  }
-
-  GetSupplierPackagesList() {
-    this.packageSupplierService.GetSupplierPackagesList(this.PackageId).subscribe((data) => {
-      if (data) {
-        this.SupplierPackagesList = data;
-        this.selectedSuppliers = [];
-        this.SupplierPackagesList.forEach(element => {
-          this.selectedSuppliers.push(element.psSuppId);
-        });
-      }
-    });
   }
 
   GetSupplierPackagesRevision(packageSupplierId: number) {
@@ -1049,6 +1063,26 @@ maxAttachements : number = 5;
     {
       this.packageSupplierService.GetTechCondReplyByRevision(Number(revisionId)).subscribe(data=>{
         this.conditionsReplyList = data;
+      });
+    }
+
+    GetTechnicalConditionsByPackage()
+    {
+        this.packageSupplierService.getTechConditionsByPackage(this.PackageId).subscribe(data=>{
+            if(data)
+            {
+              this.techConditions = data;
+              // console.log(this.techConditions);
+              // $("#viewTechnicalConditionsModal").modal('show');
+            }
+        });
+      }
+
+    GetSupplierList_NotAssignetPackage(IdPkge: number) {
+      this.packageSupplierService.GetSupplierList_NotAssignetPackage(IdPkge).subscribe((data) => {
+        if (data) {
+          this.SupplierList = data;
+        }
       });
     }
 //AH24012024

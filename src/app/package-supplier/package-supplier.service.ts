@@ -62,7 +62,6 @@ export class PackageSupplierService {
       map(res => res), catchError(this.handleError)
     );
   }
-
   
   GetCurrencies(): Observable<any> {
     return this.http.get(this.baseUrl + 'SupplierPackagesRev/GetCurrencies').pipe(
@@ -235,4 +234,18 @@ export class PackageSupplierService {
     );
   }
 
+  //AH30012024
+  GetSupplierList_NotAssignetPackage(IdPkge: number): Observable<any> {
+    return this.http.get(this.baseUrl + 'Supplier/GetSupplierList_NotAssignetPackage?packID=' + IdPkge).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
+  getTechConditionsByPackage(packId : number) : Observable<any>
+  {
+   return this.http.get(this.baseUrl + 'Conditions/GetTechConditionsByPackage?packId=' + packId).pipe(
+     map(res => res), catchError(this.handleError)
+   );
+  }
+  //AH30012024
 }
