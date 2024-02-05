@@ -61,11 +61,21 @@ export class RevisionDetailsList {
     public rdBoqItemDescription : string = null;
     public rdItemDescription : string = null;
     public rdQty: number = 0;
+    public rdUnitRate: number = 0;
+    public rdTotalBudget: number = 0;
+
+    public exchangeRate: number = 0;
+    public rdOriginalPrice: number = 0;
+    public TotalSupplierPrice: number = 0;
+    public currency : string = null;
+
     public rdMissedPriceReason : string = null;
     public rdDiscount : number = 0;
     public rdPriceAfterDiscount : number = 0;
     public rdTotalPrice : number = 0;
     public rdAddedItem : number = 0;
+    public insertedBy : string = null;
+    public insertedDate : Date = null;
     public rdAddedItemOn : Date = null;
 
     public IsAlternative : boolean = false;
@@ -87,6 +97,15 @@ export class RevisionDetailsList {
     public C4 : string = null;
     public C5 : string = null;
     public C6 : string = null;
+
+    public levelName : string = "";
+    public unit : string = "";
+    public comments : string = "";
+}
+
+export class LevelModel {
+    public levelName : string = "";
+    public items : RevisionDetailsList[] = [];
 }
 
 export class CurrencyList {

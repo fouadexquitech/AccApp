@@ -40,8 +40,12 @@
         </div>
         
         <div class="card-body">
-          <table *ngIf="RevisionDetailsList.length > 0 && psByBoq == 1" class="table"
-            [id]="'tblRevisionDtl-' + Revision.prRevId">
+          <!-- AH01022024 -->
+            <!--<table *ngIf="RevisionDetailsList.length > 0 && psByBoq == 1" class="table" 
+              [id]="'tblRevisionDtl-' + Revision.prRevId">-->
+            <table *ngIf="LevelModelList.length > 0 && psByBoq == 1" class="table" 
+                [id]="'tblRevisionDtl-' + Revision.prRevId">
+              <!-- AH01022024 -->
             <thead>
               <tr>
                 <th>Item Description</th>
@@ -56,39 +60,51 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let dt of RevisionDetailsList; let k = index">
-                <td>{{dt.rdItemDescription}}</td>
-                <td>{{dt.rdQty | number : '1.2-2' }}</td>
-                <td style="width: 10% ;">
-                  <input type="hidden" [value]="dt.rdResourceSeq">
-                  <input type="hidden" [value]="dt.rdBoqItem">
-                  <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdPrice" type="number"
-                    [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                  <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdPrice | number : '1.2-2' }}</span>
+              <!-- AH01022024 -->
+              <!-- <tr *ngFor="let dt of RevisionDetailsList; let k = index"> -->
+              <tr *ngFor="let levelModel of LevelModelList ;  let k = index">
+                <td>{{levelModel.levelName}}</td>
+                <td *ngFor="let dt of levelModel.items; let k = index">
+                  <table class="table table-bordered">
+                    <tr>
+                      <!-- AH01022024 -->
+                      <td>{{dt.rdItemDescription}}</td>
+                      <td>{{dt.rdQty | number : '1.2-2' }}</td>
+                      <td style="width: 10% ;">
+                        <input type="hidden" [value]="dt.rdResourceSeq">
+                        <input type="hidden" [value]="dt.rdBoqItem">
+                        <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdPrice" type="number"
+                          [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
+                        <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdPrice | number : '1.2-2' }}</span>
+                      </td>
+                      <td  style="width: 8% ;">
+                        <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdDiscount" type="number"
+                          [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
+                        <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdDiscount }}</span>
+                      </td>
+                      <td>
+                        <span>{{dt.rdPriceAfterDiscount | number : '1.2-2'}}</span>
+                      </td>
+                      <td>
+                        <span>{{dt.rdTotalPrice | number : '1.2-2' }}</span>
+                      </td>
+                      <td>
+                        <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdMissedPriceReason" type="text" id="txtReason"
+                          [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
+                      </td>
+                      <td>
+                        <ng-container *ngIf="dt.rdAddedItem == 1"> 
+                          <span> Yes </span>
+                        </ng-container> 
+                      </td>
+                      <td>
+                        <span>{{dt.rdAddedItemOn | date: 'dd/MM/yyyy'}}</span>
+                      </td>
+<!-- AH01022024 -->      
+                    </tr>
+                  </table>
                 </td>
-                <td  style="width: 8% ;">
-                  <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdDiscount" type="number"
-                    [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                  <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdDiscount }}</span>
-                </td>
-                <td>
-                  <span>{{dt.rdPriceAfterDiscount | number : '1.2-2'}}</span>
-                </td>
-                <td>
-                  <span>{{dt.rdTotalPrice | number : '1.2-2' }}</span>
-                </td>
-                <td>
-                  <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdMissedPriceReason" type="text" id="txtReason"
-                    [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                </td>
-                <td>
-                  <ng-container *ngIf="dt.rdAddedItem == 1"> 
-                    <span> Yes </span>
-                  </ng-container> 
-                </td>
-                <td>
-                  <span>{{dt.rdAddedItemOn | date: 'dd/MM/yyyy'}}</span>
-                </td>
+<!-- AH01022024 -->  
               </tr>
             </tbody>
             <tfoot>
@@ -104,14 +120,25 @@
             </tfoot>
           </table>
 
-          <table *ngIf="RevisionDetailsList.length > 0 && psByBoq == 0" class="table"
-            [id]="'tblRevisionDtl-' + Revision.prRevId">
+          <!-- <table *ngIf="RevisionDetailsList.length > 0 && psByBoq == 0" class="table"
+            [id]="'tblRevisionDtl-' + Revision.prRevId"> -->
+            <table>
+              <tr *ngFor="let levelModel of LevelModelList; let that = index">
+
+                <td style="width: 100%;">
+                 {{levelModel.levelName}}
+                <br>
+
+                
+            <table *ngIf="LevelModelList.length > 0 && psByBoq == 0" class="table"
+              [id]="'tblRevisionDtl-' + Revision.prRevId">
             <thead>
               <tr>
-                <th style="width: 10%;">Item</th>
-                <th style="width: 90%;">
+                
+                <th style="width: 100%;">
                   <table class="table" width="100%" >
                     <thead>
+                      <th style="width: 10%;">Item</th>
                       <th style="width: 20%;">Resource</th>
                       <th style="width: 10%;">Qty</th>
                       <th style="width: 10%;">U. Price</th>
@@ -127,7 +154,58 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let it of RevisionDetailsBoqItems; let that = index">
+<!-- AH01022024 --> 
+                <tr *ngFor="let dt of levelModel.items; let k = index">
+                  <td>
+                    <table class="table" width="100%">
+                      <tbody>
+                        <tr *ngFor="let dt of levelModel.items; let k = index">
+                          <td>
+                            {{dt.rdBoqItemDescription}}
+                          </td> 
+                          <td style="width: 20%;">
+                            {{dt.rdItemDescription}}
+                          </td>
+                          <td style="width: 10%;">{{dt.rdQty | number : '1.2-2'}}</td>
+                          <td style="width: 10%;">{{dt.rdPrice | number : '1.2-2'}}</td>
+
+                          <td style="width: 10%;">
+                            <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdDiscount" type="number"
+                              [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
+                            <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdDiscount | number : '1.2-2'}}</span>
+                          </td>
+                          <td style="width: 10%;">
+                            <span>{{dt.rdPriceAfterDiscount | number : '1.2-2'}}</span>
+                          </td>
+                          <td style="width: 10%;">
+                            <span>{{dt.rdTotalPrice | number : '1.2-2'}}</span>
+                          </td>
+                          <td style="width: 10%;">
+                            <input type="hidden" [value]="dt.rdResourceSeq">
+                            <input *ngIf="dt.rdMissedPrice == 1"
+                              [id]="'price-' + dt.rdResourceSeq + '-' + + Revision.prRevId" [value]="dt.rdPrice"
+                              type="number"
+                              [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
+                          </td>
+                          <td style="width: 5%;">
+                            <ng-container *ngIf="dt.rdAddedItem == 1"> 
+                              <span> Yes </span>
+                            </ng-container> 
+                          </td>
+                          <td style="width: 10%;">
+                            <span>{{dt.rdAddedItemOn | date: 'dd/MM/yyyy'}}</span>
+                          </td>
+                          <td style="width: 10%;">
+                            <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdMissedPriceReason" type="text" id="txtReason"
+                              [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+
+              <!-- <tr *ngFor="let it of RevisionDetailsBoqItems; let that = index">
                 <td style="width: 10%;">
                 -  {{it.descriptionO}}
                 </td>
@@ -175,13 +253,14 @@
                     </tbody>
                   </table>
                 </td>
-              </tr>
+              </tr> -->
+<!-- AH01022024 -->   
             </tbody>
             <tfoot>
               <tr>
                 <td></td>
                 <td style="text-align: right;">
-                  <button class="btn btn-success btn-block" [disabled]="saving"
+                  <button class="btn btn-success btn-block" [disabled]="saving" *ngIf="1>2" 
                     (click)="UpdateRevisionPrices(Revision.prRevId, 'tblRevisionDtl-' + Revision.prRevId)">
                     <span class="spinner-border spinner-border-sm" *ngIf="saving"></span>
                     Update Prices</button>
@@ -189,6 +268,12 @@
               </tr>
             </tfoot>
           </table>
+
+
+                </td>
+              </tr>
+            </table>
+
         </div>
       </div>
     </div>

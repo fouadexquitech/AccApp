@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { OriginalBoqModel } from '../assign-package/assign-package.model';
-import { RevisionDetailsList, SupplierPackagesList, SupplierPackagesRevList } from '../package-supplier/package-supplier.model';
+import { LevelModel,RevisionDetailsList, SupplierPackagesList, SupplierPackagesRevList } from '../package-supplier/package-supplier.model';
 import { PackageSupplierService } from '../package-supplier/package-supplier.service';
 import { RevisionDetailsService } from './revision-details.service';
 
@@ -16,6 +16,9 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
   Revision : SupplierPackagesRevList | null;
   psByBoq : number = 0;
   RevisionDetailsList : RevisionDetailsList[] = [];
+//AH01022024
+  LevelModelList : LevelModel[] = [];
+//AH01022024
   RevisionDetailsBoqItems : OriginalBoqModel[] = [];
   supplierPackage : SupplierPackagesList;
   saving : boolean = false;
@@ -135,11 +138,22 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
                   C3:"",
                   C4:"",
                   C5:"",
-                  C6:""
+                  C6:"",
+                  levelName:"",
+                  unit:"",
+                  comments:"",
+
+                  rdUnitRate:0, 
+                  rdTotalBudget:0,
+                  exchangeRate:1,
+                  rdOriginalPrice:0,
+                  TotalSupplierPrice:0,
+                  currency:"",
+                  insertedBy:"",
+                  insertedDate:null
                };
 
                revisionDetails.push(revD);
-
             }
     }
 
@@ -214,7 +228,19 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
                   C3:"",
                   C4:"",
                   C5:"",
-                  C6:""
+                  C6:"",
+                  levelName:"",
+                  unit:"",
+                  comments:"",
+
+                  rdUnitRate:0, 
+                  rdTotalBudget:0,
+                  exchangeRate:1,
+                  rdOriginalPrice:0,
+                  TotalSupplierPrice:0,
+                  currency:"",
+                  insertedBy:"",
+                  insertedDate:null
                };
                revisionDetails.push(revD);
             }  
@@ -239,49 +265,64 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
 
   checkIfItemExistsInResources(arrRevDetails : RevisionDetailsList[], itemO : string)
   {    
-      let arr = arrRevDetails.filter(element=>element.rdBoqItem == itemO);    
+
+      let arr = arrRevDetails.filter(element=>element.rdBoqItem == itemO);  
+      console.log(arrRevDetails);
+      console.log(itemO)  
       return arr.length;
   }
 
   getResourcesPerItem(arrRevDetails : RevisionDetailsList[], itemO : string)
   {
-    
       return arrRevDetails.filter(element=>element.rdBoqItem === itemO);
   }
 
   GetRevisionDetails(prRevId : number)
   {
-    
     let filterItemDesc = document.getElementById('filterItemDesc') as HTMLInputElement;
     let filterResource = document.getElementById('filterResource') as HTMLInputElement;
       this.packageSupplierService.GetRevisionDetails(prRevId, filterItemDesc.value, filterResource.value).subscribe(data=>{
           if(data)
           {
             this.RevisionDetailsBoqItems = [];
-            this.RevisionDetailsList = data;
-            this.RevisionDetailsList.forEach(rev=>{
-              let item : OriginalBoqModel = {
-               sectionO : '',
-               descriptionO : rev.rdBoqItemDescription,
-               itemO : rev.rdBoqItem,
-               qtyO : 0,
-               rowNumber : 0,
-               scopeO : 0,
-               unitO : '',
-               unitRateO : 0,
-               assignedPackage:'',
-               scopeQtyO:0,
-               billQtyO:0,
-               obTradeDesc:'',
-               isSelected : false,
-               boqStatus:''
-            };
-            //const found = this.RevisionDetailsBoqItems.find(elem => elem.itemO === rev.rdBoqItem);
-            //console.log(found); 
-            //if(found == undefined)
-              this.RevisionDetailsBoqItems.push(item);
-            }
+            //AH01022024
+            // this.RevisionDetailsList = data;
+            this.LevelModelList= data;         
+            //this.RevisionDetailsList.forEach(rev=>{
+            this.LevelModelList.forEach(LevelModel=>
+            {
+              //AH01022024
+              if (LevelModel.items.length>0){
+              LevelModel.items.forEach(rev=>
+              {
+                let item : OriginalBoqModel = 
+                {
+                  sectionO : '',
+                  descriptionO : rev.rdBoqItemDescription,
+                  itemO : rev.rdBoqItem,
+                  qtyO : 0,
+                  rowNumber : 0,
+                  scopeO : 0,
+                  unitO : '',
+                  unitRateO : 0,
+                  assignedPackage:'',
+                  scopeQtyO:0,
+                  billQtyO:0,
+                  obTradeDesc:'',
+                  isSelected : false,
+                  boqStatus:''
+                };
+                //const found = this.RevisionDetailsBoqItems.find(elem => elem.itemO === rev.rdBoqItem);
+                //console.log(found); 
+                //if(found == undefined)
+                this.RevisionDetailsBoqItems.push(item);
+                console.log(item);
+              }
+              
             );
+          }
+            console.log(this.RevisionDetailsBoqItems);
+          });
             //remove duplication
            
           const uniqueValuesSet = new Set();

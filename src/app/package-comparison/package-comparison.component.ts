@@ -305,33 +305,28 @@ export class PackageComparisonComponent implements OnInit {
           this.columns.push(element.supplierName + ' (' + moment(element.lastRevisionDate).format('DD-MM-YYYY') + ')');
           count++;
           
-          if (count > 1) {
-            element.revisionDetails.forEach(revision => {
+          if (count > 1) 
+          {
+            element.revisionDetails.forEach(revision => 
+            {
               //console.log(revision.price);
               var record : any;
               if(isByBoq == 0)
                   record = this.comparisonObject.find((x: { [x: string]: number; }) => x["resourceID"] == revision.resourceID);
               else
                   record = this.comparisonObject.find((x: { [x: string]: string; }) => x["itemO"] == revision.itemO);
-              if (record) {
+              if (record) 
+              {
                 let newColumn = "price" + count;
                 let missedPriceCol = "missedPrice" + count;
                 record[newColumn] = revision.price;
                 record[missedPriceCol] = revision.missedPrice;
               }
-
-              
-
             });
-          } else {
+          } else 
+          {
             this.comparisonObject = element.revisionDetails;
-            
           }
-
-         
-         
-        
-        
         });
         
         //console.log(newObj);
@@ -475,7 +470,6 @@ export class PackageComparisonComponent implements OnInit {
       if (data) {
         this.SupplierPackagesList = data;
         this.byBoq = this.SupplierPackagesList[0].psByBoq;
-         
       }
     });
     

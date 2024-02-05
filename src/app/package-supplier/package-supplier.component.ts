@@ -290,7 +290,6 @@ maxAttachements : number = 5;
   }
 
   ngOnInit(): void {
-
     this.params = this.route.params.subscribe(params => {
       this.PackageId = Number(params['packageId']);
       if(localStorage.getItem('assignByBoqOnly') == null)

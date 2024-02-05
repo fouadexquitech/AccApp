@@ -72,42 +72,27 @@
                 
                 </div>
     
-                <div class="col-sm-2 form-group">
-                    
-                    <label>BOQ Item</label>
-                            
-                    <input type="text" class="form-control" [(ngModel)]="SearchInput.bOQItem">
-          
+                <div class="col-sm-2 form-group">                   
+                    <label>BOQ Item</label>                       
+                    <input type="text" class="form-control" [(ngModel)]="SearchInput.bOQItem">         
                 </div>
     
-                <div class="col-sm-3 form-group">
-                    
-                    <label>BOQ Desc</label>
-                
-                    <input type="text" class="form-control" [(ngModel)]="SearchInput.bOQDesc">
-                        
+                <div class="col-sm-3 form-group">                  
+                    <label>BOQ Desc</label>                
+                    <input type="text" class="form-control" [(ngModel)]="SearchInput.bOQDesc">                       
                 </div>
     
-                <div class="col-sm-2 form-group">
-                    
-                    <label>From Row</label>
-                       
-                    <input type="text" class="form-control" [(ngModel)]="SearchInput.fromRow">
-               
-                   
-                       
+                <div class="col-sm-2 form-group">               
+                    <label>From Row</label>                    
+                    <input type="text" class="form-control" [(ngModel)]="SearchInput.fromRow">                  
                 </div>
                 <div class="col-sm-2 form-group">
                     <label>To Row</label>
-               
                     <input type="text" class="form-control" [(ngModel)]="SearchInput.toRow">
                 </div>
                 </div>
-            <div class="row">
-                
-                <div class="col-sm-3 form-group">
-              
-    
+            <div class="row">           
+                <div class="col-sm-3 form-group">           
                     <mat-form-field appearance="fill" class="full-width-field">
                         <mat-label>Sheet Desc</mat-label>
                         <mat-select [(ngModel)]="SearchInput.sheetDesc">
@@ -117,13 +102,9 @@
                           <mat-option></mat-option>
                           <mat-option *ngFor="let item of selectedSheetDescList" [value]="item.obSheetDesc">{{ item.obSheetDesc }}</mat-option>
                         </mat-select>
-                      </mat-form-field>
-              
+                      </mat-form-field>        
             </div>
-            <div class="col-sm-3 form-group">
-                    
-                
-    
+            <div class="col-sm-3 form-group">              
               <mat-form-field appearance="fill" class="full-width-field">
                   <mat-label>RES Div</mat-label>
                   <mat-select [(ngModel)]="SearchInput.rESDiv" multiple>
@@ -134,13 +115,9 @@
                     <mat-option *ngFor="let item of selectedRESDivList" [value]="item.boqDiv">{{ item.boqDiv }}</mat-option>
                   </mat-select>
                 </mat-form-field>
-                 
-    
           </div>
     
           <div class="col-sm-3 form-group">
-              
-    
               <mat-form-field appearance="fill" class="full-width-field">
                   <mat-label>RES Type</mat-label>
                   <mat-select [(ngModel)]="SearchInput.rESType" multiple>
@@ -150,8 +127,7 @@
                    
                     <mat-option *ngFor="let item of selectedRESTypeList" [value]="item.boqCtg">{{ item.boqCtg }}</mat-option>
                   </mat-select>
-                </mat-form-field>
-                 
+                </mat-form-field>   
           </div>
     
           <div class="col-sm-3 form-group">
@@ -340,8 +316,7 @@
                                   <td class="text-center"><strong>{{reply.reply}}</strong></td>
                                 </tr>
                               </table>
-                            </td>
-                           
+                            </td>                     
                           </tr>
                         </table>
                 </td>
