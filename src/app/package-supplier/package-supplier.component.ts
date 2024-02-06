@@ -392,7 +392,7 @@ maxAttachements : number = 5;
       this.topManagementAttachements.push({id : 0, file : null});
   }
 
-  OpenEmailTemplateModal(supId: number) 
+  OpenEmailTemplateModal(supId: number,revisionId :number) 
   {
     this.lstLanguages = Language.languages;
     this.topManagementAttachements = [];
@@ -405,7 +405,7 @@ maxAttachements : number = 5;
         listCC :[[],[]]
       }
     );
-    this.getComConditions();
+    this.getComConditions(revisionId);
 //AH24012024
     this.GetTechnicalConditionsByPackage();
     if (supId>0)
@@ -559,9 +559,9 @@ maxAttachements : number = 5;
     }
   }
 
-  getComConditions()
+  getComConditions(revisionId :number)
   {
-      this.packageSupplierService.getComConditions().subscribe(data=>{
+      this.packageSupplierService.getComConditions(revisionId).subscribe(data=>{
           this.comConditions = data;
       });
   }
