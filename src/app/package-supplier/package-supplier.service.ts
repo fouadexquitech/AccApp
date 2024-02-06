@@ -176,9 +176,9 @@ export class PackageSupplierService {
   );
  }
 
- getComConditions() : Observable<any>
+ getComConditions(revisionId :number) : Observable<any>
  {
-  return this.http.get(this.baseUrl + 'Conditions/GetComConditions').pipe(
+  return this.http.get(this.baseUrl + 'Conditions/GetComConditions?revisionId=' + revisionId).pipe(
     map(res => res), catchError(this.handleError)
   );
  }

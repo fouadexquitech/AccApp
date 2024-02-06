@@ -96,6 +96,7 @@ export class AssignOriginalBoqList {
     public rowNumber: number = 0;
     public scope: number = 0;
     public tradeDesc  : string = null;
+    public itemO: string = null;
 }
 
 export class AssignBoqList {

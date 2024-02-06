@@ -603,7 +603,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   OnOriginalBoqChecked(evt: any, index: number) {
     this.SelectedOriginalBoqRow = this.OriginalBoqList[index];
     if (evt.target.checked) {
-      this.SelectedOriginalBoqList.push({ rowNumber: this.SelectedOriginalBoqRow.rowNumber, scope: this.SelectedPackage,tradeDesc: null });
+      this.SelectedOriginalBoqList.push({ rowNumber: this.SelectedOriginalBoqRow.rowNumber, scope: this.SelectedPackage,tradeDesc: null,itemO:this.SelectedOriginalBoqRow.itemO });
     } else {
       const newIndex = this.SelectedOriginalBoqList.findIndex(x => x.rowNumber === this.SelectedOriginalBoqRow.rowNumber);
       if (newIndex > -1) {
@@ -744,7 +744,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
                 this.selectedBoqsV2.push(itemO);
                 this.selectedBoqsResV2.push(itemO);
                 
-                this.SelectedOriginalBoqList.push({ rowNumber: this.SelectedOriginalBoqRow.rowNumber, scope: this.SelectedPackage,tradeDesc: null });
+                this.SelectedOriginalBoqList.push({ rowNumber: this.SelectedOriginalBoqRow.rowNumber, scope: this.SelectedPackage,tradeDesc: null ,itemO:this.SelectedOriginalBoqRow.itemO});
                 this.GetBoqList(this.OriginalBoqList[index]["itemO"], this.SearchInput);
               }
                else 
@@ -975,7 +975,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
    
         if(checkbox.checked)
         {
-          this.SelectedOriginalBoqList.push({ rowNumber: el.rowNumber, scope: this.SelectedPackage, tradeDesc: null });
+          this.SelectedOriginalBoqList.push({ rowNumber: el.rowNumber, scope: this.SelectedPackage, tradeDesc: null ,itemO:el.itemO });
         }
     });
 
