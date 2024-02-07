@@ -78,6 +78,7 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
   comConditions : TblComCond[] = [];
   conditionsReplyList: ConditionsReply[] = [];
   techConditions : TechConditions[] = [];
+  acceptanceComments : any[] = [];
   isUpdatingCommercialConditions : boolean = false;
   listCC : string[] = [];
   dtOptions = {
@@ -1084,4 +1085,28 @@ maxAttachements : number = 5;
       });
     }
 //AH24012024
+
+openAcceptanceCommentsModal(revisionId : any, prRevNo : any, psSupName : any)
+{
+  $('#acceptanceCommentsModal').modal('show');
+    this.selectedSupplierName = psSupName;
+    this.selectedRevisionNb = prRevNo;
+    this.getAcceptanceComment(revisionId); 
+}
+
+  getAcceptanceComment(revId : any)
+  {
+      this.packageSupplierService.getRevisionAcceptance(revId).subscribe(data=>{
+        if(data)
+        {
+            this.acceptanceComments = data;
+        }
+      });
+  }
+
+  closeAcceptanceComments()
+  {
+    $('#acceptanceCommentsModal').modal('hide');
+    this.acceptanceComments = [];
+  }
 }
