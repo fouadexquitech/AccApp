@@ -115,7 +115,6 @@
 <!--AH30012024-->        
         <td class="text-center"><button type="button" *ngIf="1>2" class="btn btn-secondary" (click)="openUpdateTechnicalCondModal(item)">Upload Technical Conditions</button></td>
         <td class="text-center"><button type="button" *ngIf="1>2" class="btn btn-secondary" (click)="openUpdateCommercialCondModal(item)">Upload Commercial Conditions</button></td>  
-        
       </tr>
       <tr *ngIf="currentRowIndex == i">
         <td colspan="12">
@@ -558,7 +557,7 @@
                               {{c.cmDescription}}
                             </td>
                             <td style="width:48%">
-                              <input class="form-control" [(ngModel)]="c.cmAccCondValue"  
+                              <input class="form-control" [(ngModel)]="c.cmAccCondValue"  value="{{c.cmAccCondValue}}" 
                               (change)="updateComAccCondValue($event, i)">
                             </td>
                         </tr>
@@ -593,7 +592,7 @@
                               {{c.tcDescription}}
                             </td>
                             <td style="width:48%">
-                              <input type="text" class="form-control" [(ngModel)]="c.tcAccCondValue"  
+                              <input type="text" class="form-control" [(ngModel)]="c.tcAccCondValue"  value="{{c.tcAccCondValue}}" 
                               (change)="updateTechAccCondValue($event, i)">
                             </td>
                         </tr>
