@@ -51,6 +51,7 @@ import { ScrollContainerComponent } from './_components/scroll-container/scroll-
 import { BoqListTableComponent } from './boq-list-table/boq-list-table.component';
 import { AssignPackageFilterComponent } from './assign-package-filter/assign-package-filter.component';
 import { FuseDrawerModule } from './@fuse/drawer';
+import { InfiniteScrollModule } from "ngx-infinite-scroll";
 
 @NgModule({
   declarations: [
@@ -105,7 +106,8 @@ import { FuseDrawerModule } from './@fuse/drawer';
     MatSortModule,
     MatButtonModule,
     MatIconModule,
-    FuseDrawerModule
+    FuseDrawerModule,
+    InfiniteScrollModule
     ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

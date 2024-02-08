@@ -127,7 +127,7 @@
                 <th>Revision Date</th>
                 <th>Total Price</th>
                 <th>Currency</th>
-                <th colspan="5" style="text-align: center;">Action</th>
+                <th colspan="6" style="text-align: center;">Action</th>
               </thead>
             <tbody *ngFor="let rev of SupplierPackagesRevList; let j = index">
               <tr>
@@ -150,6 +150,9 @@
                 </td>
                 <td style="text-align: center;">
                   <button class="btn btn-secondary" (click)="openTechCondReplyListModal(rev.prRevId, rev.prRevNo, item.psSupName)">View Tech. Conditions</button>
+                </td>
+                <td style="text-align: center;">
+                  <button class="btn btn-secondary" (click)="openAcceptanceCommentsModal(rev.prRevId, rev.prRevNo, item.psSupName)">View Acceptance Comments</button>
                 </td>
                 
               </tr>
@@ -721,4 +724,38 @@
       </div>
     </div>
   </div>
+
+  <!-- View Acceptance comments Modal -->
+<div class="modal fade" id="acceptanceCommentsModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="fieldsListLabel"><strong>Supplier: </strong> <label>{{selectedSupplierName}}</label> | <strong>Revision:</strong> <label>{{selectedRevisionNb}}</label> | Acceptance Comments</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeAcceptanceComments()"></button>
+      </div>
+      
+      <div class="modal-body">
+        <h4 *ngIf="acceptanceComments.length == 0">No Acceptance Comments found</h4>
+          <table class="table" *ngIf="acceptanceComments.length > 0">
+            <thead>
+              <tr>
+                <th>Comment</th>
+                <th></th>
+                
+               
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let acc of acceptanceComments">
+                <td>{{acc.acCaption}}</td>
+                <td><i class="fa fa-check" *ngIf="acc.acChecked"></i></td>
+                
+              </tr>
+            </tbody>
+          </table>
+      </div>
+    
+    </div>
+  </div>
+</div>
 </section>

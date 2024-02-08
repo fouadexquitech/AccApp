@@ -39,242 +39,72 @@
           </div>
         </div>
         
-        <div class="card-body">
-          <!-- AH01022024 -->
-            <!--<table *ngIf="RevisionDetailsList.length > 0 && psByBoq == 1" class="table" 
-              [id]="'tblRevisionDtl-' + Revision.prRevId">-->
-            <table *ngIf="LevelModelList.length > 0 && psByBoq == 1" class="table" 
-                [id]="'tblRevisionDtl-' + Revision.prRevId">
-              <!-- AH01022024 -->
-            <thead>
+        <div class="card" *ngFor="let level of CurrentLevelList" 
+        infinite-scroll
+        [infiniteScrollDistance]="modalScrollDistance"
+        [infiniteScrollThrottle]="modalScrollThrottle"
+        
+        (scrolled)="onScroll()">
+          <div class="card-header">
+             <span [innerHTML]="getSplittedLevelName(level.levelName)" *ngIf="level.levelName"></span>
+             <span *ngIf="!level.levelName">From Drawing</span>
+          </div>
+          <div class="card-body" *ngIf="psByBoq == 1">
+             <table class="display table table-bordered" *ngIf="level.items.length > 0">
+                <tr>
+                    <th>Item Description</th>
+                    <th>Alternative</th>
+                    <th>New</th>
+                    <th>Quantity</th>
+                    <th>U. Price</th>
+                    <th>Discount %</th>
+                    <th>Final U. Price</th>
+                    <th>Total Price</th>
+                    <th>Comments</th>
+                </tr>
+                <tr *ngFor="let item of level.items; let i = index" [ngStyle]="{'background-color': item.isAlternative ? '#0c74784d' : (item.isNew ? '#bfa6544d' : null) }">
+                  <td>{{item.rdItemDescription}}</td>
+                  <td><i class="fa fa-check" *ngIf="item.isAlternative"></i></td>
+                  <td><i class="fa fa-check" *ngIf="item.isNew"></i></td>
+                  <td>{{item.rdQty | number : '1.2-2' }}</td>
+                  <td>{{item.rdPrice | number : '1.2-2' }}</td>
+                  <td>{{item.rdDiscount | number : '1.2-2' }}</td>
+                  <td>{{item.rdPriceAfterDiscount | number : '1.2-2'}}</td>
+                  <td>{{item.rdTotalPrice | number : '1.2-2'}}</td>
+                  <td>{{item.comments}}</td>
+                </tr>
+            </table>
+          </div>
+          <div class="card-body" *ngIf="psByBoq == 0">
+            <table class="display table table-bordered" *ngIf="level.items.length > 0">
               <tr>
                 <th>Item Description</th>
+                <th>Resource Desc.</th>
+                <th>Alternative</th>
+                <th>New</th>
                 <th>Quantity</th>
                 <th>U. Price</th>
                 <th>Discount %</th>
                 <th>Final U. Price</th>
                 <th>Total Price</th>
-                <th>Reason For Fill Missing Price</th>
-                <th>Added Item</th>
-                <th>Added Date</th>
+                <th>Comment</th>
               </tr>
-            </thead>
-            <tbody>
-              <!-- AH01022024 -->
-              <!-- <tr *ngFor="let dt of RevisionDetailsList; let k = index"> -->
-              <tr *ngFor="let levelModel of LevelModelList ;  let k = index">
-                <td>{{levelModel.levelName}}</td>
-                <td *ngFor="let dt of levelModel.items; let k = index">
-                  <table class="table table-bordered">
-                    <tr>
-                      <!-- AH01022024 -->
-                      <td>{{dt.rdItemDescription}}</td>
-                      <td>{{dt.rdQty | number : '1.2-2' }}</td>
-                      <td style="width: 10% ;">
-                        <input type="hidden" [value]="dt.rdResourceSeq">
-                        <input type="hidden" [value]="dt.rdBoqItem">
-                        <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdPrice" type="number"
-                          [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                        <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdPrice | number : '1.2-2' }}</span>
-                      </td>
-                      <td  style="width: 8% ;">
-                        <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdDiscount" type="number"
-                          [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                        <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdDiscount }}</span>
-                      </td>
-                      <td>
-                        <span>{{dt.rdPriceAfterDiscount | number : '1.2-2'}}</span>
-                      </td>
-                      <td>
-                        <span>{{dt.rdTotalPrice | number : '1.2-2' }}</span>
-                      </td>
-                      <td>
-                        <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdMissedPriceReason" type="text" id="txtReason"
-                          [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                      </td>
-                      <td>
-                        <ng-container *ngIf="dt.rdAddedItem == 1"> 
-                          <span> Yes </span>
-                        </ng-container> 
-                      </td>
-                      <td>
-                        <span>{{dt.rdAddedItemOn | date: 'dd/MM/yyyy'}}</span>
-                      </td>
-<!-- AH01022024 -->      
-                    </tr>
-                  </table>
-                </td>
-<!-- AH01022024 -->  
+              <tr *ngFor="let item of level.items; let i = index">
+                <td>{{item.rdBoqItemDescription}}</td>
+                <td>{{item.rdItemDescription}}</td>
+                <td><i class="fa fa-check" *ngIf="item.isAlternative"></i></td>
+                <td><i class="fa fa-check" *ngIf="item.isNew"></i></td>
+                <td>{{item.rdQty | number : '1.2-2' }}</td>
+                <td>{{item.rdPrice | number : '1.2-2' }}</td>
+                <td>{{item.rdDiscount | number : '1.2-2' }}</td>
+                <td>{{item.rdPriceAfterDiscount | number : '1.2-2'}}</td>
+                <td>{{item.rdTotalPrice | number : '1.2-2'}}</td>
+                <td>{{item.comments}}</td>
               </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <td></td>
-                <td colspan="6" style="text-align: right;">
-                  <button class="btn btn-success btn-block" [disabled]="saving"
-                    (click)="UpdateRevisionPricesByBoq(Revision.prRevId, 'tblRevisionDtl-' + Revision.prRevId)">
-                    <i class="fa fa-spinner fa-spin" *ngIf="saving"></i>
-                    Update Prices</button>
-                </td>
-              </tr>
-            </tfoot>
           </table>
-
-          <!-- <table *ngIf="RevisionDetailsList.length > 0 && psByBoq == 0" class="table"
-            [id]="'tblRevisionDtl-' + Revision.prRevId"> -->
-            <table>
-              <tr *ngFor="let levelModel of LevelModelList; let that = index">
-
-                <td style="width: 100%;">
-                 {{levelModel.levelName}}
-                <br>
-
-                
-            <table *ngIf="LevelModelList.length > 0 && psByBoq == 0" class="table"
-              [id]="'tblRevisionDtl-' + Revision.prRevId">
-            <thead>
-              <tr>
-                
-                <th style="width: 100%;">
-                  <table class="table" width="100%" >
-                    <thead>
-                      <th style="width: 10%;">Item</th>
-                      <th style="width: 20%;">Resource</th>
-                      <th style="width: 10%;">Qty</th>
-                      <th style="width: 10%;">U. Price</th>
-                      <th style="width: 10%;">Discount %</th>
-                      <th style="width: 10%;">Final U. Price</th>
-                      <th style="width: 10%;">Total Price</th>
-                      <th style="width: 10%;">Added Item</th>
-                      <th style="width: 10%;">Added Date</th>
-                      <th style="width: 10%;">Comment</th>
-                    </thead>
-                  </table>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-<!-- AH01022024 --> 
-                <tr *ngFor="let dt of levelModel.items; let k = index">
-                  <td>
-                    <table class="table" width="100%">
-                      <tbody>
-                        <tr *ngFor="let dt of levelModel.items; let k = index">
-                          <td>
-                            {{dt.rdBoqItemDescription}}
-                          </td> 
-                          <td style="width: 20%;">
-                            {{dt.rdItemDescription}}
-                          </td>
-                          <td style="width: 10%;">{{dt.rdQty | number : '1.2-2'}}</td>
-                          <td style="width: 10%;">{{dt.rdPrice | number : '1.2-2'}}</td>
-
-                          <td style="width: 10%;">
-                            <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdDiscount" type="number"
-                              [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                            <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdDiscount | number : '1.2-2'}}</span>
-                          </td>
-                          <td style="width: 10%;">
-                            <span>{{dt.rdPriceAfterDiscount | number : '1.2-2'}}</span>
-                          </td>
-                          <td style="width: 10%;">
-                            <span>{{dt.rdTotalPrice | number : '1.2-2'}}</span>
-                          </td>
-                          <td style="width: 10%;">
-                            <input type="hidden" [value]="dt.rdResourceSeq">
-                            <input *ngIf="dt.rdMissedPrice == 1"
-                              [id]="'price-' + dt.rdResourceSeq + '-' + + Revision.prRevId" [value]="dt.rdPrice"
-                              type="number"
-                              [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                          </td>
-                          <td style="width: 5%;">
-                            <ng-container *ngIf="dt.rdAddedItem == 1"> 
-                              <span> Yes </span>
-                            </ng-container> 
-                          </td>
-                          <td style="width: 10%;">
-                            <span>{{dt.rdAddedItemOn | date: 'dd/MM/yyyy'}}</span>
-                          </td>
-                          <td style="width: 10%;">
-                            <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdMissedPriceReason" type="text" id="txtReason"
-                              [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-
-              <!-- <tr *ngFor="let it of RevisionDetailsBoqItems; let that = index">
-                <td style="width: 10%;">
-                -  {{it.descriptionO}}
-                </td>
-                <td style="width: 90%;">
-                  <table class="table" width="100%" *ngIf="checkIfItemExistsInResources(RevisionDetailsList, it.itemO) > 0">
-                    <tbody>
-                      <tr *ngFor="let dt of getResourcesPerItem(RevisionDetailsList, it.itemO)">
-                        <td style="width: 20%;">
-                          {{dt.rdItemDescription}}
-                        </td>
-                        <td style="width: 10%;">{{dt.rdQty | number : '1.2-2'}}</td>
-                        <td style="width: 10%;">{{dt.rdPrice | number : '1.2-2'}}</td>
-
-                        <td style="width: 10%;">
-                          <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdDiscount" type="number"
-                            [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                          <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdDiscount | number : '1.2-2'}}</span>
-                        </td>
-                        <td style="width: 10%;">
-                          <span>{{dt.rdPriceAfterDiscount | number : '1.2-2'}}</span>
-                        </td>
-                        <td style="width: 10%;">
-                          <span>{{dt.rdTotalPrice | number : '1.2-2'}}</span>
-                        </td>
-                        <td style="width: 10%;">
-                          <input type="hidden" [value]="dt.rdResourceSeq">
-                          <input *ngIf="dt.rdMissedPrice == 1"
-                            [id]="'price-' + dt.rdResourceSeq + '-' + + Revision.prRevId" [value]="dt.rdPrice"
-                            type="number"
-                            [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                        </td>
-                        <td style="width: 5%;">
-                          <ng-container *ngIf="dt.rdAddedItem == 1"> 
-                            <span> Yes </span>
-                          </ng-container> 
-                        </td>
-                        <td style="width: 10%;">
-                          <span>{{dt.rdAddedItemOn | date: 'dd/MM/yyyy'}}</span>
-                        </td>
-                        <td style="width: 10%;">
-                          <input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdMissedPriceReason" type="text" id="txtReason"
-                            [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
-              </tr> -->
-<!-- AH01022024 -->   
-            </tbody>
-            <tfoot>
-              <tr>
-                <td></td>
-                <td style="text-align: right;">
-                  <button class="btn btn-success btn-block" [disabled]="saving" *ngIf="1>2" 
-                    (click)="UpdateRevisionPrices(Revision.prRevId, 'tblRevisionDtl-' + Revision.prRevId)">
-                    <span class="spinner-border spinner-border-sm" *ngIf="saving"></span>
-                    Update Prices</button>
-                </td>
-              </tr>
-            </tfoot>
-          </table>
-
-
-                </td>
-              </tr>
-            </table>
-
+          </div>
         </div>
+        
       </div>
     </div>
   </div>

@@ -101,6 +101,8 @@ export class RevisionDetailsList {
     public levelName : string = "";
     public unit : string = "";
     public comments : string = "";
+    public isAlternative : boolean = false;
+    public isNew : boolean = false;
 }
 
 export class LevelModel {

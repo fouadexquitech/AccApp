@@ -5,6 +5,7 @@ import { OriginalBoqModel } from '../assign-package/assign-package.model';
 import { LevelModel,RevisionDetailsList, SupplierPackagesList, SupplierPackagesRevList } from '../package-supplier/package-supplier.model';
 import { PackageSupplierService } from '../package-supplier/package-supplier.service';
 import { RevisionDetailsService } from './revision-details.service';
+import { escapeRegExp } from 'lodash-es';
 
 @Component({
   selector: 'app-revision-details',
@@ -18,12 +19,16 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
   RevisionDetailsList : RevisionDetailsList[] = [];
 //AH01022024
   LevelModelList : LevelModel[] = [];
+  CurrentLevelList : LevelModel[] = [];
 //AH01022024
   RevisionDetailsBoqItems : OriginalBoqModel[] = [];
   supplierPackage : SupplierPackagesList;
   saving : boolean = false;
   packageId : number;
   packageName : string;
+  modalScrollDistance = 2;
+  modalScrollThrottle = 50;
+  sum = 4;
   constructor(private router: Router, private packageSupplierService : PackageSupplierService, private route: ActivatedRoute,
     private revisionDetailsService : RevisionDetailsService, private toastr: ToastrService,) {
     /*if (this.router.getCurrentNavigation().extras.state != undefined) {
@@ -99,7 +104,7 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
       let cel6 = row.cells[6];
       let missedPriceReason = cel6.childNodes[0] as HTMLInputElement;
 
-      console.log(rdPrice.value);
+   
 
       if(rdResourceSeq.type == 'hidden' && rdBoqItem.type == 'hidden' && rdPrice.type == 'number')
             {
@@ -150,7 +155,9 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
                   TotalSupplierPrice:0,
                   currency:"",
                   insertedBy:"",
-                  insertedDate:null
+                  insertedDate:null,
+                  isAlternative : false,
+                  isNew : false
                };
 
                revisionDetails.push(revD);
@@ -240,7 +247,9 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
                   TotalSupplierPrice:0,
                   currency:"",
                   insertedBy:"",
-                  insertedDate:null
+                  insertedDate:null,
+                  isAlternative : false,
+                  isNew : false
                };
                revisionDetails.push(revD);
             }  
@@ -267,8 +276,7 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
   {    
 
       let arr = arrRevDetails.filter(element=>element.rdBoqItem == itemO);  
-      console.log(arrRevDetails);
-      console.log(itemO)  
+      
       return arr.length;
   }
 
@@ -316,13 +324,16 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
                 //console.log(found); 
                 //if(found == undefined)
                 this.RevisionDetailsBoqItems.push(item);
-                console.log(item);
+                
               }
               
             );
+
           }
-            console.log(this.RevisionDetailsBoqItems);
+            
           });
+
+          
             //remove duplication
            
           const uniqueValuesSet = new Set();
@@ -338,8 +349,40 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
             return !isPresentInSet;
           });
           this.RevisionDetailsBoqItems = filteredArr;     
+
+          for (let i = 0; i < this.sum; ++i) {
+            this.CurrentLevelList.push(this.LevelModelList[i]);
+          }
           }
       });
+  }
+
+  getSplittedLevelName(levelName : any)
+  {
+     let arr : any[] = levelName.split('|');
+     let str = "";
+     arr.forEach(element => {
+      str += "<br>" + element;
+     });
+     return this.replaceAll(str, '~', " : ");
+  }
+
+  replaceAll(str : string, find : string, replace : string) {
+    return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+  }
+
+  onScroll(){
+    console.log("scrolled!!");
+
+     //add another "sum" items
+     const start = this.sum;
+     this.sum += 4;
+     for (let i = start; i < this.sum; ++i) {
+        if((this.LevelModelList.length - 1) >= i)
+        {
+            this.CurrentLevelList.push(this.LevelModelList[i]);
+        }
+     }
   }
 
 }

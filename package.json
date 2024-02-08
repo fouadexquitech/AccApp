@@ -45,6 +45,7 @@
     "moment": "^2.29.1",
     "ng-select2": "^1.4.1",
     "ngx-chips": "^2.2.2",
+    "ngx-infinite-scroll": "^13.1.0",
     "ngx-spinner": "^13.0.0",
     "ngx-toastr": "^14.2.1",
     "pdfmake": "^0.2.4",

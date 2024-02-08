@@ -248,4 +248,11 @@ export class PackageSupplierService {
    );
   }
   //AH30012024
+
+  getRevisionAcceptance(revId : number)
+  {
+    return this.http.post(this.baseUrl + 'RevisionDetails/GetRevisionAcceptance?revId=' + revId, null).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
 }
