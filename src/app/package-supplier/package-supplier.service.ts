@@ -241,9 +241,9 @@ export class PackageSupplierService {
     );
   }
 
-  getTechConditionsByPackage(packId : number) : Observable<any>
+  getTechConditionsByPackage(packId : number,revisionId :number) : Observable<any>
   {
-   return this.http.get(this.baseUrl + 'Conditions/GetTechConditionsByPackage?packId=' + packId).pipe(
+   return this.http.get(this.baseUrl + 'Conditions/GetTechConditionsByPackage?packId=' + packId + '&revisionId=' + revisionId ).pipe(
      map(res => res), catchError(this.handleError)
    );
   }

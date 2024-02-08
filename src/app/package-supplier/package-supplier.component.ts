@@ -407,7 +407,7 @@ maxAttachements : number = 5;
     );
     this.getComConditions(revisionId);
 //AH24012024
-    this.GetTechnicalConditionsByPackage();
+    this.GetTechnicalConditionsByPackage(revisionId);
     if (supId>0)
     {
       this.selectedSuppliers = [];
@@ -563,6 +563,7 @@ maxAttachements : number = 5;
   {
       this.packageSupplierService.getComConditions(revisionId).subscribe(data=>{
           this.comConditions = data;
+          console.log(this.comConditions);
       });
   }
 
@@ -1064,9 +1065,9 @@ maxAttachements : number = 5;
       });
     }
 
-    GetTechnicalConditionsByPackage()
+    GetTechnicalConditionsByPackage(revisionId :number)
     {
-        this.packageSupplierService.getTechConditionsByPackage(this.PackageId).subscribe(data=>{
+        this.packageSupplierService.getTechConditionsByPackage(this.PackageId,revisionId).subscribe(data=>{
             if(data)
             {
               this.techConditions = data;
