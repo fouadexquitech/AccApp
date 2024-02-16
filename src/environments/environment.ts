@@ -5,7 +5,9 @@
 export const environment = {
   production: false,
   baseApiUrl: "https://localhost:44306/",
-  portalApiUrl: "https://localhost:44377/"
+  portalApiUrl: "https://localhost:7143/"
+  // portalApiUrl: "https://localhost:44377/"
+  
 };
 
 
