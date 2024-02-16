@@ -89,7 +89,7 @@
                 <th>Total Price</th>
                 <th>Comment</th>
               </tr>
-              <tr *ngFor="let item of level.items; let i = index">
+              <tr *ngFor="let item of level.items; let i = index" [ngStyle]="{'background-color': item.isAlternative ? '#0c74784d' : (item.isNew ? '#bfa6544d' : null) }">
                 <td>{{item.rdBoqItemDescription}}</td>
                 <td>{{item.rdItemDescription}}</td>
                 <td><i class="fa fa-check" *ngIf="item.isAlternative"></i></td>
