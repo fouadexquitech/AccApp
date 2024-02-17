@@ -40,11 +40,9 @@
         </div>
         
         <div class="card" *ngFor="let level of CurrentLevelList" 
-        infinite-scroll
-        [infiniteScrollDistance]="modalScrollDistance"
-        [infiniteScrollThrottle]="modalScrollThrottle"
-        
-        (scrolled)="onScroll()">
+          infinite-scroll
+          [infiniteScrollDistance]="modalScrollDistance"
+          [infiniteScrollThrottle]="modalScrollThrottle" (scrolled)="onScroll()">
           <div class="card-header">
              <span [innerHTML]="getSplittedLevelName(level.levelName)" *ngIf="level.levelName"></span>
              <span *ngIf="!level.levelName">From Drawing</span>
@@ -52,6 +50,7 @@
           <div class="card-body" *ngIf="psByBoq == 1">
              <table class="display table table-bordered" *ngIf="level.items.length > 0">
                 <tr>
+                    <th>BOQ</th>
                     <th>Item Description</th>
                     <th>Alternative</th>
                     <th>New</th>
@@ -63,6 +62,7 @@
                     <th>Comments</th>
                 </tr>
                 <tr *ngFor="let item of level.items; let i = index" [ngStyle]="{'background-color': item.isAlternative ? '#0c74784d' : (item.isNew ? '#bfa6544d' : null) }">
+                  <td>{{item.rdBoqItem}}</td>
                   <td>{{item.rdItemDescription}}</td>
                   <td><i class="fa fa-check" *ngIf="item.isAlternative"></i></td>
                   <td><i class="fa fa-check" *ngIf="item.isNew"></i></td>
@@ -78,6 +78,7 @@
           <div class="card-body" *ngIf="psByBoq == 0">
             <table class="display table table-bordered" *ngIf="level.items.length > 0">
               <tr>
+                <th>BOQ</th>
                 <th>Item Description</th>
                 <th>Resource Desc.</th>
                 <th>Alternative</th>
@@ -90,6 +91,7 @@
                 <th>Comment</th>
               </tr>
               <tr *ngFor="let item of level.items; let i = index" [ngStyle]="{'background-color': item.isAlternative ? '#0c74784d' : (item.isNew ? '#bfa6544d' : null) }">
+                <td>{{item.rdBoqItem}}</td>
                 <td>{{item.rdBoqItemDescription}}</td>
                 <td>{{item.rdItemDescription}}</td>
                 <td><i class="fa fa-check" *ngIf="item.isAlternative"></i></td>
