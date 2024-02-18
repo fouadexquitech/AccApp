@@ -43,6 +43,7 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
   expandedDetail: boolean = false;
   currentRowIndex: number = -1;
   currentRevRowIndex : number = -1;
+  rowindex: number = -1;
   selectedFile: File = null;
   selectedTechnicalCondFile : File = null;
   selectedCommercialCondFile : File = null;
@@ -393,7 +394,7 @@ maxAttachements : number = 5;
       this.topManagementAttachements.push({id : 0, file : null});
   }
 
-  OpenEmailTemplateModal(supId: number,revisionId :number) 
+  OpenEmailTemplateModal(supId: number,psId :number,packageSupplier : SupplierPackagesList,index:number) 
   {
     this.lstLanguages = Language.languages;
     this.topManagementAttachements = [];
@@ -406,14 +407,17 @@ maxAttachements : number = 5;
         listCC :[[],[]]
       }
     );
-    this.getComConditions(revisionId);
+    this.getComConditions(psId);
 //AH24012024
-    this.GetTechnicalConditionsByPackage(revisionId);
+    this.GetTechnicalConditionsByPackage(psId);
     if (supId>0)
     {
       this.selectedSuppliers = [];
       this.selectedSuppliers.push(supId);
     }
+    this.selectedPsId = psId;
+    this.selectedPackageSupplier = packageSupplier;
+    this.rowindex=index;
 //AH24012024
     $("#emailTemplateModal").modal('show');
   }
@@ -438,6 +442,11 @@ maxAttachements : number = 5;
     {
       // let ccList=this.ccList;
       this.AssignSuppliers();
+    //AH18022024
+      this.Toggle( this.selectedPackageSupplier, this.rowindex) ;
+      // this.SupplierPackagesRevList = [];
+      // this.GetSupplierPackagesRevision(this.selectedPsId);
+    //AH18022024
     }
   }
 
@@ -522,7 +531,7 @@ maxAttachements : number = 5;
           sup.emailTemplate = this.f.template.value;
         });
 
-        console.log(this.listCC);
+        // console.log(this.listCC);
 
         let assignPackageTemplate : AssignPackageTemplate = {
           byBoq : Number(localStorage.getItem('assignByBoqOnly')),
@@ -560,9 +569,9 @@ maxAttachements : number = 5;
     }
   }
 
-  getComConditions(revisionId :number)
+  getComConditions(packSupId :number)
   {
-      this.packageSupplierService.getComConditions(revisionId).subscribe(data=>{
+      this.packageSupplierService.getComConditions(packSupId).subscribe(data=>{
           this.comConditions = data;
           console.log(this.comConditions);
       });
@@ -580,7 +589,9 @@ maxAttachements : number = 5;
 
     if (this.currentRowIndex == index) {
       this.currentRowIndex = -1;
-    } else {
+    } 
+    else 
+    {
       this.currentRowIndex = index;
       this.SupplierPackagesRevList = [];
       this.GetSupplierPackagesRevision(data.psId);
