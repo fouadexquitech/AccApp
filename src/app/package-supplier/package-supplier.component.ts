@@ -596,6 +596,8 @@ maxAttachements : number = 5;
       this.SupplierPackagesRevList = [];
       this.GetSupplierPackagesRevision(data.psId);
     }
+
+
   }
 
   OpenModal(psId: number) {
