@@ -93,16 +93,16 @@ export class PackageComparisonService {
   );
  }
 
- getTechCondReplies(packId : number)
+ getTechCondReplies(packId : number,costDB : string)
  {
-  return this.http.get(this.baseUrl + 'Conditions/getTechCondReplies?packId=' + packId).pipe(
+  return this.http.get(this.baseUrl + 'Conditions/getTechCondReplies?packId=' + packId+ '&costDB=' + costDB).pipe(
     map(res => res), catchError(this.handleError)
   );
  }
 
- getComCondReplies(packId : number)
+ getComCondReplies(packId : number,costDB : string)
  {
-  return this.http.get(this.baseUrl + 'Conditions/GetComCondReplies?packId=' + packId).pipe(
+  return this.http.get(this.baseUrl + 'Conditions/GetComCondReplies?packId=' + packId+ '&costDB=' + costDB).pipe(
     map(res => res), catchError(this.handleError)
   );
  }
@@ -130,10 +130,10 @@ export class PackageComparisonService {
  }
 
  
- generateSuppliersContractsExcel(packId: number, searchInput : SearchInput) : Observable<any> 
+ generateSuppliersContractsExcel(packId: number, searchInput : SearchInput,packSuppId: number,costDB:string) : Observable<any> 
  {
    let body = JSON.stringify(searchInput);
-   return this.http.post(this.baseUrl + 'RevisionDetails/GenerateSuppliersContracts_Excel?packageId=' + packId, body,{headers: new HttpHeaders().set('Content-Type','application/json')}).pipe(
+   return this.http.post(this.baseUrl + 'RevisionDetails/GenerateSuppliersContracts_Excel?packageId=' + packId+ '&PackageSupliersID=' + packSuppId+ '&costDB=' + costDB, body,{headers: new HttpHeaders().set('Content-Type','application/json')}).pipe(
      map(res => res), catchError(this.handleError)
    );
  }
@@ -165,38 +165,38 @@ getComparisonSheetByBoq(packId: number, input: SearchInput): Observable<any> {
   );
 }
 
-getComparisonSheet_Excel(packageId: number, input : SearchInput) : Observable<any> 
+getComparisonSheet_Excel(packageId: number, input : SearchInput,packSuppId: number,costDB:string) : Observable<any> 
   {
     const headers = { 'content-type': 'application/json'};
     let body = JSON.stringify(input);
-    return this.http.post(this.baseUrl + 'RevisionDetails/GetComparisonSheet_Excel?packageId=' + packageId, body, {headers : headers}).pipe(
+    return this.http.post(this.baseUrl + 'RevisionDetails/GetComparisonSheet_Excel?packageId=' + packageId+ '&PackageSupliersID=' + packSuppId+ '&costDB=' + costDB, body, {headers : headers}).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
 
-  GetComparisonSheetByBoq_Excel(packageId: number, input : SearchInput) : Observable<any> 
+  GetComparisonSheetByBoq_Excel(packageId: number, input : SearchInput,packSuppId: number,costDB:string) : Observable<any> 
   {
     const headers = { 'content-type': 'application/json'};
     let body = JSON.stringify(input);
-    return this.http.post(this.baseUrl + 'RevisionDetails/GetComparisonSheetByBoq_Excel?packageId=' + packageId, body, {headers : headers}).pipe(
+    return this.http.post(this.baseUrl + 'RevisionDetails/GetComparisonSheetByBoq_Excel?packageId=' + packageId+ '&PackageSupliersID=' + packSuppId+ '&costDB=' + costDB, body, {headers : headers}).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
 
-  getComparisonSheetResourcesByGroup_Excel(packageId: number, input : SearchInput) : Observable<any> 
+  getComparisonSheetResourcesByGroup_Excel(packageId: number, input : SearchInput,packSuppId: number,costDB:string) : Observable<any> 
   {
     const headers = { 'content-type': 'application/json'};
     let body = JSON.stringify(input);
-    return this.http.post(this.baseUrl + 'RevisionDetails/GetComparisonSheetResourcesByGroup_Excel?packageId=' + packageId, body, {headers : headers}).pipe(
+    return this.http.post(this.baseUrl + 'RevisionDetails/GetComparisonSheetResourcesByGroup_Excel?packageId=' + packageId+ '&PackageSupliersID=' + packSuppId+ '&costDB=' + costDB, body, {headers : headers}).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
 
-  getComparisonSheetBoqByGroup_Excel(packageId: number, input : SearchInput) : Observable<any> 
+  getComparisonSheetBoqByGroup_Excel(packageId: number, input : SearchInput,packSuppId: number,costDB:string) : Observable<any> 
   {
     const headers = { 'content-type': 'application/json'};
     let body = JSON.stringify(input);
-    return this.http.post(this.baseUrl + 'RevisionDetails/GetComparisonSheetBoqByGroup_Excel?packageId=' + packageId, body, {headers : headers}).pipe(
+    return this.http.post(this.baseUrl + 'RevisionDetails/GetComparisonSheetBoqByGroup_Excel?packageId=' + packageId+ '&PackageSupliersID=' + packSuppId+ '&costDB=' + costDB, body, {headers : headers}).pipe(
       map(res => res), catchError(this.handleError)
     );
   }

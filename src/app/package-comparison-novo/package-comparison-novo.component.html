@@ -476,18 +476,18 @@
                           <tr>
                             <td [attr.colspan]="SupplierPackagesList.length + 4">
                               <table class="table table-bordered">
-                              
-                                    
+                                                  
                                 <tr *ngFor="let cond of techConditionsReplies ;  let i = index">
-                                  <td style="width:55%">{{cond.description}}</td>
+                                  <td style="width:30%">{{cond.description}}</td>
                         
-                                  <td *ngFor="let reply of cond.replies" style="width:30%">
+                                  <td *ngFor="let reply of cond.replies" style="width:15%">
                                     <table class="table">
                                       <tr>
                                         <td class="text-center"><strong>{{reply?.reply}}</strong></td>
                                       </tr>
                                     </table>
                                   </td>
+                                  <td style="width:15%"></td>
                                 </tr>
                           </table>
                             </td>
@@ -500,14 +500,15 @@
                             <td [attr.colspan]="SupplierPackagesList.length + 4">
                               <table class="table table-bordered"> 
                                 <tr *ngFor="let cond of comConditionsReplies ;  let i = index">
-                                  <td style="width:55%">{{cond.description}}</td>
-                                  <td *ngFor="let reply of cond.replies"  style="width:30%">
+                                  <td style="width:30%">{{cond.description}}</td>
+                                  <td *ngFor="let reply of cond.replies"  style="width:15%">
                                     <table class="table">
                                       <tr>
                                         <td class="text-center"><strong>{{reply.reply}}</strong></td>
                                       </tr>
                                     </table>
                                   </td>
+                                  <td style="width:15%"></td>
                                 </tr>
                           </table>
                             </td>

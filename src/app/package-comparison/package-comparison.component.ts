@@ -6,7 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { BOQDivList,BOQLevelList, OriginalBoqModel, PackageList, RESDivList, RESPackageList, RESTypeList, SearchInput, SheetDescList } from '../assign-package/assign-package.model';
 import { AssignPackageService } from '../assign-package/assign-package.service';
 import { SupplierPackagesList } from '../package-supplier/package-supplier.model';
-import { FieldType } from '../_models';
+import { FieldType, User } from '../_models';
 import { AssignSuppliertBoq, AssignSuppliertRes, boqItem, CompManagementModel, DisplayCondition, PackageSuppliersPrice, ressourceItem, RevisionDetails, SupplierBOQ, SupplierPercent, SupplierResrouces, TblTechCond, TopManagement } from './package-comparison.model';
 import { PackageComparisonService } from './package-comparison.service';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
@@ -14,6 +14,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas'; 
 import { ComparisonPackageGroup } from '../package-groups/package-groups.model';
 import { PackageGroupsService } from '../package-groups/package-groups.service';
+import { LoginService } from '../login/login.service';
 
 declare var $: any;
 
@@ -74,6 +75,9 @@ export class PackageComparisonComponent implements OnInit {
   selectedGroup : any;
   groups : ComparisonPackageGroup[] = [];
   byGroup : boolean = false;
+//AH25022024
+  public user : User;
+//AH25022024
   editorConfig: AngularEditorConfig = {
     editable: true,
       spellcheck: true,
@@ -122,13 +126,24 @@ export class PackageComparisonComponent implements OnInit {
 
 
   constructor(private router: Router, private packageComparisonService: PackageComparisonService, 
-    private spinner: NgxSpinnerService, private toastr: ToastrService, private assignPackageService : AssignPackageService, private packageGroupsService : PackageGroupsService) {
-    if (this.router.getCurrentNavigation().extras.state != undefined) {
-      this.PackageId = this.router.getCurrentNavigation().extras.state.packageId;
-    } else {
-      this.router.navigateByUrl("/package-list");
+    private spinner: NgxSpinnerService, private toastr: ToastrService, 
+    private assignPackageService : AssignPackageService,
+     private packageGroupsService : PackageGroupsService,
+     private loginService : LoginService) 
+    {
+      if (this.router.getCurrentNavigation().extras.state != undefined) 
+      {
+        this.PackageId = this.router.getCurrentNavigation().extras.state.packageId;
+      } 
+      else 
+      {
+        this.router.navigateByUrl("/package-list");
+      }
+
+      //AH25022024
+      {this.loginService.user.subscribe(x => this.user = x); }
+      //AH25022024
     }
-  }
 
   ngOnInit(): void {
     
@@ -240,14 +255,18 @@ export class PackageComparisonComponent implements OnInit {
 
   getTechCondReplies()
   {
-     this.packageComparisonService.getTechCondReplies( this.PackageId).subscribe(data=>{
+    let costDB=this.user.usrLoggedCostDB;
+
+     this.packageComparisonService.getTechCondReplies( this.PackageId,costDB).subscribe(data=>{
         this.techConditionsReplies = data;
      });
   }
 
   getComCondReplies()
   {
-     this.packageComparisonService.getComCondReplies( this.PackageId).subscribe(data=>{
+    let costDB=this.user.usrLoggedCostDB;
+
+     this.packageComparisonService.getComCondReplies( this.PackageId,costDB).subscribe(data=>{
         this.comConditionsReplies = data;
      });
   }

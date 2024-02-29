@@ -11,7 +11,7 @@ import { PackageComparisonService } from '../package-comparison/package-comparis
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { GroupingBoq, GroupingBoqGroup, GroupingPackageSupplierPrice, GroupingResource } from '../package-groups/package-groups.model';
 import { SupplierList, SupplierPackagesList } from '../package-supplier/package-supplier.model';
-import { FieldType, Language } from '../_models';
+import { FieldType, Language, User } from '../_models';
 import {environment} from '../../environments/environment';
 import { PackageSupplierService } from '../package-supplier/package-supplier.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -27,9 +27,9 @@ declare var $: any;
 export class PackageComparisonNovoComponent implements OnInit {
   packageId : number = 0;
   packageName : string = '';
-
   SearchInput : SearchInput = new SearchInput();
   byBoq : boolean = false;
+  packSuppId: number = 0;
   isShown : boolean = false;
   show : boolean = false;
   toggleClass : string = 'fa-solid fa-toggle-off';
@@ -78,7 +78,10 @@ export class PackageComparisonNovoComponent implements OnInit {
   topManagementAttachement :  File | null;
   emailTemplate : string = "";
   languages = Language.languages;
-
+//AH25022024
+  public user : User;
+  costDB: string = "";
+//AH25022024
   editorConfig: AngularEditorConfig = {
     editable: true,
       spellcheck: true,
@@ -132,20 +135,31 @@ supplierList : SupplierList[] = [];
 selectedSupplier : SupplierList = null;
 generatingContract : boolean = false;
   
-  constructor(private router: Router, 
-    private packageComparisonService: PackageComparisonService,
-    private assignPackageService : AssignPackageService,
-    private packageSupplierService : PackageSupplierService,
-    private toastr : ToastrService,
-    private formBuilder : FormBuilder,
-    private loginService : LoginService) { 
-    if (this.router.getCurrentNavigation().extras.state != undefined) {
-      this.packageId= this.router.getCurrentNavigation().extras.state.packageId;
-      this.packageName = this.router.getCurrentNavigation().extras.state.packageName;
-      this.byBoq = this.router.getCurrentNavigation().extras.state.byBoq;
-    } else {
-      this.router.navigateByUrl("/package-list");
-    }
+constructor(private router: Router, 
+  private packageComparisonService: PackageComparisonService,
+  private assignPackageService : AssignPackageService,
+  private packageSupplierService : PackageSupplierService,
+  private toastr : ToastrService,
+  private formBuilder : FormBuilder,
+  private loginService : LoginService) 
+  { 
+      if (this.router.getCurrentNavigation().extras.state != undefined) 
+      {
+        this.packageId= this.router.getCurrentNavigation().extras.state.packageId;
+        this.packageName = this.router.getCurrentNavigation().extras.state.packageName;
+        this.byBoq = this.router.getCurrentNavigation().extras.state.byBoq;
+        //AH25022024
+        this.packSuppId=this.router.getCurrentNavigation().extras.state.packSuppId;
+        //AH25022024
+      } 
+      else 
+      {
+        this.router.navigateByUrl("/package-list");
+      }
+//AH25022024
+      {this.loginService.user.subscribe(x => this.user = x); }
+      this.costDB=this.user.usrLoggedCostDB;
+//AH25022024
   }
 
   ngOnInit(): void {
@@ -161,7 +175,7 @@ generatingContract : boolean = false;
     this.GetRESDivList();
     this.GetBOQDivList(body);
     this.GetSheetDescList();
-    this.GetRESTypeList();
+    this.GetRESTypeList(body);
     this.GetSupplierPackagesList();
     this.onSearch();
     this.getTechCondReplies();
@@ -189,17 +203,13 @@ generatingContract : boolean = false;
 
   GetSupplierPackagesList() {
     //this.techConditionsReplies = [];
-    
     this.packageComparisonService.GetSupplierPackagesList(this.packageId).subscribe((data) => {
-      if (data) {
+      if (data) 
+      {
         this.SupplierPackagesList = data;
         //this.byBoq = this.SupplierPackagesList[0].psByBoq;
-         
       }
     });
-    
-    
-    
   }
 
   checkAllGroups(event : any)
@@ -289,19 +299,17 @@ generatingContract : boolean = false;
         this.packageComparisonService.getComparisonSheetResourcesByGroup(this.packageId, this.SearchInput).subscribe((data) => {
           if (data) {
             this.groupingBoqGroupList = data;
-            
             //console.log(this.groupingBoqGroupList);
-             
           }
         });
       }
       else if(this.byGroup && this.byBoq)
       {
         this.packageComparisonService.getComparisonSheetBoqByGroup(this.packageId, this.SearchInput).subscribe((data) => {
-          if (data) {
+          if (data) 
+          {
             this.groupingBoqGroupList = data;
             //console.log(this.groupingBoqGroupList);
-             
           }
         });
       }
@@ -309,14 +317,14 @@ generatingContract : boolean = false;
 
   getTechCondReplies()
   {
-     this.packageComparisonService.getTechCondReplies( this.packageId).subscribe(data=>{
+     this.packageComparisonService.getTechCondReplies(this.packageId,this.costDB).subscribe(data=>{
         this.techConditionsReplies = data;
      });
   }
 
   getComCondReplies()
   {
-     this.packageComparisonService.getComCondReplies(this.packageId).subscribe(data=>{
+     this.packageComparisonService.getComCondReplies(this.packageId,this.costDB).subscribe(data=>{
         this.comConditionsReplies = data;
      });
   }
@@ -470,8 +478,6 @@ generatingContract : boolean = false;
           }
         });
       }
-
-
     }
   }
 
@@ -526,7 +532,6 @@ generatingContract : boolean = false;
 
   onLanguageChange(event : any)
   {
-     
       let select = event.target as HTMLInputElement;
       let lang = select.value;
       if(lang)
@@ -543,7 +548,6 @@ generatingContract : boolean = false;
   {
       this.packageSupplierService.GetEmailTemplate(lang).subscribe(data=>{
         this.f.template.setValue(data?.etContent);
-        
       });
   }
 
@@ -578,18 +582,18 @@ generatingContract : boolean = false;
 
   generateExcel()
   {
+    console.log(1)
       this.generatingFile = true;
       if(!this.byGroup)
       {
         if(!this.byBoq)
-        {
-            this.packageComparisonService.getComparisonSheet_Excel(this.packageId, this.SearchInput).subscribe(data=>{
+        {console.log(2)
+            this.packageComparisonService.getComparisonSheet_Excel(this.packageId, this.SearchInput,this.packSuppId,this.costDB).subscribe(data=>{
               if (data) {
+                console.log(22)
                 //this.spinner.hide();
                 this.generatingFile = false;
                 
-                
-        
                 let a = document.createElement('a');
                 a.id = 'downloader';
                 a.target = '_blank'; 
@@ -597,14 +601,15 @@ generatingContract : boolean = false;
                 document.body.appendChild(a);
                 a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
                 a.click();
-                
               }
             });
         }
         else
         {
-            this.packageComparisonService.GetComparisonSheetByBoq_Excel(this.packageId, this.SearchInput).subscribe(data=>{
+          console.log(3)
+            this.packageComparisonService.GetComparisonSheetByBoq_Excel(this.packageId, this.SearchInput,this.packSuppId,this.costDB).subscribe(data=>{
               if (data) {
+                console.log(4)
                 //this.spinner.hide();
                 this.generatingFile = false;
                 
@@ -626,13 +631,11 @@ generatingContract : boolean = false;
       {
         if(!this.byBoq)
         {
-            this.packageComparisonService.getComparisonSheetResourcesByGroup_Excel(this.packageId, this.SearchInput).subscribe(data=>{
+            this.packageComparisonService.getComparisonSheetResourcesByGroup_Excel(this.packageId, this.SearchInput,this.packSuppId,this.costDB).subscribe(data=>{
               if (data) {
                 //this.spinner.hide();
                 this.generatingFile = false;
-                
-                
-        
+
                 let a = document.createElement('a');
                 a.id = 'downloader';
                 a.target = '_blank'; 
@@ -646,7 +649,7 @@ generatingContract : boolean = false;
         }
         else
         {
-          this.packageComparisonService.getComparisonSheetBoqByGroup_Excel(this.packageId, this.SearchInput).subscribe(data=>{
+          this.packageComparisonService.getComparisonSheetBoqByGroup_Excel(this.packageId, this.SearchInput,this.packSuppId,this.costDB).subscribe(data=>{
             if (data) {
               //this.spinner.hide();
               this.generatingFile = false;
@@ -675,7 +678,7 @@ generatingContract : boolean = false;
           return;
       }
 
-      this.packageComparisonService.generateSuppliersContractsExcel(this.packageId, this.SearchInput).subscribe(res=>{
+      this.packageComparisonService.generateSuppliersContractsExcel(this.packageId, this.SearchInput,this.packSuppId,this.costDB).subscribe(res=>{
           if(res)
           {
             let a = document.createElement('a');
@@ -702,7 +705,7 @@ generatingContract : boolean = false;
   {    
       this.generatingContract = true;
       
-      this.packageComparisonService.generateSuppliersContractsExcel(this.packageId, this.SearchInput).subscribe(res=>{
+      this.packageComparisonService.generateSuppliersContractsExcel(this.packageId, this.SearchInput,this.packSuppId,this.costDB).subscribe(res=>{
         this.generatingContract = false;
         if(res)
         {
@@ -1543,8 +1546,8 @@ generatingContract : boolean = false;
     });
   }
 
-  GetRESTypeList() {
-    this.assignPackageService.GetRESTypeList(null).subscribe((data) => {
+  GetRESTypeList(body : any) {
+    this.assignPackageService.GetRESTypeList(body).subscribe((data) => {
       if (data) {
         this.RESTypeList = data;
         this.selectedRESTypeList = data;

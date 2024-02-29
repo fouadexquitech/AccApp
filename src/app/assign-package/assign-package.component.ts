@@ -193,10 +193,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       this.SearchInput.boqResourceSeq= [];
     }
 // AH28032023
-     
   ngOnInit(): void {
-
-   
     this.getBoqResourceRecords();
     this.formTrade = this.formBuilder.group({
       tradeDesc: ['', Validators.required]

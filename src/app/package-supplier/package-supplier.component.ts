@@ -867,7 +867,7 @@ maxAttachements : number = 5;
   }
 
   onCompare() {
-    this.router.navigate(['package-comparison-novo'], { state: { packageId: this.PackageId, packageName : this.PackageName, byBoq : (this.SupplierPackagesList[0]?.psByBoq == 1) } });
+    this.router.navigate(['package-comparison-novo'], { state: { packageId: this.PackageId, packageName : this.PackageName, byBoq : (this.SupplierPackagesList[0]?.psByBoq == 1) , packSuppId : this.SupplierPackagesList[0].psId} });
   }
 
   validateExcel()
