@@ -163,7 +163,6 @@ constructor(private router: Router,
   }
 
   ngOnInit(): void {
-
     let body : any = {
       level2 : this.SearchInput.boqLevel2,
       level3 : this.SearchInput.boqLevel3,
@@ -181,6 +180,27 @@ constructor(private router: Router,
     this.getTechCondReplies();
     this.getComCondReplies();
     this.GetSupplierList();
+  }
+
+  // FilterRegularItems ( items : GroupingPackageSupplierPrice[]){
+  //   let itm =items.filter(p => p.isNewItem==false && p.isAlternative==false);
+  //   itm.forEach(p=>{console.log(p.supplierName) }) ;
+  //   return itm;
+  // }
+
+  FilterRegularItems ( items : GroupingBoq []){
+    let itm =items.filter(p => p.isNewItem==false && p.isAlternative==false);
+    return itm;
+  }
+  
+  FilterNewItems ( items : GroupingBoq []){
+    let itm =items.filter(p => p.isNewItem==true);
+    return itm;
+  }
+
+  FilterAlternativeItems ( items : GroupingBoq []){
+    let itm =items.filter(p => p.isAlternative==true);
+    return itm;
   }
 
   isResourceSelected(boqSeq : number)
@@ -279,10 +299,7 @@ constructor(private router: Router,
           this.searchSupQtyByGroup(Number(element.value), item, sup);
             return;
         }
-        
       });   
-      
-      
   }
 
   showByGroup()
@@ -613,8 +630,6 @@ constructor(private router: Router,
                 //this.spinner.hide();
                 this.generatingFile = false;
                 
-                
-        
                 let a = document.createElement('a');
                 a.id = 'downloader';
                 a.target = '_blank'; 
@@ -823,7 +838,6 @@ constructor(private router: Router,
               qtyIsValid = false;
               resource.validPerc = false;
           }
-       
           
           const newSupplierResource : SupplierResrouces = {
             resourceID : resourceId,
@@ -831,8 +845,7 @@ constructor(private router: Router,
             supplierQtys : this.supplierResourceQty
           };
           this.supplierResrouces.push(newSupplierResource);
-        }
-         
+        }        
         });
       
     });
@@ -1266,8 +1279,6 @@ constructor(private router: Router,
           {
             this.toastr.warning("You must select at least one group");
           }
-          
-
         } else if (result.dismiss === Swal.DismissReason.cancel) {  
            this.Cancel();
         }  
@@ -1359,7 +1370,6 @@ constructor(private router: Router,
                 this.searchSupQtyByBoq(Number(element.value), item, sup);
                   return;
               }
-         
       });
   }
 
@@ -1373,7 +1383,6 @@ constructor(private router: Router,
                 this.searchSupPercByBoq(Number(element.value), item, sup);
                   return;
               }
-         
       });
   }
 
@@ -1386,9 +1395,6 @@ constructor(private router: Router,
               return;
           }
       });
-
-      
-      
   }
 
   searchSupPerc(val : number, resource : GroupingResource, sup : GroupingPackageSupplierPrice)
@@ -1400,9 +1406,6 @@ constructor(private router: Router,
               return;
           }
       });
-
-      
-      
   }
 
   searchSupPercByGroup(val : number, group : GroupingBoqGroup, sup : GroupingPackageSupplierPrice)
@@ -1425,8 +1428,7 @@ constructor(private router: Router,
               item.assignedQty = val;
               return;
           }
-      });
-      
+      });  
   }
 
   searchSupPercByBoq(val : number, boq : GroupingBoq, sup : GroupingPackageSupplierPrice)
@@ -1438,9 +1440,6 @@ constructor(private router: Router,
               return;
           }
       });
-
-      
-      
   }
 
   searchSupQtyByBoq(val : number, boq : GroupingBoq, sup : GroupingPackageSupplierPrice)
@@ -1452,9 +1451,6 @@ constructor(private router: Router,
               return;
           }
       });
-
-      
-      
   }
   
 
@@ -1532,7 +1528,6 @@ constructor(private router: Router,
     this.assignPackageService.GetBOQDivList(body).subscribe((data) => {
       if (data) {
         this.BOQDivList = data;
-        
       }
     });
   }
@@ -1618,8 +1613,6 @@ constructor(private router: Router,
     item.isChecked = checkbox.checked;
     let allChecked : boolean = true;
     
-
-    
     if(checkbox.checked)
     {
         this.selectedBoqItems.push(item.itemO);
@@ -1632,17 +1625,13 @@ constructor(private router: Router,
 
     let everythingChecked : boolean = true;
     this.comparisonList.forEach(item=>{
-     
         if(!item.isChecked)
         {
           everythingChecked = false;
           return;
         }
-     
     });
-
     allCheckbox.checked = everythingChecked;
-    
   }
 
   selectResourcesByItem(event: any, item : GroupingBoq)
@@ -1717,11 +1706,35 @@ constructor(private router: Router,
 
     allCheckbox.checked = everythingChecked;
     //console.log(this.selectedResources);
-
   }
 
   isAssigned(event : any){
     return false;
   }
 
+  //AH05032024
+  excludBoq(event : any, item : GroupingBoq)
+  {
+    // let allCheckbox = document.getElementById('selectAllBoqItems') as HTMLInputElement;
+    let checkbox = event.target as HTMLInputElement;
+    item.isExcluded = checkbox.checked;
+    
+    // if(checkbox.checked)
+    // {
+    //     this.selectedBoqItems.push();
+    // }
+    // else
+    // {
+    //     let index = this.selectedBoqItems.indexOf(item.itemO);
+    //     this.selectedBoqItems.splice(index,1);
+    // }
+console.log(this.packageId);
+console.log(item.itemO);
+console.log(item.isNewItem);
+
+    this.packageComparisonService.excludBoq(this.packageId, item.itemO,item.isNewItem,item.isExcluded).subscribe(data=>{
+      this.onSearch();
+    });
+  }
+  //AH05032024
 }

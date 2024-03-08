@@ -123,13 +123,11 @@ export class PackageComparisonService {
 
  getManagementEmail(filter : string)
  {
-  
   return this.http.get(this.baseUrl + 'Logon/GetManagementEmail?filter=' + filter).pipe(
     map(res => res), catchError(this.handleError)
   );
  }
 
- 
  generateSuppliersContractsExcel(packId: number, searchInput : SearchInput,packSuppId: number,costDB:string) : Observable<any> 
  {
    let body = JSON.stringify(searchInput);
@@ -140,7 +138,6 @@ export class PackageComparisonService {
 
  sendCompToManagement(topManagementTemplate : TopManagementTemplate, attachements : File[])
  {
-  
   const formData = new FormData();
   
   formData.append('topManagementTemplate' , JSON.stringify(topManagementTemplate));
@@ -205,4 +202,14 @@ getComparisonSheet_Excel(packageId: number, input : SearchInput,packSuppId: numb
     console.error('An error occurred', error);
     return Promise.reject(error.message || error);
   }
+
+  excludBoq(packId: number, item: string,isNewItem: boolean,exclud: boolean): Observable<any> {
+    return this.http.post(this.baseUrl + 'RevisionDetails/ExcludBoq?packId=' + packId+'&Item='+item+'&isNewItem='+isNewItem+'&isExclud='+ exclud,item).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+    // return this.http.post(this.baseUrl + 'RevisionDetails/AssignSupplierListGroupList?packId=' + PackId + '&byBoq=' + byBoq+ '&isPercent=' + isPercent, item).pipe(
+    //   map(res => res), catchError(this.handleError)
+    // );
+  }
+
 }

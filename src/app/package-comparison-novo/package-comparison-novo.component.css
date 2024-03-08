@@ -27,3 +27,9 @@
   {
       font-size: 12px;
   }
+
+  .bg-NewItem
+  {
+    color: brown;
+      /* background-color: rgb(226, 152, 158); */
+  }

@@ -51,6 +51,10 @@ export class GroupingBoq
     public groupingPackageSuppliersPrices : GroupingPackageSupplierPrice[] = [];
     public quotationQty : number = 0;
     public quotationAmt : number = 0;
+
+    public isAlternative : boolean = false;
+    public isNewItem : boolean = false;
+    public isExcluded : boolean = false;
 }
 
 export class GroupingBoqGroup
@@ -78,4 +82,13 @@ export class GroupingPackageSupplierPrice
     public exchRateNow : number = 0;
     public discount : number = 0;
     public uPriceAfterDiscount : number = 0;
+//AH02032024
+    public isAlternative : boolean = false;
+    public isNewItem : boolean = false;
+    public newItemId : number = 0;
+    public newItemResourceId : number = 0;
+    public parentItemO : string = null;
+    public parentResourceId : number = 0;
+    public isCreatedByThisSupplier : boolean = false;
+//AH02032024
 }
