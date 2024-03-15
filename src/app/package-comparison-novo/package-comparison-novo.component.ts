@@ -182,12 +182,8 @@ constructor(private router: Router,
     this.GetSupplierList();
   }
 
-  // FilterRegularItems ( items : GroupingPackageSupplierPrice[]){
-  //   let itm =items.filter(p => p.isNewItem==false && p.isAlternative==false);
-  //   itm.forEach(p=>{console.log(p.supplierName) }) ;
-  //   return itm;
-  // }
 
+  //AH25022024
   FilterRegularItems ( items : GroupingBoq []){
     let itm =items.filter(p => p.isNewItem==false && p.isAlternative==false);
     return itm;
@@ -202,6 +198,22 @@ constructor(private router: Router,
     let itm =items.filter(p => p.isAlternative==true);
     return itm;
   }
+
+  FilterRegularRessource ( items : GroupingResource []){
+    let itm =items.filter(p => p.isNewItem==false && p.isAlternative==false);
+    return itm;
+  }
+  
+  FilterNewRessource ( items : GroupingResource []){
+    let itm =items.filter(p => p.isNewItem==true);
+    return itm;
+  }
+
+  FilterAlternativeRessource ( items : GroupingResource []){
+    let itm =items.filter(p => p.isAlternative==true);
+    return itm;
+  }
+//AH25022024
 
   isResourceSelected(boqSeq : number)
   {
@@ -1718,7 +1730,6 @@ constructor(private router: Router,
     // let allCheckbox = document.getElementById('selectAllBoqItems') as HTMLInputElement;
     let checkbox = event.target as HTMLInputElement;
     item.isExcluded = checkbox.checked;
-    
     // if(checkbox.checked)
     // {
     //     this.selectedBoqItems.push();
@@ -1727,12 +1738,21 @@ constructor(private router: Router,
     // {
     //     let index = this.selectedBoqItems.indexOf(item.itemO);
     //     this.selectedBoqItems.splice(index,1);
-    // }
-console.log(this.packageId);
-console.log(item.itemO);
-console.log(item.isNewItem);
-
+    // // }
+    // console.log(this.packageId);
+    // console.log(item.itemO);
+    // console.log(item.isNewItem);
     this.packageComparisonService.excludBoq(this.packageId, item.itemO,item.isNewItem,item.isExcluded).subscribe(data=>{
+      this.onSearch();
+    });
+  }
+
+  excludRessource(event : any, boqRes : GroupingResource)
+  {
+    let checkbox = event.target as HTMLInputElement;
+    boqRes.isExcluded = checkbox.checked;
+
+    this.packageComparisonService.excludRessource(this.packageId, boqRes.boqSeq,boqRes.isNewItem,boqRes.isAlternative,boqRes.isExcluded).subscribe(data=>{
       this.onSearch();
     });
   }

@@ -212,4 +212,13 @@ getComparisonSheet_Excel(packageId: number, input : SearchInput,packSuppId: numb
     // );
   }
 
+  excludRessource(packId: number, boqSeq: number,isNewItem: boolean,isAlternative: boolean,exclud: boolean): Observable<any> {
+    return this.http.post(this.baseUrl + 'RevisionDetails/excludRessource?packId=' + packId+'&boqSeq='+boqSeq+'&isNewItem='+isNewItem+'&isAlternative='+isAlternative+'&isExclud='+ exclud,boqSeq).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+    // return this.http.post(this.baseUrl + 'RevisionDetails/AssignSupplierListGroupList?packId=' + PackId + '&byBoq=' + byBoq+ '&isPercent=' + isPercent, item).pipe(
+    //   map(res => res), catchError(this.handleError)
+    // );
+  }
+
 }

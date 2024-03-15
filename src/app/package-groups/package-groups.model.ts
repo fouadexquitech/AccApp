@@ -32,6 +32,9 @@ export class GroupingResource
     public groupingPackageSuppliersPrices : GroupingPackageSupplierPrice[] = [];
     public quotationQty : number = 0;
     public quotationAmt : number = 0;
+    public isAlternative : boolean = false;
+    public isNewItem : boolean = false;
+    public isExcluded : boolean = false;
 }
 
 export class GroupingBoq
@@ -51,7 +54,6 @@ export class GroupingBoq
     public groupingPackageSuppliersPrices : GroupingPackageSupplierPrice[] = [];
     public quotationQty : number = 0;
     public quotationAmt : number = 0;
-
     public isAlternative : boolean = false;
     public isNewItem : boolean = false;
     public isExcluded : boolean = false;
