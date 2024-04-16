@@ -61,6 +61,7 @@ export class RevisionDetailsList {
     public rdBoqItemDescription : string = null;
     public rdItemDescription : string = null;
     public rdQty: number = 0;
+    public rdQuotationQty: number = 0;
     public rdUnitRate: number = 0;
     public rdTotalBudget: number = 0;
 

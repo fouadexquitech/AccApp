@@ -9,13 +9,14 @@ import { AssignPackageService } from '../assign-package/assign-package.service';
 import { AssignSupplierGroup, AssignSuppliertBoq, AssignSuppliertRes, boqItem, DisplayCondition, Group, PackageSuppliersPrice, ressourceItem, RevisionDetails, SupplierBOQ, SupplierGroups, SupplierPercent, SupplierQty, SupplierResrouces, TopManagement, TopManagementAttachement, TopManagementTemplate } from '../package-comparison/package-comparison.model';
 import { PackageComparisonService } from '../package-comparison/package-comparison.service';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
-import { GroupingBoq, GroupingBoqGroup, GroupingPackageSupplierPrice, GroupingResource } from '../package-groups/package-groups.model';
+import { GroupingBoq, GroupingBoqGroup, GroupingLevelModel, GroupingPackageSupplierPrice, GroupingResource } from '../package-groups/package-groups.model';
 import { SupplierList, SupplierPackagesList } from '../package-supplier/package-supplier.model';
 import { FieldType, Language, User } from '../_models';
 import {environment} from '../../environments/environment';
 import { PackageSupplierService } from '../package-supplier/package-supplier.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginService } from '../login/login.service';
+import { escapeRegExp } from 'lodash-es';
 declare var $: any;
 @Component({
   selector: 'app-package-comparison-novo',
@@ -78,10 +79,17 @@ export class PackageComparisonNovoComponent implements OnInit {
   topManagementAttachement :  File | null;
   emailTemplate : string = "";
   languages = Language.languages;
+
 //AH25022024
   public user : User;
   costDB: string = "";
+  LevelModelList : GroupingLevelModel[] = [];
+  CurrentLevelList : GroupingLevelModel[] = [];
+  modalScrollDistance = 2;
+  modalScrollThrottle = 50;
+  sum = 4;
 //AH25022024
+
   editorConfig: AngularEditorConfig = {
     editable: true,
       spellcheck: true,
@@ -212,6 +220,34 @@ constructor(private router: Router,
   FilterAlternativeRessource ( items : GroupingResource []){
     let itm =items.filter(p => p.isAlternative==true);
     return itm;
+  }
+
+  getSplittedLevelName(levelName : any)
+  {
+     let arr : any[] = levelName.split('|');
+     let str = "";
+     arr.forEach(element => {
+      str += "<br>" + element;
+     });
+     return this.replaceAll(str, '~', " : ");
+  }
+
+  replaceAll(str : string, find : string, replace : string) {
+    return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+  }
+
+  onScroll(){
+    console.log("scrolled!!");
+
+     //add another "sum" items
+     const start = this.sum;
+     this.sum += 4;
+     for (let i = start; i < this.sum; ++i) {
+        if((this.LevelModelList.length - 1) >= i)
+        {
+            this.CurrentLevelList.push(this.LevelModelList[i]);
+        }
+     }
   }
 //AH25022024
 
@@ -372,8 +408,11 @@ constructor(private router: Router,
     if(!this.byBoq && !this.byGroup)
     {
       let ressourceItems : ressourceItem[] = [];
-
-      this.comparisonList.forEach((boq : GroupingBoq, i : any)=>{
+//AH042024
+    this.CurrentLevelList.forEach(level=>{
+      level.items.forEach((boq : GroupingBoq, i : any)=>{
+      // this.comparisonList.forEach((boq : GroupingBoq, i : any)=>{
+//AH042024
         boq.groupingResources.forEach(resource=>{
             if(resource.isChecked)
             {
@@ -381,6 +420,7 @@ constructor(private router: Router,
             }
         });
       });
+    });
 
       this.supplierPercent = [];
       let total = 0;
@@ -419,13 +459,16 @@ constructor(private router: Router,
     {
       let boqItems : boqItem[] = [];
 
-      this.comparisonList.forEach((boq : GroupingBoq, i : any)=>{
-       
+    //AH042024
+    this.CurrentLevelList.forEach(level=>{
+      level.items.forEach((boq : GroupingBoq, i : any)=>{
+      // this.comparisonList.forEach((boq : GroupingBoq, i : any)=>{
+    //AH042024
             if(boq.isChecked)
             {
-              boqItems.push({boqItemID : boq.itemO});
+              boqItems.push({boqItemID : boq.itemO, isNewItem : boq.isAlternative , isAlternative :boq.isAlternative});
             }
-        
+          }); 
       });
 
       this.supplierPercent = [];
@@ -453,7 +496,7 @@ constructor(private router: Router,
             this.toastr.success("Assigned Successfully");
             $("#assignPackageModal").modal('hide');
             
-            let checkAll = document.getElementById("selectAllBoqItems") as HTMLInputElement;
+            let checkAll = document.getElementById("selectAllBoqItem") as HTMLInputElement;
             checkAll.checked = false;
             this.onSearch();
             this.selectedBoqItems = [];
@@ -854,7 +897,9 @@ constructor(private router: Router,
           const newSupplierResource : SupplierResrouces = {
             resourceID : resourceId,
             supplierPercents : [],
-            supplierQtys : this.supplierResourceQty
+            supplierQtys : this.supplierResourceQty,
+            isAlternative:false,
+            isNewItem:false
           };
           this.supplierResrouces.push(newSupplierResource);
         }        
@@ -903,24 +948,33 @@ constructor(private router: Router,
       this.supplierBoqQty = [];    
       let oneItemChecked = false;
       let qtyIsValid = true;
-      this.comparisonList.forEach((boq : GroupingBoq, i : any)=>{
-    
+//AH042024
+      this.CurrentLevelList.forEach(level=>{
+        level.items.forEach((boq : GroupingBoq, i : any)=>{
+      // this.comparisonList.forEach((boq : GroupingBoq, i : any)=>{
+//AH042024    
           if(boq.isChecked)
           {
             oneItemChecked = true;
-          let itemO = boq.itemO;
-          let totalQty = 0;
-          let sups = boq.groupingPackageSuppliersPrices;
-          boq.validPerc = true;
-          this.supplierBoqQty = [];
-          sups.forEach((sup, j)=>{
-             if (sup.supplierName != "Ideal"){
-            totalQty += sup.assignedQty;
-             }
-             if(totalQty <= boq.quotationQty){
-            this.supplierBoqQty.push({supID : sup.supplierId, qty : sup.assignedQty});
-          }
-          });
+            let itemO = boq.itemO;
+            let isNew = boq.isNewItem;
+            let isAlternative = boq.isAlternative;
+            let totalQty = 0;
+            let sups = boq.groupingPackageSuppliersPrices;
+            boq.validPerc = true;
+            this.supplierBoqQty = [];
+            sups.forEach((sup, j)=>{
+                if (sup.supplierName != "Ideal"){
+                  totalQty += sup.assignedQty;
+                }
+                if(totalQty <= boq.quotationQty){
+                  this.supplierBoqQty.push({supID : sup.supplierId, qty : sup.assignedQty});
+                }
+                console.log(1);
+                console.log(totalQty);
+                console.log(boq.quotationQty);
+
+            });
 
           //alert(totalPerc);
           if(totalQty != boq.quotationQty)
@@ -928,15 +982,17 @@ constructor(private router: Router,
               qtyIsValid = false;
               boq.validPerc = false;
           }
-       
           
           const newSupplierBoq : SupplierBOQ = {
             boqItemID : itemO,
             supplierPercents : [],
-            supplierQtys : this.supplierBoqQty
+            supplierQtys : this.supplierBoqQty,
+            isAlternative:isAlternative,
+            isNewItem:isNew
           };
           this.supplierBoq.push(newSupplierBoq);
         }
+      });
     });
 
     if(oneItemChecked)
@@ -957,7 +1013,7 @@ constructor(private router: Router,
         this.supplierBoqQty= [];
         this.selectedBoqItems = [];
         this.toastr.success("Assigned Successfully");
-        let checkAll = document.getElementById("selectAllBoqItems") as HTMLInputElement;
+        let checkAll = document.getElementById("selectAllBoqItem") as HTMLInputElement;
         checkAll.checked = false;
         this.onSearch();
         this.Cancel();
@@ -1089,7 +1145,9 @@ constructor(private router: Router,
           const newSupplierResource : SupplierResrouces = {
             resourceID : resourceId,
             supplierPercents : this.supplierResourcePercent,
-            supplierQtys : []
+            supplierQtys : [],
+            isAlternative:false,
+            isNewItem:false
 
           };
           this.supplierResrouces.push(newSupplierResource);
@@ -1167,7 +1225,9 @@ constructor(private router: Router,
           const newSupplierBoq : SupplierBOQ = {
             boqItemID : itemO,
             supplierPercents : this.supplierBoqPercent,
-            supplierQtys : []
+            supplierQtys : [],
+            isAlternative:false,
+            isNewItem:false
 
           };
           this.supplierBoq.push(newSupplierBoq);
@@ -1195,7 +1255,7 @@ constructor(private router: Router,
         this.supplierBoqPercent = [];
         this.selectedBoqItems = [];
         this.toastr.success("Assigned Successfully");
-        let checkAll = document.getElementById("selectAllBoqItems") as HTMLInputElement;
+        let checkAll = document.getElementById("selectAllBoqItem") as HTMLInputElement;
         checkAll.checked = false;
         this.onSearch();
         this.Cancel();
@@ -1375,14 +1435,19 @@ constructor(private router: Router,
   setSupplierQtyByBoq(event:any, item : GroupingBoq, sup : GroupingPackageSupplierPrice)
   {
     let element = event.target as HTMLInputElement;
-    this.comparisonList.forEach((boq : GroupingBoq,i : number)=>{
-          
+
+    //AH042024
+    this.CurrentLevelList.forEach(level=>{
+      level.items.forEach((boq : GroupingBoq,i : number)=>{
+    //this.comparisonList.forEach((boq : GroupingBoq,i : number)=>{
+    //AH042024
               if(boq.itemO === item.itemO)
               {
                 this.searchSupQtyByBoq(Number(element.value), item, sup);
                   return;
               }
       });
+    });
   }
 
   setSupplierPercByBoq(event:any, item : GroupingBoq, sup : GroupingPackageSupplierPrice)
@@ -1480,8 +1545,12 @@ constructor(private router: Router,
         this.searching = false; 
         if(data)
         {
-            this.comparisonList = data;
+            //AH04042024
+            // this.comparisonList = data;
+            this.CurrentLevelList= data; 
+            //AH04042024
             this.getSuppliersPrice();
+             
         }
       });
     }
@@ -1492,7 +1561,10 @@ constructor(private router: Router,
         if(data)
         {
             //console.log(data);
-            this.comparisonList = data;
+            //AH04042024
+            // this.comparisonList = data;
+            this.CurrentLevelList= data; 
+            //AH04042024
             this.getSuppliersPrice();
         }
       });
@@ -1503,18 +1575,67 @@ constructor(private router: Router,
   {
      this.selectedBoqItems = [];
       let checkbox = target as HTMLInputElement;
-      this.comparisonList.forEach(item=>{
-        item.isChecked = checkbox.checked;
-        if(checkbox.checked)
+//AH09042024
+      // this.comparisonList.forEach(item=>{
+      this.CurrentLevelList.forEach(level=>{
+        level.items.forEach(item=>{
+//AH09042024
+          item.isChecked = checkbox.checked;
+          if(checkbox.checked)
           {
               this.selectedBoqItems.push(item.itemO);
+              //this.show = true;//AH09042024
           }
           else
           {
               let index = this.selectedBoqItems.indexOf(item.itemO);
               this.selectedBoqItems.splice(index,1);
+              //this.show = false;//AH09042024
           }
+        }); 
       });
+  }
+
+  selectBoq(event : any, item : GroupingBoq)
+  {
+    let allCheckbox = document.getElementById('selectAllBoqItem') as HTMLInputElement;
+    let checkbox = event.target as HTMLInputElement;
+    item.isChecked = checkbox.checked;
+    let allChecked : boolean = true;
+    
+    if(checkbox.checked)
+    {
+        this.selectedBoqItems.push(item.itemO);
+       // this.show = true;//AH09042024
+    }
+    else
+    {
+        let index = this.selectedBoqItems.indexOf(item.itemO);
+        this.selectedBoqItems.splice(index,1);
+        //this.show = false;//AH09042024
+    }
+
+    let everythingChecked : boolean = true;
+    //AH09042024
+    // this.comparisonList.forEach(item=>{
+    //     if(!item.isChecked)
+    //     {
+    //       everythingChecked = false;
+    //       return;
+    //     }
+    // });
+
+    this.CurrentLevelList.forEach(level=>{
+      level.items.forEach(item=>{
+      if(!item.isChecked)
+      {
+        everythingChecked = false;
+        return;
+      }
+    });
+  });
+    //AH09042024
+    allCheckbox.checked = everythingChecked;
   }
 
   getSuppliersPrice()
@@ -1618,34 +1739,6 @@ constructor(private router: Router,
       //console.log(this.selectedResources);
   }
 
-  selectBoq(event : any, item : GroupingBoq)
-  {
-    let allCheckbox = document.getElementById('selectAllBoqItems') as HTMLInputElement;
-    let checkbox = event.target as HTMLInputElement;
-    item.isChecked = checkbox.checked;
-    let allChecked : boolean = true;
-    
-    if(checkbox.checked)
-    {
-        this.selectedBoqItems.push(item.itemO);
-    }
-    else
-    {
-        let index = this.selectedBoqItems.indexOf(item.itemO);
-        this.selectedBoqItems.splice(index,1);
-    }
-
-    let everythingChecked : boolean = true;
-    this.comparisonList.forEach(item=>{
-        if(!item.isChecked)
-        {
-          everythingChecked = false;
-          return;
-        }
-    });
-    allCheckbox.checked = everythingChecked;
-  }
-
   selectResourcesByItem(event: any, item : GroupingBoq)
   {
     let allCheckbox = document.getElementById('selectAllResourcesByItem') as HTMLInputElement;
@@ -1727,7 +1820,7 @@ constructor(private router: Router,
   //AH05032024
   excludBoq(event : any, item : GroupingBoq)
   {
-    // let allCheckbox = document.getElementById('selectAllBoqItems') as HTMLInputElement;
+    // let allCheckbox = document.getElementById('selectAllBoqItem') as HTMLInputElement;
     let checkbox = event.target as HTMLInputElement;
     item.isExcluded = checkbox.checked;
     // if(checkbox.checked)

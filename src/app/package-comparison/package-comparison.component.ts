@@ -586,7 +586,7 @@ export class PackageComparisonComponent implements OnInit {
           let chkBox = row.cells[0].firstChild as HTMLInputElement;
           if(chkBox.checked)
           {
-            boqItems.push({boqItemID : item.itemO});
+            boqItems.push({boqItemID : item.itemO , isNewItem : item.isAlternative , isAlternative :item.isAlternative});
           }
       });
 
@@ -786,8 +786,9 @@ export class PackageComparisonComponent implements OnInit {
           const newSupplierResource : SupplierResrouces = {
             resourceID : Number(resourceId),
             supplierPercents : this.supplierResourcePercent,
-            supplierQtys : []
-
+            supplierQtys : [],
+            isAlternative:false,
+            isNewItem:false
           };
           this.supplierResrouces.push(newSupplierResource);
 
@@ -888,8 +889,9 @@ export class PackageComparisonComponent implements OnInit {
             const newSupplierBOQ : SupplierBOQ = {
             boqItemID : itemO,
             supplierQtys : [],
-            supplierPercents : this.supplierResourcePercent
-
+            supplierPercents : this.supplierResourcePercent,
+            isAlternative:false,
+            isNewItem:false      
           };
           this.supplierBOQ.push(newSupplierBOQ);
 

@@ -498,6 +498,9 @@ maxAttachements : number = 5;
   AssignSuppliers() {
     //this.spinner.show();
     this.isAssigning = true;
+    this.SupplierInput = [];
+    this.SupplierInputList= [];
+    
     if (this.selectedSuppliers.length > 0) 
     {
       this.SupplierInput = [];
@@ -586,7 +589,6 @@ maxAttachements : number = 5;
   }
 
   Toggle(data: SupplierPackagesList, index: number) {
-
     if (this.currentRowIndex == index) {
       this.currentRowIndex = -1;
     } 

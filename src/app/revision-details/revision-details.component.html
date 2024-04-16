@@ -54,7 +54,8 @@
                     <th>Item Description</th>
                     <th>Alternative</th>
                     <th>New</th>
-                    <th>Quantity</th>
+                    <th>ACC Qty</th>
+                    <th>Supp Qty</th>
                     <th>U. Price</th>
                     <th>Discount %</th>
                     <th>Final U. Price</th>
@@ -66,6 +67,7 @@
                   <td>{{item.rdItemDescription}}</td>
                   <td><i class="fa fa-check" *ngIf="item.isAlternative"></i></td>
                   <td><i class="fa fa-check" *ngIf="item.isNew"></i></td>
+                  <td>{{item.rdQuotationQty | number : '1.2-2' }}</td>
                   <td>{{item.rdQty | number : '1.2-2' }}</td>
                   <td>{{item.rdPrice | number : '1.2-2' }}</td>
                   <td>{{item.rdDiscount | number : '1.2-2' }}</td>
@@ -83,7 +85,8 @@
                 <th>Resource Desc.</th>
                 <th>Alternative</th>
                 <th>New</th>
-                <th>Quantity</th>
+                <th>ACC Qty</th>
+                <th>Supp Qty</th>
                 <th>U. Price</th>
                 <th>Discount %</th>
                 <th>Final U. Price</th>
@@ -96,6 +99,7 @@
                 <td>{{item.rdItemDescription}}</td>
                 <td><i class="fa fa-check" *ngIf="item.isAlternative"></i></td>
                 <td><i class="fa fa-check" *ngIf="item.isNew"></i></td>
+                <td>{{item.rdQuotationQty | number : '1.2-2' }}</td>
                 <td>{{item.rdQty | number : '1.2-2' }}</td>
                 <td>{{item.rdPrice | number : '1.2-2' }}</td>
                 <td>{{item.rdDiscount | number : '1.2-2' }}</td>

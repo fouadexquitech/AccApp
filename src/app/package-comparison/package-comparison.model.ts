@@ -48,6 +48,8 @@ export class SupplierResrouces
     public resourceID : number = 0;
     public supplierQtys : SupplierQty[] = [];
     public supplierPercents : SupplierPercent[] = [];
+    public isAlternative : boolean = false;
+    public isNewItem : boolean = false;
 }
 
 export class SupplierBOQ
@@ -55,6 +57,9 @@ export class SupplierBOQ
     public boqItemID : string = null;
     public supplierQtys : SupplierQty[] = [];
     public supplierPercents : SupplierPercent[] = [];
+    public isAlternative : boolean = false;
+    public isNewItem : boolean = false;
+
 }
 
 export class SupplierGroups
@@ -72,6 +77,8 @@ export class ressourceItem
 export class boqItem
 {
     public boqItemID : string = null;
+    public isAlternative : boolean = false;
+    public isNewItem : boolean = false;
 }
 
 export class Group
@@ -148,12 +155,14 @@ export class DisplayCondReply
     public supplierName : string = null;
     public conditionId : number = 0;
     public reply : string = null;
+    public accCondValue : string = null;
 }
 
 export class DisplayCondition
 {
     public id : number = 0;
     public description : string = null;
+    public accCondition : string = null;
     public replies : DisplayCondReply[] = [];
 }
 

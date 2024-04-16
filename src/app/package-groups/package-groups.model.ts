@@ -94,3 +94,9 @@ export class GroupingPackageSupplierPrice
     public isCreatedByThisSupplier : boolean = false;
 //AH02032024
 }
+//AH02032024
+export class GroupingLevelModel {
+    public levelName : string = "";
+    public items : GroupingBoq[] = [];
+}
+//AH02032024

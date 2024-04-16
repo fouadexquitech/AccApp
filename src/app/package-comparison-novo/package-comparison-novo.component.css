@@ -18,18 +18,28 @@
     z-index: 999;
   }*/
 
-  .bg-acc
-  {
-      background-color: rgb(177, 216, 177);
-  }
-
   .table-comparison
   {
       font-size: 12px;
   }
 
-  .bg-NewItem
+  .txt-NewItem
   {
     color: brown;
       /* background-color: rgb(226, 152, 158); */
+  }
+
+  .bg-acc
+  {
+      background-color: rgb(177, 216, 177);
+  }
+
+  .bg-NewItem
+  {
+    background-color:rgb(235, 216, 223);
+  }
+
+  .bg-AlternativeItem
+  {
+      background-color: rgb(174, 197, 228);
   }
