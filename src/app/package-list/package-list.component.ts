@@ -26,7 +26,8 @@ export class PackageListComponent implements OnInit, OnDestroy {
 
   constructor(private packageListService: PackageListService , private router: Router , private spinner: NgxSpinnerService,) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void 
+  {
     this.GetPackageList();
   }
 
@@ -37,13 +38,24 @@ export class PackageListComponent implements OnInit, OnDestroy {
     this.packageListService.GetPackageList().subscribe((data) => {
       this.isSearching = false;
       if (data) {
-        this.PackageList = data;
+        let newarr = data.sort((a:any, b:any) => (a.pkgeName - b.pkgeName) ? 1 : -1);
+        this.PackageList = newarr;
         //this.spinner.hide();
       }else{
         //this.spinner.hide();
       }
       this.dtTrigger.next();
     });
+  }
+
+   sortFunc(a:any, b:any) {
+    if ( a.index < b.index ){
+      return -1;
+    }
+    if ( a.index > b.index ){
+      return 1;
+    }
+    return 0;
   }
 
   onClick(idPkge:number){

@@ -114,8 +114,6 @@ export class SuppliersComponent implements OnInit {
         { title : 'Phone', data: 'phoneNumber', name : 'phoneNumber' }, 
         { title : 'Has Portal Account', data: 'isAccountCreated', name : 'isAccountCreated' }, 
         { title : 'Action', data: null, name : 'action', orderable : false }, 
-        
-       
       ]
     };
   }
