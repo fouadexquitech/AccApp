@@ -21,6 +21,7 @@
                                 <th scope="col">Id</th>
                                 <th scope="col">Description</th>
                                 <th scope="col"></th>
+                                <th scope="col"></th>
                                 <th scope="col" *ngIf="false"></th>
 
                             </tr>
@@ -30,15 +31,18 @@
                                 <td id="pckId">{{ item.idPkge }}</td>
                                 <td>{{ item.pkgeName }}</td>
                                 <td>
-                                    <a class="btn btn-primary" [routerLink]="['/package-supplier', item.idPkge]">Assign
-                                        To
-                                        Suppliers</a>
+                                    <a class="btn btn-primary" [routerLink]="['/package-supplier', item.idPkge]">
+                                        Assign To Suppliers
+                                    </a>
                                 </td>
-
-                                <td *ngIf="false">
-                                    <button type="button" class="btn btn-secondary"
+                                <td>
+                                    <!--AH052024 <button type="button" class="btn btn-secondary"
                                         (click)="routeToTechnicalConditions(item.idPkge, item.pkgeName)">Technical
-                                        Conditions</button>
+                                        Conditions</button> -->
+
+                                    <a class="btn btn-primary" [routerLink]="['/technical-conditions', item.idPkge, item.pkgeName]">
+                                        Technical Conditions
+                                    </a>
                                 </td>
                             </tr>
                         </tbody>

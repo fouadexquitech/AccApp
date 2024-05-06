@@ -63,6 +63,13 @@ export class PackageSupplierService {
     );
   }
   
+  GetDefaultProjectEmailTemplate(costDb : string)
+  {
+    return this.http.get(this.baseUrl + 'Logon/GetDefaultProjectEmailTemplate?costDb=' + costDb).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
   GetCurrencies(): Observable<any> {
     return this.http.get(this.baseUrl + 'SupplierPackagesRev/GetCurrencies').pipe(
       map(res => res), catchError(this.handleError)

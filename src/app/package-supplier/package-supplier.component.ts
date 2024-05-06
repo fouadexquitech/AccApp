@@ -15,6 +15,9 @@ import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { ComparisonPackageGroup } from '../package-groups/package-groups.model';
 import { PackageGroupsService } from '../package-groups/package-groups.service';
 import { LoginService } from '../login/login.service';
+// AH052024
+import { User } from '../_models';
+// AH052024
 
 declare var $: any;
 @Component({
@@ -60,6 +63,7 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
   exchangeRates : ExchangeRate[];
   selectedLanguage : string = '';
   selectedEmailTemplate : EmailTemplate | null;
+  lstEmailTemplate : EmailTemplate[] = [];
   lstLanguages : string[] = [];
   isUpdatingTechnicalConditions : boolean = false;
   formEmailTemplate: FormGroup = new FormGroup({
@@ -138,6 +142,9 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
 
 topManagementAttachements : TopManagementAttachement[] = [];
 maxAttachements : number = 5;
+//AH052024
+public user : User;
+//AH052024
 
   constructor(private router: Router, 
     private packageSupplierService: PackageSupplierService, 
@@ -153,7 +160,11 @@ maxAttachements : number = 5;
     } else {
       this.router.navigateByUrl("/package-list");
     }*/
+    //AH052024
+    this.loginService.user.subscribe(x => this.user = x); 
+    //AH052024
   }
+
 
   // onKey(event : any) {
   //   this.ccList.push (event.target.value);
@@ -292,7 +303,7 @@ maxAttachements : number = 5;
   }
 
   ngOnInit(): void {
-    this.params = this.route.params.subscribe(params => {
+      this.params = this.route.params.subscribe(params => {
       this.PackageId = Number(params['packageId']);
       if(localStorage.getItem('assignByBoqOnly') == null)
       {
@@ -311,6 +322,7 @@ maxAttachements : number = 5;
       this.assignByBoqOnly = localStorage.getItem('assignByBoqOnly');
       this.projectCurrency = JSON.parse(localStorage.getItem("currency")) as ProjectCurrency;
       this.project = JSON.parse(localStorage.getItem("project")) as Project;
+
    });
   }
 
@@ -396,7 +408,17 @@ maxAttachements : number = 5;
 
   OpenEmailTemplateModal(supId: number,psId :number,packageSupplier : SupplierPackagesList,index:number) 
   {
-    this.lstLanguages = Language.languages;
+//AH052024
+//  this.lstLanguages = Language.languages;
+    this.GetEmailTemplateLanguageList();
+    let costDB=this.user.usrLoggedCostDB;
+    this.packageSupplierService.GetDefaultProjectEmailTemplate(costDB).subscribe((data) => {
+    this.selectedEmailTemplate = data;
+    this.formEmailTemplate.controls['language'].setValue(this.selectedEmailTemplate?.etLang);
+    this.formEmailTemplate.controls['template'].setValue(this.selectedEmailTemplate?.etContent || '');
+  });
+//AH052024
+
     this.topManagementAttachements = [];
     this.SupplierInputList = [];
     this.listCC = [];
@@ -418,6 +440,7 @@ maxAttachements : number = 5;
     this.selectedPsId = psId;
     this.selectedPackageSupplier = packageSupplier;
     this.rowindex=index;
+
 //AH24012024
     $("#emailTemplateModal").modal('show');
   }
@@ -456,12 +479,25 @@ maxAttachements : number = 5;
       let lang = select.value;
       this.formEmailTemplate.controls['template'].setValue('');
       this.packageSupplierService.GetEmailTemplate(lang).subscribe((data) => {
-      this.selectedEmailTemplate = data;
+      this.selectedEmailTemplate = data[0];
       this.formEmailTemplate.controls['template'].setValue(this.selectedEmailTemplate?.etContent || '');
       });
   }
 
-
+//AH30012024
+  GetEmailTemplateLanguageList() {
+    this.lstLanguages=[];
+    this.packageSupplierService.GetEmailTemplate("").subscribe((data) => {
+      if (data) {
+        this.lstEmailTemplate = data;
+        this.lstEmailTemplate.forEach(element => {
+          this.lstLanguages.push(element.etLang);
+          // console.log(element.etLang);
+        });
+      }
+    });
+  }
+//AH30012024
 
   viewTechnicalConditions()
   {
@@ -576,7 +612,7 @@ maxAttachements : number = 5;
   {
       this.packageSupplierService.getComConditions(packSupId).subscribe(data=>{
           this.comConditions = data;
-          console.log(this.comConditions);
+          // console.log(this.comConditions);
       });
   }
 

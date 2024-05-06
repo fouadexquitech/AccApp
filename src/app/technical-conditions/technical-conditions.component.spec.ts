@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TechnicalConditionsComponent } from './technical-conditions.component';
 
 describe('TechnicalConditionsComponent', () => {

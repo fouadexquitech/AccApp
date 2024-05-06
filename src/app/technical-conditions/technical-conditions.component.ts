@@ -68,7 +68,6 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
 
   sendTechnicalConditions()
   {
-    
     let CondList : AccConditions[] = [];
     let table = document.getElementById("tbl1") as HTMLTableElement;
     let rows = table.rows;
@@ -262,10 +261,15 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
 
   getTechnicalConditionsList()
   {
-    this.packageComparisonService.getTechConditions(this.packageId, this.filter).subscribe(data=>{
-      this.list = data;
+//AH052024
+  //   this.packageComparisonService.getTechConditions(this.packageId, this.filter).subscribe(data=>{
+  //     this.list = data;
       
-   });
+  //  });
+  this.packageSupplierService.getTechConditionsByPackage(this.packageId, 0).subscribe(data=>{
+    this.list = data;
+ });
+//AH052024
   }
 
   ngOnDestroy(): void {
