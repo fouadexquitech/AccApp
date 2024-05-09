@@ -69,6 +69,7 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
   formEmailTemplate: FormGroup = new FormGroup({
     language: new FormControl(''),
     template: new FormControl(''),
+    revisionExpDate: new FormControl('')
   });
   addedTechConditions : TechConditions[] = [];
   groups : ComparisonPackageGroup[] = [];
@@ -170,6 +171,7 @@ public user : User;
   //   this.ccList.push (event.target.value);
   // }
 
+ 
   getGroups()
   {
     this.packageGroupsService.getGroups(this.PackageId).subscribe((data) => {
@@ -416,6 +418,9 @@ public user : User;
     this.selectedEmailTemplate = data;
     this.formEmailTemplate.controls['language'].setValue(this.selectedEmailTemplate?.etLang);
     this.formEmailTemplate.controls['template'].setValue(this.selectedEmailTemplate?.etContent || '');
+  
+    // var expdate = document.getElementById("revisionExpDate") as HTMLInputElement;
+    // expdate.value = new Date().toISOString().substring(0, 10);
   });
 //AH052024
 
@@ -426,7 +431,8 @@ public user : User;
       {
         language: ['', Validators.required],
         template: ['', Validators.required],
-        listCC :[[],[]]
+        listCC :[[],[]],
+        revisionExpDate: ['', [Validators.required]]
       }
     );
     this.getComConditions(psId);
@@ -458,7 +464,12 @@ public user : User;
 
   onEmailTemplateSubmit(){
     this.formEmailSubmitted = true;
+    
+    // var dte = document.getElementById("revisionExpDate") as HTMLInputElement;
+    // console.log(dte.value)
+
     if (this.formEmailTemplate.invalid) {
+      // console.log(this.formEmailTemplate)  (to know the validations)
       return;
     }
     else
@@ -578,7 +589,8 @@ public user : User;
           listCC : [],
           packId : this.PackageId,
           supInputList : this.SupplierInputList,
-          userName : this.loginService.userValue?.usrId
+          userName : this.loginService.userValue?.usrId,
+          revisionExpiryDate : this.f.revisionExpDate.value,
         };
 
         let files : File[] = [];
@@ -1160,5 +1172,16 @@ openAcceptanceCommentsModal(revisionId : any, prRevNo : any, psSupName : any)
   {
     $('#acceptanceCommentsModal').modal('hide');
     this.acceptanceComments = [];
+  }
+}
+
+
+export function validateTypeDate(control: AbstractControl) {
+  const value = control.value;
+  //min date 01/01/1850 and max date today
+  if (value == null || value == '' || value <= '2000-01-01') {
+    return { required: true };
+  } else {
+    return null;
   }
 }

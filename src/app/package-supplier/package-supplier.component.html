@@ -126,6 +126,7 @@
                 <th>Revision Id</th>
                 <th>Revision No</th>
                 <th>Revision Date</th>
+                <th>Expiry Date</th>
                 <th>Total Price</th>
                 <th>Currency</th>
                 <th colspan="6" style="text-align: center;">Action</th>
@@ -135,10 +136,11 @@
                 <td>{{rev.prRevId}}</td>
                 <td>{{rev.prRevNo}}</td>
                 <td>{{rev.prRevDate | date: 'dd/MM/yyyy'}}</td>
+                <td>{{rev.prRevExpDate | date: 'dd/MM/yyyy'}}</td>
                 <td>{{rev.prTotPrice | number : '1.2-2' }}</td>
                 <td>{{rev.currency}}</td>
                 <td style="text-align: center;">
-                  <button class="btn btn-warning" (click)="routeToRevisionDetails(rev.prRevId, item.psByBoq, item.psId)">View Revision Details</button>
+                  <button class="btn btn-warning" (click)="routeToRevisionDetails(rev.prRevId, item.psByBoq, item.psId)">Rev. Details</button>
                 </td>
                 <td style="text-align: center;">
                   <button type="button" class="btn btn-primary" (click)="OpenFieldModal(rev.prRevId)">Add Field</button>
@@ -147,13 +149,13 @@
                   <button class="btn btn-secondary" (click)="openFieldsListModal(rev.prRevId, rev.prRevNo, item.psSupName)">View Fields</button>
                 </td>
                 <td style="text-align: center;">
-                  <button class="btn btn-secondary" (click)="openComCondReplyListModal(rev.prRevId, rev.prRevNo, item.psSupName)">View Com. Conditions</button>
+                  <button class="btn btn-secondary" (click)="openComCondReplyListModal(rev.prRevId, rev.prRevNo, item.psSupName)">Com. Conditions</button>
                 </td>
                 <td style="text-align: center;">
-                  <button class="btn btn-secondary" (click)="openTechCondReplyListModal(rev.prRevId, rev.prRevNo, item.psSupName)">View Tech. Conditions</button>
+                  <button class="btn btn-secondary" (click)="openTechCondReplyListModal(rev.prRevId, rev.prRevNo, item.psSupName)">Tech. Conditions</button>
                 </td>
                 <td style="text-align: center;">
-                  <button class="btn btn-secondary" (click)="openAcceptanceCommentsModal(rev.prRevId, rev.prRevNo, item.psSupName)">View Acceptance Comments</button>
+                  <button class="btn btn-secondary" (click)="openAcceptanceCommentsModal(rev.prRevId, rev.prRevNo, item.psSupName)">Acceptance Comments</button>
                 </td>
                 
               </tr>
@@ -488,17 +490,47 @@
               </div>
           </div> -->
 
+
+          <div class="row">
+            <div class="col-sm-12 form-group">
+              <!-- <table style="width: 100%;">
+                <tr>
+                  <td style="width: 30%;"> -->
+                    <label for="revisionExpDate">Expiry Date :</label> 
+                  <!-- </td>
+                  <td style="width: 70%;"> -->
+
+                    <input type="date" class="form-control" formControlName="revisionExpDate"
+                    [ngClass]="{ 'is-invalid': formEmailSubmitted && f.revisionExpDate.errors }">
+                    <div *ngIf="formEmailSubmitted && f.revisionExpDate.errors" class="invalid-feedback">
+                      <div *ngIf="f.revisionExpDate.errors.required">*Required</div>
+                    </div>
+                    
+                  <!-- </td>
+                </tr>
+              </table>    -->
+            </div>
+          </div>
+
           <div class="row">
               <div class="col-sm-12 form-group">
-                Language
-                <select class="form-select" formControlName="language" (change)="onLanguageChange($event)"
-                [ngClass]="{ 'is-invalid': formEmailSubmitted && f.language.errors }">
-                  <option></option>
-                  <option *ngFor="let lan of lstLanguages" [value]="lan">{{lan}}</option>
-                </select>
-                <div *ngIf="formEmailSubmitted && f.language.errors" class="invalid-feedback">
-                  <div *ngIf="f.language.errors.required">*Required</div>              
-              </div>
+                <!-- <table style="width: 100%;">
+                  <tr>
+                    <td style="width: 30%;"> -->
+                      <label>Language :</label>
+                    <!-- </td>
+                    <td style="width: 70%;"> -->
+                      <select class="form-select" formControlName="language" (change)="onLanguageChange($event)"
+                        [ngClass]="{ 'is-invalid': formEmailSubmitted && f.language.errors }">
+                        <option></option>
+                        <option *ngFor="let lan of lstLanguages" [value]="lan">{{lan}}</option>
+                      </select>
+                      <div *ngIf="formEmailSubmitted && f.language.errors" class="invalid-feedback">
+                        <div *ngIf="f.language.errors.required">*Required</div>
+                      </div>
+                    <!-- </td>
+                  </tr>
+                </table> -->
               </div>
             </div>
 
@@ -522,7 +554,6 @@
                 <button type="button" class="btn btn-secondary" (click)="addAttachement()" [disabled]="topManagementAttachements.length > maxAttachements">Add Attachement</button>
               </div>
             <div class="col-sm-12 p-2">
-              
               <table class="table">
                 <tbody>
                   <tr *ngFor="let attachement of topManagementAttachements; let i = index">

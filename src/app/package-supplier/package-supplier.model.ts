@@ -50,6 +50,7 @@ export class SupplierPackagesRevList {
     public prCurrency : number = 0;
     public currency : string = null;
     public prPackSuppId: number = 0;
+    public prRevExpDate: Date;
 }
 
 export class RevisionDetailsList {
@@ -133,6 +134,7 @@ export class AssignPackageTemplate
     public userName : string = null;
     listCC : string[] = [];
     public listAttach : string[] = [];
+    public revisionExpiryDate : Date = null;
 }
 
 
