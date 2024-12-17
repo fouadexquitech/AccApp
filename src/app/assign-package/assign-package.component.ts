@@ -1114,6 +1114,11 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   }
 
 //AH03042023
+TestSendMail(){
+  this.packageSupplierService.TestSendMail().subscribe((data) => {
+  });
+}
+
   validateExcelBeforeAssign(){
     //this.spinner.show();
     this.isValidatingExcel = true;

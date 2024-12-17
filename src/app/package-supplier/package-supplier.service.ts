@@ -107,6 +107,13 @@ export class PackageSupplierService {
     );
   }
 
+  TestSendMail() : Observable<any> 
+  {
+    return this.http.post(this.baseUrl + 'SupplierPackages/TestSendMail', null).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  }
+
 
   AddRevision(PackageSupplierId: number, PackSuppDate: string, input: File, CurrencyId : number, ExchangeRate : number, discount : number, addedItem : number): Observable<any> {
     const formData = new FormData();

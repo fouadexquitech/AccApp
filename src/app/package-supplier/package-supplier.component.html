@@ -17,7 +17,7 @@
 
   <div class="row">
     <!-- <div class="col-sm-12 form-group" *ngIf="SupplierPackagesList.length == 0 && FilePath != null"> -->
-    <div class="col-sm-3 form-group">
+    <div class="col-sm-2 form-group">
         <mat-form-field style="width: 100%;" appearance="fill">
           <mat-label>Suppliers</mat-label>
           <mat-select multiple [(ngModel)]="selectedSuppliers">
@@ -30,13 +30,13 @@
       <button type="button" 
       class="btn btn-primary" 
       [disabled]="(selectedSuppliers.length == 0 || isAssigning)"
-      (click)="OpenEmailTemplateModal(0,0,null,-1)">
+      (click)="OpenEmailTemplateModal(0,0,null,-1)" style="font-size:12px;">
       <!--<span *ngIf="isAssigning" class="spinner-border spinner-border-sm mr-1"></span>-->
-      Assign Supplier & Send Email</button>
+      Assign Supplier & Send mail</button>
     </div>
 
     <div class="col-sm-2 form-group" >
-      <button style="width: 100%;" type="button" class="btn btn-success" 
+      <button style="width: 100%;font-size:12px;" type="button" class="btn btn-success" 
       (click)="validateExcelBeforeAssign()">
       <!-- <div class="col-sm-3 form-group" *ngIf="FilePath == null"> 
         <button style="width: 100%;" type="button" class="btn btn-success"
@@ -49,15 +49,25 @@
       Validate Excel</button>
     </div>
   
-    <div class="col-sm-3 form-group form-check form-switch" *ngIf="FilePath == null">
+    <div class="col-sm-2 form-group form-check form-switch" *ngIf="FilePath == null">
       <input class="form-check-input" type="checkbox" 
       id="flexSwitchCheckDefault" name="flexSwitchCheckDefault" [checked]="assignByBoqOnly == '1'"
       (change)="flexSwitchCheckDefaultChange($event)">
-      <label class="form-check-label" for="flexSwitchCheckDefault">By Boq Item Only</label>
+      <label class="form-check-label" for="flexSwitchCheckDefault" style="font-size:11px;">By Boq Item Only</label>
     </div>
-
+    <!-- <div class="col-sm-2 form-group" >
+      <button style="width: 100%;font-size:12px;" type="button" class="btn btn-success" 
+      (click)="exportQuotations()">Export Quotations</button>
+    </div> -->
+    <!-- <div class="col-sm-2 form-group">
+      <button type="button" class="btn btn-secondary" style="float: right; width: 100%;" 
+      (click)="openGenerateContract()" [disabled]="generatingContract">
+      <span *ngIf="generatingContract"> Generating...</span>
+      <span *ngIf="!generatingContract">Export Quotations</span>
+     </button>
+    </div>  -->
     <div class="col-sm-2 form-group" *ngIf="SupplierPackagesList.length>0">
-      <button type="button" class="btn btn-primary" 
+      <button type="button" style="width: 100%;font-size:12px;"  class="btn btn-primary" 
       (click)="onCompare()">Compare Quotations</button>
     </div>
   </div>
