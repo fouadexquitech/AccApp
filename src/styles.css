@@ -35,7 +35,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 section {
-    margin-top: 100px;
+    margin-top: 30px;
 }
 
 .full-width-field {
@@ -43,18 +43,18 @@ section {
  }
 
  .mat-form-field{
-    font-size: 14px;
+    font-size: 12px;
  }
 
  .mat-option
  {
-    font-size: 14px;
+    font-size: 12px;
  }
 
  .input-icon {
     float: right;
-    margin-right: 6px;
-    margin-top: -25px;
+    margin-right: 2px;
+    margin-top: -10px;
     position: relative;
     z-index: 2;
    

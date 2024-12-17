@@ -167,7 +167,6 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
        this.checkboxesAll = false;
        this.boqListTable?.setData(this.displayedResList);
        this.boqListTable?.setFinalTotalPrice(0);
-    
      }
 
      clearFilter(event : boolean)
@@ -370,13 +369,20 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   }
 
   GetPackageList() {
-    this.assignPackageService.GetPackageList().subscribe((data) => {
+//Get all packages
+    this.assignPackageService.GetPackageList(false).subscribe((data) => {
       if (data) {
         this.PackageList = data;
         this.selectedPackages = this.PackageList;
-        this.selectedFilterPackages = data;
       }
     });
+
+//get only used packages
+    // this.assignPackageService.GetPackageList(true).subscribe((data) => {
+    //   if (data) {
+    //     this.selectedFilterPackages = data;
+    //   }
+    // });
   }
 
   GetRessourcesList(body : any) {
@@ -1422,7 +1428,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       else
         this.isExportExcelDry=true;
   
-        this.assignPackageService.ExportExcelPackagesCost(withBoq,costDB)
+        this.assignPackageService.ExportExcelPackagesCost(withBoq,costDB,this.SearchInput)
         .pipe(finalize(() =>{
           if (withBoq==1)
             this.isExportExcelDryBoq=false;

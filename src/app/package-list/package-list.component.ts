@@ -5,6 +5,8 @@ import { Subject } from 'rxjs';
 import { PackageList } from './package-list.model';
 import { PackageListService } from './package-list.service';
 
+import { AssignPackageService } from '../assign-package/assign-package.service';
+
 @Component({
   selector: 'app-package-list',
   templateUrl: './package-list.component.html',
@@ -24,7 +26,7 @@ export class PackageListComponent implements OnInit, OnDestroy {
   public dtTrigger: Subject<any> = new Subject<any>();
   isSearching : boolean = false;
 
-  constructor(private packageListService: PackageListService , private router: Router , private spinner: NgxSpinnerService,) { }
+  constructor(private assignPackageService : AssignPackageService,private packageListService: PackageListService , private router: Router , private spinner: NgxSpinnerService,) { }
 
   ngOnInit(): void 
   {
@@ -35,7 +37,9 @@ export class PackageListComponent implements OnInit, OnDestroy {
    
     //this.spinner.show();
     this.isSearching = true;
-    this.packageListService.GetPackageList().subscribe((data) => {
+
+//AH072024
+    this.assignPackageService.GetPackageList(true).subscribe((data) => {
       this.isSearching = false;
       if (data) {
         let newarr = data.sort((a:any, b:any) => (a.pkgeName - b.pkgeName) ? 1 : -1);
@@ -46,6 +50,19 @@ export class PackageListComponent implements OnInit, OnDestroy {
       }
       this.dtTrigger.next();
     });
+
+    // this.packageListService.GetPackageList().subscribe((data) => {
+    //   this.isSearching = false;
+    //   if (data) {
+    //     let newarr = data.sort((a:any, b:any) => (a.pkgeName - b.pkgeName) ? 1 : -1);
+    //     this.PackageList = newarr;
+    //     //this.spinner.hide();
+    //   }else{
+    //     //this.spinner.hide();
+    //   }
+    //   this.dtTrigger.next();
+    // });
+//AH072024
   }
 
    sortFunc(a:any, b:any) {

@@ -88,8 +88,8 @@ export class AssignPackageService {
         );
     }
 
-    GetPackageList(): Observable<any> {
-        return this.http.get(this.baseUrl + 'Search/PackageList').pipe(
+    GetPackageList(usedPack : boolean): Observable<any> {
+        return this.http.get(this.baseUrl + 'Search/GetPackagesList?usedPackages=' + usedPack).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
@@ -150,9 +150,9 @@ export class AssignPackageService {
     );
     }
 
-    ExportExcelPackagesCost(withBoq:number, costDB :string) : Observable<any> 
+    ExportExcelPackagesCost(withBoq:number, costDB :string, input: SearchInput) : Observable<any> 
     {
-      return this.http.post(this.baseUrl + 'Package/ExportExcelPackagesCost?costDB='+costDB+'&withBoq='+withBoq,withBoq).pipe(
+      return this.http.post(this.baseUrl + 'Package/ExportExcelPackagesCost?costDB='+costDB+'&withBoq='+withBoq,input).pipe(
         map(res => res), catchError(this.handleError)
     );
     }

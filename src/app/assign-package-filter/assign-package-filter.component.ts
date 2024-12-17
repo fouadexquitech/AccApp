@@ -253,7 +253,14 @@ export class AssignPackageFilterComponent implements OnInit {
   }
 
   GetPackageList() {
-    this.assignPackageService.GetPackageList().subscribe((data) => {
+    // this.assignPackageService.GetPackageList(false).subscribe((data) => {
+    //   if (data) {
+    //     this.PackageList = data;
+    //     this.selectedPackages = this.PackageList;
+    //   }
+    // });
+
+    this.assignPackageService.GetPackageList(true).subscribe((data) => {
       if (data) {
         this.PackageList = data;
         this.selectedPackages = this.PackageList;
@@ -364,7 +371,9 @@ export class AssignPackageFilterComponent implements OnInit {
       this.SearchInput.sheetDesc = null;
       this.SearchInput.toRow = null;
       this.SearchInput.isRessourcesAssigned = 0;
-      this. GetRessourcesListByLevels();
+      //Ah22082024
+      //this.GetRessourcesListByLevels();
+      ///Ah22082024
       //this.searchEvent.emit(this.SearchInput);
   }
 
@@ -500,6 +509,7 @@ export class AssignPackageFilterComponent implements OnInit {
   clearAllSearch()
   {
       this.clearEvent.emit(true);
+      this.ngOnInit();
   }
 
 
