@@ -226,17 +226,17 @@ export class PackagesComponent implements OnInit {
     if(resp.success)
     {
       this.deleting = true;
-    this.packagesService.deletepackage(id).subscribe(data=>{
+    this.packagesService.deletepackage(id).subscribe((data : any)=>{
       this.deleting = false;
-        if(data)
+        if(data.success)
         {
-            this.toastrService.success('Deleted successfuly');
-            //this.getpackagesList();
+            this.toastrService.success(data.message);
+            this.reload();
             this.modalReference.close();
         }
         else
         {
-          this.toastrService.error('An error occured');
+          this.toastrService.error(data.message);
         }
     });
     }
