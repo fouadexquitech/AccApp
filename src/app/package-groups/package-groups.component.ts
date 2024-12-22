@@ -39,7 +39,7 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
   selectedGroup : any;
   proceed : boolean = false;
   byBoq : boolean = false;
-
+  public user : User;
 
   constructor(private router : Router, private assignPackageService : AssignPackageService, 
     private packageGroupsService : PackageGroupsService, private loginService : LoginService, private route: ActivatedRoute,
@@ -51,7 +51,7 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
     } else {
       this.router.navigateByUrl("/package-list");
     }*/
-
+    this.loginService.user.subscribe(x => this.user = x);
   }
 
   ngOnInit(): void {
@@ -63,8 +63,6 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
 
       this.getGroups();
      });
-   
-    
   }
 
   ngOnDestroy(): void {
@@ -73,7 +71,8 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
 
   getGroups()
   {
-    
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.packageGroupsService.getGroups(this.packageId).subscribe((data) => {
         if(data)
         {
@@ -104,8 +103,6 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
         this.GetRESTypeList();
         this.getBoqResourceList();
       }
-
-      
   }
 
   allSelected(resources : GroupingResource[])
@@ -121,6 +118,9 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
 
   getBoqResourceList()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.searching = true;
     if(!this.byBoq)
     {
@@ -148,6 +148,9 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
 
   openAddGroup()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     (async () => {
 
       const { value: formValue } = await Swal.fire({
@@ -193,10 +196,7 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
         }
         
       }
-      
-    
       })()
-  
   }
 
   toggleShow()
@@ -205,6 +205,9 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
   }
 
   GetRESDivList() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.assignPackageService.GetRESDivList().subscribe((data) => {
       if (data) {
         this.RESDivList = data;
@@ -227,6 +230,9 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
   }
 
   GetBOQDivList(body : any) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.assignPackageService.GetBOQDivList(body).subscribe((data) => {
       if (data) {
         this.BOQDivList = data;
@@ -236,6 +242,8 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
   }
 
   GetSheetDescList() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetSheetDescList().subscribe((data) => {
       if (data) {
         this.SheetDescList = data;
@@ -245,6 +253,8 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
   }
 
   GetRESTypeList() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetRESTypeList(null).subscribe((data) => {
       if (data) {
         this.RESTypeList = data;
@@ -279,20 +289,16 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
     this.selectedRESTypeList = result;
   }
 
-  
-
   onSearch(){
     this.getBoqResourceList();
   }
 
-  
   onSelectAllBOQDiv()
   {
     this.selectedBOQDivList = [];
     this.BOQDivList.forEach(item=>{
       this.selectedBOQDivList.push(item.sectionO);
     });
-     
   }
 
   clearAllSelections(){}
@@ -337,10 +343,7 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
             let index = this.selectedLeftResources.findIndex(x=>x.boqSeq == resource.boqSeq);
             this.selectedLeftResources.splice(index, 1);
         }
-
       });
-
-      
   }
 
   selectRightItem(event: any, item : GroupingBoq)
@@ -360,10 +363,7 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
             let index = this.selectedRightResources.findIndex(x=>x.boqSeq == resource.boqSeq);
             this.selectedRightResources.splice(index, 1);
         }
-
       });
-
-      
   }
 
   selectLeftResource(event: any, resource : GroupingResource, item : GroupingBoq)
@@ -390,8 +390,6 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
         });
 
         item.isChecked = !allUnchecked;
-        
-
   }
 
   selectRightResource(event: any, resource : GroupingResource, item : GroupingBoq)
@@ -418,13 +416,12 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
         });
 
         item.isChecked = !allUnchecked;
-        
-
   }
 
   attachToGroup(event : any)
   {
- 
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
       this.packageGroupsService.attachToGroup(this.selectedGroup, this.selectedLeftResources).subscribe(resp=>{
           if(resp)
           {
@@ -441,7 +438,8 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
 
   detachFromGroup(event : any)
   {
- 
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.packageGroupsService.detachFromGroup(this.selectedGroup, this.selectedRightResources).subscribe(resp=>{
       if(resp)
       {
@@ -457,6 +455,9 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
   }
 
   attachToGroupByBoq(event:any){
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.packageGroupsService.attachToGroupByBoq(this.selectedGroup, this.selectedLeftItems).subscribe(resp=>{
       if(resp)
       {
@@ -473,6 +474,9 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
   }
 
   detachFromGroupByBoq(event:any){
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+    
     this.packageGroupsService.detachFromGroupByBoq(this.selectedGroup, this.selectedRightItems).subscribe(resp=>{
       if(resp)
       {

@@ -85,13 +85,11 @@
                                 <mat-form-field  class="full-width-field"  style="width: 100%;font-size:11px;">
                                     <mat-label style="font-size:14px;">Packages</mat-label>
                                     <mat-select style="font-size:12px;" [(ngModel)]="SelectedPackage" (selectionChange)="onPackageMatSelected($event)">
-                                        <input matInput type="text" focused="'true'" (keyup)="filterPackages($event)"
-                                            class="mat-filter">
+                                        <input matInput type="text" focused="'true'" (keyup)="filterPackages($event)" class="mat-filter">
                                         <span class="fa fa-search input-icon"></span>
                                         <mat-divider></mat-divider>
                                         <mat-option></mat-option>
-                                        <mat-option style="font-size:14px;" *ngFor="let pitem of selectedPackages" [value]="pitem.idPkge">{{
-                                            pitem.pkgeName }}</mat-option>
+                                        <mat-option style="font-size:14px;" *ngFor="let pitem of selectedPackages" [value]="pitem.idPkge">{{pitem.pkgeName}}</mat-option>
                                     </mat-select>
                                 </mat-form-field>
                             </div>
@@ -130,11 +128,11 @@
                                     Validate Excel</button>
                             </div>
 
-                            <!-- <div class="col-sm-2 form-group">
+                            <div class="col-sm-2 form-group">
                                 <button style="float: right; width: 100%;font-size: small"type="button" class="btn btn-success"
                                 (click)="TestSendMail()">                              
                                 Test Email</button>
-                            </div> -->
+                            </div> 
 
                             <div class="col-sm-2 form-group form-check form-switch">
                                 <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" style="font-size: 12px;"

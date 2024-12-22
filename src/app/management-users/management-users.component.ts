@@ -6,6 +6,8 @@ import { ToastrService } from 'ngx-toastr';
 import { TopManagement } from '../package-comparison/package-comparison.model';
 import { PackageComparisonService } from '../package-comparison/package-comparison.service';
 import { ManagementUsersService } from './management-users.service';
+import { LoginService } from '../login/login.service';
+import { User } from '../_models';
 
 @Component({
   selector: 'app-management-users',
@@ -29,13 +31,15 @@ export class ManagementUsersComponent implements OnInit {
   submitted : boolean = false;
   updating : boolean = false;
   currentUser : TopManagement;
+  public user : User;
 
   constructor(
     private packageComparisonService : PackageComparisonService,
     private modalService: NgbModal, private toastrService : ToastrService, 
     private managementUsersService : ManagementUsersService,
-    private formBuilder: FormBuilder,) 
-    {
+    private formBuilder: FormBuilder,
+    private loginService: LoginService,) 
+    {this.loginService.user.subscribe(x => this.user = x);
       this.modalOptions = {
         backdrop:'static',
         backdropClass:'customBackdrop',
@@ -49,6 +53,8 @@ export class ManagementUsersComponent implements OnInit {
 
   getTopManagementList()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.loading = true;
       this.packageComparisonService.getManagementEmail(this.filter).subscribe(data=>{
         this.loading = false;
@@ -102,6 +108,9 @@ export class ManagementUsersComponent implements OnInit {
 
   saveBulk()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
       if(this.addedList.length == 0)
       {
           this.toastrService.error('No data available');
@@ -144,7 +153,6 @@ export class ManagementUsersComponent implements OnInit {
   {
       let value = event.target.value;
       this.addedList[index].userName = value;
-
   }
 
   mailValueChanged(event : any, index : number)
@@ -161,19 +169,15 @@ export class ManagementUsersComponent implements OnInit {
 
   deleteUser(id : number)
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
     const confirmBox = new ConfirmBoxInitializer();
-
     confirmBox.setTitle('Are you sure you want to delete this user?');
-
     confirmBox.setMessage('Please confirm');
-
     confirmBox.setButtonLabels('Confirm', 'Decline');
-
     confirmBox.setConfig({
-
-      layoutType: DialogLayoutDisplay.WARNING // SUCCESS | INFO | NONE | DANGER | WARNING
-
+    layoutType: DialogLayoutDisplay.WARNING // SUCCESS | INFO | NONE | DANGER | WARNING
   });
 
    // Simply open the popup and listen which button is clicked
@@ -198,15 +202,14 @@ export class ManagementUsersComponent implements OnInit {
           this.toastrService.error('An error occured');
         }
     });
-    }
-    
-
-    
+    } 
   });
   }
 
   //convenience getter for easy access to form fields
-  get f() { return this.formEdit.controls; }
+  get f() { 
+    return this.formEdit.controls; 
+  }
 
   editUser(content : any, user : TopManagement)
   {
@@ -226,10 +229,13 @@ export class ManagementUsersComponent implements OnInit {
 
   onEditSubmit()
   {
-      this.submitted = true;
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
+    this.submitted = true;
       // stop here if form is invalid
-      if (this.formEdit.invalid) {
-        return;
+    if (this.formEdit.invalid) {
+      return;
     }
 
     this.updating = true;

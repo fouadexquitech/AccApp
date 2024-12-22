@@ -124,7 +124,6 @@ export class PackageComparisonComponent implements OnInit {
     ]
 };
 
-
   constructor(private router: Router, private packageComparisonService: PackageComparisonService, 
     private spinner: NgxSpinnerService, private toastr: ToastrService, 
     private assignPackageService : AssignPackageService,
@@ -164,12 +163,12 @@ export class PackageComparisonComponent implements OnInit {
     this.GetSupplierPackagesList();
     this.getTechCondReplies();
     this.getComCondReplies();
-    
   }
 
   getGroups()
   {
-    
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.packageGroupsService.getGroups(this.PackageId).subscribe((data) => {
         if(data)
         {
@@ -187,8 +186,6 @@ export class PackageComparisonComponent implements OnInit {
 
   onGroupchange(event : any)
   {
-    
-
   }
 
   generatePDF()
@@ -233,7 +230,6 @@ export class PackageComparisonComponent implements OnInit {
       }
 
       this.sendingEmail = true;
-    
       /*this.packageComparisonService.sendCompToManagement(this.PackageId, "",  this.selectedTopManagementList, this.topManagementAttachement).subscribe(data=>{
         this.sendingEmail = false;
           if(data)
@@ -247,16 +243,19 @@ export class PackageComparisonComponent implements OnInit {
   getManagementEmail()
   {
     this.selectedTopManagementList = [];
-      this.packageComparisonService.getManagementEmail('').subscribe(data=>{
-          this.topManagementList = data;
-      });
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+    this.packageComparisonService.getManagementEmail('').subscribe(data=>{
+        this.topManagementList = data;
+    });
   }
 
 
   getTechCondReplies()
   {
     let costDB=this.user.usrLoggedCostDB;
-
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
      this.packageComparisonService.getTechCondReplies( this.PackageId,costDB).subscribe(data=>{
         this.techConditionsReplies = data;
      });
@@ -265,7 +264,8 @@ export class PackageComparisonComponent implements OnInit {
   getComCondReplies()
   {
     let costDB=this.user.usrLoggedCostDB;
-
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
      this.packageComparisonService.getComCondReplies( this.PackageId,costDB).subscribe(data=>{
         this.comConditionsReplies = data;
      });
@@ -276,6 +276,8 @@ export class PackageComparisonComponent implements OnInit {
   }
 
   GetRESDivList() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetRESDivList().subscribe((data) => {
       if (data) {
         this.RESDivList = data;
@@ -285,6 +287,8 @@ export class PackageComparisonComponent implements OnInit {
   }
 
   GetRESTypeList() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetRESTypeList(null).subscribe((data) => {
       if (data) {
         this.RESTypeList = data;
@@ -294,6 +298,8 @@ export class PackageComparisonComponent implements OnInit {
   }
 
   GetSheetDescList() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetSheetDescList().subscribe((data) => {
       if (data) {
         this.SheetDescList = data;
@@ -305,6 +311,9 @@ export class PackageComparisonComponent implements OnInit {
   GetPackageSuppliersPrice() {
     //this.spinner.show();
     this.searching = true;
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.packageComparisonService.GetPackageSuppliersPrice(this.PackageId, this.SearchInput).subscribe((data) => {
       this.searching = false;
       if (data) {
@@ -394,10 +403,6 @@ export class PackageComparisonComponent implements OnInit {
           }
         });
 
-        
-        
-        
-
         //this.spinner.hide();
       } else {
         //this.spinner.hide();
@@ -445,15 +450,12 @@ export class PackageComparisonComponent implements OnInit {
     });
 
    //console.log(this.RevisionDetailsBoqItems);
-    
   }
 
   isAssigned(item : any)
-  {
-    
+  {  
       let val : boolean = item['assignedToSupplier'];
       return (val);
-    
   }
 
   isPriceUpdated(item : any, col : string)
@@ -484,43 +486,35 @@ export class PackageComparisonComponent implements OnInit {
 
   GetSupplierPackagesList() {
     this.techConditionsReplies = [];
-    
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.packageComparisonService.GetSupplierPackagesList(this.PackageId).subscribe((data) => {
       if (data) {
         this.SupplierPackagesList = data;
         this.byBoq = this.SupplierPackagesList[0].psByBoq;
       }
     });
-    
-    
-    
   }
 
   checkIfItemExistsInResources(comparisonObject : any[], itemO : string)
   {
-      
       let arr = comparisonObject.filter(element=>element.itemO == itemO);
-      
       return arr.length;
   }
 
   getResourcesPerItem(comparisonObject : any[], itemO : string)
   {
-    
       return comparisonObject.filter(element=>element.itemO === itemO);
   }
 
   AssignPackageSuppliers() 
   {
       let table = document.getElementsByClassName("table-comparison")[0] as HTMLTableElement;
-      
       let firstRow = table.rows[0];
-    
       let firstRowFirstCell = firstRow.cells[0];
       let firstCheckbox = firstRowFirstCell.firstElementChild as HTMLInputElement;
       if(this.byBoq == 0)
       {
-        
         let ressourceItems : ressourceItem[] = [];
         
         this.RevisionDetailsBoqItems.forEach((boq : any, i : number)=>{
@@ -562,6 +556,9 @@ export class PackageComparisonComponent implements OnInit {
        
         let assignSuppliertRes : AssignSuppliertRes = {supplierPercentList : this.supplierPercent, supplierResItemList : ressourceItems};
         this.isAssigningSupplierList = true;
+        let CostConn=this.user.usrLoggedConnString;
+        this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
         this.packageComparisonService.AssignSupplierListRessourceList(this.PackageId, true, assignSuppliertRes).subscribe((data) => {
           this.isAssigningSupplierList = false;
           if (data) {
@@ -609,6 +606,9 @@ export class PackageComparisonComponent implements OnInit {
       {
         let assignSuppliertBoq : AssignSuppliertBoq = {supplierPercentList : this.supplierPercent, supplierBoqItemList : boqItems};
         this.isAssigningSupplierList = true;
+        let CostConn=this.user.usrLoggedConnString;
+        this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+        
         this.packageComparisonService.AssignSupplierListBoqList(this.PackageId, true, assignSuppliertBoq).subscribe((data) => {
           this.isAssigningSupplierList = false;
           if (data) {
@@ -684,9 +684,6 @@ export class PackageComparisonComponent implements OnInit {
             {
               //console.log(td.innerHTML);
             }
-            
-             
-             
           }
           if(j == '6')
           {
@@ -766,9 +763,7 @@ export class PackageComparisonComponent implements OnInit {
                       supID : Number(input.id.split('-')[1]),
                       percent : Number(input.value)
                   };
-
-                  this.supplierResourcePercent.push(newSupplierPerc);
-                  
+                  this.supplierResourcePercent.push(newSupplierPerc);               
                 }
             }
           }
@@ -807,6 +802,9 @@ export class PackageComparisonComponent implements OnInit {
     } 
     else {
         this.isAssigningSupplierRessource = true;
+        let CostConn=this.user.usrLoggedConnString;
+        this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
         this.packageComparisonService.AssignSupplierRessource(this.PackageId, true, this.supplierResrouces).subscribe((data) => {
         this.isAssigningSupplierRessource = false;
         if (data) {
@@ -908,6 +906,9 @@ export class PackageComparisonComponent implements OnInit {
     } 
     else {
         this.isAssigningSupplierRessource = true;
+        let CostConn=this.user.usrLoggedConnString;
+        this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
         this.packageComparisonService.AssignSupplierBOQ(this.PackageId, true, this.supplierBOQ).subscribe((data) => {
         this.isAssigningSupplierRessource = false;
         if (data) {
@@ -1005,6 +1006,9 @@ export class PackageComparisonComponent implements OnInit {
   }
 
   GetBOQDivList(body : any) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.assignPackageService.GetBOQDivList(body).subscribe((data) => {
       if (data) {
         this.BOQDivList = data;
@@ -1039,8 +1043,6 @@ export class PackageComparisonComponent implements OnInit {
       let hidden = firstCell.lastElementChild as HTMLInputElement;
       subCheckbox.checked = checkbox.checked;
       this.selectBoqItem(subCheckbox, hidden.value, target);
-     
-
     }
 
     if(!checkbox.checked)
@@ -1123,7 +1125,6 @@ export class PackageComparisonComponent implements OnInit {
     let rowParent = cellParent.parentElement as HTMLTableRowElement;
     let checkboxParent = rowParent.cells[0].firstElementChild as HTMLInputElement;
     return checkboxParent;
-
   }
 
   selectAllItemsByResource(target : any)
@@ -1131,9 +1132,7 @@ export class PackageComparisonComponent implements OnInit {
     let checkbox = target as HTMLInputElement;
     let cell = checkbox.parentElement as HTMLTableCellElement;
     let row = cell.parentElement as HTMLTableRowElement;
-   
     let table = row.parentElement.parentElement as HTMLTableElement;
-    
     let rows = table.rows;
     for(let i = 1; i< rows.length - 3; i++)
     {
@@ -1164,7 +1163,6 @@ export class PackageComparisonComponent implements OnInit {
 
   selectResource(target : any, resourceID : number, parentTarget : any, itemO : string)
   {
-    
     let checkbox = target as HTMLInputElement;
     let cell = checkbox.parentElement as HTMLTableCellElement;
     let row = cell.parentElement as HTMLTableRowElement;

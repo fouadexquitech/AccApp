@@ -7,6 +7,8 @@ import { Subject } from 'rxjs';
 import { Package } from '../packages/packages.models';
 import { packagesService } from './packages.service';
 import { DataTableDirective } from 'angular-datatables';
+import { LoginService } from '../login/login.service';
+import { User } from '../_models';
 
 @Component({
   selector: 'app-packages',
@@ -34,6 +36,7 @@ export class PackagesComponent implements OnInit {
   submitted : boolean = false;
   updating : boolean = false;
   currentUser : Package;
+  public user : User;
 
   public dtOptions: DataTables.Settings;
   public dtTrigger: Subject<any> = new Subject<any>();
@@ -43,8 +46,9 @@ export class PackagesComponent implements OnInit {
     private modalService: NgbModal, private toastrService : ToastrService, 
     private packagesService : packagesService,
     private formBuilder: FormBuilder,
+    private loginService: LoginService,
   ) 
-  { 
+  { this.loginService.user.subscribe(x => this.user = x);
     this.modalOptions = {
       backdrop:'static',
       backdropClass:'customBackdrop',
@@ -58,6 +62,8 @@ export class PackagesComponent implements OnInit {
 
   fetchData()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     const that = this;
 
     this.dtOptions = {
@@ -96,6 +102,8 @@ export class PackagesComponent implements OnInit {
 
   getpackagesList()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.loading = true;
       this.packagesService.Getpackages(this.filter).subscribe(data=>{
         this.loading = false;
@@ -132,6 +140,9 @@ export class PackagesComponent implements OnInit {
 
   openAdd(content : any)
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+    
     this.addedList = [];
     this.mode = 'add';
     this.modalTitle = 'Add User';
@@ -155,6 +166,9 @@ export class PackagesComponent implements OnInit {
 
   saveBulk()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
       if(this.addedList.length == 0)
       {
           this.toastrService.error('No data available');
@@ -207,6 +221,9 @@ export class PackagesComponent implements OnInit {
 
   deleteUser(id : number)
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     const confirmBox = new ConfirmBoxInitializer();
 
     confirmBox.setTitle('Are you sure you want to delete this user?');
@@ -226,7 +243,7 @@ export class PackagesComponent implements OnInit {
     if(resp.success)
     {
       this.deleting = true;
-    this.packagesService.deletepackage(id).subscribe((data : any)=>{
+      this.packagesService.deletepackage(id).subscribe((data : any)=>{
       this.deleting = false;
         if(data.success)
         {
@@ -263,6 +280,9 @@ export class PackagesComponent implements OnInit {
 
   onEditSubmit()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
       this.submitted = true;
       // stop here if form is invalid
       if (this.formEdit.invalid) {

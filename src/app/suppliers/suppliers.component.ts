@@ -8,6 +8,8 @@ import { Supplier,RegisterModel } from '../suppliers/suppliers.models';
 import { SuppliersService } from './suppliers.service';
 import { DataTableDirective } from 'angular-datatables';
 import { finalize } from 'rxjs/operators';
+import { LoginService } from '../login/login.service';
+import { User } from '../_models';
 
 @Component({
   selector: 'app-suppliers',
@@ -45,20 +47,22 @@ export class SuppliersComponent implements OnInit {
   public dtTrigger: Subject<any> = new Subject<any>();
   // isSearching : boolean = false;
   creatingAccounts : boolean = false;
-  
+  public user : User;
+
   constructor(
     private modalService: NgbModal, private toastrService : ToastrService, 
     private suppliersService : SuppliersService,
     private formBuilder: FormBuilder,
+    private loginService: LoginService,
   ) 
   { 
+    this.loginService.user.subscribe(x => this.user = x);
     this.modalOptions = {
       backdrop:'static',
       backdropClass:'customBackdrop',
       size : 'lg'
     }
   }
-  
 
   ngOnInit(): void {
     this.fetchData();
@@ -66,6 +70,8 @@ export class SuppliersComponent implements OnInit {
 
   fetchData()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     const that = this;
 
     this.dtOptions = {
@@ -120,6 +126,8 @@ export class SuppliersComponent implements OnInit {
 
   getSuppliersList()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.loading = true;
       this.suppliersService.GetSuppliers(this.filter).subscribe(data=>{
         this.loading = false;
@@ -185,6 +193,9 @@ export class SuppliersComponent implements OnInit {
 
   saveBulk()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
       if(this.addedList.length == 0)
       {
           this.toastrService.error('No data available');
@@ -255,7 +266,10 @@ export class SuppliersComponent implements OnInit {
     //console.log(resp);
     if(resp.success)
     {
-      this.deleting = true;
+      let CostConn=this.user.usrLoggedConnString;
+      this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+      
+    this.deleting = true;
     this.suppliersService.deleteSupplier(id).subscribe(data=>{
       this.deleting = false;
         if(data)
@@ -308,7 +322,10 @@ export class SuppliersComponent implements OnInit {
 
   onEditSubmit()
   {
-      this.submitted = true;
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
+    this.submitted = true;
       // stop here if form is invalid
       if (this.formEdit.invalid) {
         return;
@@ -336,7 +353,6 @@ export class SuppliersComponent implements OnInit {
   //#region select supplier
   selectSupplier(target : any, supplier : any)
   {
-    
     let buttons = document.getElementsByClassName("dt-button");
     
     let checkbox = target as HTMLInputElement;
@@ -353,9 +369,6 @@ export class SuppliersComponent implements OnInit {
     
     let b =  buttons[0] as HTMLButtonElement;
     this.selectedSuppliers.length > 0 ? b.classList.remove('disabled') : b.classList.add('disabled');
-    
-    
-
   }
   //#endregion
 
@@ -366,6 +379,9 @@ export class SuppliersComponent implements OnInit {
 
   createAccounts()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     let buttons = document.getElementsByClassName("dt-button");
     let b =  buttons[0] as HTMLButtonElement;
     let list : any[] = [];
@@ -401,6 +417,8 @@ export class SuppliersComponent implements OnInit {
 
   updatePortalAccountFlag(ids : number[], b : HTMLButtonElement)
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     let body = {
       suppliers : ids,
       accountCreated : true

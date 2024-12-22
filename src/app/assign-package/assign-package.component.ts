@@ -192,6 +192,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       this.SearchInput.boqResourceSeq= [];
     }
 // AH28032023
+
   ngOnInit(): void {
     this.getBoqResourceRecords();
     this.formTrade = this.formBuilder.group({
@@ -278,7 +279,6 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   
   rerender(): void {
-    
     this.dtElements.toArray()[0].dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
       dtInstance.destroy();
@@ -290,6 +290,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   ngAfterViewInit() {
     this.dtTrigger.next();
   }
+
   toggleShow() {
     this.isShown = !this.isShown;
   }
@@ -305,12 +306,14 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   // AH28032023
   ConnectToDB(connString: string) {
     this.assignPackageService.ConnectToDB(connString).subscribe((data) => {
-      
     });
   }
 // AH28032023.
 
   GetBOQDivList(body : any) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.assignPackageService.GetBOQDivList(body).subscribe((data) => {
       if (data) {
         this.BOQDivList = data;
@@ -321,6 +324,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   }
 
   GetBOQLevel2List(body : any) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetBOQLevel2List(body).subscribe((data) => {
       if (data) {
         this.BOQLevelList = data;
@@ -331,6 +336,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   }
 
   GetBOQLevel3List(body : any) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetBOQLevel3List(body).subscribe((data) => {
       if (data) {
         this.BOQLevelList = data;
@@ -341,6 +348,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   }
 
   GetBOQLevel4List(body : any) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetBOQLevel4List(body).subscribe((data) => {
       if (data) {
         this.BOQLevelList = data;
@@ -351,6 +360,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   }
 
   GetRESDivList() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetRESDivList().subscribe((data) => {
       if (data) {
         this.RESDivList = data;
@@ -360,6 +371,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   }
 
   GetRESTypeList(body : any) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetRESTypeList(body).subscribe((data) => {
       if (data) {
         this.RESTypeList = data;
@@ -370,6 +383,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   GetPackageList() {
 //Get all packages
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetPackageList(false).subscribe((data) => {
       if (data) {
         this.PackageList = data;
@@ -386,6 +401,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   }
 
   GetRessourcesList(body : any) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetRessourcesList(body).subscribe((data) => {
       if (data) {
         this.ressourceList = data;
@@ -395,8 +412,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     });
   }
 
-  L2_AfterUpdate()
-  {
+  L2_AfterUpdate(){
     let body : any = {
       level2 : this.SearchInput.boqLevel2,
       level3 : this.SearchInput.boqLevel3,
@@ -469,6 +485,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   }
 
   GetRESPackageList() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetRESPackageList().subscribe((data) => {
       if (data) {
         this.RESPackageList = data;
@@ -478,6 +496,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   }
 
   GetSheetDescList() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetSheetDescList().subscribe((data) => {
       if (data) {
         this.SheetDescList = data;
@@ -495,6 +515,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.isSearching = true;
     
     let costDB=this.user.usrLoggedCostDB;
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
     this.assignPackageService.GetOriginalBoqList(input,costDB)
     .pipe(finalize(()=>{
@@ -524,6 +546,9 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   }
 
   GetBoqList(itemO: string, input: SearchInput) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.assignPackageService.GetBoqList(itemO, input).subscribe((data) => {
       if (data) {
         let lst = this.SelectedBoqList;
@@ -580,7 +605,6 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         //console.log(boqTable.rows.length);
         for(let index = 1; index < boqTable.rows.length; index++)
         {
-          
           let row = boqTable.rows[index] as HTMLTableRowElement;
           let checkbox = row.firstChild.firstChild as HTMLInputElement;
           if(checkbox)
@@ -656,7 +680,6 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   onSelectBoqOnTable(event : any)
   {
-    
     this.SelectedBoqRow = event.boqItem;
     
     if (!this.SelectedBoqRow.isSelected)
@@ -665,7 +688,6 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       this.FinalUnitPrice -= this.SelectedBoqRow.totalUnitPrice;
       let index = this.SelectedBoqList.findIndex(x=>x.boqSeq === this.SelectedBoqRow.boqSeq);
       this.SelectedBoqList.splice(index,1);
-
     }
     else
     {
@@ -673,7 +695,6 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       this.FinalUnitPrice += this.SelectedBoqRow.totalUnitPrice;
       this.SelectedBoqList.push(this.SelectedBoqRow);
     }
-    
     //this.checkOriginalBoq();
   }
 
@@ -688,13 +709,11 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
             this.removeSelectedOriginalBoq(index);   
           }   
       });
-
       //console.log(this.SelectedOriginalBoqList);
   }
 
   removeSelectedOriginalBoq(index : number)
   {
-   
     let originalBOQTable = document.getElementById('originalBOQTable') as HTMLTableElement;
     //check the selected row
     if(originalBOQTable)
@@ -712,8 +731,6 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     }
   }
 
-  
-  
   selectRow(event: any, i: any) {
     
     let currentPageIndex = +document.getElementsByClassName('paginate_button current')[0].innerHTML - 1;
@@ -762,7 +779,10 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
                   this.selectedBoqsResV2.splice(iiResIndex, 1);
                   //uncheck all children
                   let selectedBoqArr = this.SelectedBoqList;
-                                 
+                  
+                  let CostConn=this.user.usrLoggedConnString;
+                  this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
                   this.assignPackageService.GetBoqList(itemO, this.SearchInput).subscribe((data) => {
                     if (data) {
                       this.BoqList = data;
@@ -798,15 +818,10 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   }
 
   reloadBoqResources() {
- 
-    
     this.dtElements.toArray()[1].dtInstance.then((dtInstance: DataTables.Api) => {
-      
       dtInstance.ajax.reload(undefined, false);
-      
     });
   }
-
 
   getBoqResourceRecords()
   {
@@ -829,6 +844,10 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         
         dataTablesParameters.boqIds = this.selectedBoqsV2.join();
         dataTablesParameters.selectedBoqIds = this.selectedBoqsResV2.join();
+
+        let CostConn=this.user.usrLoggedConnString;
+        this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
         this.assignPackageService.getBoqResourceRecords(dataTablesParameters).subscribe(resp => {
             that.boqsList = resp.data;
             this.resourcesSelected = that.boqsList.length > 0;
@@ -876,7 +895,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   editDisplayedBoqList(BoqList : BoqModel[], add : boolean)
   {
-     BoqList.forEach(boq=>{
+      BoqList.forEach(boq=>{
         let boqItem = this.OriginalBoqList.find(x=>x.itemO == boq.boqItem);
         boq.totalUnitPrice = boqItem?.unitRateO;
         let item = this.displayedResList.find(a=>a.boqSeq == boq.boqSeq);
@@ -988,7 +1007,10 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     
     if(checkbox.checked)
     {
-        /* select All BOQ List*/
+        /*select All BOQ List*/
+        let CostConn=this.user.usrLoggedConnString;
+        this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
         this.assignPackageService.GetAllBoqList(this.SearchInput).subscribe((data) => {
           if (data) {
             
@@ -1003,8 +1025,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
             });
             
             //fouadddddddddddddddddddddddddddd
-            //this.getBoqResourceRecords();
-           
+            //this.getBoqResourceRecords();          
             //this.boqListTable?.setData(boqArr);
             this.editDisplayedBoqList(boqArr, true);
             
@@ -1019,11 +1040,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       this.boqListTable?.setFinalTotalPrice(0);
       //this.reloadBoqResources();
     }
-
-    
-
   }
-
 
   // checkAllOriginalBoq(event : any) {
   //   this.SelectedOriginalBoqList = [];
@@ -1083,6 +1100,9 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.assignPackages.assignOriginalBoqList = this.SelectedOriginalBoqList;
     this.assignPackages.assignBoqList = this.SelectedBoqList;
     
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.assignPackageService.AssignPackage(this.assignPackages).pipe(finalize(()=>{
       this.isAssigning = false;
     }))
@@ -1132,11 +1152,13 @@ TestSendMail(){
       }      
     }
     
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.packageSupplierService.validateExcelBeforeAssign(this.SelectedPackage, Number(localStorage.getItem('assignByBoqOnly'))).subscribe((data) => {
       this.isValidatingExcel = false;
       if (data) {
         // this.spinner.hide();
-        
         this.toastr.success("Validated !!")
         this.GetPackageById(Number(this.SelectedPackage));
 
@@ -1154,6 +1176,9 @@ TestSendMail(){
   }
 
   GetPackageById(IdPkge: number) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.packageSupplierService.GetPackageById(IdPkge).subscribe((data) => {
       if (data) {
         this.PackageName = data.packageName;
@@ -1389,6 +1414,8 @@ TestSendMail(){
   this.assignPackages.assignBoqList = this.SelectedBoqList;
   this.isExportExcel=true;
   //this.assignPackageService.AssignPackage(this.assignPackages).subscribe((data) => {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
     this.assignPackageService.ExportBoqExcel(this.SearchInput,costDB).subscribe((data) => {
       this.isExportExcel=false;
@@ -1410,6 +1437,9 @@ TestSendMail(){
     this.assignPackages.assignBoqList = this.SelectedBoqList;
     //this.assignPackageService.AssignPackage(this.assignPackages).subscribe((data) => {
     this.isExportExcelNotAssigned=true;
+
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
       this.assignPackageService.ExportNotAssigned(costDB).subscribe((data) => {
         this.isExportExcelNotAssigned=false;
@@ -1433,6 +1463,9 @@ TestSendMail(){
       else
         this.isExportExcelDry=true;
   
+        let CostConn=this.user.usrLoggedConnString;
+        this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
         this.assignPackageService.ExportExcelPackagesCost(withBoq,costDB,this.SearchInput)
         .pipe(finalize(() =>{
           if (withBoq==1)
@@ -1464,8 +1497,6 @@ TestSendMail(){
       return  `with: ${reason}`;
     }
   }
-
-  
     //convenience getter for easy access to form fields
     get f() { return this.formEdit.controls; }
 
@@ -1539,6 +1570,9 @@ TestSendMail(){
     if (origBoq) {
       this.currentOrigBoq.scopeQtyO = this.f.QtyScope.value;
 
+      let CostConn=this.user.usrLoggedConnString;
+      this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
       this.assignPackageService.updateOriginalBoqQty(this.currentOrigBoq).subscribe(response => {
         this.updating = false;
         if (response) {
@@ -1555,6 +1589,9 @@ TestSendMail(){
     else {
 
       this.currentBoqRes.boqScopeQty = this.f.QtyScope.value;
+
+      let CostConn=this.user.usrLoggedConnString;
+      this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
       this.assignPackageService.updateBoqResQty(this.currentBoqRes).subscribe(response => {
         this.updating = false;
@@ -1580,6 +1617,9 @@ TestSendMail(){
     //this.assignPackages.assignBoqList = null;
     let desc=this.fn.tradeDesc.value;
 
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+    
     this.assignPackageService.updateBoqTradeDesc(this.OriginalBoqList,desc).subscribe((data) => {
       if (data) {
        // this.SelectedBoqList = [];

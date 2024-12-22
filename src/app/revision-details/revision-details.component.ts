@@ -6,6 +6,8 @@ import { LevelModel,RevisionDetailsList, SupplierPackagesList, SupplierPackagesR
 import { PackageSupplierService } from '../package-supplier/package-supplier.service';
 import { RevisionDetailsService } from './revision-details.service';
 import { escapeRegExp } from 'lodash-es';
+import { LoginService } from '../login/login.service';
+import { User } from '../_models';
 
 @Component({
   selector: 'app-revision-details',
@@ -29,8 +31,15 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
   modalScrollDistance = 2;
   modalScrollThrottle = 50;
   sum = 4;
-  constructor(private router: Router, private packageSupplierService : PackageSupplierService, private route: ActivatedRoute,
-    private revisionDetailsService : RevisionDetailsService, private toastr: ToastrService,) {
+  public user : User;
+
+  constructor(
+    private router: Router, 
+    private packageSupplierService : PackageSupplierService,
+    private route: ActivatedRoute,
+    private revisionDetailsService : RevisionDetailsService, 
+    private toastr: ToastrService,
+    private loginService: LoginService,) {
     /*if (this.router.getCurrentNavigation().extras.state != undefined) {
       let RevisionId = this.router.getCurrentNavigation().extras.state.revisionId;
       let psId = this.router.getCurrentNavigation().extras.state.psId;
@@ -47,6 +56,7 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
     } else {
       this.router.navigateByUrl("/package-list");
     }*/
+    this.loginService.user.subscribe(x => this.user = x);
    }
 
   ngOnInit(): void {
@@ -56,6 +66,9 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
       this.psByBoq = Number(params['psByBoq']);
       this.packageId = Number(params['packageId']);
       this.packageName = params['packageName'];
+      let CostConn=this.user.usrLoggedConnString;
+      this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
       this.packageSupplierService.GetSupplierPackagesSingleRevision(RevisionId).subscribe(data=>{
         this.Revision = data;
         
@@ -78,14 +91,18 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
 
   getPackageSupplier(prPackSuppId : number)
   { 
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.packageSupplierService.GetSupplierPackage(prPackSuppId).subscribe(data=>{
       this.supplierPackage = data;
-     
   });
   }
 
   UpdateRevisionPricesByBoq(revId : number,  tableId : string)
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.saving = true;
     let revisionDetails : RevisionDetailsList[] = [];
     let table = document.getElementById(tableId) as HTMLTableElement;
@@ -103,8 +120,6 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
 
       let cel6 = row.cells[6];
       let missedPriceReason = cel6.childNodes[0] as HTMLInputElement;
-
-   
 
       if(rdResourceSeq.type == 'hidden' && rdBoqItem.type == 'hidden' && rdPrice.type == 'number')
             {
@@ -178,6 +193,9 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
 
   UpdateRevisionPrices(revId : number, tableId : string)
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
       this.saving = true;
       let revisionDetails : RevisionDetailsList[] = [];
       let table = document.getElementById(tableId) as HTMLTableElement;
@@ -289,6 +307,9 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
 
   GetRevisionDetails(prRevId : number)
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+    
     let filterItemDesc = document.getElementById('filterItemDesc') as HTMLInputElement;
     let filterResource = document.getElementById('filterResource') as HTMLInputElement;
       this.packageSupplierService.GetRevisionDetails(prRevId, filterItemDesc.value, filterResource.value).subscribe(data=>{

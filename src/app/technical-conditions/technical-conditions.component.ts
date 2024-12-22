@@ -9,7 +9,10 @@ import { PackageComparisonService } from '../package-comparison/package-comparis
 import { ComparisonPackageGroup } from '../package-groups/package-groups.model';
 import { PackageGroupsService } from '../package-groups/package-groups.service';
 import { PackageSupplierService } from '../package-supplier/package-supplier.service';
+import { User } from '../_models';
 declare var $: any;
+
+
 @Component({
   selector: 'app-technical-conditions',
   templateUrl: './technical-conditions.component.html',
@@ -31,18 +34,20 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
   isSendingTechConditions : boolean = false;
   listCC : string[] = [];
   technicalConditionsModalLabel : string = '';
+  public user : User;
+
   constructor(private router: Router, private packageComparisonService : PackageComparisonService, private packageSupplierService : PackageSupplierService,
     private packageGroupsService : PackageGroupsService, private formBuilder: FormBuilder,
-    private route : ActivatedRoute, private toastrService : ToastrService, private loginService : LoginService) {
+    private route : ActivatedRoute, private toastrService : ToastrService, private loginService : LoginService,) 
+    {this.loginService.user.subscribe(x => this.user = x);
     /*if (this.router.getCurrentNavigation().extras.state != undefined) {
       this.packageId = this.router.getCurrentNavigation().extras.state.packageId;
       this.packageName = this.router.getCurrentNavigation().extras.state.pkgeName;
     }*/
-
    }
 
     // convenience getter for easy access to form fields
-    get f() { return this.formTechCond!.controls; }
+  get f() { return this.formTechCond!.controls; }
 
   ngOnInit(): void {
     
@@ -68,6 +73,9 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
 
   sendTechnicalConditions()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     let CondList : AccConditions[] = [];
     let table = document.getElementById("tbl1") as HTMLTableElement;
     let rows = table.rows;
@@ -129,7 +137,9 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
 
   getGroups(items : TechConditionGroup[])
   {
-    
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.packageGroupsService.getGroups(this.packageId).subscribe((data) => {
         if(data)
         {
@@ -165,6 +175,9 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
 
   onFormTechCondSubmit()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.submitted = true;
     if(this.formTechCond.invalid)
     {
@@ -227,6 +240,9 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
 
   deleteTechCond(item : TechConditions)
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     Swal.fire({  
       title: 'Are you sure you want to delete this condition?',  
       text: 'Please confirm',  
@@ -261,6 +277,8 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
 
   getTechnicalConditionsList()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 //AH052024
   //   this.packageComparisonService.getTechConditions(this.packageId, this.filter).subscribe(data=>{
   //     this.list = data;

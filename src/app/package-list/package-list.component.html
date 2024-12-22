@@ -23,6 +23,7 @@
                                 <th scope="col"></th>
                                 <th scope="col"></th>
                                 <th scope="col" *ngIf="false"></th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -38,10 +39,29 @@
                                     <!--AH052024 <button type="button" class="btn btn-secondary"
                                         (click)="routeToTechnicalConditions(item.idPkge, item.pkgeName)">Technical
                                         Conditions</button> -->
-
                                     <a class="btn btn-primary" [routerLink]="['/technical-conditions', item.idPkge, item.pkgeName]">
                                         Technical Conditions
                                     </a>
+                                </td>
+                                <td>
+                                    <h5 style="display: inline-block;"><span>Assigned Supp.</span>&nbsp;
+                                        <span style="float: right; cursor: pointer;user-select: none;" (click)="toggleShow(item.idPkge)">
+                                            <div class="form-check form-switch">
+                                                <input id="ckSupp" class="form-check-input" type="checkbox" [checked]="isShown && item.idPkge == selectedPackId">                     
+                                              </div>       
+                                        </span>            
+                                    </h5>
+                                    <!-- <div class="card-body" *ngIf="isShown && item.idPkge == selectedPackId"> -->
+                                    <table id="tbSupp" class="table" *ngIf="isShown && item.idPkge == selectedPackId" >
+                                        <tbody>
+                                            <tr *ngFor="let sup of SupplierPackagesList; let j = index">
+                                                <td *ngIf="item.idPkge == sup.psPackId">
+                                                    {{sup.psSupName}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <!-- </div> -->
                                 </td>
                             </tr>
                         </tbody>

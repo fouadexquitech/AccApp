@@ -99,6 +99,13 @@ export class LoginService {
     console.error('An error occurred', error);
     return Promise.reject(error.message || error);
   }
+
+  //AH22122024
+  CheckConnection(CostDbConn: string): Observable<any> {
+    return this.http.post(this.baseUrl + 'CheckConnection/CheckConnections?CostDbConn='+CostDbConn, null).pipe(
+      map(res => res), catchError(this.handleError)
+    );
+  ///AH22122024
 }
 
-
+}

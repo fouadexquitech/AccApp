@@ -18,12 +18,19 @@
   <div class="row">
     <!-- <div class="col-sm-12 form-group" *ngIf="SupplierPackagesList.length == 0 && FilePath != null"> -->
     <div class="col-sm-2 form-group">
-        <mat-form-field style="width: 100%;" appearance="fill">
+        <mat-form-field class="full-width-field"  style="width: 100%;font-size:11px;">
           <mat-label>Suppliers</mat-label>
+          
           <mat-select multiple [(ngModel)]="selectedSuppliers">
+          <input matInput type="text" focused="'true'" (keyup)="filterSuppliers($event)" class="mat-filter">
+          <span class="fa fa-search input-icon"></span>
+          <mat-divider></mat-divider>
+        
             <mat-option *ngFor="let item of SupplierList" [value]="item.supID">{{item.supName}}</mat-option>
           </mat-select>
-        </mat-form-field> 
+        </mat-form-field>
+
+
     </div>
     <!-- <div class="col-sm-3 form-group" *ngIf="SupplierPackagesList.length == 0 && FilePath != null"> -->
     <div class="col-sm-2 form-group" >

@@ -1,6 +1,8 @@
 import { Component, EventEmitter, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { BOQDivList, BOQLevelList, PackageList, RESDivList, RESPackageList, RESTypeList, RessourceList, SearchInput, SheetDescList } from '../assign-package/assign-package.model';
 import { AssignPackageService } from '../assign-package/assign-package.service';
+import { LoginService } from '../login/login.service';
+import { User } from '../_models';
 
 @Component({
   selector: 'app-assign-package-filter',
@@ -53,8 +55,10 @@ export class AssignPackageFilterComponent implements OnInit {
 
   RESPackageList: RESPackageList[] = [];
   selectedFilterResPackages : RESPackageList[] = [];
+  public user : User;
 
-  constructor(private assignPackageService : AssignPackageService) { }
+  constructor(private assignPackageService : AssignPackageService,
+              private loginService: LoginService,) { this.loginService.user.subscribe(x => this.user = x);}
 
   ngOnInit(): void {
     let body : any = {
@@ -80,6 +84,8 @@ export class AssignPackageFilterComponent implements OnInit {
 
   
   GetBOQDivList(body : any) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetBOQDivList(body).subscribe((data) => {
       if (data) {
         this.BOQDivList = data;
@@ -103,7 +109,8 @@ export class AssignPackageFilterComponent implements OnInit {
   }
 
   GetBOQLevel2List(body : any) {
-   
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetBOQLevel2List(body).subscribe((data) => {
       if (data) {
         this.BOQLevelList = data;
@@ -114,7 +121,8 @@ export class AssignPackageFilterComponent implements OnInit {
   }
 
   GetBOQLevel3List(body : any) {
-   
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetBOQLevel3List(body).subscribe((data) => {
       if (data) {
         this.BOQLevelList = data;
@@ -125,7 +133,8 @@ export class AssignPackageFilterComponent implements OnInit {
   }
 
   GetBOQLevel4List(body : any) {
-    
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetBOQLevel4List(body).subscribe((data) => {
       if (data) {
         this.BOQLevelList = data;
@@ -136,6 +145,8 @@ export class AssignPackageFilterComponent implements OnInit {
   }
 
   GetRESDivList() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetRESDivList().subscribe((data) => {
       if (data) {
         this.RESDivList = data;
@@ -145,7 +156,8 @@ export class AssignPackageFilterComponent implements OnInit {
   }
 
   GetRESTypeList(body : any) {
-    
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetRESTypeList(body).subscribe((data) => {
       if (data) {
         this.RESTypeList = data;
@@ -164,6 +176,8 @@ export class AssignPackageFilterComponent implements OnInit {
       boqDiv: this.SearchInput.bOQDiv
     };
 
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetRessourcesListByLevels(body).subscribe((data) => {
       if (data) {
         this.ressourceList = data;
@@ -259,7 +273,8 @@ export class AssignPackageFilterComponent implements OnInit {
     //     this.selectedPackages = this.PackageList;
     //   }
     // });
-
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetPackageList(true).subscribe((data) => {
       if (data) {
         this.PackageList = data;
@@ -270,6 +285,8 @@ export class AssignPackageFilterComponent implements OnInit {
   }
 
   GetRESPackageList() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetRESPackageList().subscribe((data) => {
       if (data) {
         this.RESPackageList = data;
@@ -279,6 +296,8 @@ export class AssignPackageFilterComponent implements OnInit {
   }
 
   GetSheetDescList() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetSheetDescList().subscribe((data) => {
       if (data) {
         this.SheetDescList = data;
@@ -347,7 +366,6 @@ export class AssignPackageFilterComponent implements OnInit {
       this.SearchInput.rESType.length == 0 &&
       (this.SearchInput.sheetDesc == null || this.SearchInput.sheetDesc == '') &&
       this.SearchInput.isRessourcesAssigned == 0);
-
   }
 
   public clearFilter()
@@ -393,6 +411,8 @@ export class AssignPackageFilterComponent implements OnInit {
 
 
   GetRessourcesList(body : any) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetRessourcesList(body).subscribe((data) => {
       if (data) {
         this.ressourceList = data;
@@ -511,6 +531,4 @@ export class AssignPackageFilterComponent implements OnInit {
       this.clearEvent.emit(true);
       this.ngOnInit();
   }
-
-
 }

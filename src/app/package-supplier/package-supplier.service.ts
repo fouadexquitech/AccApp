@@ -222,7 +222,6 @@ export class PackageSupplierService {
   );
  }
 
-
  delTechConditions(item : TechConditions)
  {
     return this.http.post(this.baseUrl + 'Conditions/DelTechConditions?id=' + item.tcSeq, null).pipe(
@@ -235,7 +234,6 @@ export class PackageSupplierService {
     return Promise.reject(error.message || error);
   }
 
-  
   GetComCondReplyByRevision(revisionId: number): Observable<any> {
     return this.http.get(this.baseUrl + 'Conditions/GetComCondReplyByRevision?revisionid=' + revisionId).pipe(
       map(res => res), catchError(this.handleError)

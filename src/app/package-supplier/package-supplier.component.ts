@@ -174,6 +174,8 @@ public user : User;
  
   getGroups()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.packageGroupsService.getGroups(this.PackageId).subscribe((data) => {
         if(data)
         {
@@ -215,6 +217,9 @@ public user : User;
 
   deleteField(fieldId : any, revisionId : any)
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.confirmationDialogService.confirm('Please confirm', 'Do you really want to delete this field ?')
     .then((confirmed) => {
       if(confirmed)
@@ -232,6 +237,9 @@ public user : User;
 
   sendTechnicalConditions()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
       this.isSendingTechConditions = true;
       this.packageSupplierService.sendTechnicalConditions(Number(this.PackageId), null, this.loginService.userValue?.usrId).subscribe(data=>{
         this.isSendingTechConditions = false;
@@ -275,6 +283,9 @@ public user : User;
 
   getFields(revisionId : any)
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.packageSupplierService.GetFields(Number(revisionId)).subscribe(data=>{
       this.revisionFieldsList = data;
     });
@@ -339,6 +350,9 @@ public user : User;
   }
 
   GetPackageById(IdPkge: number) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.packageSupplierService.GetPackageById(IdPkge).subscribe((data) => {
       if (data) {
         this.PackageName = data.packageName;
@@ -349,6 +363,9 @@ public user : User;
 
   GetCurrencyList()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.packageSupplierService.GetCurrencies().subscribe((data) => {
       if (data) {
         this.CurrencyList = data;
@@ -359,6 +376,9 @@ public user : User;
   }
 
   GetSupplierList(IdPkge: number) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.packageSupplierService.GetSupplierList(IdPkge).subscribe((data) => {
       if (data) {
         this.SupplierList = data;
@@ -410,6 +430,9 @@ public user : User;
 
   OpenEmailTemplateModal(supId: number,psId :number,packageSupplier : SupplierPackagesList,index:number) 
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
 //AH052024
 //  this.lstLanguages = Language.languages;
     this.GetEmailTemplateLanguageList();
@@ -486,6 +509,9 @@ public user : User;
 
   onLanguageChange(event : any)
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
       let select = event.target as HTMLInputElement;
       let lang = select.value;
       this.formEmailTemplate.controls['template'].setValue('');
@@ -497,6 +523,8 @@ public user : User;
 
 //AH30012024
   GetEmailTemplateLanguageList() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.lstLanguages=[];
     this.packageSupplierService.GetEmailTemplate("").subscribe((data) => {
       if (data) {
@@ -529,6 +557,9 @@ public user : User;
   }
 
   GetSupplierPackagesList() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.packageSupplierService.GetSupplierPackagesList(this.PackageId).subscribe((data) => {
       if (data) {
         this.SupplierPackagesList = data;
@@ -543,6 +574,9 @@ public user : User;
   }
 
   AssignSuppliers() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     //this.spinner.show();
     this.isAssigning = true;
     this.SupplierInput = [];
@@ -622,6 +656,9 @@ public user : User;
 
   getComConditions(packSupId :number)
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
       this.packageSupplierService.getComConditions(packSupId).subscribe(data=>{
           this.comConditions = data;
           // console.log(this.comConditions);
@@ -629,6 +666,8 @@ public user : User;
   }
 
   GetSupplierPackagesRevision(packageSupplierId: number) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.packageSupplierService.GetSupplierPackagesRevision(packageSupplierId).subscribe((data) => {
       if (data) {
         this.SupplierPackagesRevList = data;
@@ -646,8 +685,6 @@ public user : User;
       this.SupplierPackagesRevList = [];
       this.GetSupplierPackagesRevision(data.psId);
     }
-
-
   }
 
   OpenModal(psId: number) {
@@ -683,6 +720,9 @@ public user : User;
   }
 
   AddRevision() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.addingRevision = true;
     var date = document.getElementById("revisionDate") as HTMLInputElement;
     var discount = document.getElementById("discount") as HTMLInputElement;
@@ -738,6 +778,8 @@ public user : User;
   }
 
   validateExcelBeforeAssign(){
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     //this.spinner.show();
     this.isValidatingExcel = true;
     
@@ -849,6 +891,9 @@ public user : User;
 
   updateCommercialConditions()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     var inputCommercialCondFile = document.getElementById("inputCommercialCondFile") as HTMLInputElement;
     if(!inputCommercialCondFile.value)
     {
@@ -876,6 +921,9 @@ public user : User;
 
   updateTechnicalConditions()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     var inputTechnicalCondFile = document.getElementById("inputTechnicalCondFile") as HTMLInputElement;
     if(!inputTechnicalCondFile.value)
     {
@@ -900,6 +948,9 @@ public user : User;
   }
 
    AddField() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     var labelInput = document.getElementById("labelInput") as HTMLInputElement;
     var valueInput = document.getElementById("valueInput") as HTMLInputElement;
     var valueType = document.getElementById("valueType") as HTMLSelectElement;
@@ -939,6 +990,9 @@ public user : User;
 
   GetRevisionDetails(prRevId : number)
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
       this.packageSupplierService.GetRevisionDetails(prRevId, '', '').subscribe(data=>{
           if(data)
           {
@@ -995,12 +1049,13 @@ public user : User;
 
   onCurrencyChange(val : any)
   {
-    
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.exchangeRates = [];
     this.exchangeRate = 1;
     if(val)
     {
-        
         this.packageSupplierService.getExchangeRateV2(val.curCode, this.projectCurrency?.curCode).subscribe((data)=>{
             if(data)
             {
@@ -1062,6 +1117,9 @@ public user : User;
 
   GetTechnicalConditions()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
       this.packageSupplierService.getTechConditions(this.PackageId).subscribe(data=>{
           if(data)
           {
@@ -1109,6 +1167,9 @@ public user : User;
 
     getComCondReplyByRevision(revisionId : any)
     {
+      let CostConn=this.user.usrLoggedConnString;
+      this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
       this.packageSupplierService.GetComCondReplyByRevision(Number(revisionId)).subscribe(data=>{
         this.conditionsReplyList = data;
       });
@@ -1124,6 +1185,9 @@ public user : User;
 
     getTechCondReplyByRevision(revisionId : any)
     {
+      let CostConn=this.user.usrLoggedConnString;
+      this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
       this.packageSupplierService.GetTechCondReplyByRevision(Number(revisionId)).subscribe(data=>{
         this.conditionsReplyList = data;
       });
@@ -1131,6 +1195,9 @@ public user : User;
 
     GetTechnicalConditionsByPackage(revisionId :number)
     {
+      let CostConn=this.user.usrLoggedConnString;
+      this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
         this.packageSupplierService.getTechConditionsByPackage(this.PackageId,revisionId).subscribe(data=>{
             if(data)
             {
@@ -1142,11 +1209,31 @@ public user : User;
       }
 
     GetSupplierList_NotAssignetPackage(IdPkge: number) {
+      let CostConn=this.user.usrLoggedConnString;
+      this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
       this.packageSupplierService.GetSupplierList_NotAssignetPackage(IdPkge).subscribe((data) => {
         if (data) {
           this.SupplierList = data;
         }
       });
+    }
+
+    filterSuppliers(event: KeyboardEvent) { 
+      const txt = event.target as HTMLInputElement;
+      
+      let result: SupplierList[] = [];
+      for(let a of this.SupplierList){
+        if(a.supName.toLowerCase().indexOf(txt.value.toLowerCase()) > -1){
+          result.push(a)
+        }
+      }
+      if (txt.value.toLowerCase()=="")
+      {
+        this.GetSupplierList_NotAssignetPackage(this.PackageId);
+      }
+      else
+        this.SupplierList = result;
     }
 //AH24012024
 
@@ -1160,6 +1247,9 @@ openAcceptanceCommentsModal(revisionId : any, prRevNo : any, psSupName : any)
 
   getAcceptanceComment(revId : any)
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+    
       this.packageSupplierService.getRevisionAcceptance(revId).subscribe(data=>{
         if(data)
         {

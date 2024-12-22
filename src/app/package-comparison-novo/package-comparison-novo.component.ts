@@ -107,7 +107,6 @@ export class PackageComparisonNovoComponent implements OnInit {
       defaultFontSize: '',
       fonts: [
         {class: 'calibri', name: 'Calibri'},
-     
       ],
       customClasses: [
       {
@@ -130,7 +129,6 @@ export class PackageComparisonNovoComponent implements OnInit {
     toolbarPosition: 'top',
     toolbarHiddenButtons: [
       ['italic']
-    
     ]
 };
 
@@ -189,7 +187,6 @@ constructor(private router: Router,
     this.getComCondReplies();
     this.GetSupplierList();
   }
-
 
   //AH25022024
   FilterRegularItems ( items : GroupingBoq []){
@@ -257,6 +254,8 @@ constructor(private router: Router,
   }
 
   GetSupplierList() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.packageSupplierService.GetSupplierList(this.packageId).subscribe((data) => {
       if (data) {
         this.supplierList = data;
@@ -271,6 +270,8 @@ constructor(private router: Router,
 
   GetSupplierPackagesList() {
     //this.techConditionsReplies = [];
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.packageComparisonService.GetSupplierPackagesList(this.packageId).subscribe((data) => {
       if (data) 
       {
@@ -358,6 +359,9 @@ constructor(private router: Router,
 
   getByGroup()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     console.log(this.byBoq);
     if(this.byGroup && !this.byBoq)
       {
@@ -382,6 +386,8 @@ constructor(private router: Router,
 
   getTechCondReplies()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
      this.packageComparisonService.getTechCondReplies(this.packageId,this.costDB).subscribe(data=>{
         this.techConditionsReplies = data;
      });
@@ -389,6 +395,8 @@ constructor(private router: Router,
 
   getComCondReplies()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
      this.packageComparisonService.getComCondReplies(this.packageId,this.costDB).subscribe(data=>{
         this.comConditionsReplies = data;
      });
@@ -405,6 +413,9 @@ constructor(private router: Router,
 
   AssignPackageSuppliers()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     if(!this.byBoq && !this.byGroup)
     {
       let ressourceItems : ressourceItem[] = [];
@@ -618,6 +629,8 @@ constructor(private router: Router,
 
   getEmailTemplate(lang : string)
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
       this.packageSupplierService.GetEmailTemplate(lang).subscribe(data=>{
         this.f.template.setValue(data?.etContent);
       });
@@ -625,6 +638,8 @@ constructor(private router: Router,
 
   getManagementEmail()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.selectedTopManagementList = [];
       this.packageComparisonService.getManagementEmail('').subscribe(data=>{
           this.topManagementList = data;
@@ -654,6 +669,8 @@ constructor(private router: Router,
 
   generateExcel()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     console.log(1)
       this.generatingFile = true;
       if(!this.byGroup)
@@ -742,6 +759,9 @@ constructor(private router: Router,
 
   generateSupplierContract()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
       if(!this.selectedSupplier)
       {
           this.toastr.error('Please select a supplier');
@@ -773,6 +793,8 @@ constructor(private router: Router,
 
   openGenerateContract()
   {    
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
       this.generatingContract = true;
       
       this.packageComparisonService.generateSuppliersContractsExcel(this.packageId, this.SearchInput,this.packSuppId,this.costDB).subscribe(res=>{
@@ -799,6 +821,8 @@ constructor(private router: Router,
 
   sendEmail()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
       this.formEmailSubmitted = true;
       
       if(this.formEmailTemplate.invalid)
@@ -823,7 +847,6 @@ constructor(private router: Router,
         this.topManagementAttachements.forEach(file=>{
           files.push(file.file);
         });
-        
         
         this.packageComparisonService.sendCompToManagement(topManagementTemplate, files).subscribe(data=>{
         this.sendingEmail = false;
@@ -860,6 +883,9 @@ constructor(private router: Router,
 
   saveByQty()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     if(!this.byBoq && !this.byGroup)
     {
     this.supplierResrouces = [];
@@ -1110,6 +1136,9 @@ constructor(private router: Router,
   }
 
   saveNew(){
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+    
     if(!this.byBoq && !this.byGroup)
     {
     this.supplierResrouces = [];
@@ -1538,10 +1567,13 @@ constructor(private router: Router,
   }
 
   onSearch(){
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.searching = true;
       if(!this.byBoq)
       {
-      this.packageComparisonService.getComparisonSheet(this.packageId, this.SearchInput).subscribe(data=>{
+        this.packageComparisonService.getComparisonSheet(this.packageId, this.SearchInput).subscribe(data=>{
         this.searching = false; 
         if(data)
         {
@@ -1640,6 +1672,9 @@ constructor(private router: Router,
 
   getSuppliersPrice()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.packageComparisonService.GetPackageSuppliersPrice(this.packageId, this.SearchInput).subscribe((data) => {
         if(data)
         {
@@ -1649,6 +1684,8 @@ constructor(private router: Router,
   }
 
   GetRESDivList() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetRESDivList().subscribe((data) => {
       if (data) {
         this.RESDivList = data;
@@ -1658,6 +1695,8 @@ constructor(private router: Router,
   }
 
   GetBOQDivList(body:any) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetBOQDivList(body).subscribe((data) => {
       if (data) {
         this.BOQDivList = data;
@@ -1666,6 +1705,8 @@ constructor(private router: Router,
   }
 
   GetSheetDescList() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetSheetDescList().subscribe((data) => {
       if (data) {
         this.SheetDescList = data;
@@ -1675,6 +1716,8 @@ constructor(private router: Router,
   }
 
   GetRESTypeList(body : any) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetRESTypeList(body).subscribe((data) => {
       if (data) {
         this.RESTypeList = data;
@@ -1820,6 +1863,8 @@ constructor(private router: Router,
   //AH05032024
   excludBoq(event : any, item : GroupingBoq)
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     // let allCheckbox = document.getElementById('selectAllBoqItem') as HTMLInputElement;
     let checkbox = event.target as HTMLInputElement;
     item.isExcluded = checkbox.checked;
@@ -1842,6 +1887,9 @@ constructor(private router: Router,
 
   excludRessource(event : any, boqRes : GroupingResource)
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+    
     let checkbox = event.target as HTMLInputElement;
     boqRes.isExcluded = checkbox.checked;
 
