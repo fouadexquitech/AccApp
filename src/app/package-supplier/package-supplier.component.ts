@@ -1012,7 +1012,14 @@ public user : User;
                billQtyO:0,
                obTradeDesc:'',
                isSelected : false,
-               boqStatus:''
+               boqStatus:'',
+               l2:'',
+               l3:'',
+               l4:'',
+               c1:'',
+               c2:'',
+               c3:'',
+               c4:''
             };
             //const found = this.RevisionDetailsBoqItems.find(elem => elem.itemO === rev.rdBoqItem);
             //console.log(found);

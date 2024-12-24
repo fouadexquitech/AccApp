@@ -13,6 +13,13 @@ export class OriginalBoqModel {
     public obTradeDesc : string = null;
     public isSelected : boolean = false;
     public boqStatus: string = "";
+    public l2: string = "";
+    public l3: string = "";
+    public l4: string = "";
+    public c1: string = "";
+    public c2: string = "";
+    public c3: string = "";
+    public c4: string = "";
 }
 
 export class BoqModel {

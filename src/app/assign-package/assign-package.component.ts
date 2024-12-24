@@ -194,6 +194,9 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 // AH28032023
 
   ngOnInit(): void {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     this.getBoqResourceRecords();
     this.formTrade = this.formBuilder.group({
       tradeDesc: ['', Validators.required]
@@ -732,7 +735,11 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   }
 
   selectRow(event: any, i: any) {
-    
+//AH23122024
+if (event.target.nodeName != 'TD')
+return;
+///AH23122024
+
     let currentPageIndex = +document.getElementsByClassName('paginate_button current')[0].innerHTML - 1;
     let currentPageSizeSelect = document.getElementsByName('originalBOQTable_length')[0] as HTMLSelectElement;
     let currentPageSize = +currentPageSizeSelect.value;
@@ -750,7 +757,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       let checkbox = row.firstChild.firstChild as HTMLInputElement;
       let rowNumberCell = row.childNodes[1] as HTMLTableCellElement;
       let rowNumber = Number(rowNumberCell.innerHTML);
-     
+    
       if(checkbox)
       {
           if(checkbox.type == 'checkbox')
@@ -825,6 +832,9 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   getBoqResourceRecords()
   {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
     const that = this;
     
     this.dtOptions2 = {
@@ -844,9 +854,6 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         
         dataTablesParameters.boqIds = this.selectedBoqsV2.join();
         dataTablesParameters.selectedBoqIds = this.selectedBoqsResV2.join();
-
-        let CostConn=this.user.usrLoggedConnString;
-        this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
         this.assignPackageService.getBoqResourceRecords(dataTablesParameters).subscribe(resp => {
             that.boqsList = resp.data;

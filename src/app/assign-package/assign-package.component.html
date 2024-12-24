@@ -162,13 +162,14 @@
                     <div class="card-body">
                         <mat-progress-bar mode="indeterminate" *ngIf="isSearching"></mat-progress-bar>
                         <table id="originalBOQTable"  datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
-                            class="row-border hover">
+                            class="row-border hover" style="font-size:smaller;">
                             <thead>
                                 <tr>
-                                    <th scope="col">
+                                    <th scope="col" style="width: 3%;">
                                         <input type="checkbox" [(ngModel)]="checkboxesAll" class="form-check-input" *ngIf="OriginalBoqList.length > 0"
                                             (change)="checkAllOriginalBoq2($event)">
                                     </th>
+                                    <th scope="col"></th>
                                     <th scope="col">Row#</th>
                                     <th scope="col">Div</th>
                                     <th scope="col">BOQ Item</th>
@@ -195,15 +196,19 @@
                                 </tr>
                             </tbody>-->
                             <tbody>
-                                <tr *ngFor="let item of OriginalBoqList ; let i = index" style="cursor: pointer;"
-                                    (click)="selectRow($event, i)"
-                                    [ngClass]="{'HighlightedRow': i === CurrentRowIndex }">
-                                    <td><input disabled #checkboxes class="form-check-input" style="cursor: pointer;" type="checkbox" [checked]="item.isSelected"></td>
+                                <!-- <tr *ngFor="let item of OriginalBoqList ; let i = index" style="cursor: pointer;"
+                                     [ngClass]="{'HighlightedRow': i === CurrentRowIndex }" (click)="selectRow($event, i)"> -->
+                                 <tr *ngFor="let item of OriginalBoqList ; let i = index" style="cursor: pointer;"
+                                     [ngClass]="{'HighlightedRow': i === CurrentRowIndex }" (click)="selectRow($event, i)" >
+                                    <td style="width: 3%;"><input disabled #checkboxes class="form-check-input" style="cursor: pointer;" 
+                                        type="checkbox" [checked]="item.isSelected" (change)="selectRow($event, i)"></td>
                                     <!-- <td><input #checkboxes class="form-check-input" style="cursor: pointer;" type="checkbox" [checked]="item.isSelected"></td> -->
-                                    <td>{{item.rowNumber}}</td>
-                                    <td>{{item.sectionO}}</td>
-                                    <td>{{item.itemO}}</td>
-                                    <td>{{item.descriptionO}}</td>
+                                    <td style="width:3%;"><a class="btn btn-link" title="Dtl"
+                                        (click)="editOriginalBoqQty(DtlBoqModal,item)" ><i class="fa-solid fa-circle-info"></i></a></td>
+                                    <td style="width:3%;">{{item.rowNumber}}</td>
+                                    <td style="width:3%;">{{item.sectionO}}</td>
+                                    <td style="width:15%;">{{item.itemO}}</td>
+                                    <td style="width:30%;">{{item.descriptionO}}</td>
                                     <!-- <td>{{item.obTradeDesc}}</td> -->
                                     <td class="text-center">{{item.unitO}}</td>
                                     <td class="text-center">{{item.billQtyO | number: '.2' }}</td>
@@ -213,8 +218,7 @@
                                     (click)="editOriginalBoqQty(editModal,item)"><i class="fa-solid fa-edit"></i></a></td>
                                     <td class="text-center">{{item.unitRateO | number: '.2' }}</td>
                                     <td class="text-center">{{(item.unitRateO * item.qtyO) | number: '.2' }}</td>
-                                    <td [ngClass]="item.assignedPackage != '' ? 'text-danger' : ''">
-                                        {{item.assignedPackage}}</td>
+                                    <td [ngClass]="item.assignedPackage != '' ? 'text-danger' : ''">{{item.assignedPackage}}</td>
                                     <td [ngClass]="item.boqStatus != '' ? 'text-danger' : ''"> {{item.boqStatus}}</td>
                                     <td> </td>
                                 </tr>
@@ -236,19 +240,74 @@
     </div>
 
 
+        <!--BOQ Details Modal-->
+        <ng-template #DtlBoqModal let-modal>
+            <form [formGroup]="formEdit">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modal-basic-title">BOQ Details ...</h4>
+                    <!-- <button type="button" class="btn close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                        <span aria-hidden="true">&times;</span>
+                    </button> -->
+                </div>
+    
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group p-1">
+                            <ng-container>
+                                <strong>L2 :</strong>{{SelectedOriginalBoqRow.l2}}
+                            </ng-container>
+                        </div>
+                        <div class="form-group p-1">
+                            <ng-container>
+                                <strong>L3 :</strong>{{SelectedOriginalBoqRow.l3}}
+                            </ng-container>
+                        </div>
+                        <div class="form-group p-1">
+                            <ng-container>
+                                <strong>L4 :</strong>{{SelectedOriginalBoqRow.l4}}
+                            </ng-container>
+                        </div>
+                        <div class="form-group p-1">
+                            <ng-container>
+                                <strong>C1 :</strong>{{SelectedOriginalBoqRow.c1}}
+                            </ng-container>
+                        </div>
+                        <div class="form-group p-1">
+                            <ng-container>
+                                <strong>C2 :</strong>{{SelectedOriginalBoqRow.c2}}
+                            </ng-container>
+                        </div>
+                        <div class="form-group p-1">
+                            <ng-container>
+                                <strong>C3 :</strong>{{SelectedOriginalBoqRow.c3}}
+                            </ng-container>
+                        </div>
+                        <div class="form-group p-1">
+                            <ng-container>
+                                <strong>C4 :</strong>{{SelectedOriginalBoqRow.c4}}
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="modal.close('Cancel click')">Close</button>
+                </div>
+            </form>
+        </ng-template>
+
     <!--Edit Original BOQ Modal-->
     <ng-template #editModal let-modal>
         <form [formGroup]="formEdit" (ngSubmit)="onEditSubmit(true)">
             <div class="modal-header">
                 <h4 class="modal-title" id="modal-basic-title">Edit Qty</h4>
-                <button type="button" class="btn close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <!-- <button type="button" class="btn close" aria-label="Close" (click)="modal.dismiss('Cross click')">
                     <span aria-hidden="true">&times;</span>
-                </button>
+                </button> -->
             </div>
 
             <div class="modal-body">
                 <div class="row">
-
                     <div class="form-group p-2">
                         <label>Bill Qty</label>
                         <br>
@@ -287,7 +346,7 @@
                     <button type="submit" class="btn btn-primary" [disabled]="updating">
                         <span *ngIf="updating" class="spinner-border spinner-border-sm mr-1"></span>Update</button>
                 </ng-container>
-                <button type="button" class="btn btn-secondary" (click)="modal.close('Cancel click')">Cancel</button>
+                <button type="button" class="btn btn-secondary" (click)="modal.close('Cancel click')">Close</button>
             </div>
         </form>
     </ng-template>
@@ -297,9 +356,9 @@
         <form [formGroup]="formEdit" (ngSubmit)="onEditSubmit(false)">
             <div class="modal-header">
                 <h4 class="modal-title" id="modal-basic-title">Edit Qty</h4>
-                <button type="button" class="btn close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <!-- <button type="button" class="btn close" aria-label="Close" (click)="modal.dismiss('Cross click')">
                     <span aria-hidden="true">&times;</span>
-                </button>
+                </button> -->
             </div>
 
             <div class="modal-body">
