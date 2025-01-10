@@ -335,7 +335,6 @@ public user : User;
       this.assignByBoqOnly = localStorage.getItem('assignByBoqOnly');
       this.projectCurrency = JSON.parse(localStorage.getItem("currency")) as ProjectCurrency;
       this.project = JSON.parse(localStorage.getItem("project")) as Project;
-
    });
   }
 
@@ -515,7 +514,7 @@ public user : User;
       let select = event.target as HTMLInputElement;
       let lang = select.value;
       this.formEmailTemplate.controls['template'].setValue('');
-      this.packageSupplierService.GetEmailTemplate(lang).subscribe((data) => {
+      this.packageSupplierService.GetEmailTemplate(lang,this.PackageId,this.user.usrLoggedProjectName).subscribe((data) => {
       this.selectedEmailTemplate = data[0];
       this.formEmailTemplate.controls['template'].setValue(this.selectedEmailTemplate?.etContent || '');
       });
@@ -526,7 +525,7 @@ public user : User;
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.lstLanguages=[];
-    this.packageSupplierService.GetEmailTemplate("").subscribe((data) => {
+    this.packageSupplierService.GetEmailTemplate("",this.PackageId,this.user.usrLoggedProjectName).subscribe((data) => {
       if (data) {
         this.lstEmailTemplate = data;
         this.lstEmailTemplate.forEach(element => {

@@ -313,13 +313,13 @@
                                           <table class="table">
                                             <tr>
                                                     <td style="width:30%" class="text-center">
-                                                        {{resource.qty | number : '1.2-2'}}
+                                                        {{resource.qty | number : '1.0-2'}}
                                                     </td>
                                                     <td style="width:30%" class="text-center">
-                                                        {{resource.unitPrice | number : '1.2-2'}}
+                                                        {{resource.unitPrice | number : '1.0-2'}}
                                                     </td>
                                                     <td style="width:35%" class="text-center">
-                                                        {{resource.totalPrice | number : '1.2-2'}}
+                                                        {{resource.totalPrice | number : '1.0-0'}}
                                                     </td>
                                             </tr>
                                           </table>
@@ -329,7 +329,7 @@
                                           <table class="table">
                                               <tr>
                                                 <td style="width:30%" class="text-center">
-                                                  {{resource.quotationQty | number: '.2'}}
+                                                  {{resource.quotationQty | number: '1.0-2'}}
                                                 </td>
                                                 <td style="width:35%" class="text-center">
                                                   {{resource.quotationAmt | number : '1.0-0'}}
@@ -342,18 +342,18 @@
                                             <table class="table">
                                             <tr>
                                                <td style="width:20%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                                {{sup.assignedQty | number : '1.2-3'}}</span> 
+                                                {{sup.assignedQty | number : '1.0-2'}}</span> 
                                                 <i class="fas fa-flag text-success" title="Quantity Assigned" *ngIf="sup.assignedQty > 0 && sup.supplierName !='Ideal'"></i>
                                                </td>
                                                <td style="width:20%" *ngIf="sup.supplierName !='Ideal'" class="text-center"> 
                                                 <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                                {{(sup.originalCurrencyPrice * sup.exchRateNow) | number : '1.2-3'}}</span>
+                                                {{(sup.originalCurrencyPrice * sup.exchRateNow) | number : '1.0-2'}}</span>
                                                </td> 
                                                 <!--<td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.assignedQty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>-->
                                                 <td *ngIf="sup.supplierName !='Ideal'" style="width:5%" class="text-center">
                                                   <!-- <ng-container *ngIf="sup.supplierName !='Ideal'"> -->
                                                     <ng-container *ngIf="sup.discount >0">
-                                                      {{sup.discount | number}}
+                                                      {{sup.discount | number : '1.0-2'}}
                                                     </ng-container>
                                                     <ng-container *ngIf="! (sup.discount >0)">
                                                       &nbsp;
@@ -362,10 +362,10 @@
                                                 </td>
                                                 <td style="width:20%" class="text-center"> 
                                                   <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                                  {{(sup.uPriceAfterDiscount * sup.exchRateNow) | number : '1.2-3'}}</span>
+                                                  {{(sup.uPriceAfterDiscount * sup.exchRateNow) | number : '1.0-2'}}</span>
                                                  </td> 
                                                 <td style="width:35%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                                  {{(sup.uPriceAfterDiscount * resource.quotationQty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>
+                                                  {{(sup.uPriceAfterDiscount * resource.quotationQty * sup.exchRateNow) | number : '1.0-0'}}</span> </td>
                                               </tr> 
                                           </table>
                                         </td>
@@ -402,13 +402,13 @@
                                             <table class="table">
                                                 <tr>
                                                     <td style="width:30%" class="text-center">
-                                                        {{resource.qty | number : '1.2-2'}}
+                                                        {{resource.qty | number : '1.0-2'}}
                                                     </td>
                                                     <td style="width:30%" class="text-center">
-                                                        {{resource.unitPrice | number : '1.2-2'}}
+                                                        {{resource.unitPrice | number : '1.0-2'}}
                                                     </td>
                                                     <td style="width:35%" class="text-center">
-                                                        {{resource.totalPrice | number : '1.2-2'}}
+                                                        {{resource.totalPrice | number : '1.0-0'}}
                                                     </td>
                                                 </tr>
                                             </table>
@@ -418,10 +418,10 @@
                                           <table class="table" >
                                               <tr>
                                                 <td style="width:30%" class="text-center">
-                                                  {{resource.quotationQty | number: '.2'}}
+                                                  {{resource.quotationQty | number: '1.0-2'}}
                                                 </td>
                                                 <td style="width:35%" class="text-center">
-                                                  {{resource.quotationAmt | number : '1.0-0'}}
+                                                  {{resource.quotationAmt | number: '1.0-0'}}
                                                 </td>
                                               </tr>
                                           </table>
@@ -431,18 +431,18 @@
                                           <table class="table">
                                           <tr>
                                              <td style="width:20%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                              {{sup.assignedQty | number : '1.2-3'}}</span> 
+                                              {{sup.assignedQty | number : '1.0-2'}}</span> 
                                               <i class="fas fa-flag text-success" title="Quantity Assigned" *ngIf="sup.assignedQty > 0 && sup.supplierName !='Ideal'"></i>
                                              </td>
                                              <td style="width:20%" *ngIf="sup.supplierName !='Ideal'" class="text-center"> 
                                               <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                              {{(sup.originalCurrencyPrice * sup.exchRateNow) | number : '1.2-3'}}</span>
+                                              {{(sup.originalCurrencyPrice * sup.exchRateNow) | number : '1.0-2'}}</span>
                                              </td> 
                                               <!--<td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.assignedQty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>-->
                                               <td *ngIf="sup.supplierName !='Ideal'" style="width:5%" class="text-center">
                                                 <!-- <ng-container *ngIf="sup.supplierName !='Ideal'"> -->
                                                   <ng-container *ngIf="sup.discount >0">
-                                                    {{sup.discount | number}}
+                                                    {{sup.discount | number: '1.0-2'}}
                                                   </ng-container>
                                                   <ng-container *ngIf="! (sup.discount >0)">
                                                     &nbsp;
@@ -451,10 +451,10 @@
                                               </td>
                                               <td style="width:20%" class="text-center"> 
                                                 <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                                {{(sup.uPriceAfterDiscount * sup.exchRateNow) | number : '1.2-3'}}</span>
+                                                {{(sup.uPriceAfterDiscount * sup.exchRateNow) | number : '1.0-2'}}</span>
                                                </td> 
                                               <td style="width:35%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                                {{(sup.uPriceAfterDiscount * resource.quotationQty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>
+                                                {{(sup.uPriceAfterDiscount * resource.quotationQty * sup.exchRateNow) | number : '1.0-0'}}</span> </td>
                                             </tr> 
                                         </table>
                                       </td>
@@ -493,13 +493,13 @@
                                             <table class="table" >
                                                 <tr>
                                                     <td style="width:30%" class="text-center">
-                                                        {{resource.qty | number : '1.2-2'}}
+                                                        {{resource.qty | number : '1.0-2'}}
                                                     </td>
                                                     <td style="width:30%" class="text-center">
-                                                        {{resource.unitPrice | number : '1.2-2'}}
+                                                        {{resource.unitPrice | number : '1.0-2'}}
                                                     </td>
                                                     <td style="width:35%" class="text-center">
-                                                        {{resource.totalPrice | number : '1.2-2'}}
+                                                        {{resource.totalPrice | number : '1.0-0'}}
                                                     </td>
                                                 </tr>
                                             </table>
@@ -509,7 +509,7 @@
                                           <table class="table" >
                                               <tr>
                                                 <td style="width:30%" class="text-center">
-                                                  {{resource.quotationQty | number: '.2'}}
+                                                  {{resource.quotationQty | number: '1.0-2'}}
                                                 </td>
                                                 <td style="width:35%" class="text-center">
                                                   {{resource.quotationAmt | number : '1.0-0'}}
@@ -522,18 +522,18 @@
                                             <table class="table">
                                             <tr>
                                                <td style="width:20%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                                {{sup.assignedQty | number : '1.2-3'}}</span> 
+                                                {{sup.assignedQty | number : '1.0-2'}}</span> 
                                                 <i class="fas fa-flag text-success" title="Quantity Assigned" *ngIf="sup.assignedQty > 0 && sup.supplierName !='Ideal'"></i>
                                                </td>
                                                <td style="width:20%" *ngIf="sup.supplierName !='Ideal'" class="text-center"> 
                                                 <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                                {{(sup.originalCurrencyPrice * sup.exchRateNow) | number : '1.2-3'}}</span>
+                                                {{(sup.originalCurrencyPrice * sup.exchRateNow) | number : '1.0-2'}}</span>
                                                </td> 
                                                 <!--<td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.assignedQty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>-->
                                                 <td *ngIf="sup.supplierName !='Ideal'" style="width:5%" class="text-center">
                                                   <!-- <ng-container *ngIf="sup.supplierName !='Ideal'"> -->
                                                     <ng-container *ngIf="sup.discount >0">
-                                                      {{sup.discount | number}}
+                                                      {{sup.discount | number: '1.0-2'}}
                                                     </ng-container>
                                                     <ng-container *ngIf="! (sup.discount >0)">
                                                       &nbsp;
@@ -542,10 +542,10 @@
                                                 </td>
                                                 <td style="width:20%" class="text-center"> 
                                                   <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                                  {{(sup.uPriceAfterDiscount * sup.exchRateNow) | number : '1.2-3'}}</span>
+                                                  {{(sup.uPriceAfterDiscount * sup.exchRateNow) | number : '1.0-2'}}</span>
                                                  </td> 
                                                 <td style="width:35%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                                  {{(sup.uPriceAfterDiscount * resource.quotationQty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>
+                                                  {{(sup.uPriceAfterDiscount * resource.quotationQty * sup.exchRateNow) | number : '1.0-0'}}</span> </td>
                                               </tr> 
                                           </table>
                                         </td>
@@ -580,7 +580,7 @@
                                       <tr>
                                         <td style="width:70%" colspan="4"></td>
                                         <td style="width:30%" class="text-right" >
-                                          <strong> {{p.totalprice | number : '1.2-2'}}</strong>
+                                          <strong> {{p.totalprice | number : '1.0-0'}}</strong>
                                         </td>
                                       </tr>
                                     </table>
@@ -604,13 +604,13 @@
                                           <table class="table" *ngIf="field.type == fieldTypes.AMOUNT_TYPE_ID">
                                             <tr>
                                               <td class="text-center">{{field.label}}</td>
-                                              <td class="text-center">{{field.value | number : '1.2-2'}}</td>
+                                              <td class="text-center">{{field.value | number : '1.0-0'}}</td>
                                             </tr>
                                           </table>
                                           <table class="table" *ngIf="field.type == fieldTypes.PERCENTAGE_TYPE_ID">
                                             <tr>
                                               <td class="text-center">{{field.label}}</td>
-                                              <td class="text-center">{{field.value | number : '1.2-2'}}%</td>
+                                              <td class="text-center">{{field.value | number : '1.0-0'}}%</td>
                                             </tr>
                                           </table>
                                         </td>
@@ -631,7 +631,7 @@
                                       <table class="table">
                                           <tr>
                                               <td style="width:80%"><strong>Grand Total</strong></td>
-                                              <td> <strong> {{getTotalBudget() | number : '1.2-2'}}</strong></td>
+                                              <td> <strong> {{getTotalBudget() | number : '1.0-0'}}</strong></td>
                                               <td></td>
                                           </tr>
                                        </table>
@@ -643,7 +643,7 @@
                                                   
                                                 </td>
                                                 <td style="width:50%" class="text-center">
-                                                  <strong> {{getTotalQuotation() | number : '1.2-2'}}</strong>
+                                                  <strong> {{getTotalQuotation() | number : '1.0-0'}}</strong>
                                                 </td>
                                               </tr>
                                         </table>
@@ -655,7 +655,7 @@
                                         
                                               </td>
                                               <td style="width:15%" class="text-center">
-                                                <strong> {{p.totalNetPrice | number : '1.2-2'}}</strong>
+                                                <strong> {{p.totalNetPrice | number : '1.0-0'}}</strong>
                                               </td>
                                             </tr>
                                           </table>
@@ -833,10 +833,10 @@
                             <table class="table">
                               <tr>
                                 <td style="width:30%" class="text-center">
-                                  {{item.qty | number: '.2'}}
+                                  {{item.qty | number: '1.0-2'}}
                                 </td>
                                 <td style="width:30%" class="text-center">
-                                  {{item.unitPrice | number: '.2'}}
+                                  {{item.unitPrice | number: '1.0-2'}}
                                 </td>
                                 <td style="width:35%" class="text-center">
                                   {{item.totalPrice | number : '1.0-0'}}
@@ -849,10 +849,10 @@
                             <table class="table">
                               <tr>
                                 <td style="width:30%" class="text-center">
-                                  {{item.quotationQty | number: '.2'}}
+                                  {{item.quotationQty | number: '1.0-2'}}
                                 </td>
                                 <td style="width:35%" class="text-center">
-                                  {{item.quotationAmt | number : '1.0-0'}}
+                                  {{item.quotationAmt | number : '1.0-2'}}
                                 </td>
                               </tr>
                             </table>
@@ -868,7 +868,7 @@
                                   <!-- <td *ngIf="show && item.isChecked" style="width:10%"> -->
                                     <!-- <p *ngFor="let sup of item.groupingPackageSuppliersPrices; let i = index"> -->
                                       <ng-container *ngIf="sup.supplierName !='Ideal' && !item.isChecked">
-                                        {{sup.assignedQty | number}}
+                                        {{sup.assignedQty | number : '1.0-2'}}
                                       </ng-container>
                                       <ng-container *ngIf="sup.supplierName !='Ideal' && item.isChecked"  >
                                         <!-- <label>Qty: {{sup.supplierName}}</label>
@@ -886,14 +886,14 @@
                                   <ng-container *ngIf="sup.supplierName !='Ideal'">
                                     <span
                                       [ngClass]="[sup.missedPrice == 1 ? 'text-danger' : '' , (sup.originalCurrencyPrice * sup.exchRateNow) > item.unitPrice ? 'highlight' : '']">
-                                      {{(sup.originalCurrencyPrice * sup.exchRateNow) | number }}
+                                      {{(sup.originalCurrencyPrice * sup.exchRateNow) | number : '1.0-2' }}
                                     </span>
                                   </ng-container>
                                 </td>
                                 <td *ngIf="sup.supplierName !='Ideal'" style="width:20%" class="text-center">
                                   <ng-container *ngIf="sup.supplierName !='Ideal'">
                                     <ng-container *ngIf="sup.discount >0">
-                                      {{sup.discount | number}}
+                                      {{sup.discount | number : '1.0-2'}}
                                     </ng-container>
                                     <ng-container *ngIf="! (sup.discount >0)">
                                       &nbsp;
@@ -901,7 +901,7 @@
                                   </ng-container>
                                 </td>
                                 <td style="width:20%" class="text-center">
-                                  {{(sup.uPriceAfterDiscount * sup.exchRateNow).toFixed(2) | number }}
+                                  {{(sup.uPriceAfterDiscount * sup.exchRateNow).toFixed(2) | number :'1.0-2' }}
                                 </td>
                                 <!-- <td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.assignedQty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>-->
                                 <td style="width:20%" class="text-align">
@@ -940,7 +940,7 @@
                               <tr>
                                 <td colspan="2"></td>
                                 <td style="width:33.33%" class="text-center">
-                                  <strong> {{p.totalprice | number : '1.2-2'}}</strong>
+                                  <strong> {{p.totalprice | number : '1.0-2'}}</strong>
                                 </td>
                               </tr>
                             </table>
@@ -956,13 +956,13 @@
                                   <table class="table" *ngIf="field.type == fieldTypes.AMOUNT_TYPE_ID">
                                     <tr>
                                       <td class="text-center">{{field.label}}</td>
-                                      <td class="text-center">{{field.value | number : '1.2-2'}}</td>
+                                      <td class="text-center">{{field.value | number : '1.0-0'}}</td>
                                     </tr>
                                   </table>
                                   <table class="table" *ngIf="field.type == fieldTypes.PERCENTAGE_TYPE_ID">
                                     <tr>
                                       <td class="text-center">{{field.label}}</td>
-                                      <td class="text-center">{{field.value | number : '1.2-2'}}%</td>
+                                      <td class="text-center">{{field.value | number : '1.0-0'}}%</td>
                                     </tr>
                                   </table>
                                 </td>
@@ -984,7 +984,7 @@
                 
                                 </td>
                                 <td style="width:35%" class="text-center">
-                                  <strong> {{getTotalBudget() | number : '1.2-2'}}</strong>
+                                  <strong> {{getTotalBudget() | number : '1.0-0'}}</strong>
                                 </td>
                               </tr>
                             </table>
@@ -996,7 +996,7 @@
                                 <td style="width:30%" class="text-center">
                                 </td>
                                 <td style="width:35%" class="text-center">
-                                  <strong> {{getTotalQuotation() | number : '1.2-2'}}</strong>
+                                  <strong> {{getTotalQuotation() | number : '1.0-0'}}</strong>
                                 </td>
                               </tr>
                             </table>
@@ -1007,7 +1007,7 @@
                               <tr>
                                 <td colspan="2"></td>
                                 <td style="width:33.33%" class="text-center">
-                                  <strong> {{p.totalNetPrice | number : '1.2-2'}}</strong>
+                                  <strong> {{p.totalNetPrice | number : '1.0-0'}}</strong>
                                 </td>
                               </tr>
                             </table>
@@ -1112,7 +1112,7 @@
                                 {{item.name}}
                             </td>
                             <td>
-                                {{item.totalPrice | number : '1.2-2'}}
+                                {{item.totalPrice | number : '1.0-0'}}
                             </td>
                             <td *ngFor="let sup of item.groupingPackageSuppliersPrices">
                                 <table class="table">
@@ -1145,7 +1145,7 @@
                                 <table class="table">
                                     <tr>
                                         <td class="text-center">
-                                           <strong> {{p.totalprice | number : '1.2-2'}}</strong>
+                                           <strong> {{p.totalprice | number : '1.0-0'}}</strong>
                                         </td>
                                     </tr>
                             </table>
@@ -1163,13 +1163,13 @@
                                         <table class="table" *ngIf="field.type == fieldTypes.AMOUNT_TYPE_ID">
                                             <tr>
                                                 <td class="text-center" style="width:50%"><strong>{{field.label}}</strong></td>
-                                                <td class="text-center">{{field.value | number : '1.2-2'}}</td>
+                                                <td class="text-center">{{field.value | number : '1.0-0'}}</td>
                                             </tr>
                                         </table>
                                         <table class="table" *ngIf="field.type == fieldTypes.PERCENTAGE_TYPE_ID">
                                             <tr>
                                                 <td class="text-center" style="width:50%"><strong>{{field.label}}</strong></td>
-                                                <td class="text-center">{{field.value | number : '1.2-2'}}%</td>
+                                                <td class="text-center">{{field.value | number : '1.0-0'}}%</td>
                                             </tr>
                                         </table>
                                     
@@ -1184,18 +1184,18 @@
                         <tr>
                           <td colspan="2"><strong>Grand Total</strong></td>
                           <td>
-                            <strong> {{getTotalBudget() | number : '1.2-2'}}</strong>
+                            <strong> {{getTotalBudget() | number : '1.0-0'}}</strong>
                           </td>
                           <td>
                           <td>
-                            <strong> {{getTotalQuotation() | number : '1.2-2'}}</strong>
+                            <strong> {{getTotalQuotation() | number : '1.0-0'}}</strong>
                           </td>
 
                             <td *ngFor="let p of packageSuppliersPrices" class="text-center">
                                 <table class="table">
                                     <tr>           
                                         <td class="text-center">
-                                           <strong> {{p.totalNetPrice | number : '1.2-2'}}</strong>
+                                           <strong> {{p.totalNetPrice | number : '1.0-0'}}</strong>
                                         </td>
                                     </tr>
                             </table>

@@ -56,9 +56,11 @@ export class PackageSupplierService {
     );
   }
 
-  GetEmailTemplate(language : string)
+  GetEmailTemplate(language : string, packId :number , projName :string)
   {
-    return this.http.get(this.baseUrl + 'Logon/GetSuppliersEmailTemplate?Lang=' + language).pipe(
+        console.log(packId);
+        console.log(projName);
+    return this.http.get(this.baseUrl + 'Logon/GetSuppliersEmailTemplate?Lang=' + language+ '&packId=' + packId+ '&projName=' + projName).pipe(
       map(res => res), catchError(this.handleError)
     );
   }

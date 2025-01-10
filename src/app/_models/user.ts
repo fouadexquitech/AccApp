@@ -10,6 +10,7 @@
     usrLoggedProjectName: string = null;
     usrLoggedConnString: string = null;
     usrLoggedCostDB: string = null;
+    usrLoggedTSConnString: string = null;
 }
 
 // export class Project {

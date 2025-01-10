@@ -13,7 +13,7 @@ export class Project
 {
     public seq : number = 0;
     public prjCostDatabase : string = null;
-    public projectName : string = null;
+    public projectName : string = "";
 }
 
 export class ProjectCurrency 

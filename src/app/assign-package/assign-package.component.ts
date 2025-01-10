@@ -91,7 +91,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   closeResult: string;
   form: FormGroup;
   formTrade:FormGroup;
-  public isValidatingExcel : boolean = false;
+  isValidatingExcel : boolean = false;
   PackageName = "";
   FilePath = "";
   assignByBoqOnly : string;
@@ -510,6 +510,11 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   }
 
   GetOriginalBoqList(input: SearchInput) {
+    //AH31122024  clear BOQ Ressources table
+    this.boqListTable?.setData([]);
+    this.boqListTable?.setFinalTotalPrice(0);
+    //AH31122024
+
     this.OriginalBoqList = [];
     this.displayedResList = [];
     this.boqFinalTotal = 0;
@@ -734,7 +739,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     }
   }
 
-  selectRow(event: any, i: any) {
+selectRow(event: any, i: any) {
 //AH23122024
 if (event.target.nodeName != 'TD')
 return;
@@ -1102,7 +1107,7 @@ return;
   //     console.log(this.SelectedOriginalBoqList);
   // }
 
-  AssignPackages() {
+AssignPackages() {
     this.isAssigning = true;
     this.assignPackages.assignOriginalBoqList = this.SelectedOriginalBoqList;
     this.assignPackages.assignBoqList = this.SelectedBoqList;
@@ -1146,7 +1151,7 @@ TestSendMail(){
   });
 }
 
-  validateExcelBeforeAssign(){
+validateExcelBeforeAssign(){
     //this.spinner.show();
     this.isValidatingExcel = true;
     
@@ -1154,9 +1159,9 @@ TestSendMail(){
     if(flexSwitchCheckDefault)
     {
       if(flexSwitchCheckDefault.type == 'checkbox' && flexSwitchCheckDefault.checked)
-      {
           localStorage.setItem('assignByBoqOnly', '1');
-      }      
+      else     
+          localStorage.setItem('assignByBoqOnly', '0');
     }
     
     let CostConn=this.user.usrLoggedConnString;
@@ -1176,8 +1181,7 @@ TestSendMail(){
         document.body.appendChild(a);
         a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
         a.click();
-        this.isValidatingExcel = false;
-        this.router.navigate(['/package-supplier', this.SelectedPackage]);
+        // this.router.navigate(['/package-supplier', this.SelectedPackage]);
       }
     });
   }
@@ -1215,8 +1219,8 @@ TestSendMail(){
     this.boqsList = [];
     this.resourcesSelected = false;
     this.checkboxesAll = false;
+
     this.GetOriginalBoqList(this.SearchInput);
-   
   }
 
   onPackageSelected(newObj : any) {

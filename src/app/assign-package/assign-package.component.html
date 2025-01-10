@@ -64,14 +64,16 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header"  style="height: 30px;">
-                        <h5 style="display: inline-block">Assign Package / Fill Trade Description</h5>
-                        <span style="float: right; cursor: pointer;user-select: none;" (click)="toggleAssignShow()">show
+                        
+                        <span style="float: left; cursor: pointer;user-select: none;" (click)="toggleAssignShow()">show
                             /
                             hide</span>
+
+                           <span style="float: right">  <h6 style="display: inline-block"><b>Assign Packages</b></h6></span>
                     </div>
                     <div class="card-body" *ngIf="isAssignShown">
                         <div class="row" style="height: 35px;">
-                            <div class="col-sm-6 form-group">
+                            <div class="col-sm-4 form-group">
                                 <!--<label>Package</label>
                         
                             <ng-select2 [(ngModel)]="SelectedPackage" width="100%" [allowClear]="true" [placeholder]="" *ngIf="PackageList"
@@ -84,9 +86,13 @@
                             <!-- appearance="fill" -->
                                 <mat-form-field  class="full-width-field"  style="width: 100%;font-size:11px;">
                                     <mat-label style="font-size:14px;">Packages</mat-label>
-                                    <mat-select style="font-size:12px;" [(ngModel)]="SelectedPackage" (selectionChange)="onPackageMatSelected($event)">
+
+                                    
+                                    <mat-select style="font-size:12px;" [(ngModel)]="SelectedPackage" (selectionChange)="onPackageMatSelected($event)">                                                                      
+                                        
                                         <input matInput type="text" focused="'true'" (keyup)="filterPackages($event)" class="mat-filter">
                                         <span class="fa fa-search input-icon"></span>
+                                        
                                         <mat-divider></mat-divider>
                                         <mat-option></mat-option>
                                         <mat-option style="font-size:14px;" *ngFor="let pitem of selectedPackages" [value]="pitem.idPkge">{{pitem.pkgeName}}</mat-option>
@@ -100,11 +106,11 @@
                                     <input type="text" formControlName="tradeDesc" class="form-control" placeholder="Trade Description">
                                 </form>
                             </div> -->
-                        </div>
+                        <!-- </div> -->
 
                         <!-- <hr> -->
 
-                        <div class="row" style="height: 30px;">
+                        <!-- <div class="row" style="height: 30px;"> -->
                             <div class="col-sm-2 form-group">
                                 <button [disabled]="isAssigning" type="button" class="btn btn-primary"
                                     style="float: right; width: 100%;font-size: small"
@@ -117,22 +123,20 @@
 
                             <div class="col-sm-2 form-group">
                                 <button style="float: right; width: 100%;font-size: small"type="button" class="btn btn-success"
-                                    [disabled]="this.SelectedPackage==0" (click)="validateExcelBeforeAssign()">
+                                    [disabled]="this.SelectedPackage==0 || this.SelectedPackage == null" (click)="validateExcelBeforeAssign()">
                                     <!-- <div class="col-sm-3 form-group" *ngIf="FilePath == null"> 
                                   <button style="width: 100%;" type="button" class="btn btn-success"
                                 [disabled]="(FilePath != null || isValidatingExcel)"
                                 (click)="validateExcelBeforeAssign()"> -->
-                                    <!-- <i class="fa fa-spinner fa-spin" *ngIf="isValidatingExcel"></i>
-                                Validate Excel</button> -->
-                                <i class="fa fa-spinner fa-spin" *ngIf="(isValidatingExcel)"></i>
-                                    Validate Excel</button>
+                                <span *ngIf="isValidatingExcel" class="spinner-border spinner-border-sm mr-1"></span>
+                                Validate Excel</button>
                             </div>
 
-                            <div class="col-sm-2 form-group">
+                            <!-- <div class="col-sm-2 form-group">
                                 <button style="float: right; width: 100%;font-size: small"type="button" class="btn btn-success"
                                 (click)="TestSendMail()">                              
                                 Test Email</button>
-                            </div> 
+                            </div>  -->
 
                             <div class="col-sm-2 form-group form-check form-switch">
                                 <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" style="font-size: 12px;"
@@ -211,13 +215,13 @@
                                     <td style="width:30%;">{{item.descriptionO}}</td>
                                     <!-- <td>{{item.obTradeDesc}}</td> -->
                                     <td class="text-center">{{item.unitO}}</td>
-                                    <td class="text-center">{{item.billQtyO | number: '.2' }}</td>
-                                    <td class="text-center">{{item.qtyO | number: '.2' }}</td>
-                                    <td class="text-center">{{item.scopeQtyO | number: '.2' }}</td>
+                                    <td class="text-center">{{item.billQtyO | number: '1.0-2' }}</td>
+                                    <td class="text-center">{{item.qtyO | number: '1.0-2' }}</td>
+                                    <td class="text-center">{{item.scopeQtyO | number: '1.0-2' }}</td>
                                     <td><a class="btn btn-link" title="Edit"
                                     (click)="editOriginalBoqQty(editModal,item)"><i class="fa-solid fa-edit"></i></a></td>
-                                    <td class="text-center">{{item.unitRateO | number: '.2' }}</td>
-                                    <td class="text-center">{{(item.unitRateO * item.qtyO) | number: '.2' }}</td>
+                                    <td class="text-center">{{item.unitRateO | number: '1.0-2' }}</td>
+                                    <td class="text-center">{{(item.unitRateO * item.qtyO) | number: '1.0-0' }}</td>
                                     <td [ngClass]="item.assignedPackage != '' ? 'text-danger' : ''">{{item.assignedPackage}}</td>
                                     <td [ngClass]="item.boqStatus != '' ? 'text-danger' : ''"> {{item.boqStatus}}</td>
                                     <td> </td>

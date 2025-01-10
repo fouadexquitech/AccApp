@@ -13,7 +13,6 @@ import { User } from '../_models';
         display: block;
         flex: none;
         width: auto;
-      
     }
     `
 ],
@@ -401,6 +400,12 @@ export class AssignPackageFilterComponent implements OnInit {
       this.closeDrawer();
   }
 
+  clearAllSearch()
+  {
+      this.clearEvent.emit(true);
+      this.ngOnInit();
+  }
+
   public openDrawer(){
     this.assignPackageFilter.toggle();
   }
@@ -409,6 +414,10 @@ export class AssignPackageFilterComponent implements OnInit {
     this.assignPackageFilter.close();
   }
 
+  onLooseFocus()
+  {
+     this.closeDrawer();
+  }
 
   GetRessourcesList(body : any) {
     let CostConn=this.user.usrLoggedConnString;
@@ -521,14 +530,5 @@ export class AssignPackageFilterComponent implements OnInit {
     this.GetRessourcesList(body) ;
   }
 
-  onLooseFocus()
-  {
-     this.closeDrawer();
-  }
-
-  clearAllSearch()
-  {
-      this.clearEvent.emit(true);
-      this.ngOnInit();
-  }
+ 
 }

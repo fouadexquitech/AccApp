@@ -630,8 +630,9 @@ constructor(private router: Router,
   getEmailTemplate(lang : string)
   {
     let CostConn=this.user.usrLoggedConnString;
+    
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-      this.packageSupplierService.GetEmailTemplate(lang).subscribe(data=>{
+      this.packageSupplierService.GetEmailTemplate(lang,this.packageId,"").subscribe(data=>{
         this.f.template.setValue(data?.etContent);
       });
   }

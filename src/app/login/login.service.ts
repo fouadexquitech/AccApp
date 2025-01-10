@@ -102,7 +102,8 @@ export class LoginService {
 
   //AH22122024
   CheckConnection(CostDbConn: string): Observable<any> {
-    return this.http.post(this.baseUrl + 'CheckConnection/CheckConnections?CostDbConn='+CostDbConn, null).pipe(
+    let TSDbConn= this.userValue?.usrLoggedTSConnString;
+    return this.http.post(this.baseUrl + 'CheckConnection/CheckConnections?CostDbConn='+CostDbConn + '&TSDbConn='+ TSDbConn, null).pipe(
       map(res => res), catchError(this.handleError)
     );
   ///AH22122024
