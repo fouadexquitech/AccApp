@@ -8,7 +8,7 @@
         </ol>
     </nav> -->
     <div class="container-fluid" >
-        <div class="row p-4"  style="height: 60px;"  >
+        <div class="row p-4"  style="height: 55px;"  >
             <!-- <div class="col-sm-2 form-group">
                 <button type="button" class="btn btn-primary" [disabled]="isSearching"
                     style="float: right; width: 100%;font-size: small" (click)="onSearch()">
@@ -16,18 +16,19 @@
                     Search</button>
 
             </div> -->
-            <div class="col-sm-1 form-group" *ngIf="1>2">
-                <button type="button" class="btn btn-primary" style="float: right; width: 100%;font-size: small;"
+            <!-- <div class="col-sm-2 form-group" >
+                <button type="button" class="btn btn-primary" style="float: right; width: 100%;font-size: small;height: 10px;"
                     (click)="clearAllSearch()">Clear Search</button>
-            </div>
+            </div> -->
             <div class="col-sm-2 form-group">
-                <button type="button" class="btn btn-danger" style="float: right; width: 100%;font-size: small"
+                <button type="button" class="btn btn-danger" 
+                style="width:100%;font-size: 12px;height: 30px;"
                     (click)="clearAllSelections()" [disabled]="SelectedOriginalBoqList.length == 0">Clear All
                     Selections</button>
             </div>
             <div class="col-sm-2 form-group">
                 <button class="btn btn-success" (click)="ExportExcelBoq()"
-                    style="font-size: small;">
+                    style="width: 250px;font-size: 12px;height: 30px;">
                     <i  [ngClass]="isExportExcel ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
                     <!-- <i class="fa fa-spinner fa-spin" *ngIf="isSearching"></i> -->
                     Export Searched Ressources
@@ -36,21 +37,21 @@
             </div>
             <div class="col-sm-2 form-group">
                 <button class="btn btn-success" (click)="ExportExcelPackagesCost(0)"
-                    style="width: 200px;font-size:small;">
+                    style="width: 250px;font-size:12px;height: 30px;">
                     <i  [ngClass]="isExportExcelDry ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
                     Export Packages Dry Cost
                 </button>
             </div>
-            <div class="col-sm-3 form-group">
+            <div class="col-sm-2 form-group">
                 <button class="btn btn-success" (click)="ExportExcelPackagesCost(1)"
-                    style="width: 250px;font-size: small;">
+                    style="width: 250px;font-size: 12px;height: 30px;">
                     <i  [ngClass]="isExportExcelDryBoq ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
                     Export Packages Cost with BOQ
                 </button>
             </div>
-            <div class="col-sm-3 form-group">
+            <div class="col-sm-2 form-group">
                 <button class="btn btn-success" (click)="ExportNotAssigned()"
-                    style="font-size: small;">
+                    style="width: 250px;font-size: 12px;height: 30px;">
                     <i  [ngClass]="isExportExcelNotAssigned ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
                     Export Not Assigned Items
                 </button>
@@ -71,8 +72,9 @@
 
                            <span style="float: right">  <h6 style="display: inline-block"><b>Assign Packages</b></h6></span>
                     </div>
+                    
                     <div class="card-body" *ngIf="isAssignShown">
-                        <div class="row" style="height: 35px;">
+                        <div class="row" style="height: 25px;">
                             <div class="col-sm-4 form-group">
                                 <!--<label>Package</label>
                         
@@ -84,11 +86,11 @@
                             </ng-select2>-->
 
                             <!-- appearance="fill" -->
-                                <mat-form-field  class="full-width-field"  style="width: 100%;font-size:11px;">
+                                <mat-form-field  class="full-width-field"  style="width: 100%;font-size:11px;height: 25px;">
                                     <mat-label style="font-size:14px;">Packages</mat-label>
 
                                     
-                                    <mat-select style="font-size:12px;" [(ngModel)]="SelectedPackage" (selectionChange)="onPackageMatSelected($event)">                                                                      
+                                    <mat-select style="font-size:12px;" disableOptionCentering  panelClass="customClass" [(ngModel)]="SelectedPackage" (selectionChange)="onPackageMatSelected($event)">                                                                      
                                         
                                         <input matInput type="text" focused="'true'" (keyup)="filterPackages($event)" (keydown)="$event.stopPropagation()" class="mat-filter">
                                         <span class="fa fa-search input-icon"></span>
@@ -98,8 +100,6 @@
                                         <mat-option style="font-size:14px;" *ngFor="let pitem of selectedPackages" [value]="pitem.idPkge">{{pitem.pkgeName}}</mat-option>
                                     </mat-select>
                                 </mat-form-field>
-
-
                                                      
                             </div>                       
                             <!-- <div class="col-sm-6 form-group">
@@ -115,7 +115,7 @@
                         <!-- <div class="row" style="height: 30px;"> -->
                             <div class="col-sm-2 form-group">
                                 <button [disabled]="isAssigning" type="button" class="btn btn-primary"
-                                    style="float: right; width: 100%;font-size: small"
+                                    style="float: right; width: 100%;font-size: small;height: 30px;"
                                     [disabled]="(SelectedOriginalBoqList.length == 0 && SelectedBoqList.length == 0) || this.SelectedPackage==0"
                                     (click)="AssignPackages()">
                                     <span *ngIf="isAssigning" class="spinner-border spinner-border-sm mr-1"></span>
@@ -124,7 +124,7 @@
                             </div>
 
                             <div class="col-sm-2 form-group">
-                                <button style="float: right; width: 100%;font-size: small"type="button" class="btn btn-success"
+                                <button style="float: right; width: 100%;font-size: small;height: 30px;"type="button" class="btn btn-success"
                                     [disabled]="this.SelectedPackage==0 || this.SelectedPackage == null" (click)="validateExcelBeforeAssign()">
                                     <!-- <div class="col-sm-3 form-group" *ngIf="FilePath == null"> 
                                   <button style="width: 100%;" type="button" class="btn btn-success"

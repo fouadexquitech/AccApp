@@ -35,20 +35,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 section {
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
 .full-width-field {
     width: 100%;
- }
-
- .mat-form-field{
-    font-size: 12px;
- }
-
- .mat-option
- {
-    font-size: 12px;
  }
 
  .input-icon {
@@ -60,6 +51,19 @@ section {
    
  }
 
- .mat-filter {
-    height: 20px !important;
+ .mat-form-field{
+    font-size: 13px;
  }
+
+ .mat-option
+ {
+    font-size: 13px;
+ }
+
+ .mat-filter {
+    height: 35px !important;
+ }
+
+ .customClass {
+    margin-top: 30px;
+  }
