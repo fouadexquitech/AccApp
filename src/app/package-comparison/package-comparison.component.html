@@ -62,7 +62,7 @@
                     <mat-form-field appearance="fill" class="full-width-field">
                         <mat-label>BOQ Div</mat-label>
                         <mat-select [(ngModel)]="SearchInput.bOQDiv" multiple>
-                            <input matInput type="text" focused="'true'" (keyup)="filterBOQDiv($event)" class="mat-filter">
+                            <input matInput type="text" focused="'true'" (keyup)="filterBOQDiv($event)" (keydown)="$event.stopPropagation()" class="mat-filter">
                             <span class="fa fa-search input-icon"></span>
                             <mat-divider></mat-divider>
                          
@@ -96,7 +96,7 @@
                     <mat-form-field appearance="fill" class="full-width-field">
                         <mat-label>Sheet Desc</mat-label>
                         <mat-select [(ngModel)]="SearchInput.sheetDesc">
-                            <input matInput type="text" focused="'true'" (keyup)="filterSheetDesc($event)" class="mat-filter">
+                            <input matInput type="text" focused="'true'" (keyup)="filterSheetDesc($event)" (keydown)="$event.stopPropagation()" class="mat-filter">
                             <span class="fa fa-search input-icon"></span>
                             <mat-divider></mat-divider>
                           <mat-option></mat-option>
@@ -108,7 +108,7 @@
               <mat-form-field appearance="fill" class="full-width-field">
                   <mat-label>RES Div</mat-label>
                   <mat-select [(ngModel)]="SearchInput.rESDiv" multiple>
-                      <input matInput type="text" focused="'true'" (keyup)="filterRESDiv($event)" class="mat-filter">
+                      <input matInput type="text" focused="'true'" (keyup)="filterRESDiv($event)"  (keydown)="$event.stopPropagation()" class="mat-filter">
                       <span class="fa fa-search input-icon"></span>
                       <mat-divider></mat-divider>
                    
@@ -121,7 +121,7 @@
               <mat-form-field appearance="fill" class="full-width-field">
                   <mat-label>RES Type</mat-label>
                   <mat-select [(ngModel)]="SearchInput.rESType" multiple>
-                      <input matInput type="text" focused="'true'" (keyup)="filterSearchRESType($event)" class="mat-filter">
+                      <input matInput type="text" focused="'true'" (keyup)="filterSearchRESType($event)" (keydown)="$event.stopPropagation()" class="mat-filter">
                       <span class="fa fa-search input-icon"></span>
                       <mat-divider></mat-divider>
                    

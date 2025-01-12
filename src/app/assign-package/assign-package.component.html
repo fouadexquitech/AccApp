@@ -90,7 +90,7 @@
                                     
                                     <mat-select style="font-size:12px;" [(ngModel)]="SelectedPackage" (selectionChange)="onPackageMatSelected($event)">                                                                      
                                         
-                                        <input matInput type="text" focused="'true'" (keyup)="filterPackages($event)" class="mat-filter">
+                                        <input matInput type="text" focused="'true'" (keyup)="filterPackages($event)" (keydown)="$event.stopPropagation()" class="mat-filter">
                                         <span class="fa fa-search input-icon"></span>
                                         
                                         <mat-divider></mat-divider>
@@ -98,8 +98,10 @@
                                         <mat-option style="font-size:14px;" *ngFor="let pitem of selectedPackages" [value]="pitem.idPkge">{{pitem.pkgeName}}</mat-option>
                                     </mat-select>
                                 </mat-form-field>
-                            </div>
 
+
+                                                     
+                            </div>                       
                             <!-- <div class="col-sm-6 form-group">
                                 <form [formGroup]="formTrade">
                                      <label>Trade Description</label> 

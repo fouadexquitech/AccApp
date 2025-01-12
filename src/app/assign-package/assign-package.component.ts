@@ -16,13 +16,15 @@ import { User } from '../_models';
 import { PackageSupplierService } from '../package-supplier/package-supplier.service';
 import { BoqListTableComponent } from '../boq-list-table/boq-list-table.component';
 import { AssignPackageFilterComponent } from '../assign-package-filter/assign-package-filter.component';
+
 // AH28032023.
 declare var $: any;
 
 @Component({
+  
   selector: 'app-assign-package',
   templateUrl: './assign-package.component.html',
-  styleUrls: ['./assign-package.component.css']
+  styleUrls: ['./assign-package.component.css'],
 })
 
 export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit {
@@ -136,6 +138,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         this.assignPackageFilter.openDrawer();
      }
 
+
+    
 // AH28032023
    clearAllSearch()
      {
@@ -1267,7 +1271,8 @@ validateExcelBeforeAssign(){
 
   filterPackages(event: KeyboardEvent) { 
     const txt = event.target as HTMLInputElement;
-    
+    console.log(txt.value.toLowerCase());
+
     let result: PackageList[] = [];
     for(let a of this.PackageList){
       if(a.pkgeName.toLowerCase().indexOf(txt.value.toLowerCase()) > -1){

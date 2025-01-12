@@ -22,7 +22,7 @@
           <mat-label>Suppliers</mat-label>
           
           <mat-select multiple [(ngModel)]="selectedSuppliers">
-          <input matInput type="text" focused="'true'" (keyup)="filterSuppliers($event)" class="mat-filter">
+          <input matInput type="text" focused="'true'" (keyup)="filterSuppliers($event)" (keydown)="$event.stopPropagation()" class="mat-filter">
           <span class="fa fa-search input-icon"></span>
           <mat-divider></mat-divider>
         
