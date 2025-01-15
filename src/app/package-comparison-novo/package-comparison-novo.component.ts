@@ -632,7 +632,7 @@ constructor(private router: Router,
     let CostConn=this.user.usrLoggedConnString;
     
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-      this.packageSupplierService.GetEmailTemplate(lang,this.packageId,"").subscribe(data=>{
+      this.packageSupplierService.GetEmailTemplate(lang,this.packageId,"","").subscribe(data=>{
         this.f.template.setValue(data?.etContent);
       });
   }

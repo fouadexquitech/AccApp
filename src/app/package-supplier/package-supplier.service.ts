@@ -56,11 +56,11 @@ export class PackageSupplierService {
     );
   }
 
-  GetEmailTemplate(language : string, packId :number , projName :string)
+  GetEmailTemplate(language : string, packId :number , projName :string , revExpiryDate :string)
   {
         console.log(packId);
         console.log(projName);
-    return this.http.get(this.baseUrl + 'Logon/GetSuppliersEmailTemplate?Lang=' + language+ '&packId=' + packId+ '&projName=' + projName).pipe(
+    return this.http.get(this.baseUrl + 'Logon/GetSuppliersEmailTemplate?Lang=' + language+ '&packId=' + packId+ '&projName=' + projName + '&revExpiryDate='+revExpiryDate).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
