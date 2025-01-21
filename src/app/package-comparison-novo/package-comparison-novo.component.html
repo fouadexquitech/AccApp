@@ -1,6 +1,5 @@
 <app-nav></app-nav>
 <section>
-
   <style>
     .dot {
       height: 3px;
@@ -11,45 +10,65 @@
     }
 
     .highlight {
-    font-weight: bold;
-    background-color: rgb(218, 218, 226);
-}
-    </style>
+      font-weight: bold;
+      background-color: rgb(218, 218, 226);
+    }
+  </style>
 
-    
-    <nav aria-label="breadcrumb" class="p-2">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
-            <li class="breadcrumb-item"><a [routerLink]="['/package-list']">Package List</a></li>
-            <li class="breadcrumb-item">Package Comparison</li>
-            <li class="breadcrumb-item active" aria-current="page"><strong>{{packageName}}</strong></li>
-        </ol>
-      </nav>
+  <nav aria-label="breadcrumb" class="p-2">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
+      <li class="breadcrumb-item">
+        <a [routerLink]="['/package-list']">Package List</a>
+      </li>
+      <li class="breadcrumb-item">Package Comparison</li>
+      <li class="breadcrumb-item active" aria-current="page">
+        <strong>{{ packageName }}</strong>
+      </li>
+    </ol>
+  </nav>
 
-      <div class="container-fluid">
-              
-      <div class="row p-2">
-          <div class="col-sm-12">
-            <div class="card">
-              <div class="card-header">
-                <div class="row">
-                  <div class="col-sm-3 form-group"><h5 style="display: inline-block;"><span> Search</span>&nbsp;
-                    <span style="float: right; cursor: pointer;user-select: none;" (click)="toggleShow()">
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" [checked]="isShown">                     
-                          </div>       
-                    </span>
-                                        
-                  </h5></div>
-                  <div class="col-sm-2 form-group"><h5 style="display: inline-block;"><span> By Group</span>&nbsp;
-                    <span style="float: right; cursor: pointer;user-select: none;" (click)="showByGroup()">
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" [checked]="byGroup">                         
-                          </div>                    
-                    </span>
-                                        
-                  </h5></div>
-                  <!--<div class="col-sm-2 form-group">
+  <div class="container-fluid">
+    <div class="row p-2">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            <div class="row">
+              <div class="col-sm-3 form-group">
+                <h5 style="display: inline-block">
+                  <span> Search</span>&nbsp;
+                  <span
+                    style="float: right; cursor: pointer; user-select: none"
+                    (click)="toggleShow()"
+                  >
+                    <div class="form-check form-switch">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        [checked]="isShown"
+                      />
+                    </div>
+                  </span>
+                </h5>
+              </div>
+              <div class="col-sm-2 form-group">
+                <h5 style="display: inline-block">
+                  <span> By Group</span>&nbsp;
+                  <span
+                    style="float: right; cursor: pointer; user-select: none"
+                    (click)="showByGroup()"
+                  >
+                    <div class="form-check form-switch">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        [checked]="byGroup"
+                      />
+                    </div>
+                  </span>
+                </h5>
+              </div>
+              <!--<div class="col-sm-2 form-group">
                     <button class="btn btn-danger" (click)="generatePDF()" [disabled]="generatingFile">
                       <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="generatingFile"></span>
                       <span class="fa-solid fa-file-pdf"></span>
@@ -57,867 +76,1342 @@
                       <span *ngIf="!generatingFile">Generate PDF</span>
                       </button>
                   </div>-->
-                  <div class="col-sm-2 form-group">
-                    <button class="btn btn-success" (click)="generateExcel()" [disabled]="generatingFile">
-                      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="generatingFile"></span>
-                      <span class="fa-solid fa-file-excel"></span>
-                      <span *ngIf="generatingFile"> Generating...</span>
-                      <span *ngIf="!generatingFile"> Generate Excel</span>
+              <div class="col-sm-2 form-group">
+                <button
+                  class="btn btn-success"
+                  (click)="generateExcel()"
+                  [disabled]="generatingFile"
+                >
+                  <span
+                    class="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                    *ngIf="generatingFile"
+                  ></span>
+                  <span class="fa-solid fa-file-excel"></span>
+                  <span *ngIf="generatingFile"> Generating...</span>
+                  <span *ngIf="!generatingFile"> Generate Excel</span>
+                </button>
+              </div>
+              <div class="col-sm-2 form-group">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  style="float: right; width: 100%"
+                  (click)="openSendEmailModal()"
+                >
+                  Send Email
+                </button>
+              </div>
+              <div class="col-sm-3 form-group">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  style="float: right; width: 100%"
+                  (click)="openGenerateContract()"
+                  [disabled]="generatingContract"
+                >
+                  <span *ngIf="generatingContract"> Generating...</span>
+                  <span *ngIf="!generatingContract"
+                    >Generate Contracts BOQ</span
+                  >
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body" *ngIf="isShown">
+            <div class="row">
+              <div class="col-sm-3 p-2 form-group">
+                BOQ Div
+                <ng-select
+                  [items]="BOQDivList"
+                  bindLabel="sectionO"
+                  bindValue="sectionO"
+                  [placeholder]="'BOQ Div'"
+                  [closeOnSelect]="true"
+                  [multiple]="true"
+                  [(ngModel)]="selectedBOQDivList"
+                >
+                  <!--SearchInput.bOQDiv-->
+                  <ng-template ng-header-tmp>
+                    <div>
+                      <button
+                        class="btn btn-link"
+                        (click)="onSelectAllBOQDiv()"
+                      >
+                        Select All
                       </button>
-                  </div>
-                  <div class="col-sm-2 form-group">
-                    <button type="button" class="btn btn-primary" style="float: right; width: 100%;"
-                    (click)="openSendEmailModal()">Send Email</button>
-                    
-                  </div>
-                  <div class="col-sm-3 form-group">
-                    <button type="button" class="btn btn-secondary" style="float: right; width: 100%;"  (click)="openGenerateContract()" [disabled]="generatingContract">
-                    <span *ngIf="generatingContract"> Generating...</span>
-                    <span *ngIf="!generatingContract">Generate Contracts BOQ</span>
-                   </button>
-                  </div>     
+                    </div>
+                  </ng-template>
+                </ng-select>
               </div>
-                  
-              </div>
-              <div class="card-body" *ngIf="isShown">
-                  <div class="row">
-                      
-                      <div class="col-sm-3 p-2 form-group">
-                          BOQ Div
-                          <ng-select [items]="BOQDivList" 
-                          bindLabel="sectionO" 
-                          bindValue="sectionO" 
-                          [placeholder]="'BOQ Div'"
-                          [closeOnSelect]="true"
-                          [multiple]="true"
-                          [(ngModel)]="selectedBOQDivList"> <!--SearchInput.bOQDiv-->
-                          <ng-template ng-header-tmp>
 
-                              <div>
-                                <button class="btn btn-link"
-                                        (click)="onSelectAllBOQDiv()">Select All</button>                            
-                              </div>                    
-                          </ng-template>
-                      </ng-select>
-                         
-                      
-                      </div>
-          
-                      <div class="col-sm-2 p-2 form-group">
-                          
-                          <label>BOQ Item</label>
-                                  
-                          <input type="text" class="form-control" [(ngModel)]="SearchInput.bOQItem">
-                
-                      </div>
-          
-                      <div class="col-sm-3 p-2 form-group">
-                          
-                          <label>BOQ Desc</label>
-                      
-                          <input type="text" class="form-control" [(ngModel)]="SearchInput.bOQDesc">
-                              
-                      </div>
-          
-                      <div class="col-sm-2 p-2 form-group">          
-                          <label>From Row</label>
-                             
-                          <input type="text" class="form-control" [(ngModel)]="SearchInput.fromRow">
-                     
-                      </div>
-                      <div class="col-sm-2 p-2 form-group">
-                          <label>To Row</label>
-                     
-                          <input type="text" class="form-control" [(ngModel)]="SearchInput.toRow">
-                      </div>
-                      </div>
-                  <div class="row">
-                      
-                      <div class="col-sm-3 p-2 form-group">
-                          Sheet Desc
-                          <ng-select [items]="SheetDescList" 
-                          bindLabel="obSheetDesc" 
-                          bindValue="obSheetDesc" 
-                          [placeholder]="'Sheet Desc'"
-                          [closeOnSelect]="true"
-                          [multiple]="true"
-                          [(ngModel)]="selectedSheetDescList">
-                          <ng-template ng-header-tmp>
-                            <div>
-                              <button class="btn btn-link" (click)="onSelectAllSheetDesc()">Select All</button>                     
-                            </div>                         
-                          </ng-template>
-                      </ng-select>
-                 
-                  </div>
-                  <div class="col-sm-3 p-2 form-group">
-                          
-                      RES Div
-                      <ng-select [items]="RESDivList" 
-                      bindLabel="boqDiv" 
-                      bindValue="boqDiv" 
-                      [placeholder]="'RES Div'"
-                      [closeOnSelect]="true"
-                      [multiple]="true"
-                      [(ngModel)]="selectedRESDivList">
-                      <ng-template ng-header-tmp>
-                          <div>
-                            <button class="btn btn-link"  (click)="onSelectAllRESDiv()">Select All</button>                            
-                          </div>                     
-                      </ng-template>
-                  </ng-select>
-          
-                </div>
-          
-                <div class="col-sm-3 p-2 form-group">
-                  RES Type
-                  <ng-select [items]="RESTypeList" 
-                  bindLabel="boqCtg" 
-                  bindValue="boqCtg" 
+              <div class="col-sm-2 p-2 form-group">
+                <label>BOQ Item</label>
+
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="SearchInput.bOQItem"
+                />
+              </div>
+
+              <div class="col-sm-3 p-2 form-group">
+                <label>BOQ Desc</label>
+
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="SearchInput.bOQDesc"
+                />
+              </div>
+
+              <div class="col-sm-2 p-2 form-group">
+                <label>From Row</label>
+
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="SearchInput.fromRow"
+                />
+              </div>
+              <div class="col-sm-2 p-2 form-group">
+                <label>To Row</label>
+
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="SearchInput.toRow"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-3 p-2 form-group">
+                Sheet Desc
+                <ng-select
+                  [items]="SheetDescList"
+                  bindLabel="obSheetDesc"
+                  bindValue="obSheetDesc"
+                  [placeholder]="'Sheet Desc'"
+                  [closeOnSelect]="true"
+                  [multiple]="true"
+                  [(ngModel)]="selectedSheetDescList"
+                >
+                  <ng-template ng-header-tmp>
+                    <div>
+                      <button
+                        class="btn btn-link"
+                        (click)="onSelectAllSheetDesc()"
+                      >
+                        Select All
+                      </button>
+                    </div>
+                  </ng-template>
+                </ng-select>
+              </div>
+              <div class="col-sm-3 p-2 form-group">
+                RES Div
+                <ng-select
+                  [items]="RESDivList"
+                  bindLabel="boqDiv"
+                  bindValue="boqDiv"
+                  [placeholder]="'RES Div'"
+                  [closeOnSelect]="true"
+                  [multiple]="true"
+                  [(ngModel)]="selectedRESDivList"
+                >
+                  <ng-template ng-header-tmp>
+                    <div>
+                      <button
+                        class="btn btn-link"
+                        (click)="onSelectAllRESDiv()"
+                      >
+                        Select All
+                      </button>
+                    </div>
+                  </ng-template>
+                </ng-select>
+              </div>
+
+              <div class="col-sm-3 p-2 form-group">
+                RES Type
+                <ng-select
+                  [items]="RESTypeList"
+                  bindLabel="boqCtg"
+                  bindValue="boqCtg"
                   [placeholder]="'RES Type'"
                   [closeOnSelect]="true"
                   [multiple]="true"
-                  [(ngModel)]="selectedRESTypeList">
+                  [(ngModel)]="selectedRESTypeList"
+                >
                   <ng-template ng-header-tmp>
-                      <div>
-                        <button class="btn btn-link"  (click)="onSelectAllRESType()">Select All</button>  
-                      </div>              
+                    <div>
+                      <button
+                        class="btn btn-link"
+                        (click)="onSelectAllRESType()"
+                      >
+                        Select All
+                      </button>
+                    </div>
                   </ng-template>
-              </ng-select>
-                                   
-                </div>   
-
-                <div class="col-sm-3 p-2 form-group">                  
-                    <label>RES Desc</label>             
-                    <input type="text" class="form-control" [(ngModel)]="SearchInput.rESDesc">                      
-                </div>
-                  </div>         
-                 <hr>
-                  <div class="row">                     
-                      <div class="col-sm-2 form-group">
-                          <button type="button" class="btn btn-primary" [disabled]="searching" style="float: right; width: 100%;"
-                              (click)="onSearch()">
-                              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="searching"></span>
-                              <span *ngIf="searching">Searching...</span>
-                              <span *ngIf="!searching">Search</span>
-                              </button>
-                      </div>                                     
-                  </div>
+                </ng-select>
               </div>
-          </div>
+
+              <div class="col-sm-3 p-2 form-group">
+                <label>RES Desc</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="SearchInput.rESDesc"
+                />
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm-2 form-group">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  [disabled]="searching"
+                  style="float: right; width: 100%"
+                  (click)="onSearch()"
+                >
+                  <span
+                    class="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                    *ngIf="searching"
+                  ></span>
+                  <span *ngIf="searching">Searching...</span>
+                  <span *ngIf="!searching">Search</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="row p-2">
-            <div class="col-sm-12 table-responsive">
-                <table class="table table-comparison" *ngIf="!byBoq && comparisonList.length > 0 && !byGroup">
-                    <thead>
-                        <tr>
-                          <th style="width:1%">
-                            <input type="checkbox" id="selectAllResourcesByItem" (change)="selectAllItemsByResource($event.target)"></th>
-                          <th>Select All</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                            <td></td>
-                            <td>
-                              <table class="table">
-                                <thead>
-                                  <th><strong>Boq #</strong></th>
-                                  <th><strong>Boq Item</strong></th>
-                                </thead>
-                              </table>                            
-                            </td>
-                          </tr>
-                        <tr *ngFor="let item of comparisonList; let i = index">
-                          <td>
-                            <input type="checkbox" [checked]="item.isChecked" (change)="selectResourcesByItem($event, item)">  
-                          </td>           
-                          <td>                   
-                            <div class="p-2">{{item.itemO}}    -    {{item.descriptionO}}</div>
-                            <div class="p-2">
-                                <table class="table">
-                                    <thead>
-                                      <tr>
-                                      <th></th>
-                                      <th>Resource</th>
-                                      <th>Exclud</th>
-                                      <th>Unit</th>
-                                      <th>
-                                        <table class="table table-bordered">
-                                            <tr>
-                                                <td colspan="3" class="text-center">
-                                                   Budget
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width:30%" class="text-center">Final Qty</td>
-                                                <td style="width:30%" class="text-center">U. Price</td>
-                                                <td style="width:35%" class="text-center">T. Budget</td>
-                                            </tr> 
-                                        </table>
-                                      </th>    
-                            <th>
-                              <table class="table table-bordered">
-                                  <tr>
-                                      <td colspan="2" class="text-center">
-                                         Quotation
-                                      </td>
-                                  </tr>
-                                  <tr>
-                                      <td style="width:50%" class="text-center">Qty</td>
-                                      <td style="width:50%" class="text-center">Price</td>
-                                  </tr> 
-                              </table>
-                            </th>
-
-                                      <th *ngFor="let sup of item.groupingResources[0]?.groupingPackageSuppliersPrices">
-                               
-                                        <table class="table table-bordered">
-                                            <tr>
-                                                <td colspan="5" class="text-center">
-                                                 {{sup.supplierName}} ({{sup.lastRevisionDate | date: 'dd/MM/yyyy'}})            
-                                                </td>
-                                            </tr>
-                                        <tr>
-                                            <td style="width:20%" class="text-center">Qty</td>
-                                            <td style="width:20%" *ngIf="sup.supplierName !='Ideal'" class="text-center">U. Price</td>
-                                            <td style="width:5%" *ngIf="sup.supplierName !='Ideal'" class="text-center">Disc %</td>
-                                            <td style="width:20%" class="text-center">Final U.P.</td>
-                                            <td style="width:35%" class="text-center">T. Price</td>
-                                        </tr>  
-                                    </table>
-                                    </th>
-                                    </tr>
-                                    </thead>
-
-                                    <tbody>
-
-                                        <!-- Regular Ressource -->
-                                      <tr *ngFor="let resource of FilterRegularRessource(item.groupingResources); let j = index" [ngClass]="isAssigned(resource) ? 'bg-acc' : ''">
-                                        <td style="width:1%">
-                                            <input type="checkbox" [checked]="resource.isChecked" (change)="selectResource($event, resource, item)">
-                                            <input type="hidden" [value]="resource.boqSeq">
-                                        </td>                                          
-                                        <td style="width:200px">
-                                            {{resource.resourceDescription}}
-                                        </td>
-                                        <td style="width:1%">
-                                            <input type="checkbox" [checked]="resource.isExcluded" (change)="excludRessource($event, resource)">
-                                        </td>                                      
-                                        <td style="width:1%">
-                                            {{resource.unit}}
-                                        </td>
-                                        
-                                        <td style="width:200px">
-                                          <table class="table">
-                                            <tr>
-                                                    <td style="width:30%" class="text-center">
-                                                        {{resource.qty | number : '1.0-2'}}
-                                                    </td>
-                                                    <td style="width:30%" class="text-center">
-                                                        {{resource.unitPrice | number : '1.0-2'}}
-                                                    </td>
-                                                    <td style="width:35%" class="text-center">
-                                                        {{resource.totalPrice | number : '1.0-0'}}
-                                                    </td>
-                                            </tr>
-                                          </table>
-                                        </td>
-
-                                        <td style="width:150px">
-                                          <table class="table">
-                                              <tr>
-                                                <td style="width:30%" class="text-center">
-                                                  {{resource.quotationQty | number: '1.0-2'}}
-                                                </td>
-                                                <td style="width:35%" class="text-center">
-                                                  {{resource.quotationAmt | number : '1.0-0'}}
-                                                </td>
-                                              </tr>
-                                          </table>
-                                        </td>
-
-                                        <td *ngFor="let sup of resource.groupingPackageSuppliersPrices">
-                                            <table class="table">
-                                            <tr>
-                                               <td style="width:20%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                                {{sup.assignedQty | number : '1.0-2'}}</span> 
-                                                <i class="fas fa-flag text-success" title="Quantity Assigned" *ngIf="sup.assignedQty > 0 && sup.supplierName !='Ideal'"></i>
-                                               </td>
-                                               <td style="width:20%" *ngIf="sup.supplierName !='Ideal'" class="text-center"> 
-                                                <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                                {{(sup.originalCurrencyPrice * sup.exchRateNow) | number : '1.0-2'}}</span>
-                                               </td> 
-                                                <!--<td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.assignedQty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>-->
-                                                <td *ngIf="sup.supplierName !='Ideal'" style="width:5%" class="text-center">
-                                                  <!-- <ng-container *ngIf="sup.supplierName !='Ideal'"> -->
-                                                    <ng-container *ngIf="sup.discount >0">
-                                                      {{sup.discount | number : '1.0-2'}}
-                                                    </ng-container>
-                                                    <ng-container *ngIf="! (sup.discount >0)">
-                                                      &nbsp;
-                                                    </ng-container>
-                                                  <!-- </ng-container> -->
-                                                </td>
-                                                <td style="width:20%" class="text-center"> 
-                                                  <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                                  {{(sup.uPriceAfterDiscount * sup.exchRateNow) | number : '1.0-2'}}</span>
-                                                 </td> 
-                                                <td style="width:35%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                                  {{(sup.uPriceAfterDiscount * resource.quotationQty * sup.exchRateNow) | number : '1.0-0'}}</span> </td>
-                                              </tr> 
-                                          </table>
-                                        </td>
-
-                                         <td *ngIf="show && resource.isChecked">
-                                             <p *ngFor="let sup of resource.groupingPackageSuppliersPrices; let i = index">
-                                             <ng-container *ngIf="sup.supplierName !='Ideal'">
-                                               <label>Qty: {{ sup.supplierName}}</label>
-                                               &nbsp; 
-                                               <input class="form-control" type="number" [ngClass]="resource.validPerc? '' : 'border-danger'"
-                                               (change)="setSupplierQty($event, resource, sup)"
-                                               [value]="sup.supplierName !='Ideal' ? sup.assignedQty : 0 "/>
-                                             </ng-container>
-                                             </p>
-                                           </td>         
-                                        </tr>
-
-                                        <!-- New Ressource -->
-                                        <tr *ngFor="let resource of FilterNewRessource(item.groupingResources); let j = index" style="background-color:rgb(235, 216, 223);">
-                                          <td style="width:1%">
-                                            <input type="checkbox" [checked]="resource.isChecked" (change)="selectResource($event, resource, item)">
-                                            <input type="hidden" [value]="resource.boqSeq">
-                                          </td>                                          
-                                          <td style="width:200px">
-                                            {{resource.resourceDescription}}
-                                          </td>
-                                          <td style="width:1%">
-                                            <input type="checkbox" [checked]="resource.isExcluded" (change)="excludRessource($event, resource)">
-                                          </td>                                      
-                                          <td style="width:1%">
-                                            {{resource.unit}}
-                                          </td>
-                                          <td style="width:200px">
-                                            <table class="table">
-                                                <tr>
-                                                    <td style="width:30%" class="text-center">
-                                                        {{resource.qty | number : '1.0-2'}}
-                                                    </td>
-                                                    <td style="width:30%" class="text-center">
-                                                        {{resource.unitPrice | number : '1.0-2'}}
-                                                    </td>
-                                                    <td style="width:35%" class="text-center">
-                                                        {{resource.totalPrice | number : '1.0-0'}}
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-
-                                        <td style="width:150px">
-                                          <table class="table" >
-                                              <tr>
-                                                <td style="width:30%" class="text-center">
-                                                  {{resource.quotationQty | number: '1.0-2'}}
-                                                </td>
-                                                <td style="width:35%" class="text-center">
-                                                  {{resource.quotationAmt | number: '1.0-0'}}
-                                                </td>
-                                              </tr>
-                                          </table>
-                                        </td>
-
-                                        <td *ngFor="let sup of resource.groupingPackageSuppliersPrices">
-                                          <table class="table">
-                                          <tr>
-                                             <td style="width:20%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                              {{sup.assignedQty | number : '1.0-2'}}</span> 
-                                              <i class="fas fa-flag text-success" title="Quantity Assigned" *ngIf="sup.assignedQty > 0 && sup.supplierName !='Ideal'"></i>
-                                             </td>
-                                             <td style="width:20%" *ngIf="sup.supplierName !='Ideal'" class="text-center"> 
-                                              <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                              {{(sup.originalCurrencyPrice * sup.exchRateNow) | number : '1.0-2'}}</span>
-                                             </td> 
-                                              <!--<td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.assignedQty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>-->
-                                              <td *ngIf="sup.supplierName !='Ideal'" style="width:5%" class="text-center">
-                                                <!-- <ng-container *ngIf="sup.supplierName !='Ideal'"> -->
-                                                  <ng-container *ngIf="sup.discount >0">
-                                                    {{sup.discount | number: '1.0-2'}}
-                                                  </ng-container>
-                                                  <ng-container *ngIf="! (sup.discount >0)">
-                                                    &nbsp;
-                                                  </ng-container>
-                                                <!-- </ng-container> -->
-                                              </td>
-                                              <td style="width:20%" class="text-center"> 
-                                                <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                                {{(sup.uPriceAfterDiscount * sup.exchRateNow) | number : '1.0-2'}}</span>
-                                               </td> 
-                                              <td style="width:35%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                                {{(sup.uPriceAfterDiscount * resource.quotationQty * sup.exchRateNow) | number : '1.0-0'}}</span> </td>
-                                            </tr> 
-                                        </table>
-                                      </td>
-
-                                          <td *ngIf="show && resource.isChecked" >
-                                              <p *ngFor="let sup of resource.groupingPackageSuppliersPrices; let i = index">
-                                              <ng-container *ngIf="sup.supplierName !='Ideal'">
-                                                <label>Qty: {{ sup.supplierName}}</label>
-                                                &nbsp; 
-                                                <input class="form-control" type="number" [ngClass]="resource.validPerc? '' : 'border-danger'"
-                                                (change)="setSupplierQty($event, resource, sup)"
-                                                [value]="sup.supplierName !='Ideal' ? sup.assignedQty : 0 "/>
-                                              </ng-container>
-                                              </p>
-                                            </td>
-                                                      
-                                        </tr>
-
-                                        <!-- Alternative Ressource -->
-                                        <tr *ngFor="let resource of FilterAlternativeRessource(item.groupingResources); let j = index" style="background-color: rgb(174, 197, 228);">
-                                          <td style="width:1%">
-                                            <input type="checkbox" [checked]="resource.isChecked" (change)="selectResource($event, resource, item)">
-                                            <input type="hidden" [value]="resource.boqSeq">
-                                          </td>                                          
-                                          <td style="width:200px">
-                                            {{resource.resourceDescription}}
-                                          </td>
-                                          <td style="width:1%">
-                                            <input type="checkbox" [checked]="resource.isExcluded" (change)="excludRessource($event, resource)">
-                                          </td>                                      
-                                          <td style="width:1%">
-                                            {{resource.unit}}
-                                          </td>
-                                        
-                                          <td style="width:200px">
-                                            <table class="table" >
-                                                <tr>
-                                                    <td style="width:30%" class="text-center">
-                                                        {{resource.qty | number : '1.0-2'}}
-                                                    </td>
-                                                    <td style="width:30%" class="text-center">
-                                                        {{resource.unitPrice | number : '1.0-2'}}
-                                                    </td>
-                                                    <td style="width:35%" class="text-center">
-                                                        {{resource.totalPrice | number : '1.0-0'}}
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-
-                                        <td style="width:150px">
-                                          <table class="table" >
-                                              <tr>
-                                                <td style="width:30%" class="text-center">
-                                                  {{resource.quotationQty | number: '1.0-2'}}
-                                                </td>
-                                                <td style="width:35%" class="text-center">
-                                                  {{resource.quotationAmt | number : '1.0-0'}}
-                                                </td>
-                                              </tr>
-                                          </table>
-                                        </td>
-
-                                          <td *ngFor="let sup of resource.groupingPackageSuppliersPrices">
-                                            <table class="table">
-                                            <tr>
-                                               <td style="width:20%" class="text-center"> <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                                {{sup.assignedQty | number : '1.0-2'}}</span> 
-                                                <i class="fas fa-flag text-success" title="Quantity Assigned" *ngIf="sup.assignedQty > 0 && sup.supplierName !='Ideal'"></i>
-                                               </td>
-                                               <td style="width:20%" *ngIf="sup.supplierName !='Ideal'" class="text-center"> 
-                                                <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                                {{(sup.originalCurrencyPrice * sup.exchRateNow) | number : '1.0-2'}}</span>
-                                               </td> 
-                                                <!--<td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.assignedQty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>-->
-                                                <td *ngIf="sup.supplierName !='Ideal'" style="width:5%" class="text-center">
-                                                  <!-- <ng-container *ngIf="sup.supplierName !='Ideal'"> -->
-                                                    <ng-container *ngIf="sup.discount >0">
-                                                      {{sup.discount | number: '1.0-2'}}
-                                                    </ng-container>
-                                                    <ng-container *ngIf="! (sup.discount >0)">
-                                                      &nbsp;
-                                                    </ng-container>
-                                                  <!-- </ng-container> -->
-                                                </td>
-                                                <td style="width:20%" class="text-center"> 
-                                                  <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                                  {{(sup.uPriceAfterDiscount * sup.exchRateNow) | number : '1.0-2'}}</span>
-                                                 </td> 
-                                                <td style="width:35%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                                  {{(sup.uPriceAfterDiscount * resource.quotationQty * sup.exchRateNow) | number : '1.0-0'}}</span> </td>
-                                              </tr> 
-                                          </table>
-                                        </td>
-
-                                          <td *ngIf="show && resource.isChecked">
-                                              <p *ngFor="let sup of resource.groupingPackageSuppliersPrices; let i = index">
-                                              <ng-container *ngIf="sup.supplierName !='Ideal'">
-                                                <label>Qty: {{ sup.supplierName}}</label>
-                                                &nbsp; 
-                                                <input class="form-control" type="number" [ngClass]="resource.validPerc? '' : 'border-danger'"
-                                                (change)="setSupplierQty($event, resource, sup)"
-                                                [value]="sup.supplierName !='Ideal' ? sup.assignedQty : 0 "/>
-                                              </ng-container>
-                                              </p>
-                                          </td>       
-                                        </tr>
-                                      </tbody>
-                                </table>
-                            </div>
-                          </td>
-                        </tr>
-                        </tbody>
-                        <tfoot>
-
-                        <tr>
-                            <td colspan="4">
-                              <table class="table">
-                                <tr>
-                                  <td style="width:30%"><strong>Sub-Total</strong></td>
-                                  <td *ngFor="let p of packageSuppliersPrices">
-                                    <table class="table" >
-                                      <tr>
-                                        <td style="width:70%" colspan="4"></td>
-                                        <td style="width:30%" class="text-right" >
-                                          <strong> {{p.totalprice | number : '1.0-0'}}</strong>
-                                        </td>
-                                      </tr>
-                                    </table>
-                                  </td>
-                                </tr>
-                              </table>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td colspan="4">
-                              <table class="table">
-                                <tr>
-                                  <td style="width:52%"><strong>Additional Fees</strong></td>
-                            
-                                  <td *ngFor="let supp of packageSuppliersPrices">
-                                    <table class="table">
-                                      <tr *ngFor="let field of supp.fieldLists">
-                                        <td colspan="2"></td>
-                                        <td style="width:33.33%" class="text-center">
-                                          <table class="table" *ngIf="field.type == fieldTypes.AMOUNT_TYPE_ID">
-                                            <tr>
-                                              <td class="text-center">{{field.label}}</td>
-                                              <td class="text-center">{{field.value | number : '1.0-0'}}</td>
-                                            </tr>
-                                          </table>
-                                          <table class="table" *ngIf="field.type == fieldTypes.PERCENTAGE_TYPE_ID">
-                                            <tr>
-                                              <td class="text-center">{{field.label}}</td>
-                                              <td class="text-center">{{field.value | number : '1.0-0'}}%</td>
-                                            </tr>
-                                          </table>
-                                        </td>
-                                      </tr>
-                                    </table>
-                                  </td>
-                                </tr>
-                              </table>
-                            
-                            </td>                                             
-                        </tr>
-                        
-                        <tr>
-                            <td colspan="2">
-                              <table class="table">
-                                <tr>
-                                    <td style="width:33%">
-                                      <table class="table">
-                                          <tr>
-                                              <td style="width:80%"><strong>Grand Total</strong></td>
-                                              <td> <strong> {{getTotalBudget() | number : '1.0-0'}}</strong></td>
-                                              <td></td>
-                                          </tr>
-                                       </table>
-                                    </td>
-                                    <td style="width:10%">
-                                        <table class="table">
-                                              <tr>
-                                                <td style="width:50%" class="text-center">
-                                                  
-                                                </td>
-                                                <td style="width:50%" class="text-center">
-                                                  <strong> {{getTotalQuotation() | number : '1.0-0'}}</strong>
-                                                </td>
-                                              </tr>
-                                        </table>
-                                    </td>
-                                    <td *ngFor="let p of packageSuppliersPrices" >
-                                          <table class="table">
-                                            <tr>
-                                              <td colspan="4">
-                                        
-                                              </td>
-                                              <td style="width:15%" class="text-center">
-                                                <strong> {{p.totalNetPrice | number : '1.0-0'}}</strong>
-                                              </td>
-                                            </tr>
-                                          </table>
-                                      </td>
-                                  </tr>
-                              </table>
-                            </td>
-                        </tr>
-
-                        <tr class="bg-secondary text-white">
-                            <td [attr.colspan]="SupplierPackagesList.length + 4">
-                              <table style="width:100%">
-                                <tr>
-                                  <td class="text-left" style="width:4%"><strong>Technical Conditions</strong></td>
-                                  <td class="text-left" style="width:10%"><strong>ACC Condition</strong></td>  
-                                </tr>                               
-                              </table>  
-                            </td>
-                        </tr>
-                        <tr>
-                          <td [attr.colspan]="SupplierPackagesList.length + 4">
-                            <table class="table table-bordered">                   
-                                <tr *ngFor="let cond of techConditionsReplies ;  let i = index">
-                                  <td class="text-left" style="width:15%">{{cond.description}}</td>
-                                  <td class="text-left" style="width:15%">{{cond.accCondition}}</td>
-                        
-                                  <td *ngFor="let reply of cond.replies" style="width:15%">
-                                    <table class="table">
-                                      <tr>
-                                        <td class="text-center">{{reply.accCondValue}}</td>
-                                        <td class="text-center">{{reply?.reply}}</td>
-                                      </tr>
-                                    </table>
-                                  </td>
-                                  <td style="width:15%"></td>
-                                </tr>
-                            </table>
-                          </td>
-                                                   
-                          </tr>
-                          <tr class="bg-secondary text-white">
-                            <td [attr.colspan]="SupplierPackagesList.length + 4"><strong>Commercial Conditions</strong></td>
-                          </tr>
-                          <tr>
-                            <td [attr.colspan]="SupplierPackagesList.length + 4">
-                              <table class="table table-bordered"> 
-                                <tr *ngFor="let cond of comConditionsReplies ;  let i = index">
-                                  <td class="text-left" style="width:15%">{{cond.description}}</td>
-                                  <td class="text-left" style="width:15%">{{cond.accCondition}}</td>
-                                  <td *ngFor="let reply of cond.replies"  style="width:15%">
-                                    <table class="table">
-                                      <tr>
-                                        <td class="text-center">{{reply.accCondValue}}</td>
-                                        <td class="text-center">{{reply.reply}}</td>
-                                      </tr>
-                                    </table>
-                                  </td>
-                                  <td style="width:15%"></td>
-                                </tr>
-                          </table>
-                            </td>
-                          </tr>
-                    </tfoot>
+      </div>
+    </div>
+    <div class="row p-2">
+      <div class="col-sm-12 table-responsive">
+        <table
+          class="table table-comparison"
+          *ngIf="!byBoq && comparisonList.length > 0 && !byGroup"
+        >
+          <thead>
+            <tr>
+              <th style="width: 1%">
+                <input
+                  type="checkbox"
+                  id="selectAllResourcesByItem"
+                  (change)="selectAllItemsByResource($event.target)"
+                />
+              </th>
+              <th>Select All</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td></td>
+              <td>
+                <table class="table">
+                  <thead>
+                    <th><strong>Boq #</strong></th>
+                    <th><strong>Boq Item</strong></th>
+                  </thead>
                 </table>
+              </td>
+            </tr>
+            <tr *ngFor="let item of comparisonList; let i = index">
+              <td>
+                <input
+                  type="checkbox"
+                  [checked]="item.isChecked"
+                  (change)="selectResourcesByItem($event, item)"
+                />
+              </td>
+              <td>
+                <div class="p-2">
+                  {{ item.itemO }} - {{ item.descriptionO }}
+                </div>
+                <div class="p-2">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Resource</th>
+                        <th>Exclud</th>
+                        <th>Unit</th>
+                        <th>
+                          <table class="table table-bordered">
+                            <tr>
+                              <td colspan="3" class="text-center">Budget</td>
+                            </tr>
+                            <tr>
+                              <td style="width: 30%" class="text-center">
+                                Final Qty
+                              </td>
+                              <td style="width: 30%" class="text-center">
+                                U. Price
+                              </td>
+                              <td style="width: 35%" class="text-center">
+                                T. Budget
+                              </td>
+                            </tr>
+                          </table>
+                        </th>
+                        <th>
+                          <table class="table table-bordered">
+                            <tr>
+                              <td colspan="2" class="text-center">Quotation</td>
+                            </tr>
+                            <tr>
+                              <td style="width: 50%" class="text-center">
+                                Qty
+                              </td>
+                              <td style="width: 50%" class="text-center">
+                                Price
+                              </td>
+                            </tr>
+                          </table>
+                        </th>
 
-<!-- by BOQ -->
-                <div class="card" *ngFor="let level of CurrentLevelList; let ind = index" infinite-scroll [infiniteScrollDistance]="modalScrollDistance"
-                [infiniteScrollThrottle]="modalScrollThrottle" (scrolled)="onScroll()">
-              
-                    <table class="table table-comparison" *ngIf="byBoq && level.items.length > 0 && !byGroup">
-                      <thead>
+                        <th
+                          *ngFor="
+                            let sup of item.groupingResources[0]
+                              ?.groupingPackageSuppliersPrices
+                          "
+                        >
+                          <table class="table table-bordered">
+                            <tr>
+                              <td colspan="5" class="text-center">
+                                {{ sup.supplierName }} ({{
+                                  sup.lastRevisionDate | date : "dd/MM/yyyy"
+                                }})
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="width: 20%" class="text-center">
+                                Qty
+                              </td>
+                              <td
+                                style="width: 20%"
+                                *ngIf="sup.supplierName != 'Ideal'"
+                                class="text-center"
+                              >
+                                U. Price
+                              </td>
+                              <td
+                                style="width: 5%"
+                                *ngIf="sup.supplierName != 'Ideal'"
+                                class="text-center"
+                              >
+                                Disc %
+                              </td>
+                              <td style="width: 20%" class="text-center">
+                                Final U.P.
+                              </td>
+                              <td style="width: 35%" class="text-center">
+                                T. Price
+                              </td>
+                            </tr>
+                          </table>
+                        </th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <!-- Regular Ressource -->
+                      <tr
+                        *ngFor="
+                          let resource of FilterRegularRessource(
+                            item.groupingResources
+                          );
+                          let j = index
+                        "
+                        [ngClass]="isAssigned(resource) ? 'bg-acc' : ''"
+                      >
+                        <td style="width: 1%">
+                          <input
+                            type="checkbox"
+                            [checked]="resource.isChecked"
+                            (change)="selectResource($event, resource, item)"
+                          />
+                          <input type="hidden" [value]="resource.boqSeq" />
+                        </td>
+                        <td style="width: 200px">
+                          {{ resource.resourceDescription }}
+                        </td>
+                        <td style="width: 1%">
+                          <input
+                            type="checkbox"
+                            [checked]="resource.isExcluded"
+                            (change)="excludRessource($event, resource)"
+                          />
+                        </td>
+                        <td style="width: 1%">
+                          {{ resource.unit }}
+                        </td>
+
+                        <td style="width: 200px">
+                          <table class="table">
+                            <tr>
+                              <td style="width: 30%" class="text-center">
+                                {{ resource.qty | number : "1.0-2" }}
+                              </td>
+                              <td style="width: 30%" class="text-center">
+                                {{ resource.unitPrice | number : "1.0-2" }}
+                              </td>
+                              <td style="width: 35%" class="text-center">
+                                {{ resource.totalPrice | number : "1.0-0" }}
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+
+                        <td style="width: 150px">
+                          <table class="table">
+                            <tr>
+                              <td style="width: 30%" class="text-center">
+                                {{ resource.quotationQty | number : "1.0-2" }}
+                              </td>
+                              <td style="width: 35%" class="text-center">
+                                {{ resource.quotationAmt | number : "1.0-0" }}
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+
+                        <td
+                          *ngFor="
+                            let sup of resource.groupingPackageSuppliersPrices
+                          "
+                        >
+                          <table class="table">
+                            <tr>
+                              <td style="width: 20%" class="text-center">
+                                <span
+                                  [ngClass]="
+                                    sup.missedPrice == 1 ? 'text-danger' : ''
+                                  "
+                                >
+                                  {{ sup.assignedQty | number : "1.0-2" }}</span
+                                >
+                                <i
+                                  class="fas fa-flag text-success"
+                                  title="Quantity Assigned"
+                                  *ngIf="
+                                    sup.assignedQty > 0 &&
+                                    sup.supplierName != 'Ideal'
+                                  "
+                                ></i>
+                              </td>
+                              <td
+                                style="width: 20%"
+                                *ngIf="sup.supplierName != 'Ideal'"
+                                class="text-center"
+                              >
+                                <span
+                                  [ngClass]="
+                                    sup.missedPrice == 1 ? 'text-danger' : ''
+                                  "
+                                >
+                                  {{
+                                    sup.originalCurrencyPrice * sup.exchRateNow
+                                      | number : "1.0-2"
+                                  }}</span
+                                >
+                              </td>
+                              <!--<td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.assignedQty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>-->
+                              <td
+                                *ngIf="sup.supplierName != 'Ideal'"
+                                style="width: 5%"
+                                class="text-center"
+                              >
+                                <!-- <ng-container *ngIf="sup.supplierName !='Ideal'"> -->
+                                <ng-container *ngIf="sup.discount > 0">
+                                  {{ sup.discount | number : "1.0-2" }}
+                                </ng-container>
+                                <ng-container *ngIf="!(sup.discount > 0)">
+                                  &nbsp;
+                                </ng-container>
+                                <!-- </ng-container> -->
+                              </td>
+                              <td style="width: 20%" class="text-center">
+                                <span
+                                  [ngClass]="
+                                    sup.missedPrice == 1 ? 'text-danger' : ''
+                                  "
+                                >
+                                  {{
+                                    sup.uPriceAfterDiscount * sup.exchRateNow
+                                      | number : "1.0-2"
+                                  }}</span
+                                >
+                              </td>
+                              <td style="width: 35%" class="text-center">
+                                <span
+                                  [ngClass]="
+                                    sup.missedPrice == 1 ? 'text-danger' : ''
+                                  "
+                                >
+                                  {{
+                                    sup.uPriceAfterDiscount *
+                                      resource.quotationQty *
+                                      sup.exchRateNow | number : "1.0-0"
+                                  }}</span
+                                >
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+
+                        <td *ngIf="show && resource.isChecked">
+                          <p
+                            *ngFor="
+                              let sup of resource.groupingPackageSuppliersPrices;
+                              let i = index
+                            "
+                          >
+                            <ng-container *ngIf="sup.supplierName != 'Ideal'">
+                              <label>Qty: {{ sup.supplierName }}</label>
+                              &nbsp;
+                              <input
+                                class="form-control"
+                                type="number"
+                                [ngClass]="
+                                  resource.validPerc ? '' : 'border-danger'
+                                "
+                                (change)="setSupplierQty($event, resource, sup)"
+                                [value]="
+                                  sup.supplierName != 'Ideal'
+                                    ? sup.assignedQty
+                                    : 0
+                                "
+                              />
+                            </ng-container>
+                          </p>
+                        </td>
+                      </tr>
+
+                      <!-- New Ressource -->
+                      <tr
+                        *ngFor="
+                          let resource of FilterNewRessource(
+                            item.groupingResources
+                          );
+                          let j = index
+                        "
+                        style="background-color: rgb(235, 216, 223)"
+                      >
+                        <td style="width: 1%">
+                          <input
+                            type="checkbox"
+                            [checked]="resource.isChecked"
+                            (change)="selectResource($event, resource, item)"
+                          />
+                          <input type="hidden" [value]="resource.boqSeq" />
+                        </td>
+                        <td style="width: 200px">
+                          {{ resource.resourceDescription }}
+                        </td>
+                        <td style="width: 1%">
+                          <input
+                            type="checkbox"
+                            [checked]="resource.isExcluded"
+                            (change)="excludRessource($event, resource)"
+                          />
+                        </td>
+                        <td style="width: 1%">
+                          {{ resource.unit }}
+                        </td>
+                        <td style="width: 200px">
+                          <table class="table">
+                            <tr>
+                              <td style="width: 30%" class="text-center">
+                                {{ resource.qty | number : "1.0-2" }}
+                              </td>
+                              <td style="width: 30%" class="text-center">
+                                {{ resource.unitPrice | number : "1.0-2" }}
+                              </td>
+                              <td style="width: 35%" class="text-center">
+                                {{ resource.totalPrice | number : "1.0-0" }}
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+
+                        <td style="width: 150px">
+                          <table class="table">
+                            <tr>
+                              <td style="width: 30%" class="text-center">
+                                {{ resource.quotationQty | number : "1.0-2" }}
+                              </td>
+                              <td style="width: 35%" class="text-center">
+                                {{ resource.quotationAmt | number : "1.0-0" }}
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+
+                        <td
+                          *ngFor="
+                            let sup of resource.groupingPackageSuppliersPrices
+                          "
+                        >
+                          <table class="table">
+                            <tr>
+                              <td style="width: 20%" class="text-center">
+                                <span
+                                  [ngClass]="
+                                    sup.missedPrice == 1 ? 'text-danger' : ''
+                                  "
+                                >
+                                  {{ sup.assignedQty | number : "1.0-2" }}</span
+                                >
+                                <i
+                                  class="fas fa-flag text-success"
+                                  title="Quantity Assigned"
+                                  *ngIf="
+                                    sup.assignedQty > 0 &&
+                                    sup.supplierName != 'Ideal'
+                                  "
+                                ></i>
+                              </td>
+                              <td
+                                style="width: 20%"
+                                *ngIf="sup.supplierName != 'Ideal'"
+                                class="text-center"
+                              >
+                                <span
+                                  [ngClass]="
+                                    sup.missedPrice == 1 ? 'text-danger' : ''
+                                  "
+                                >
+                                  {{
+                                    sup.originalCurrencyPrice * sup.exchRateNow
+                                      | number : "1.0-2"
+                                  }}</span
+                                >
+                              </td>
+                              <!--<td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.assignedQty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>-->
+                              <td
+                                *ngIf="sup.supplierName != 'Ideal'"
+                                style="width: 5%"
+                                class="text-center"
+                              >
+                                <!-- <ng-container *ngIf="sup.supplierName !='Ideal'"> -->
+                                <ng-container *ngIf="sup.discount > 0">
+                                  {{ sup.discount | number : "1.0-2" }}
+                                </ng-container>
+                                <ng-container *ngIf="!(sup.discount > 0)">
+                                  &nbsp;
+                                </ng-container>
+                                <!-- </ng-container> -->
+                              </td>
+                              <td style="width: 20%" class="text-center">
+                                <span
+                                  [ngClass]="
+                                    sup.missedPrice == 1 ? 'text-danger' : ''
+                                  "
+                                >
+                                  {{
+                                    sup.uPriceAfterDiscount * sup.exchRateNow
+                                      | number : "1.0-2"
+                                  }}</span
+                                >
+                              </td>
+                              <td style="width: 35%" class="text-center">
+                                <span
+                                  [ngClass]="
+                                    sup.missedPrice == 1 ? 'text-danger' : ''
+                                  "
+                                >
+                                  {{
+                                    sup.uPriceAfterDiscount *
+                                      resource.quotationQty *
+                                      sup.exchRateNow | number : "1.0-0"
+                                  }}</span
+                                >
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+
+                        <td *ngIf="show && resource.isChecked">
+                          <p
+                            *ngFor="
+                              let sup of resource.groupingPackageSuppliersPrices;
+                              let i = index
+                            "
+                          >
+                            <ng-container *ngIf="sup.supplierName != 'Ideal'">
+                              <label>Qty: {{ sup.supplierName }}</label>
+                              &nbsp;
+                              <input
+                                class="form-control"
+                                type="number"
+                                [ngClass]="
+                                  resource.validPerc ? '' : 'border-danger'
+                                "
+                                (change)="setSupplierQty($event, resource, sup)"
+                                [value]="
+                                  sup.supplierName != 'Ideal'
+                                    ? sup.assignedQty
+                                    : 0
+                                "
+                              />
+                            </ng-container>
+                          </p>
+                        </td>
+                      </tr>
+
+                      <!-- Alternative Ressource -->
+                      <tr
+                        *ngFor="
+                          let resource of FilterAlternativeRessource(
+                            item.groupingResources
+                          );
+                          let j = index
+                        "
+                        style="background-color: rgb(174, 197, 228)"
+                      >
+                        <td style="width: 1%">
+                          <input
+                            type="checkbox"
+                            [checked]="resource.isChecked"
+                            (change)="selectResource($event, resource, item)"
+                          />
+                          <input type="hidden" [value]="resource.boqSeq" />
+                        </td>
+                        <td style="width: 200px">
+                          {{ resource.resourceDescription }}
+                        </td>
+                        <td style="width: 1%">
+                          <input
+                            type="checkbox"
+                            [checked]="resource.isExcluded"
+                            (change)="excludRessource($event, resource)"
+                          />
+                        </td>
+                        <td style="width: 1%">
+                          {{ resource.unit }}
+                        </td>
+
+                        <td style="width: 200px">
+                          <table class="table">
+                            <tr>
+                              <td style="width: 30%" class="text-center">
+                                {{ resource.qty | number : "1.0-2" }}
+                              </td>
+                              <td style="width: 30%" class="text-center">
+                                {{ resource.unitPrice | number : "1.0-2" }}
+                              </td>
+                              <td style="width: 35%" class="text-center">
+                                {{ resource.totalPrice | number : "1.0-0" }}
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+
+                        <td style="width: 150px">
+                          <table class="table">
+                            <tr>
+                              <td style="width: 30%" class="text-center">
+                                {{ resource.quotationQty | number : "1.0-2" }}
+                              </td>
+                              <td style="width: 35%" class="text-center">
+                                {{ resource.quotationAmt | number : "1.0-0" }}
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+
+                        <td
+                          *ngFor="
+                            let sup of resource.groupingPackageSuppliersPrices
+                          "
+                        >
+                          <table class="table">
+                            <tr>
+                              <td style="width: 20%" class="text-center">
+                                <span
+                                  [ngClass]="
+                                    sup.missedPrice == 1 ? 'text-danger' : ''
+                                  "
+                                >
+                                  {{ sup.assignedQty | number : "1.0-2" }}</span
+                                >
+                                <i
+                                  class="fas fa-flag text-success"
+                                  title="Quantity Assigned"
+                                  *ngIf="
+                                    sup.assignedQty > 0 &&
+                                    sup.supplierName != 'Ideal'
+                                  "
+                                ></i>
+                              </td>
+                              <td
+                                style="width: 20%"
+                                *ngIf="sup.supplierName != 'Ideal'"
+                                class="text-center"
+                              >
+                                <span
+                                  [ngClass]="
+                                    sup.missedPrice == 1 ? 'text-danger' : ''
+                                  "
+                                >
+                                  {{
+                                    sup.originalCurrencyPrice * sup.exchRateNow
+                                      | number : "1.0-2"
+                                  }}</span
+                                >
+                              </td>
+                              <!--<td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.assignedQty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>-->
+                              <td
+                                *ngIf="sup.supplierName != 'Ideal'"
+                                style="width: 5%"
+                                class="text-center"
+                              >
+                                <!-- <ng-container *ngIf="sup.supplierName !='Ideal'"> -->
+                                <ng-container *ngIf="sup.discount > 0">
+                                  {{ sup.discount | number : "1.0-2" }}
+                                </ng-container>
+                                <ng-container *ngIf="!(sup.discount > 0)">
+                                  &nbsp;
+                                </ng-container>
+                                <!-- </ng-container> -->
+                              </td>
+                              <td style="width: 20%" class="text-center">
+                                <span
+                                  [ngClass]="
+                                    sup.missedPrice == 1 ? 'text-danger' : ''
+                                  "
+                                >
+                                  {{
+                                    sup.uPriceAfterDiscount * sup.exchRateNow
+                                      | number : "1.0-2"
+                                  }}</span
+                                >
+                              </td>
+                              <td style="width: 35%" class="text-center">
+                                <span
+                                  [ngClass]="
+                                    sup.missedPrice == 1 ? 'text-danger' : ''
+                                  "
+                                >
+                                  {{
+                                    sup.uPriceAfterDiscount *
+                                      resource.quotationQty *
+                                      sup.exchRateNow | number : "1.0-0"
+                                  }}</span
+                                >
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+
+                        <td *ngIf="show && resource.isChecked">
+                          <p
+                            *ngFor="
+                              let sup of resource.groupingPackageSuppliersPrices;
+                              let i = index
+                            "
+                          >
+                            <ng-container *ngIf="sup.supplierName != 'Ideal'">
+                              <label>Qty: {{ sup.supplierName }}</label>
+                              &nbsp;
+                              <input
+                                class="form-control"
+                                type="number"
+                                [ngClass]="
+                                  resource.validPerc ? '' : 'border-danger'
+                                "
+                                (change)="setSupplierQty($event, resource, sup)"
+                                [value]="
+                                  sup.supplierName != 'Ideal'
+                                    ? sup.assignedQty
+                                    : 0
+                                "
+                              />
+                            </ng-container>
+                          </p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4">
+                <table class="table">
+                  <tr>
+                    <td style="width: 30%"><strong>Sub-Total</strong></td>
+                    <td *ngFor="let p of packageSuppliersPrices">
+                      <table class="table">
                         <tr>
-                          <th style="width:1%">
-                            <input type="checkbox" id="selectAllBoqItem" (change)="selectAllBoqItems($event.target)">
-                          </th>
-                          <th>Boq #</th>
-                          <th>Item Description</th>
-                          <th>Exclud</th>
-                          <th>Unit</th>
-                          <th>
-                            <table class="table table-bordered">
-                              <tr>
-                                <td colspan="3" class="text-center">
-                                  Budget
-                                </td>
-                              </tr>
-                              <tr>
-                                <td style="width:30%" class="text-center">Final Qty</td>
-                                <td style="width:30%" class="text-center">U. Price</td>
-                                <td style="width:35%" class="text-center">T. Budget</td>
-                              </tr>
-                            </table>
-                          </th>
-                
-                          <th>
-                            <table class="table table-bordered">
-                              <tr>
-                                <td colspan="2" class="text-center">
-                                  Quotation
-                                </td>
-                              </tr>
-                              <tr>
-                                <td style="width:50%" class="text-center">Qty</td>
-                                <td style="width:50%" class="text-center">Price</td>
-                              </tr>
-                            </table>
-                          </th>
-                
-                          <th *ngFor="let sup of level.items[0].groupingPackageSuppliersPrices">
-                            <table class="table table-bordered">
-                              <tr>
-                                <td colspan="5" class="text-center">
-                                  {{sup.supplierName}}
-                                  <ng-container *ngIf="sup.supplierName !='Ideal'">
-                                    ({{sup.lastRevisionDate | date: 'dd/MM/yyyy'}})
-                                  </ng-container>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td style="width:20%" class="text-center">
-                                  <ng-container *ngIf="sup.supplierName =='Ideal'">Qty Bud.</ng-container>
-                                  <ng-container *ngIf="sup.supplierName !='Ideal'">Qty As. </ng-container>
-                                </td>
-                                <td *ngIf="sup.supplierName !='Ideal'" style="width:20%" class="text-center">
-                                  <!-- <ng-container *ngIf="sup.supplierName !='Ideal'"> -->
-                                  U.Price
-                                  <!-- </ng-container> -->
-                                </td>
-                                <td *ngIf="sup.supplierName !='Ideal'" style="width:20%" class="text-center">
-                                  <!-- <ng-container *ngIf="sup.supplierName !='Ideal'"> -->
-                                  Disc %
-                                  <!-- </ng-container> -->
-                                </td>
-                                <td style="width:20%" class="text-center">Final U.P.</td>
-                                <td style="width:20%" class="text-center">T. Price</td>
-                              </tr>
-                            </table>
-                          </th>
-                        </tr>
-                      </thead>
-                
-                      <tbody>
-                      
-                        <tr>
-                          <td colspan="10">
-                            <span [innerHTML]="getSplittedLevelName(level.levelName)" *ngIf="level.levelName"></span>
-                            <span *ngIf="!level.levelName">From Drawing</span>
+                          <td style="width: 70%" colspan="4"></td>
+                          <td style="width: 30%" class="text-right">
+                            <strong>
+                              {{ p.totalprice | number : "1.0-0" }}</strong
+                            >
                           </td>
                         </tr>
-                        <!-- <div class="card-header">
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr>
+              <td colspan="4">
+                <table class="table">
+                  <tr>
+                    <td style="width: 52%"><strong>Additional Fees</strong></td>
+
+                    <td *ngFor="let supp of packageSuppliersPrices">
+                      <table class="table">
+                        <tr *ngFor="let field of supp.fieldLists">
+                          <td colspan="2"></td>
+                          <td style="width: 33.33%" class="text-center">
+                            <table
+                              class="table"
+                              *ngIf="field.type == fieldTypes.AMOUNT_TYPE_ID"
+                            >
+                              <tr>
+                                <td class="text-center">{{ field.label }}</td>
+                                <td class="text-center">
+                                  {{ field.value | number : "1.0-0" }}
+                                </td>
+                              </tr>
+                            </table>
+                            <table
+                              class="table"
+                              *ngIf="
+                                field.type == fieldTypes.PERCENTAGE_TYPE_ID
+                              "
+                            >
+                              <tr>
+                                <td class="text-center">{{ field.label }}</td>
+                                <td class="text-center">
+                                  {{ field.value | number : "1.0-0" }}%
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr>
+              <td colspan="2">
+                <table class="table">
+                  <tr>
+                    <td style="width: 33%">
+                      <table class="table">
+                        <tr>
+                          <td style="width: 80%">
+                            <strong>Grand Total</strong>
+                          </td>
+                          <td>
+                            <strong>
+                              {{ getTotalBudget() | number : "1.0-0" }}</strong
+                            >
+                          </td>
+                          <td></td>
+                        </tr>
+                      </table>
+                    </td>
+                    <td style="width: 10%">
+                      <table class="table">
+                        <tr>
+                          <td style="width: 50%" class="text-center"></td>
+                          <td style="width: 50%" class="text-center">
+                            <strong>
+                              {{
+                                getTotalQuotation() | number : "1.0-0"
+                              }}</strong
+                            >
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                    <td *ngFor="let p of packageSuppliersPrices">
+                      <table class="table">
+                        <tr>
+                          <td colspan="4"></td>
+                          <td style="width: 15%" class="text-center">
+                            <strong>
+                              {{ p.totalNetPrice | number : "1.0-0" }}</strong
+                            >
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr class="bg-secondary text-white">
+              <td [attr.colspan]="SupplierPackagesList.length + 4">
+                <table style="width: 100%">
+                  <tr>
+                    <td class="text-left" style="width: 4%">
+                      <strong>Technical Conditions</strong>
+                    </td>
+                    <td class="text-left" style="width: 10%">
+                      <strong>ACC Condition</strong>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td [attr.colspan]="SupplierPackagesList.length + 4">
+                <table class="table table-bordered">
+                  <tr *ngFor="let cond of techConditionsReplies; let i = index">
+                    <td class="text-left" style="width: 15%">
+                      {{ cond.description }}
+                    </td>
+                    <td class="text-left" style="width: 15%">
+                      {{ cond.accCondition }}
+                    </td>
+
+                    <td *ngFor="let reply of cond.replies" style="width: 15%">
+                      <table class="table">
+                        <tr>
+                          <td class="text-center">{{ reply.accCondValue }}</td>
+                          <td class="text-center">{{ reply?.reply }}</td>
+                        </tr>
+                      </table>
+                    </td>
+                    <td style="width: 15%"></td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr class="bg-secondary text-white">
+              <td [attr.colspan]="SupplierPackagesList.length + 4">
+                <strong>Commercial Conditions</strong>
+              </td>
+            </tr>
+            <tr>
+              <td [attr.colspan]="SupplierPackagesList.length + 4">
+                <table class="table table-bordered">
+                  <tr *ngFor="let cond of comConditionsReplies; let i = index">
+                    <td class="text-left" style="width: 15%">
+                      {{ cond.description }}
+                    </td>
+                    <td class="text-left" style="width: 15%">
+                      {{ cond.accCondition }}
+                    </td>
+                    <td *ngFor="let reply of cond.replies" style="width: 15%">
+                      <table class="table">
+                        <tr>
+                          <td class="text-center">{{ reply.accCondValue }}</td>
+                          <td class="text-center">{{ reply.reply }}</td>
+                        </tr>
+                      </table>
+                    </td>
+                    <td style="width: 15%"></td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <!-- by BOQ -->
+        <div
+          class="card"
+          *ngFor="let level of CurrentLevelList; let ind = index"
+          infinite-scroll
+          [ngStyle]="{ 'z-index': ind > 0 ? '-1' : '' }"
+          [infiniteScrollDistance]="modalScrollDistance"
+          [infiniteScrollThrottle]="modalScrollThrottle"
+          (scrolled)="onScroll()"
+        >
+          <table
+            class="table table-comparison"
+            *ngIf="byBoq && level.items.length > 0 && !byGroup"
+          >
+            <thead *ngIf="ind == 0" id="t-header">
+              <tr>
+                <th style="width: 1%" class="sticky-header">
+                  <input
+                    type="checkbox"
+                    id="selectAllBoqItem"
+                    (change)="selectAllBoqItems($event.target)"
+                  />
+                </th>
+                <th class="sticky-header">Boq #</th>
+                <th class="sticky-header">Item Description</th>
+                <th class="sticky-header">Exclud</th>
+                <th class="sticky-header">Unit</th>
+                <th class="sticky-header">
+                  <table class="table table-bordered">
+                    <tr>
+                      <td colspan="3" class="text-center">Budget</td>
+                    </tr>
+                    <tr>
+                      <td style="width: 30%" class="text-center">Final Qty</td>
+                      <td style="width: 30%" class="text-center">U. Price</td>
+                      <td style="width: 35%" class="text-center">T. Budget</td>
+                    </tr>
+                  </table>
+                </th>
+
+                <th class="sticky-header">
+                  <table class="table table-bordered">
+                    <tr>
+                      <td colspan="2" class="text-center">Quotation</td>
+                    </tr>
+                    <tr>
+                      <td style="width: 50%" class="text-center">Qty</td>
+                      <td style="width: 50%" class="text-center">Price</td>
+                    </tr>
+                  </table>
+                </th>
+
+                <th
+                  class="sticky-header"
+                  *ngFor="
+                    let sup of level.items[0].groupingPackageSuppliersPrices
+                  "
+                >
+                  <table class="table table-bordered">
+                    <tr>
+                      <td colspan="5" class="text-center">
+                        {{ sup.supplierName }}
+                        <ng-container *ngIf="sup.supplierName != 'Ideal'">
+                          ({{ sup.lastRevisionDate | date : "dd/MM/yyyy" }})
+                        </ng-container>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 20%" class="text-center">
+                        <ng-container *ngIf="sup.supplierName == 'Ideal'"
+                          >Qty Bud.</ng-container
+                        >
+                        <ng-container *ngIf="sup.supplierName != 'Ideal'"
+                          >Qty As.
+                        </ng-container>
+                      </td>
+                      <td
+                        *ngIf="sup.supplierName != 'Ideal'"
+                        style="width: 20%"
+                        class="text-center"
+                      >
+                        <!-- <ng-container *ngIf="sup.supplierName !='Ideal'"> -->
+                        U.Price
+                        <!-- </ng-container> -->
+                      </td>
+                      <td
+                        *ngIf="sup.supplierName != 'Ideal'"
+                        style="width: 20%"
+                        class="text-center"
+                      >
+                        <!-- <ng-container *ngIf="sup.supplierName !='Ideal'"> -->
+                        Disc %
+                        <!-- </ng-container> -->
+                      </td>
+                      <td style="width: 20%" class="text-center">Final U.P.</td>
+                      <td style="width: 20%" class="text-center">T. Price</td>
+                    </tr>
+                  </table>
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td colspan="10">
+                  <span
+                    [innerHTML]="getSplittedLevelName(level.levelName)"
+                    *ngIf="level.levelName"
+                  ></span>
+                  <span *ngIf="!level.levelName">From Drawing</span>
+                </td>
+              </tr>
+              <!-- <div class="card-header">
                           <span [innerHTML]="getSplittedLevelName(level.levelName)" *ngIf="level.levelName"></span>
                           <span *ngIf="!level.levelName">From Drawing</span>
                         </div> -->
-                      
-                        <!-- Regular Items -->
-                        <!-- <tr *ngFor="let item of FilterRegularItems(level.items); let i = index"> -->
-                        <tr *ngFor="let item of level.items; let i = index" [ngClass]="(item.isAlternative==true)? 'bg-AlternativeItem' : ((item.isNewItem==true)? 'bg-NewItem' : '')">
-                          <td style="width:1%">
-                            <input type="checkbox" [checked]="item.isChecked" (change)="selectBoq($event, item)">
-                            <input type="hidden" [value]="item.itemO">
-                          </td>
-                          <td>
-                            {{item.itemO}}
-                          </td>
-                          <td style="width:10%">
-                            {{item.descriptionO}}
-                          </td>
-                          <td style="width:1%">
-                            <input type="checkbox" [checked]="item.isExcluded" (change)="excludBoq($event, item)">
-                          </td>
-                          <td>
-                            {{item.unit}}
-                          </td>
-                          <td>
-                            <table class="table">
-                              <tr>
-                                <td style="width:30%" class="text-center">
-                                  {{item.qty | number: '1.0-2'}}
-                                </td>
-                                <td style="width:30%" class="text-center">
-                                  {{item.unitPrice | number: '1.0-2'}}
-                                </td>
-                                <td style="width:35%" class="text-center">
-                                  {{item.totalPrice | number : '1.0-0'}}
-                                </td>
-                              </tr>
-                            </table>
-                          </td>
-                
-                          <td>
-                            <table class="table">
-                              <tr>
-                                <td style="width:30%" class="text-center">
-                                  {{item.quotationQty | number: '1.0-2'}}
-                                </td>
-                                <td style="width:35%" class="text-center">
-                                  {{item.quotationAmt | number : '1.0-2'}}
-                                </td>
-                              </tr>
-                            </table>
-                          </td>
-                
-                          <!-- Price of Supplier -->
-                          <td *ngFor="let sup of item.groupingPackageSuppliersPrices">
-                            <!-- <ng-container *ngIf="(sup.isNewItem==false && sup.isAlternative==false)"> -->
-                            <table class="table">
-                              <tr [ngClass]="(sup.isCreatedByThisSupplier)? 'txt-NewItem' : ''">
 
-                                <td style="width:20%" class="text-center">
-                                  <!-- <td *ngIf="show && item.isChecked" style="width:10%"> -->
-                                    <!-- <p *ngFor="let sup of item.groupingPackageSuppliersPrices; let i = index"> -->
-                                      <ng-container *ngIf="sup.supplierName !='Ideal' && !item.isChecked">
-                                        {{sup.assignedQty | number : '1.0-2'}}
-                                      </ng-container>
-                                      <ng-container *ngIf="sup.supplierName !='Ideal' && item.isChecked"  >
-                                        <!-- <label>Qty: {{sup.supplierName}}</label>
+              <!-- Regular Items -->
+              <!-- <tr *ngFor="let item of FilterRegularItems(level.items); let i = index"> -->
+              <tr
+                *ngFor="let item of level.items; let i = index"
+                [ngClass]="
+                  item.isAlternative == true
+                    ? 'bg-AlternativeItem'
+                    : item.isNewItem == true
+                    ? 'bg-NewItem'
+                    : ''
+                "
+              >
+                <td style="width: 1%">
+                  <input
+                    type="checkbox"
+                    [checked]="item.isChecked"
+                    (change)="selectBoq($event, item)"
+                  />
+                  <input type="hidden" [value]="item.itemO" />
+                </td>
+                <td>
+                  {{ item.itemO }}
+                </td>
+                <td style="width: 10%">
+                  {{ item.descriptionO }}
+                </td>
+                <td style="width: 1%">
+                  <input
+                    type="checkbox"
+                    [checked]="item.isExcluded"
+                    (change)="excludBoq($event, item)"
+                  />
+                </td>
+                <td>
+                  {{ item.unit }}
+                </td>
+                <td>
+                  <table class="table">
+                    <tr>
+                      <td style="width: 30%" class="text-center">
+                        {{ item.qty | number : "1.0-2" }}
+                      </td>
+                      <td style="width: 30%" class="text-center">
+                        {{ item.unitPrice | number : "1.0-2" }}
+                      </td>
+                      <td style="width: 35%" class="text-center">
+                        {{ item.totalPrice | number : "1.0-0" }}
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+
+                <td>
+                  <table class="table">
+                    <tr>
+                      <td style="width: 30%" class="text-center">
+                        {{ item.quotationQty | number : "1.0-2" }}
+                      </td>
+                      <td style="width: 35%" class="text-center">
+                        {{ item.quotationAmt | number : "1.0-2" }}
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+
+                <!-- Price of Supplier -->
+                <td *ngFor="let sup of item.groupingPackageSuppliersPrices">
+                  <!-- <ng-container *ngIf="(sup.isNewItem==false && sup.isAlternative==false)"> -->
+                  <table class="table">
+                    <tr
+                      [ngClass]="
+                        sup.isCreatedByThisSupplier ? 'txt-NewItem' : ''
+                      "
+                    >
+                      <td style="width: 20%" class="text-center">
+                        <!-- <td *ngIf="show && item.isChecked" style="width:10%"> -->
+                        <!-- <p *ngFor="let sup of item.groupingPackageSuppliersPrices; let i = index"> -->
+                        <ng-container
+                          *ngIf="sup.supplierName != 'Ideal' && !item.isChecked"
+                        >
+                          {{ sup.assignedQty | number : "1.0-2" }}
+                        </ng-container>
+                        <ng-container
+                          *ngIf="sup.supplierName != 'Ideal' && item.isChecked"
+                        >
+                          <!-- <label>Qty: {{sup.supplierName}}</label>
                                         &nbsp; -->
-                                        <input class="form-control" type="number" style="height: 15px;width: 80px;" [ngClass]="item.validPerc? '' : 'border-danger'"
-                                          (change)="setSupplierQtyByBoq($event, item, sup)"
-                                          [value]="sup.supplierName !='Ideal' ? sup.assignedQty : 0 " />
-                                      </ng-container>
-                                    <!-- </p> -->
-                                  <!-- </td> -->                           
-                                  <!--  AH  <i class="fas fa-flag text-success" title="Quantity Assigned" *ngIf="sup.assignedQty > 0 && sup.supplierName !='Ideal'"></i>  -->
-                                </td>
+                          <input
+                            class="form-control"
+                            type="number"
+                            style="height: 15px; width: 80px"
+                            [ngClass]="item.validPerc ? '' : 'border-danger'"
+                            (change)="setSupplierQtyByBoq($event, item, sup)"
+                            [value]="
+                              sup.supplierName != 'Ideal' ? sup.assignedQty : 0
+                            "
+                          />
+                        </ng-container>
+                        <!-- </p> -->
+                        <!-- </td> -->
+                        <!--  AH  <i class="fas fa-flag text-success" title="Quantity Assigned" *ngIf="sup.assignedQty > 0 && sup.supplierName !='Ideal'"></i>  -->
+                      </td>
 
-                                <td *ngIf="sup.supplierName !='Ideal'" style="width:20%" class="text-center">
-                                  <ng-container *ngIf="sup.supplierName !='Ideal'">
-                                    <span
-                                      [ngClass]="[sup.missedPrice == 1 ? 'text-danger' : '' , (sup.originalCurrencyPrice * sup.exchRateNow) > item.unitPrice ? 'highlight' : '']">
-                                      {{(sup.originalCurrencyPrice * sup.exchRateNow) | number : '1.0-2' }}
-                                    </span>
-                                  </ng-container>
-                                </td>
-                                <td *ngIf="sup.supplierName !='Ideal'" style="width:20%" class="text-center">
-                                  <ng-container *ngIf="sup.supplierName !='Ideal'">
-                                    <ng-container *ngIf="sup.discount >0">
-                                      {{sup.discount | number : '1.0-2'}}
-                                    </ng-container>
-                                    <ng-container *ngIf="! (sup.discount >0)">
-                                      &nbsp;
-                                    </ng-container>
-                                  </ng-container>
-                                </td>
-                                <td style="width:20%" class="text-center">
-                                  {{(sup.uPriceAfterDiscount * sup.exchRateNow).toFixed(2) | number :'1.0-2' }}
-                                </td>
-                                <!-- <td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.assignedQty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>-->
-                                <td style="width:20%" class="text-align">
-                                  <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">
-                                    {{(sup.uPriceAfterDiscount * sup.exchRateNow * item.quotationQty) | number : '1.0-0'}}
-                                  </span>
-                                  <!-- <ng-container *ngIf="(sup.supplierName =='Ideal' && item.isExcluded==true)">
+                      <td
+                        *ngIf="sup.supplierName != 'Ideal'"
+                        style="width: 20%"
+                        class="text-center"
+                      >
+                        <ng-container *ngIf="sup.supplierName != 'Ideal'">
+                          <span
+                            [ngClass]="[
+                              sup.missedPrice == 1 ? 'text-danger' : '',
+                              sup.originalCurrencyPrice * sup.exchRateNow >
+                              item.unitPrice
+                                ? 'highlight'
+                                : ''
+                            ]"
+                          >
+                            {{
+                              sup.originalCurrencyPrice * sup.exchRateNow
+                                | number : "1.0-2"
+                            }}
+                          </span>
+                        </ng-container>
+                      </td>
+                      <td
+                        *ngIf="sup.supplierName != 'Ideal'"
+                        style="width: 20%"
+                        class="text-center"
+                      >
+                        <ng-container *ngIf="sup.supplierName != 'Ideal'">
+                          <ng-container *ngIf="sup.discount > 0">
+                            {{ sup.discount | number : "1.0-2" }}
+                          </ng-container>
+                          <ng-container *ngIf="!(sup.discount > 0)">
+                            &nbsp;
+                          </ng-container>
+                        </ng-container>
+                      </td>
+                      <td style="width: 20%" class="text-center">
+                        {{
+                          (sup.uPriceAfterDiscount * sup.exchRateNow).toFixed(2)
+                            | number : "1.0-2"
+                        }}
+                      </td>
+                      <!-- <td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.assignedQty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>-->
+                      <td style="width: 20%" class="text-align">
+                        <span
+                          [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''"
+                        >
+                          {{
+                            sup.uPriceAfterDiscount *
+                              sup.exchRateNow *
+                              item.quotationQty | number : "1.0-0"
+                          }}
+                        </span>
+                        <!-- <ng-container *ngIf="(sup.supplierName =='Ideal' && item.isExcluded==true)">
                                                         0 
                                    </ng-container> -->
-                                </td>
-                              </tr>
-                            </table>
-                            <!-- </ng-container> -->
-                          </td>
-                
-                          <!-- <td *ngIf="show && item.isChecked" style="width:10%">
+                      </td>
+                    </tr>
+                  </table>
+                  <!-- </ng-container> -->
+                </td>
+
+                <!-- <td *ngIf="show && item.isChecked" style="width:10%">
                             <p *ngFor="let sup of item.groupingPackageSuppliersPrices; let i = index">
                               <ng-container *ngIf="sup.supplierName !='Ideal'">
                                 <label>Qty: {{sup.supplierName}}</label>
@@ -928,411 +1422,571 @@
                               </ng-container>
                             </p>
                           </td> -->
+              </tr>
+            </tbody>
 
-                        </tr>              
-                      </tbody>
-                      
-                      <tfoot *ngIf="ind==1" >
-                        <tr>
-                          <td colspan="7"><strong>Sub-Total</strong></td>
-                          <td *ngFor="let p of packageSuppliersPrices" class="text-center">
-                            <table class="table">
-                              <tr>
-                                <td colspan="2"></td>
-                                <td style="width:33.33%" class="text-center">
-                                  <strong> {{p.totalprice | number : '1.0-2'}}</strong>
-                                </td>
-                              </tr>
-                            </table>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td colspan="7"><strong>Additional Fees</strong></td>
-                          <td *ngFor="let supp of packageSuppliersPrices" class="text-center">
-                            <table class="table">
-                              <tr *ngFor="let field of supp.fieldLists">
-                                <td colspan="2"></td>
-                                <td style="width:33.33%" class="text-center">
-                                  <table class="table" *ngIf="field.type == fieldTypes.AMOUNT_TYPE_ID">
-                                    <tr>
-                                      <td class="text-center">{{field.label}}</td>
-                                      <td class="text-center">{{field.value | number : '1.0-0'}}</td>
-                                    </tr>
-                                  </table>
-                                  <table class="table" *ngIf="field.type == fieldTypes.PERCENTAGE_TYPE_ID">
-                                    <tr>
-                                      <td class="text-center">{{field.label}}</td>
-                                      <td class="text-center">{{field.value | number : '1.0-0'}}%</td>
-                                    </tr>
-                                  </table>
-                                </td>
-                              </tr>
-                            </table>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td colspan="5"><strong>Grand Total</strong></td>
-                          <!-- <td class="text-center">                             
-                                            </td> -->
-                          <td>
-                            <table class="table">
-                              <tr>
-                                <td style="width:30%" class="text-center">
-                
-                                </td>
-                                <td style="width:30%" class="text-center">
-                
-                                </td>
-                                <td style="width:35%" class="text-center">
-                                  <strong> {{getTotalBudget() | number : '1.0-0'}}</strong>
-                                </td>
-                              </tr>
-                            </table>
-                          </td>
-                
-                          <td>
-                            <table class="table">
-                              <tr>
-                                <td style="width:30%" class="text-center">
-                                </td>
-                                <td style="width:35%" class="text-center">
-                                  <strong> {{getTotalQuotation() | number : '1.0-0'}}</strong>
-                                </td>
-                              </tr>
-                            </table>
-                          </td>
-                
-                          <td *ngFor="let p of packageSuppliersPrices" class="text-center">
-                            <table class="table">
-                              <tr>
-                                <td colspan="2"></td>
-                                <td style="width:33.33%" class="text-center">
-                                  <strong> {{p.totalNetPrice | number : '1.0-0'}}</strong>
-                                </td>
-                              </tr>
-                            </table>
-                          </td>
-                        </tr>
-                        +
-                        <tr *ngIf="techConditionsReplies?.length > 0" class="bg-secondary text-white">
-                          <td [attr.colspan]="SupplierPackagesList.length + 10" class="table table-bordered">
-                            <table style="width:100%">
-                              <tr>
-                                <td class="text-left" style="width:4%"><strong>Technical Conditions</strong></td>
-                                <td class="text-left" style="width:10%"><strong>ACC Condition</strong></td>
-                              </tr>
-                            </table>
-                          </td>
-                        </tr>
-                
-                        <tr>
-                          <td [attr.colspan]="SupplierPackagesList.length + 10">
-                            <table class="table table-bordered">
-                              <tr *ngFor="let cond of techConditionsReplies ;  let i = index">
-                
-                                <td class="text-left" style="width:6%">{{cond.description}}</td>
-                                <td class="text-left" style="width:6%">{{cond.accCondition}}</td>
-                                <td class="text-left" *ngFor="let reply of cond.replies" style="width:5%">
-                                  <table class="table">
-                                    <tr>
-                                      <td class="text-center">{{reply.reply}}</td>
-                                    </tr>
-                                  </table>
-                                </td>
-                              </tr>
-                            </table>
-                          </td>
-                        </tr>
-                
-                        <tr *ngIf="comConditionsReplies?.length > 0" class="bg-secondary text-white">
-                          <td [attr.colspan]="SupplierPackagesList.length + 10" class="table table-bordered">
-                            <!--<strong>Commercial Conditions</strong> -->
-                            <table style="width:100%">
-                              <tr>
-                                <td class="text-left" style="width:4%"><strong>Commercial Conditions</strong></td>
-                                <td class="text-left" style="width:10%"><strong>ACC Condition</strong></td>
-                              </tr>
-                            </table>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td [attr.colspan]="packageSuppliersPrices.length + 10">
-                            <table class="table table-bordered">
-                              <tr *ngFor="let cond of comConditionsReplies ;  let i = index">
-                                <td class="text-left" style="width:15%">{{cond.description}}</td>
-                                <td class="text-left" style="width:15%">{{cond.accCondition}}</td>
-                                <td *ngFor="let reply of cond.replies" style="width:10%">
-                                  <table class="table">
-                                    <tr>
-                                      <td class="text-center">
-                                        {{reply.reply}}
-                                      </td>
-                                    </tr>
-                                  </table>
-                                </td>
-                              </tr>
-                            </table>
-                          </td>
-                        </tr>
-                      </tfoot>
-                    </table>
-                </div>
-
-
-
-                <table class="table table-comparison" *ngIf="groupingBoqGroupList.length > 0 && byGroup">
-                    <thead>
-                        <tr>
-                          <th style="width:1%">
-                              <input type="checkbox" id="selectAllGroups" (change)="checkAllGroups($event)">
-                          </th>
-                          <th>Group</th>
-                          <th>T. Price</th>
-                          <th *ngFor="let sup of groupingBoqGroupList[0].groupingPackageSuppliersPrices">                              
-                            <table class="table table-bordered">
-                                <tr>
-                                    <td colspan="3" class="text-center">
-                                        {{sup.supplierName}} ({{sup.lastRevisionDate | date: 'dd/MM/yyyy'}})  
-                                    </td>
-                                </tr>
-                            <tr>  
-                                <td style="width:33.33%" class="text-center">T. Price</td>
-                            </tr>  
+            <tfoot *ngIf="ind == CurrentLevelList.length - 1">
+              <tr>
+                <td colspan="7"><strong>Sub-Total</strong></td>
+                <td
+                  *ngFor="let p of packageSuppliersPrices"
+                  class="text-center"
+                >
+                  <table class="table">
+                    <tr>
+                      <td colspan="2"></td>
+                      <td style="width: 33.33%" class="text-center">
+                        <strong> {{ p.totalprice | number : "1.0-2" }}</strong>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="7"><strong>Additional Fees</strong></td>
+                <td
+                  *ngFor="let supp of packageSuppliersPrices"
+                  class="text-center"
+                >
+                  <table class="table">
+                    <tr *ngFor="let field of supp.fieldLists">
+                      <td colspan="2"></td>
+                      <td style="width: 33.33%" class="text-center">
+                        <table
+                          class="table"
+                          *ngIf="field.type == fieldTypes.AMOUNT_TYPE_ID"
+                        >
+                          <tr>
+                            <td class="text-center">{{ field.label }}</td>
+                            <td class="text-center">
+                              {{ field.value | number : "1.0-0" }}
+                            </td>
+                          </tr>
                         </table>
-                        </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let item of groupingBoqGroupList; let i = index">
-                            <td style="width:1%">
-                                <input type="checkbox" [checked]="item.isChecked" (change)="checkGroup($event, item)">
-                                <input type="hidden" [value]="item.id">
-                              </td>
-                            <td>
-                                {{item.name}}
+                        <table
+                          class="table"
+                          *ngIf="field.type == fieldTypes.PERCENTAGE_TYPE_ID"
+                        >
+                          <tr>
+                            <td class="text-center">{{ field.label }}</td>
+                            <td class="text-center">
+                              {{ field.value | number : "1.0-0" }}%
                             </td>
-                            <td>
-                                {{item.totalPrice | number : '1.0-0'}}
-                            </td>
-                            <td *ngFor="let sup of item.groupingPackageSuppliersPrices">
-                                <table class="table">
-                                <tr>
-                                   
-                                    <td class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{sup.totalPrice | number : '1.2-2'}}</span> 
-                                     
-                                    </td>
-                                </tr> 
-                            </table>
-                               
-                             </td>
-                             <td *ngIf="show && item.isChecked" style="width:10%">
-                                <p *ngFor="let sup of item.groupingPackageSuppliersPrices; let i = index">
-                                  <ng-container *ngIf="sup.supplierName !='Ideal'"> 
-                                  <label>Quantity {{ sup.supplierName}}</label>
-                                  &nbsp; 
-                                  <input class="form-control" type="number" [ngClass]="item.validPerc? '' : 'border-danger'"
-                                  (change)="setSupplierGroupQty($event, item, sup)"
-                                  [value]="sup.supplierName !='Ideal' ? sup.assignedQty : 0 "/>
-                                </ng-container> 
-                                </p>
-                              </td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="3"><strong>Sub-Total</strong></td>
-                            <td *ngFor="let p of packageSuppliersPrices" class="text-center">
-                                <table class="table">
-                                    <tr>
-                                        <td class="text-center">
-                                           <strong> {{p.totalprice | number : '1.0-0'}}</strong>
-                                        </td>
-                                    </tr>
-                            </table>
-                            </td>
-                            
-                        </tr>
-                        <tr>
-                            <td colspan="3"><strong>Additional Fees</strong></td>
-                            
-                            <td *ngFor="let supp of packageSuppliersPrices" class="text-center">
-                                <table class="table table-bordered" >
-                                <tr *ngFor="let field of supp.fieldLists">
-                                   
-                                    <td class="text-center">
-                                        <table class="table" *ngIf="field.type == fieldTypes.AMOUNT_TYPE_ID">
-                                            <tr>
-                                                <td class="text-center" style="width:50%"><strong>{{field.label}}</strong></td>
-                                                <td class="text-center">{{field.value | number : '1.0-0'}}</td>
-                                            </tr>
-                                        </table>
-                                        <table class="table" *ngIf="field.type == fieldTypes.PERCENTAGE_TYPE_ID">
-                                            <tr>
-                                                <td class="text-center" style="width:50%"><strong>{{field.label}}</strong></td>
-                                                <td class="text-center">{{field.value | number : '1.0-0'}}%</td>
-                                            </tr>
-                                        </table>
-                                    
-                                    </td>
-                                
-                                </tr>
-                                </table>
-                            </td>
-                                   
-                            
-                        </tr>
-                        <tr>
-                          <td colspan="2"><strong>Grand Total</strong></td>
-                          <td>
-                            <strong> {{getTotalBudget() | number : '1.0-0'}}</strong>
-                          </td>
-                          <td>
-                          <td>
-                            <strong> {{getTotalQuotation() | number : '1.0-0'}}</strong>
-                          </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="5"><strong>Grand Total</strong></td>
+                <!-- <td class="text-center">                             
+                                            </td> -->
+                <td>
+                  <table class="table">
+                    <tr>
+                      <td style="width: 30%" class="text-center"></td>
+                      <td style="width: 30%" class="text-center"></td>
+                      <td style="width: 35%" class="text-center">
+                        <strong>
+                          {{ getTotalBudget() | number : "1.0-0" }}</strong
+                        >
+                      </td>
+                    </tr>
+                  </table>
+                </td>
 
-                            <td *ngFor="let p of packageSuppliersPrices" class="text-center">
-                                <table class="table">
-                                    <tr>           
-                                        <td class="text-center">
-                                           <strong> {{p.totalNetPrice | number : '1.0-0'}}</strong>
-                                        </td>
-                                    </tr>
-                            </table>
-                            </td>
-                            
-                        </tr>
-                        <tr *ngIf="techConditionsReplies?.length > 0">
-                            <td colspan="2">
-                              <table style="width:100%">
-                                <tr>
-                                  <td class="text-left" style="width:4%"><strong>Technical Conditions</strong></td>
-                                  <td class="text-left" style="width:10%"><strong>ACC Condition</strong></td>  
-                                </tr>                               
-                              </table>  
-                            </td>
-                         
-                            <td [attr.colspan]="packageSuppliersPrices.length + 1">
-                              <table class="table table-bordered">                                   
-                                <tr *ngFor="let cond of techConditionsReplies ;  let i = index">
-                                  <td class="text-left" style="width:15%">{{cond.description}}</td>
-                                  <td class="text-left" style="width:15%">{{cond.accCondition}}</td>
-                                  <ng-container *ngIf="cond.replies.length > 0">
-                                    <td *ngFor="let reply of cond.replies">
-                                        <table class="table">
-                                          <tr>
-                                            <td class="text-center">{{reply.accCondValue}}</td>
-                                            <td class="text-center">{{reply.reply}}</td>
-                                          </tr>
-                                        </table>
-                                      </td>
-                                  </ng-container>
-                                  <ng-container *ngIf="cond.replies.length == 0">
-                                    <td [attr.colspan]="packageSuppliersPrices.length">
-                                        <table class="table">
-                                          <tr>
-                                            <td class="text-center">&nbsp;</td>
-                                          </tr>
-                                        </table>
-                                      </td>
-                                  </ng-container>
-                                  
-                                </tr>
-                          </table>
-                            </td>
-                           
-                          
+                <td>
+                  <table class="table">
+                    <tr>
+                      <td style="width: 30%" class="text-center"></td>
+                      <td style="width: 35%" class="text-center">
+                        <strong>
+                          {{ getTotalQuotation() | number : "1.0-0" }}</strong
+                        >
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+
+                <td
+                  *ngFor="let p of packageSuppliersPrices"
+                  class="text-center"
+                >
+                  <table class="table">
+                    <tr>
+                      <td colspan="2"></td>
+                      <td style="width: 33.33%" class="text-center">
+                        <strong>
+                          {{ p.totalNetPrice | number : "1.0-0" }}</strong
+                        >
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              +
+              <tr
+                *ngIf="techConditionsReplies?.length > 0"
+                class="bg-secondary text-white"
+              >
+                <td
+                  [attr.colspan]="SupplierPackagesList.length + 10"
+                  class="table table-bordered"
+                >
+                  <table style="width: 100%">
+                    <tr>
+                      <td class="text-left" style="width: 4%">
+                        <strong>Technical Conditions</strong>
+                      </td>
+                      <td class="text-left" style="width: 10%">
+                        <strong>ACC Condition</strong>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+              <tr>
+                <td [attr.colspan]="SupplierPackagesList.length + 10">
+                  <table class="table table-bordered">
+                    <tr
+                      *ngFor="let cond of techConditionsReplies; let i = index"
+                    >
+                      <td class="text-left" style="width: 6%">
+                        {{ cond.description }}
+                      </td>
+                      <td class="text-left" style="width: 6%">
+                        {{ cond.accCondition }}
+                      </td>
+                      <td
+                        class="text-left"
+                        *ngFor="let reply of cond.replies"
+                        style="width: 5%"
+                      >
+                        <table class="table">
+                          <tr>
+                            <td class="text-center">{{ reply.reply }}</td>
                           </tr>
-                        <tr *ngIf="comConditionsReplies.length > 0">
-                            <td colspan="2"><strong>Commercial Conditions</strong></td>
-                          
-                            <td [attr.colspan]="packageSuppliersPrices.length + 1">
-                              <table class="table table-bordered">
-                  
-                                <tr *ngFor="let cond of comConditionsReplies ;  let i = index">
-                                  <td class="text-left" style="width:15%">{{cond.description}}</td>
-                                  <td class="text-left" style="width:15%">{{cond.accCondition}}</td>
-                                  <ng-container *ngIf="cond.replies.length > 0">
-                                  <td *ngFor="let reply of cond.replies">
-                                    <table class="table">
-                                      <tr>
-                                        <td class="text-center">{{reply.accCondValue}}</td>
-                                        <td class="text-center">{{reply.reply}}</td>
-                                      </tr>
-                                    </table>
-                                  </td>
-                                  </ng-container>
-                                  <ng-container *ngIf="cond.replies.length == 0">
-                                    <td [attr.colspan]="packageSuppliersPrices.length">
-                                        <table class="table">
-                                          <tr>
-                                            <td class="text-center">&nbsp;</td>
-                                          </tr>
-                                        </table>
-                                      </td>
-                                  </ng-container>
-                                </tr>
-                          </table>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+              <tr
+                *ngIf="comConditionsReplies?.length > 0"
+                class="bg-secondary text-white"
+              >
+                <td
+                  [attr.colspan]="SupplierPackagesList.length + 10"
+                  class="table table-bordered"
+                >
+                  <!--<strong>Commercial Conditions</strong> -->
+                  <table style="width: 100%">
+                    <tr>
+                      <td class="text-left" style="width: 4%">
+                        <strong>Commercial Conditions</strong>
+                      </td>
+                      <td class="text-left" style="width: 10%">
+                        <strong>ACC Condition</strong>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td [attr.colspan]="packageSuppliersPrices.length + 10">
+                  <table class="table table-bordered">
+                    <tr
+                      *ngFor="let cond of comConditionsReplies; let i = index"
+                    >
+                      <td class="text-left" style="width: 15%">
+                        {{ cond.description }}
+                      </td>
+                      <td class="text-left" style="width: 15%">
+                        {{ cond.accCondition }}
+                      </td>
+                      <td *ngFor="let reply of cond.replies" style="width: 10%">
+                        <table class="table">
+                          <tr>
+                            <td class="text-center">
+                              {{ reply.reply }}
                             </td>
-                           
                           </tr>
-                          
-                      </tfoot>
-                </table>
-            </div>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
         </div>
 
-        <div class="row p-2" *ngIf="!show">
-            <div class="col-4"></div>
-            <div class="col-4">
-              <button style="width: 100%;" type="button" class="btn btn-primary" (click)="OpenAssignInputs()" 
-              [disabled]="selectedResources.length == 0 && selectedBoqItems.length == 0 && selectedGroups.length == 0">
-                Assign Package By Quantity
-              </button>
-            </div>
-            <div class="col-4">
-              <button style="width: 100%;" type="button" class="btn btn-primary" (click)="OpenAssignModal()" 
-              [disabled]="selectedResources.length == 0 && selectedBoqItems.length == 0 && selectedGroups.length == 0">
-                Assign Package By Percentage
-              </button>
-            </div>
-          </div>
-          <div class="row p-2" *ngIf="show">
-            <div class="col-8"></div>
-            <div class="col-2">
-              <button style="width: 100%;" type="button" class="btn btn-secondary" (click)="Cancel()" >
-                Cancel
-              </button>
-            </div>
-            <div class="col-2">
-              <button style="width: 100%;" type="button" class="btn btn-primary" 
-              [disabled]="isAssigningSupplierRessource || isAssigningSupplierBoq" (click)="saveByQty()">
-                <span *ngIf="isAssigningSupplierRessource || isAssigningSupplierBoq" class="spinner-border spinner-border-sm mr-1"></span>
-                Save1
-              </button>
-            </div>
-          </div>
+        <table
+          class="table table-comparison"
+          *ngIf="groupingBoqGroupList.length > 0 && byGroup"
+        >
+          <thead>
+            <tr>
+              <th style="width: 1%">
+                <input
+                  type="checkbox"
+                  id="selectAllGroups"
+                  (change)="checkAllGroups($event)"
+                />
+              </th>
+              <th>Group</th>
+              <th>T. Price</th>
+              <th
+                *ngFor="
+                  let sup of groupingBoqGroupList[0]
+                    .groupingPackageSuppliersPrices
+                "
+              >
+                <table class="table table-bordered">
+                  <tr>
+                    <td colspan="3" class="text-center">
+                      {{ sup.supplierName }} ({{
+                        sup.lastRevisionDate | date : "dd/MM/yyyy"
+                      }})
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 33.33%" class="text-center">T. Price</td>
+                  </tr>
+                </table>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of groupingBoqGroupList; let i = index">
+              <td style="width: 1%">
+                <input
+                  type="checkbox"
+                  [checked]="item.isChecked"
+                  (change)="checkGroup($event, item)"
+                />
+                <input type="hidden" [value]="item.id" />
+              </td>
+              <td>
+                {{ item.name }}
+              </td>
+              <td>
+                {{ item.totalPrice | number : "1.0-0" }}
+              </td>
+              <td *ngFor="let sup of item.groupingPackageSuppliersPrices">
+                <table class="table">
+                  <tr>
+                    <td class="text-center">
+                      <span
+                        [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''"
+                        >{{ sup.totalPrice | number : "1.2-2" }}</span
+                      >
+                    </td>
+                  </tr>
+                </table>
+              </td>
+              <td *ngIf="show && item.isChecked" style="width: 10%">
+                <p
+                  *ngFor="
+                    let sup of item.groupingPackageSuppliersPrices;
+                    let i = index
+                  "
+                >
+                  <ng-container *ngIf="sup.supplierName != 'Ideal'">
+                    <label>Quantity {{ sup.supplierName }}</label>
+                    &nbsp;
+                    <input
+                      class="form-control"
+                      type="number"
+                      [ngClass]="item.validPerc ? '' : 'border-danger'"
+                      (change)="setSupplierGroupQty($event, item, sup)"
+                      [value]="
+                        sup.supplierName != 'Ideal' ? sup.assignedQty : 0
+                      "
+                    />
+                  </ng-container>
+                </p>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3"><strong>Sub-Total</strong></td>
+              <td *ngFor="let p of packageSuppliersPrices" class="text-center">
+                <table class="table">
+                  <tr>
+                    <td class="text-center">
+                      <strong> {{ p.totalprice | number : "1.0-0" }}</strong>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3"><strong>Additional Fees</strong></td>
+
+              <td
+                *ngFor="let supp of packageSuppliersPrices"
+                class="text-center"
+              >
+                <table class="table table-bordered">
+                  <tr *ngFor="let field of supp.fieldLists">
+                    <td class="text-center">
+                      <table
+                        class="table"
+                        *ngIf="field.type == fieldTypes.AMOUNT_TYPE_ID"
+                      >
+                        <tr>
+                          <td class="text-center" style="width: 50%">
+                            <strong>{{ field.label }}</strong>
+                          </td>
+                          <td class="text-center">
+                            {{ field.value | number : "1.0-0" }}
+                          </td>
+                        </tr>
+                      </table>
+                      <table
+                        class="table"
+                        *ngIf="field.type == fieldTypes.PERCENTAGE_TYPE_ID"
+                      >
+                        <tr>
+                          <td class="text-center" style="width: 50%">
+                            <strong>{{ field.label }}</strong>
+                          </td>
+                          <td class="text-center">
+                            {{ field.value | number : "1.0-0" }}%
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2"><strong>Grand Total</strong></td>
+              <td>
+                <strong> {{ getTotalBudget() | number : "1.0-0" }}</strong>
+              </td>
+              <td></td>
+              <td>
+                <strong> {{ getTotalQuotation() | number : "1.0-0" }}</strong>
+              </td>
+
+              <td *ngFor="let p of packageSuppliersPrices" class="text-center">
+                <table class="table">
+                  <tr>
+                    <td class="text-center">
+                      <strong> {{ p.totalNetPrice | number : "1.0-0" }}</strong>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr *ngIf="techConditionsReplies?.length > 0">
+              <td colspan="2">
+                <table style="width: 100%">
+                  <tr>
+                    <td class="text-left" style="width: 4%">
+                      <strong>Technical Conditions</strong>
+                    </td>
+                    <td class="text-left" style="width: 10%">
+                      <strong>ACC Condition</strong>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+
+              <td [attr.colspan]="packageSuppliersPrices.length + 1">
+                <table class="table table-bordered">
+                  <tr *ngFor="let cond of techConditionsReplies; let i = index">
+                    <td class="text-left" style="width: 15%">
+                      {{ cond.description }}
+                    </td>
+                    <td class="text-left" style="width: 15%">
+                      {{ cond.accCondition }}
+                    </td>
+                    <ng-container *ngIf="cond.replies.length > 0">
+                      <td *ngFor="let reply of cond.replies">
+                        <table class="table">
+                          <tr>
+                            <td class="text-center">
+                              {{ reply.accCondValue }}
+                            </td>
+                            <td class="text-center">{{ reply.reply }}</td>
+                          </tr>
+                        </table>
+                      </td>
+                    </ng-container>
+                    <ng-container *ngIf="cond.replies.length == 0">
+                      <td [attr.colspan]="packageSuppliersPrices.length">
+                        <table class="table">
+                          <tr>
+                            <td class="text-center">&nbsp;</td>
+                          </tr>
+                        </table>
+                      </td>
+                    </ng-container>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr *ngIf="comConditionsReplies.length > 0">
+              <td colspan="2"><strong>Commercial Conditions</strong></td>
+
+              <td [attr.colspan]="packageSuppliersPrices.length + 1">
+                <table class="table table-bordered">
+                  <tr *ngFor="let cond of comConditionsReplies; let i = index">
+                    <td class="text-left" style="width: 15%">
+                      {{ cond.description }}
+                    </td>
+                    <td class="text-left" style="width: 15%">
+                      {{ cond.accCondition }}
+                    </td>
+                    <ng-container *ngIf="cond.replies.length > 0">
+                      <td *ngFor="let reply of cond.replies">
+                        <table class="table">
+                          <tr>
+                            <td class="text-center">
+                              {{ reply.accCondValue }}
+                            </td>
+                            <td class="text-center">{{ reply.reply }}</td>
+                          </tr>
+                        </table>
+                      </td>
+                    </ng-container>
+                    <ng-container *ngIf="cond.replies.length == 0">
+                      <td [attr.colspan]="packageSuppliersPrices.length">
+                        <table class="table">
+                          <tr>
+                            <td class="text-center">&nbsp;</td>
+                          </tr>
+                        </table>
+                      </td>
+                    </ng-container>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
     </div>
 
+    <div class="row p-2" *ngIf="!show">
+      <div class="col-4"></div>
+      <div class="col-4">
+        <button
+          style="width: 100%"
+          type="button"
+          class="btn btn-primary"
+          (click)="OpenAssignInputs()"
+          [disabled]="
+            selectedResources.length == 0 &&
+            selectedBoqItems.length == 0 &&
+            selectedGroups.length == 0
+          "
+        >
+          Assign Package By Quantity
+        </button>
+      </div>
+      <div class="col-4">
+        <button
+          style="width: 100%"
+          type="button"
+          class="btn btn-primary"
+          (click)="OpenAssignModal()"
+          [disabled]="
+            selectedResources.length == 0 &&
+            selectedBoqItems.length == 0 &&
+            selectedGroups.length == 0
+          "
+        >
+          Assign Package By Percentage
+        </button>
+      </div>
+    </div>
+    <div class="row p-2" *ngIf="show">
+      <div class="col-8"></div>
+      <div class="col-2">
+        <button
+          style="width: 100%"
+          type="button"
+          class="btn btn-secondary"
+          (click)="Cancel()"
+        >
+          Cancel
+        </button>
+      </div>
+      <div class="col-2">
+        <button
+          style="width: 100%"
+          type="button"
+          class="btn btn-primary"
+          [disabled]="isAssigningSupplierRessource || isAssigningSupplierBoq"
+          (click)="saveByQty()"
+        >
+          <span
+            *ngIf="isAssigningSupplierRessource || isAssigningSupplierBoq"
+            class="spinner-border spinner-border-sm mr-1"
+          ></span>
+          Save1
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Generate Supplier Contract Modal -->
-  <div class="modal fade" id="generateContractModal" tabindex="-1" aria-labelledby="generateContractModalLabel" aria-hidden="true">
+  <div
+    class="modal fade"
+    id="generateContractModal"
+    tabindex="-1"
+    aria-labelledby="generateContractModalLabel"
+    aria-hidden="true"
+  >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="generateContractModalLabel">Generate Contracts BOQ </h5>
-          <button type="button" class="btn-close" (click)="CloseContractModal()" aria-label="Close"></button>
+          <h5 class="modal-title" id="generateContractModalLabel">
+            Generate Contracts BOQ
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="CloseContractModal()"
+            aria-label="Close"
+          ></button>
         </div>
         <div class="modal-body">
           <div class="row">
             <div class="col-sm-12 form-group">
               Select Supplier
-              <ng-select [items]="supplierList" bindLabel="supName" [(ngModel)]="selectedSupplier">
+              <ng-select
+                [items]="supplierList"
+                bindLabel="supName"
+                [(ngModel)]="selectedSupplier"
+              >
               </ng-select>
-            </div>             
+            </div>
           </div>
           <div class="modal-footer customFooter">
-            <button type="button" class="btn btn-secondary" (click)="CloseContractModal()">Close</button>
-            <button type="button" class="btn btn-primary" (click)="generateSupplierContract()">              
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="CloseContractModal()"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="generateSupplierContract()"
+            >
               Generate
             </button>
           </div>
@@ -1341,14 +1995,26 @@
     </div>
   </div>
 
-
-     <!-- Assign Package Modal -->
-  <div class="modal fade" id="assignPackageModal" tabindex="-1" aria-labelledby="assignPackageLabel" aria-hidden="true">
+  <!-- Assign Package Modal -->
+  <div
+    class="modal fade"
+    id="assignPackageModal"
+    tabindex="-1"
+    aria-labelledby="assignPackageLabel"
+    aria-hidden="true"
+  >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="assignPackageLabel">Assign Package by Percentage</h5>
-          <button type="button" class="btn-close" (click)="CloseAssignModal()" aria-label="Close"></button>
+          <h5 class="modal-title" id="assignPackageLabel">
+            Assign Package by Percentage
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="CloseAssignModal()"
+            aria-label="Close"
+          ></button>
         </div>
         <div class="modal-body">
           <div class="row">
@@ -1362,65 +2028,111 @@
               </thead>
               <tbody>
                 <tr *ngFor="let item of SupplierPackagesList; let i = index">
-                  <ng-container *ngIf="item.psSupName !='Ideal'"> 
-                  <td hidden="true">{{item.psSuppId}}</td>
-                  <td>{{item.psSupName}}</td>
-                  <td><input type="number" class="form-control" id="valueInput{{i}}"
-                      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
-                  </td>
-                  </ng-container> 
+                  <ng-container *ngIf="item.psSupName != 'Ideal'">
+                    <td hidden="true">{{ item.psSuppId }}</td>
+                    <td>{{ item.psSupName }}</td>
+                    <td>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="valueInput{{ i }}"
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
+                      />
+                    </td>
+                  </ng-container>
                 </tr>
               </tbody>
             </table>
           </div>
           <div class="modal-footer customFooter">
-            <button type="button" class="btn btn-secondary" (click)="CloseAssignModal()">Close</button>
-            <button type="button" class="btn btn-primary" (click)="AssignPackageSuppliers()" [disabled]="isAssigningSupplierList">
-                <span *ngIf="isAssigningSupplierList" class="spinner-border spinner-border-sm mr-1"></span>
-              Save2</button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="CloseAssignModal()"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="AssignPackageSuppliers()"
+              [disabled]="isAssigningSupplierList"
+            >
+              <span
+                *ngIf="isAssigningSupplierList"
+                class="spinner-border spinner-border-sm mr-1"
+              ></span>
+              Save2
+            </button>
           </div>
         </div>
       </div>
     </div>
-
   </div>
 
-
   <!-- Email Modal -->
-  <div class="modal fade" id="modalEmail" tabindex="-1" aria-labelledby="modalEmailLabel" aria-hidden="true">
+  <div
+    class="modal fade"
+    id="modalEmail"
+    tabindex="-1"
+    aria-labelledby="modalEmailLabel"
+    aria-hidden="true"
+  >
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="modalEmailLabel">Send Email</h5>
-          <button type="button" class="btn-close" (click)="CloseSendEmailModal()" aria-label="Close"></button>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="CloseSendEmailModal()"
+            aria-label="Close"
+          ></button>
         </div>
-        <form [formGroup]="formEmailTemplate" (ngSubmit)="sendEmail()" *ngIf="formEmailTemplate">
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-sm-12 p-2">
-              Select management list
-              <div class="multi_default">
-              <ng-select [items]="topManagementList"
-              
-              formControlName="selectedTopManagementList"
-              [ngClass]="{ 'is-invalid': formEmailSubmitted && f.selectedTopManagementList.errors }"
-              [multiple]="true" bindLabel="userName">
-                  <ng-template ng-optgroup-tmp let-item="item">
-                      {{item.userName}}
-                  </ng-template>
-              </ng-select>
-              <div *ngIf="formEmailSubmitted && f.selectedTopManagementList.errors" class="invalid-feedback">
-               
-              <div *ngIf="f.selectedTopManagementList.errors.required">*Required</div>
-                
-            </div>
-            </div>
-            </div>
-            <div class="col-sm-12 p-2">
-              CC List
-              <tag-input formControlName="listCC" [modelAsStrings]="true"></tag-input>
-            </div>
-            <!--<div class="col-sm-12 p-2">
+        <form
+          [formGroup]="formEmailTemplate"
+          (ngSubmit)="sendEmail()"
+          *ngIf="formEmailTemplate"
+        >
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-sm-12 p-2">
+                Select management list
+                <div class="multi_default">
+                  <ng-select
+                    [items]="topManagementList"
+                    formControlName="selectedTopManagementList"
+                    [ngClass]="{
+                      'is-invalid':
+                        formEmailSubmitted && f.selectedTopManagementList.errors
+                    }"
+                    [multiple]="true"
+                    bindLabel="userName"
+                  >
+                    <ng-template ng-optgroup-tmp let-item="item">
+                      {{ item.userName }}
+                    </ng-template>
+                  </ng-select>
+                  <div
+                    *ngIf="
+                      formEmailSubmitted && f.selectedTopManagementList.errors
+                    "
+                    class="invalid-feedback"
+                  >
+                    <div *ngIf="f.selectedTopManagementList.errors.required">
+                      *Required
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 p-2">
+                CC List
+                <tag-input
+                  formControlName="listCC"
+                  [modelAsStrings]="true"
+                ></tag-input>
+              </div>
+              <!--<div class="col-sm-12 p-2">
               Language
               <select class="form-select" formControlName="language" (change)="onLanguageChange($event)"
                 [ngClass]="{ 'is-invalid': formEmailSubmitted && f.language.errors }">
@@ -1432,48 +2144,79 @@
                 
             </div>
             </div>-->
-            <div class="col-sm-12 p-2">
-              Template
-              <angular-editor [config]="editorConfig" formControlName="template"></angular-editor>
+              <div class="col-sm-12 p-2">
+                Template
+                <angular-editor
+                  [config]="editorConfig"
+                  formControlName="template"
+                ></angular-editor>
               </div>
               <div class="col-sm-12 p-2">
-                <button type="button" class="btn btn-secondary" (click)="addAttachement()" [disabled]="topManagementAttachements.length > maxAttachements">Add Attachement</button>
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  (click)="addAttachement()"
+                  [disabled]="
+                    topManagementAttachements.length > maxAttachements
+                  "
+                >
+                  Add Attachement
+                </button>
               </div>
-            <div class="col-sm-12 p-2">
-              
-              <table class="table">
-                <tbody>
-                  <tr *ngFor="let attachement of topManagementAttachements; let i = index">
-                    <td>
-                      <input type="file" class="form-control" (change)="onFileSelect($event, i)">
-                    </td>
-                    <td>
-                      <a class="btn btn-link" (click)="removeAttachement(i)"><i class="fas fa-times text-danger"></i></a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              
-               
+              <div class="col-sm-12 p-2">
+                <table class="table">
+                  <tbody>
+                    <tr
+                      *ngFor="
+                        let attachement of topManagementAttachements;
+                        let i = index
+                      "
+                    >
+                      <td>
+                        <input
+                          type="file"
+                          class="form-control"
+                          (change)="onFileSelect($event, i)"
+                        />
+                      </td>
+                      <td>
+                        <a class="btn btn-link" (click)="removeAttachement(i)"
+                          ><i class="fas fa-times text-danger"></i
+                        ></a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-         <!-- <div class="row">
+            <!-- <div class="row">
             <div class="col-sm-12 p-2">
               <angular-editor [placeholder]="'Enter text here...'" [(ngModel)]="htmlContent"></angular-editor>
             </div>
-          </div>   -->       
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="CloseSendEmailModal()">Close</button>
-          <button type="submit" class="btn btn-primary" [disabled]="sendingEmail">
-                <span *ngIf="sendingEmail" class="spinner-border spinner-border-sm mr-1"></span>
-            Send</button>
-        </div>
-      </form>
+          </div>   -->
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="CloseSendEmailModal()"
+            >
+              Close
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="sendingEmail"
+            >
+              <span
+                *ngIf="sendingEmail"
+                class="spinner-border spinner-border-sm mr-1"
+              ></span>
+              Send
+            </button>
+          </div>
+        </form>
       </div>
     </div>
-
   </div>
-
-    
 </section>
