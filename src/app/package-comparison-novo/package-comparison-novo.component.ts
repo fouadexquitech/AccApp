@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -57,6 +57,23 @@ declare var $: any;
   styleUrls: ['./package-comparison-novo.component.css'],
 })
 export class PackageComparisonNovoComponent implements OnInit {
+  @HostListener('window:scroll', ['$event'])
+  onWindowScroll(event: Event): void {
+    const scrollTop =
+      window.scrollY ||
+      document.documentElement.scrollTop ||
+      document.body.scrollTop ||
+      0;
+
+    var header = document.getElementById('t-header');
+    var sticky = header.offsetTop;
+    console.log(header);
+    if (window.scrollY > sticky) {
+      header.classList.add('sticky');
+    } else {
+      header.classList.remove('sticky');
+    }
+  }
   packageId: number = 0;
   packageName: string = '';
   SearchInput: SearchInput = new SearchInput();
@@ -268,7 +285,6 @@ export class PackageComparisonNovoComponent implements OnInit {
 
   onScroll() {
     console.log('scrolled!!');
-
     //add another "sum" items
     const start = this.sum;
     this.sum += 4;

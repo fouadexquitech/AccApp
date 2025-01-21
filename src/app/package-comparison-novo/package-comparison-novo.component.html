@@ -1134,6 +1134,7 @@
           class="card"
           *ngFor="let level of CurrentLevelList; let ind = index"
           infinite-scroll
+          [ngStyle]="{ 'z-index': ind > 0 ? '-1' : '' }"
           [infiniteScrollDistance]="modalScrollDistance"
           [infiniteScrollThrottle]="modalScrollThrottle"
           (scrolled)="onScroll()"
@@ -1142,20 +1143,20 @@
             class="table table-comparison"
             *ngIf="byBoq && level.items.length > 0 && !byGroup"
           >
-            <thead *ngIf="ind == 0">
+            <thead *ngIf="ind == 0" id="t-header">
               <tr>
-                <th style="width: 1%">
+                <th style="width: 1%" class="sticky-header">
                   <input
                     type="checkbox"
                     id="selectAllBoqItem"
                     (change)="selectAllBoqItems($event.target)"
                   />
                 </th>
-                <th>Boq #</th>
-                <th>Item Description</th>
-                <th>Exclud</th>
-                <th>Unit</th>
-                <th>
+                <th class="sticky-header">Boq #</th>
+                <th class="sticky-header">Item Description</th>
+                <th class="sticky-header">Exclud</th>
+                <th class="sticky-header">Unit</th>
+                <th class="sticky-header">
                   <table class="table table-bordered">
                     <tr>
                       <td colspan="3" class="text-center">Budget</td>
@@ -1168,7 +1169,7 @@
                   </table>
                 </th>
 
-                <th>
+                <th class="sticky-header">
                   <table class="table table-bordered">
                     <tr>
                       <td colspan="2" class="text-center">Quotation</td>
@@ -1181,6 +1182,7 @@
                 </th>
 
                 <th
+                  class="sticky-header"
                   *ngFor="
                     let sup of level.items[0].groupingPackageSuppliersPrices
                   "

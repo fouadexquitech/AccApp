@@ -1,14 +1,14 @@
 .lowest {
-    background-color: green;
-    color: white;
+  background-color: green;
+  color: white;
 }
 
 .percentage {
-    width: 40%;
+  width: 40%;
 }
 
-.customFooter{
-    border: 0px;
+.customFooter {
+  border: 0px;
 }
 
 /*th {
@@ -18,28 +18,34 @@
     z-index: 999;
   }*/
 
-  .table-comparison
-  {
-      font-size: 12px;
-  }
+.table-comparison {
+  font-size: 12px;
+}
 
-  .txt-NewItem
-  {
-    color: brown;
-      /* background-color: rgb(226, 152, 158); */
-  }
+.txt-NewItem {
+  color: brown;
+  /* background-color: rgb(226, 152, 158); */
+}
 
-  .bg-acc
-  {
-      background-color: rgb(177, 216, 177);
-  }
+.bg-acc {
+  background-color: rgb(177, 216, 177);
+}
 
-  .bg-NewItem
-  {
-    background-color:rgb(235, 216, 223);
-  }
+.bg-NewItem {
+  background-color: rgb(235, 216, 223);
+}
 
-  .bg-AlternativeItem
-  {
-      background-color: rgb(174, 197, 228);
-  }
+.bg-AlternativeItem {
+  background-color: rgb(174, 197, 228);
+}
+
+.sticky-header {
+  z-index: 9999;
+  position: sticky;
+  background-color: #ecebeb;
+}
+
+.sticky {
+  position: fixed;
+  top: 20px;
+}

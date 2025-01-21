@@ -4,15 +4,12 @@
 
 export const environment = {
   production: false,
-  baseApiUrl: "https://localhost:44306/",
-  // baseApiUrl: "http://10.10.25.25:90/", 
-  portalApiUrl: "https://localhost:7143/"
+  baseApiUrl: 'https://localhost:44306/',
+  // baseApiUrl: "http://10.10.25.25:90/",
+  portalApiUrl: 'https://localhost:44377/',
 
   // portalApiUrl: "https://localhost:44377/"
-  
 };
-
-
 
 /*
  * For easier debugging in development mode, you can import the following file
