@@ -1134,7 +1134,7 @@
           class="card"
           *ngFor="let level of CurrentLevelList; let ind = index"
           infinite-scroll
-          [ngStyle]="{ 'z-index': ind > 0 ? '-1' : '' }"
+          [ngStyle]="{ 'z-index': ind > 0 ? '1' : '99999' }"
           [infiniteScrollDistance]="modalScrollDistance"
           [infiniteScrollThrottle]="modalScrollThrottle"
           (scrolled)="onScroll()"

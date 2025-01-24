@@ -67,7 +67,7 @@ export class PackageComparisonNovoComponent implements OnInit {
 
     var header = document.getElementById('t-header');
     var sticky = header.offsetTop;
-    console.log(header);
+
     if (window.scrollY > sticky) {
       header.classList.add('sticky');
     } else {
@@ -284,7 +284,6 @@ export class PackageComparisonNovoComponent implements OnInit {
   }
 
   onScroll() {
-    console.log('scrolled!!');
     //add another "sum" items
     const start = this.sum;
     this.sum += 4;
@@ -410,7 +409,6 @@ export class PackageComparisonNovoComponent implements OnInit {
     let CostConn = this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => {});
 
-    console.log(this.byBoq);
     if (this.byGroup && !this.byBoq) {
       this.packageComparisonService
         .getComparisonSheetResourcesByGroup(this.packageId, this.SearchInput)
@@ -740,11 +738,10 @@ export class PackageComparisonNovoComponent implements OnInit {
   generateExcel() {
     let CostConn = this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => {});
-    console.log(1);
+
     this.generatingFile = true;
     if (!this.byGroup) {
       if (!this.byBoq) {
-        console.log(2);
         this.packageComparisonService
           .getComparisonSheet_Excel(
             this.packageId,
@@ -754,7 +751,6 @@ export class PackageComparisonNovoComponent implements OnInit {
           )
           .subscribe((data) => {
             if (data) {
-              console.log(22);
               //this.spinner.hide();
               this.generatingFile = false;
 
@@ -771,7 +767,6 @@ export class PackageComparisonNovoComponent implements OnInit {
             }
           });
       } else {
-        console.log(3);
         this.packageComparisonService
           .GetComparisonSheetByBoq_Excel(
             this.packageId,
@@ -781,7 +776,6 @@ export class PackageComparisonNovoComponent implements OnInit {
           )
           .subscribe((data) => {
             if (data) {
-              console.log(4);
               //this.spinner.hide();
               this.generatingFile = false;
 
@@ -940,7 +934,7 @@ export class PackageComparisonNovoComponent implements OnInit {
         this.toastr.error('Please add your attachement', '');
           return;
       }*/
-    console.log(this.f.listCC.value);
+
     this.sendingEmail = true;
     let topManagementTemplate: TopManagementTemplate = {
       packageId: this.packageId,
@@ -1097,9 +1091,6 @@ export class PackageComparisonNovoComponent implements OnInit {
                   qty: sup.assignedQty,
                 });
               }
-              console.log(1);
-              console.log(totalQty);
-              console.log(boq.quotationQty);
             });
 
             //alert(totalPerc);
@@ -1694,7 +1685,7 @@ export class PackageComparisonNovoComponent implements OnInit {
             // this.comparisonList = data;
             this.CurrentLevelList = data;
             //AH04042024
-            console.log(this.CurrentLevelList);
+
             this.getSuppliersPrice();
           }
         });
