@@ -1152,8 +1152,10 @@
                     (change)="selectAllBoqItems($event.target)"
                   />
                 </th>
-                <th class="sticky-header">Boq #</th>
-                <th class="sticky-header">Item Description</th>
+                <th class="sticky-header" style="width: 12%">Boq #</th>
+                <th class="sticky-header" style="width: 15%">
+                  Item Description
+                </th>
                 <th class="sticky-header">Exclud</th>
                 <th class="sticky-header">Unit</th>
                 <th class="sticky-header">
@@ -1266,10 +1268,10 @@
                   />
                   <input type="hidden" [value]="item.itemO" />
                 </td>
-                <td>
+                <td style="width: 12%">
                   {{ item.itemO }}
                 </td>
-                <td style="width: 10%">
+                <td style="width: 15%">
                   {{ item.descriptionO }}
                 </td>
                 <td style="width: 1%">
