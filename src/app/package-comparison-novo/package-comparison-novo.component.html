@@ -1145,20 +1145,26 @@
           >
             <thead *ngIf="ind == 0" id="t-header">
               <tr>
-                <th style="width: 1%" class="sticky-header">
+                <th style="width: 1%" class="sticky-header text-center">
                   <input
                     type="checkbox"
                     id="selectAllBoqItem"
                     (change)="selectAllBoqItems($event.target)"
                   />
                 </th>
-                <th class="sticky-header" style="width: 12%">Boq #</th>
-                <th class="sticky-header" style="width: 15%">
+                <th class="sticky-header text-center" style="width: 12%">
+                  Boq #
+                </th>
+                <th class="sticky-header text-center" style="width: 15%">
                   Item Description
                 </th>
-                <th class="sticky-header">Exclud</th>
-                <th class="sticky-header">Unit</th>
-                <th class="sticky-header">
+                <th class="sticky-header text-center" style="width: 3%">
+                  Exclud
+                </th>
+                <th class="sticky-header text-center" style="width: 5%">
+                  Unit
+                </th>
+                <th class="sticky-header text-center" style="width: 15%">
                   <table class="table table-bordered">
                     <tr>
                       <td colspan="3" class="text-center">Budget</td>
@@ -1171,7 +1177,7 @@
                   </table>
                 </th>
 
-                <th class="sticky-header">
+                <th class="sticky-header" style="width: 10%">
                   <table class="table table-bordered">
                     <tr>
                       <td colspan="2" class="text-center">Quotation</td>
@@ -1260,7 +1266,7 @@
                     : ''
                 "
               >
-                <td style="width: 1%">
+                <td style="width: 1%" class="text-center">
                   <input
                     type="checkbox"
                     [checked]="item.isChecked"
@@ -1268,23 +1274,23 @@
                   />
                   <input type="hidden" [value]="item.itemO" />
                 </td>
-                <td style="width: 12%">
+                <td style="width: 12%" class="text-center">
                   {{ item.itemO }}
                 </td>
-                <td style="width: 15%">
+                <td style="width: 15%" class="text-center">
                   {{ item.descriptionO }}
                 </td>
-                <td style="width: 1%">
+                <td style="width: 3%" class="text-center">
                   <input
                     type="checkbox"
                     [checked]="item.isExcluded"
                     (change)="excludBoq($event, item)"
                   />
                 </td>
-                <td>
+                <td style="width: 5%" class="text-center">
                   {{ item.unit }}
                 </td>
-                <td>
+                <td style="width: 15%" class="text-center">
                   <table class="table">
                     <tr>
                       <td style="width: 30%" class="text-center">
@@ -1300,7 +1306,7 @@
                   </table>
                 </td>
 
-                <td>
+                <td style="width: 10%" class="text-center">
                   <table class="table">
                     <tr>
                       <td style="width: 30%" class="text-center">
@@ -1314,7 +1320,10 @@
                 </td>
 
                 <!-- Price of Supplier -->
-                <td *ngFor="let sup of item.groupingPackageSuppliersPrices">
+                <td
+                  *ngFor="let sup of item.groupingPackageSuppliersPrices"
+                  class="text-center"
+                >
                   <!-- <ng-container *ngIf="(sup.isNewItem==false && sup.isAlternative==false)"> -->
                   <table class="table">
                     <tr
