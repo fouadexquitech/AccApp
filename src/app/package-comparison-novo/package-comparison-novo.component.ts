@@ -1470,15 +1470,20 @@ export class PackageComparisonNovoComponent implements OnInit {
 
   getTotalBudget() {
     let total = 0;
+
     if (!this.byBoq) {
-      this.comparisonList.forEach((item) => {
-        item.groupingResources.forEach((resource) => {
-          total += resource.totalPrice;
+      this.CurrentLevelList.forEach((level) => {
+        level.items.forEach((item) => {
+          item.groupingResources.forEach((resource) => {
+            total += resource.totalPrice;
+          });
         });
       });
     } else {
-      this.comparisonList.forEach((item) => {
-        total += item.totalPrice;
+      this.CurrentLevelList.forEach((level) => {
+        level.items.forEach((item) => {
+          total += item.totalPrice;
+        });
       });
     }
     return total;
@@ -1487,14 +1492,18 @@ export class PackageComparisonNovoComponent implements OnInit {
   getTotalQuotation() {
     let totalQotation = 0;
     if (!this.byBoq) {
-      this.comparisonList.forEach((item) => {
-        item.groupingResources.forEach((resource) => {
-          totalQotation += resource.quotationAmt;
+      this.CurrentLevelList.forEach((level) => {
+        level.items.forEach((item) => {
+          item.groupingResources.forEach((resource) => {
+            totalQotation += resource.quotationAmt;
+          });
         });
       });
     } else {
-      this.comparisonList.forEach((item) => {
-        totalQotation += item.quotationAmt;
+      this.CurrentLevelList.forEach((level) => {
+        level.items.forEach((item) => {
+          totalQotation += item.quotationAmt;
+        });
       });
     }
     // totalQotation=1;
