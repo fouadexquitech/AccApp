@@ -1696,6 +1696,17 @@ export class PackageComparisonNovoComponent implements OnInit {
             //AH04042024
 
             this.getSuppliersPrice();
+
+            setTimeout(() => {
+              const table_by_boq = document.getElementById(
+                'table-by-boq'
+              ) as HTMLTableElement;
+
+              const tbody_wrapper_byboq = document.getElementById(
+                'tbody-wrapper-byboq'
+              ) as HTMLDivElement;
+              tbody_wrapper_byboq.style.width = table_by_boq.clientWidth + 'px';
+            }, 500);
           }
         });
     }
