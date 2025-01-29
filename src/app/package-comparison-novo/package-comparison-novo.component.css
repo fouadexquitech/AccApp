@@ -39,15 +39,41 @@
   background-color: rgb(174, 197, 228);
 }
 
-.sticky-header {
-  z-index: 9999;
-  position: sticky;
-  background-color: #ecebeb;
+.table-container {
+  width: 100%;
+  overflow-x: auto; /* Enables horizontal scrolling */
+}
+.table-container table {
+  width: 100%; /* Total table width, adjust as needed */
+  border-collapse: collapse;
+  table-layout: fixed; /* Ensures columns stay fixed */
+  font-size: 12px !important;
+}
+.table-container table th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.sticky {
-  position: fixed;
-  top: 0;
-  left: 20px;
-  right: 20px;
+.tbody-wrapper {
+  display: block;
+  max-height: calc(100vh - 600px); /* Enables scrolling */
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.table-container table tbody {
+  display: block; /* Allows tbody to take full width */
+  width: 100%;
+}
+
+.table-container table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed; /* Ensures alignment */
 }
