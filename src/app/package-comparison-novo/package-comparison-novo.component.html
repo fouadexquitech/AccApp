@@ -1398,7 +1398,7 @@
                           }}
                         </td>
                         <!-- <td style="width:33.33%" class="text-center"><span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{(sup.originalCurrencyPrice * sup.assignedQty * sup.exchRateNow) | number : '1.2-2'}}</span> </td>-->
-                        <td style="width: 20%" class="text-align">
+                        <td style="width: 20%" class="text-center">
                           <span
                             [ngClass]="
                               sup.missedPrice == 1 ? 'text-danger' : ''
@@ -1432,205 +1432,243 @@
                       </td> -->
                 </tr>
               </tbody>
-            </div>
-            <tfoot>
-              <tr>
-                <td colspan="7"><strong>Sub-Total</strong></td>
-                <td
-                  *ngFor="let p of packageSuppliersPrices"
-                  class="text-center"
-                >
-                  <table class="table">
-                    <tr>
-                      <td colspan="2"></td>
-                      <td style="width: 33.33%" class="text-center">
-                        <strong> {{ p.totalprice | number : "1.0-2" }}</strong>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="7"><strong>Additional Fees</strong></td>
-                <td
-                  *ngFor="let supp of packageSuppliersPrices"
-                  class="text-center"
-                >
-                  <table class="table">
-                    <tr *ngFor="let field of supp.fieldLists">
-                      <td colspan="2"></td>
-                      <td style="width: 33.33%" class="text-center">
-                        <table
-                          class="table"
-                          *ngIf="field.type == fieldTypes.AMOUNT_TYPE_ID"
-                        >
-                          <tr>
-                            <td class="text-center">{{ field.label }}</td>
-                            <td class="text-center">
-                              {{ field.value | number : "1.0-0" }}
-                            </td>
-                          </tr>
-                        </table>
-                        <table
-                          class="table"
-                          *ngIf="field.type == fieldTypes.PERCENTAGE_TYPE_ID"
-                        >
-                          <tr>
-                            <td class="text-center">{{ field.label }}</td>
-                            <td class="text-center">
-                              {{ field.value | number : "1.0-0" }}%
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="5"><strong>Grand Total</strong></td>
-                <!-- <td class="text-center">                             
+
+              <tbody>
+                <tr>
+                  <!-- <td colspan="7"><strong>Sub-Total</strong></td> -->
+                  <td class="text-center" style="width: 50px"></td>
+                  <td class="text-center" style="width: 200px"></td>
+                  <td class="text-center" style="width: 300px"></td>
+                  <td class="text-center" style="width: 100px"></td>
+                  <th class="text-center" style="width: 100px">Sub-Total</th>
+                  <td class="text-center" style="width: 300px"></td>
+                  <td class="text-center" style="width: 300px"></td>
+                  <td
+                    *ngFor="let p of packageSuppliersPrices"
+                    class="text-center"
+                  >
+                    <table class="table">
+                      <tr>
+                        <td
+                          [attr.colspan]="p.supplierName != 'Ideal' ? '4' : '2'"
+                        ></td>
+                        <td class="text-center">
+                          <strong>
+                            {{ p.totalprice | number : "1.0-2" }}</strong
+                          >
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <!-- <td colspan="7"><strong>Additional Fees</strong></td> -->
+
+                  <td class="text-center" style="width: 50px"></td>
+                  <td class="text-center" style="width: 200px"></td>
+                  <td class="text-center" style="width: 300px"></td>
+                  <td class="text-center" style="width: 100px"></td>
+                  <th class="text-center" style="width: 100px">
+                    Additional Fees
+                  </th>
+                  <td class="text-center" style="width: 300px"></td>
+                  <td class="text-center" style="width: 300px"></td>
+
+                  <td
+                    *ngFor="let supp of packageSuppliersPrices"
+                    class="text-center"
+                  >
+                    <table class="table">
+                      <tr *ngFor="let field of supp.fieldLists">
+                        <td colspan="2"></td>
+                        <td class="text-center">
+                          <table
+                            class="table"
+                            *ngIf="field.type == fieldTypes.AMOUNT_TYPE_ID"
+                          >
+                            <tr>
+                              <td class="text-center">{{ field.label }}</td>
+                              <td class="text-center">
+                                {{ field.value | number : "1.0-0" }}
+                              </td>
+                            </tr>
+                          </table>
+                          <table
+                            class="table"
+                            *ngIf="field.type == fieldTypes.PERCENTAGE_TYPE_ID"
+                          >
+                            <tr>
+                              <td class="text-center">{{ field.label }}</td>
+                              <td class="text-center">
+                                {{ field.value | number : "1.0-0" }}%
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <!-- <td colspan="5"><strong></strong></td> -->
+
+                  <td class="text-center" style="width: 50px"></td>
+                  <td class="text-center" style="width: 200px"></td>
+                  <td class="text-center" style="width: 300px"></td>
+                  <td class="text-center" style="width: 100px"></td>
+                  <th class="text-center" style="width: 100px">Grand Total</th>
+
+                  <!-- <td class="text-center">                             
                                         </td> -->
-                <td>
-                  <table class="table">
-                    <tr>
-                      <td style="width: 30%" class="text-center"></td>
-                      <td style="width: 30%" class="text-center"></td>
-                      <td style="width: 35%" class="text-center">
-                        <strong>
-                          {{ getTotalBudget() | number : "1.0-0" }}</strong
-                        >
-                      </td>
-                    </tr>
-                  </table>
-                </td>
+                  <td class="text-center" style="width: 300px">
+                    <table class="table">
+                      <tr>
+                        <td class="text-center"></td>
+                        <td class="text-center"></td>
+                        <td class="text-center">
+                          <strong>
+                            {{ getTotalBudget() | number : "1.0-0" }}</strong
+                          >
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
 
-                <td>
-                  <table class="table">
-                    <tr>
-                      <td style="width: 30%" class="text-center"></td>
-                      <td style="width: 35%" class="text-center">
-                        <strong>
-                          {{ getTotalQuotation() | number : "1.0-0" }}</strong
-                        >
-                      </td>
-                    </tr>
-                  </table>
-                </td>
+                  <td class="text-center" style="width: 300px">
+                    <table class="table">
+                      <tr>
+                        <td class="text-center"></td>
+                        <td class="text-center">
+                          <strong>
+                            {{ getTotalQuotation() | number : "1.0-0" }}</strong
+                          >
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
 
-                <td
-                  *ngFor="let p of packageSuppliersPrices"
-                  class="text-center"
+                  <td
+                    *ngFor="let p of packageSuppliersPrices"
+                    class="text-center"
+                  >
+                    <table class="table">
+                      <tr>
+                        <td
+                          [attr.colspan]="p.supplierName != 'Ideal' ? '4' : '2'"
+                        ></td>
+                        <td class="text-center">
+                          <strong>
+                            {{ p.totalNetPrice | number : "1.0-0" }}</strong
+                          >
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                +
+                <tr
+                  *ngIf="techConditionsReplies?.length > 0"
+                  class="bg-secondary text-white"
                 >
-                  <table class="table">
-                    <tr>
-                      <td colspan="2"></td>
-                      <td style="width: 33.33%" class="text-center">
-                        <strong>
-                          {{ p.totalNetPrice | number : "1.0-0" }}</strong
-                        >
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-              +
-              <tr
-                *ngIf="techConditionsReplies?.length > 0"
-                class="bg-secondary text-white"
-              >
-                <td
-                  [attr.colspan]="SupplierPackagesList.length + 10"
-                  class="table table-bordered"
-                >
-                  <table style="width: 100%">
-                    <tr>
-                      <td class="text-left" style="width: 4%">
-                        <strong>Technical Conditions</strong>
-                      </td>
-                      <td class="text-left" style="width: 10%">
-                        <strong>ACC Condition</strong>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
+                  <td
+                    [attr.colspan]="SupplierPackagesList.length + 10"
+                    class="table table-bordered"
+                  >
+                    <table style="width: 100%">
+                      <tr>
+                        <td class="text-left" style="width: 4%">
+                          <strong>Technical Conditions</strong>
+                        </td>
+                        <td class="text-left" style="width: 10%">
+                          <strong>ACC Condition</strong>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
 
-              <tr>
-                <td [attr.colspan]="SupplierPackagesList.length + 10">
-                  <table class="table table-bordered">
-                    <tr
-                      *ngFor="let cond of techConditionsReplies; let i = index"
-                    >
-                      <td class="text-left" style="width: 6%">
-                        {{ cond.description }}
-                      </td>
-                      <td class="text-left" style="width: 6%">
-                        {{ cond.accCondition }}
-                      </td>
-                      <td
-                        class="text-left"
-                        *ngFor="let reply of cond.replies"
-                        style="width: 5%"
+                <tr>
+                  <td [attr.colspan]="SupplierPackagesList.length + 10">
+                    <table class="table table-bordered">
+                      <tr
+                        *ngFor="
+                          let cond of techConditionsReplies;
+                          let i = index
+                        "
                       >
-                        <table class="table">
-                          <tr>
-                            <td class="text-center">{{ reply.reply }}</td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
+                        <td class="text-left" style="width: 6%">
+                          {{ cond.description }}
+                        </td>
+                        <td class="text-left" style="width: 6%">
+                          {{ cond.accCondition }}
+                        </td>
+                        <td
+                          class="text-left"
+                          *ngFor="let reply of cond.replies"
+                          style="width: 5%"
+                        >
+                          <table class="table">
+                            <tr>
+                              <td class="text-center">{{ reply.reply }}</td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
 
-              <tr
-                *ngIf="comConditionsReplies?.length > 0"
-                class="bg-secondary text-white"
-              >
-                <td
-                  [attr.colspan]="SupplierPackagesList.length + 10"
-                  class="table table-bordered"
+                <tr
+                  *ngIf="comConditionsReplies?.length > 0"
+                  class="bg-secondary text-white"
                 >
-                  <!--<strong>Commercial Conditions</strong> -->
-                  <table style="width: 100%">
-                    <tr>
-                      <td class="text-left" style="width: 4%">
-                        <strong>Commercial Conditions</strong>
-                      </td>
-                      <td class="text-left" style="width: 10%">
-                        <strong>ACC Condition</strong>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-              <tr>
-                <td [attr.colspan]="packageSuppliersPrices.length + 10">
-                  <table class="table table-bordered">
-                    <tr
-                      *ngFor="let cond of comConditionsReplies; let i = index"
-                    >
-                      <td class="text-left" style="width: 15%">
-                        {{ cond.description }}
-                      </td>
-                      <td class="text-left" style="width: 15%">
-                        {{ cond.accCondition }}
-                      </td>
-                      <td *ngFor="let reply of cond.replies" style="width: 10%">
-                        <table class="table">
-                          <tr>
-                            <td class="text-center">
-                              {{ reply.reply }}
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </tfoot>
+                  <td
+                    [attr.colspan]="SupplierPackagesList.length + 10"
+                    class="table table-bordered"
+                  >
+                    <!--<strong>Commercial Conditions</strong> -->
+                    <table style="width: 100%">
+                      <tr>
+                        <td class="text-left" style="width: 4%">
+                          <strong>Commercial Conditions</strong>
+                        </td>
+                        <td class="text-left" style="width: 10%">
+                          <strong>ACC Condition</strong>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td [attr.colspan]="packageSuppliersPrices.length + 10">
+                    <table class="table table-bordered">
+                      <tr
+                        *ngFor="let cond of comConditionsReplies; let i = index"
+                      >
+                        <td class="text-left" style="width: 15%">
+                          {{ cond.description }}
+                        </td>
+                        <td class="text-left" style="width: 15%">
+                          {{ cond.accCondition }}
+                        </td>
+                        <td
+                          *ngFor="let reply of cond.replies"
+                          style="width: 10%"
+                        >
+                          <table class="table">
+                            <tr>
+                              <td class="text-center">
+                                {{ reply.reply }}
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </div>
           </table>
         </div>
 

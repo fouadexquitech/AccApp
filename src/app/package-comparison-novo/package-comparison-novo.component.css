@@ -52,7 +52,7 @@
 .table-container table th,
 td {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 2px;
   text-align: left;
   white-space: nowrap;
   overflow: hidden;
@@ -61,7 +61,7 @@ td {
 
 .tbody-wrapper {
   display: block;
-  max-height: calc(100vh - 600px); /* Enables scrolling */
+  max-height: calc(100vh - 300px); /* Enables scrolling */
   overflow-y: auto;
   overflow-x: hidden;
   width: 100%;
