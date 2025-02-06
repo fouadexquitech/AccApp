@@ -10,6 +10,7 @@ import { noop as _noop } from 'lodash-es';
 })
 export class BoqListTableComponent implements OnInit {
   @Output() selectBoqEvent = new EventEmitter<any>();
+  @Output() selectAllBoqEvent = new EventEmitter<any>();
   @Output() editQtyEvent = new EventEmitter<any>();
 
   ELEMENT_DATA: any[] = [];
@@ -59,7 +60,6 @@ export class BoqListTableComponent implements OnInit {
       this.start += this.length;
     }
 
-   
     scrolled ? this.getData(true) : _noop();
   };
   hasMore = () => !this.dataSource || this.dataSource.data.length < this.limit;
@@ -81,22 +81,23 @@ export class BoqListTableComponent implements OnInit {
       data = this.ELEMENT_DATA.slice(this.start, this.start + this.length);
     }
 
-    
     if(this.ELEMENT_DATA.length == 0)
     {
       data = [];
     }
 
-    
     this.dataSource = new MatTableDataSource(data);
     this.dataSource.sort = this.sort;
   }
+
 
   OnBoqChecked(event : any, index : number)
   {
     let selectedBoqRow = this.ELEMENT_DATA[index];
     
     selectedBoqRow.isSelected = event.target.checked;
+
+    console.log(selectedBoqRow.isSelected);
     if(event.target.checked)
     {
       this.finalTotalPrice += selectedBoqRow.boqUprice * selectedBoqRow.boqScopeQty;
@@ -108,7 +109,6 @@ export class BoqListTableComponent implements OnInit {
 
     this.selectBoqEvent.emit({
       boqItem : selectedBoqRow
-
     });
    
   }
@@ -116,9 +116,17 @@ export class BoqListTableComponent implements OnInit {
   checkAll(event : any)
   {
      let checkbox = event.target as HTMLInputElement;
+     
      this.ELEMENT_DATA.forEach(el=>{
       el.isSelected = checkbox.checked;
      });
+    
+     if(checkbox.checked)
+       this.selectAllBoqEvent.emit({boqItems : this.ELEMENT_DATA});  
+     else
+       this.selectAllBoqEvent.emit({boqItems : []});
+
+     console.log("checkedallll")
   }
 
   get allChecked()

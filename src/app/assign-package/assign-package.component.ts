@@ -708,7 +708,16 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
       this.SelectedBoqList.push(this.SelectedBoqRow);
     }
     //this.checkOriginalBoq();
+
+    console.log(this.SelectedBoqList);
   }
+
+  onSelectAllBoqOnTable(event : any)
+  {
+    this.SelectedBoqList = event.boqItems;
+    console.log(this.SelectedBoqList)
+  }
+
 
   checkOriginalBoq()
   {
@@ -1113,6 +1122,19 @@ return;
 
 AssignPackages() {
     this.isAssigning = true;
+///AH06022025  
+    if (this.SelectedOriginalBoqList.length > 0) {
+      this.SelectedOriginalBoqList.forEach(element => {
+        element.scope = this.SelectedPackage;
+      });
+    }
+
+    if (this.SelectedBoqList.length > 0) {
+      this.SelectedBoqList.forEach(element => {
+        element.boqScope = this.SelectedPackage;
+      });
+    }
+  ///AH06022025  
     this.assignPackages.assignOriginalBoqList = this.SelectedOriginalBoqList;
     this.assignPackages.assignBoqList = this.SelectedBoqList;
     

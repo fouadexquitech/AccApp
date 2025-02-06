@@ -88,9 +88,8 @@
                             <!-- appearance="fill" -->
                                 <mat-form-field  class="full-width-field"  style="width: 100%;font-size:11px;height: 25px;">
                                     <mat-label style="font-size:14px;">Packages</mat-label>
-
                                     
-                                    <mat-select style="font-size:12px;" disableOptionCentering  panelClass="customClass" [(ngModel)]="SelectedPackage" (selectionChange)="onPackageMatSelected($event)">                                                                      
+                                    <mat-select style="font-size:18px;" disableOptionCentering  panelClass="customClass" [(ngModel)]="SelectedPackage" (selectionChange)="onPackageMatSelected($event)">                                                                      
                                         
                                         <input matInput type="text" focused="'true'" (keyup)="filterPackages($event)" (keydown)="$event.stopPropagation()" class="mat-filter">
                                         <span class="fa fa-search input-icon"></span>
@@ -240,7 +239,7 @@
         
         <div class="row">
             <div class="col-lg-12">
-                <app-boq-list-table #boqListTable (selectBoqEvent)="onSelectBoqOnTable($event)" (editQtyEvent)="openQtyEditModal($event)"></app-boq-list-table>
+                <app-boq-list-table #boqListTable (selectBoqEvent)="onSelectBoqOnTable($event)" (selectAllBoqEvent)="onSelectAllBoqOnTable($event)" (editQtyEvent)="openQtyEditModal($event)"></app-boq-list-table>
             </div>
         </div>
     </div>
