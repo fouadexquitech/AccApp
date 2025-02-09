@@ -45,7 +45,10 @@ export class SuppliersService {
 
   createPortalAccount(list : any[])
   {
-    return this.http.post(environment.portalApiUrl + 'api/Account/Register', list);
+    //AH07022025
+    // return this.http.post(environment.portalApiUrl + 'api/Account/Register', list);
+       return this.http.post(environment.baseApiUrl + 'api/Supplier/Register', list);
+    ///AH07022025
   }
 
   updatePortalAccountFlag(model : any)

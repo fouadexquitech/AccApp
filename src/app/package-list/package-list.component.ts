@@ -57,7 +57,7 @@ export class PackageListComponent implements OnInit, OnDestroy {
     this.isSearching = true;
 
     let CostConn=this.user.usrLoggedConnString;
-    console.log(CostConn);
+    // console.log(CostConn);
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
 //AH072024
