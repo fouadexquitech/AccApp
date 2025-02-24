@@ -96,7 +96,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   isValidatingExcel : boolean = false;
   PackageName = "";
   FilePath = "";
-  assignByBoqOnly : string;
+  assignByBoqOnly : string="1";
   public user : User;
   loading : boolean = false;
   // AH28032023

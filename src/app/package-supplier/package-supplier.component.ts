@@ -320,7 +320,10 @@ public user : User;
       this.PackageId = Number(params['packageId']);
       if(localStorage.getItem('assignByBoqOnly') == null)
       {
-        localStorage.setItem('assignByBoqOnly', '0');
+        //AH022025
+        // localStorage.setItem('assignByBoqOnly', '0');
+        localStorage.setItem('assignByBoqOnly', '1');
+        ///AH022025
       }
    
       if (this.PackageId != null && this.PackageId != 0) {

@@ -20,30 +20,31 @@
                 <img src="assets/img/acc_logo.png">
               </div>
 
-              <div class="form-outline mb-4">
-                <label for="country">Country</label>
-                <select formControlName="country" class="form-select" 
-                [ngClass]="{ 'is-invalid': submitted && f.country.errors }" *ngIf="countries"
-                (change)="getProjects($event)">
-                   
-                        <option *ngFor="let country of countries" [value]="country.dbSeq">{{ country.dbLocation }}
-                        </option>
-                    </select>
-                <div *ngIf="submitted && f.country.errors" class="invalid-feedback">
-                    <div *ngIf="f.country.errors.required">Country is required</div>
-                </div>
-            </div>
             <div class="form-outline mb-4">
-                <label for="project">Project</label>
-                <select formControlName="project" class="form-select" [ngClass]="{ 'is-invalid': submitted && f.project.errors }">
-                    
-                        <option *ngFor="let project of projects" [ngValue]="project.seq">{{ project.prjCostDatabase }}
-                        </option>
-                </select>
-                <div *ngIf="submitted && f.project.errors" class="invalid-feedback">
-                    <div *ngIf="f.project.errors.required">Project is required</div>
-                </div>
+              <label for="country">Country</label>
+              <select formControlName="country" class="form-select" [ngClass]="{ 'is-invalid': submitted && f.country.errors }"
+                *ngIf="countries" (change)="getProjects($event)">
+            
+                <option *ngFor="let country of countries" [value]="country.dbSeq">{{ country.dbLocation }}
+                </option>
+              </select>
+              <div *ngIf="submitted && f.country.errors" class="invalid-feedback">
+                <div *ngIf="f.country.errors.required">Country is required</div>
+              </div>
             </div>
+
+            <div class="form-outline mb-4">
+              <label for="project">Project</label>
+              <select formControlName="project" class="form-select" [ngClass]="{ 'is-invalid': submitted && f.project.errors }">
+                
+                <option *ngFor="let project of projects" [ngValue]="project.seq">{{ project.prjCostDatabase }}
+                </option>
+              </select>
+              <div *ngIf="submitted && f.project.errors" class="invalid-feedback">
+                <div *ngIf="f.project.errors.required">Project is required</div>
+              </div>
+            </div>
+
             <div class="form-outline mb-4">
                 <label for="username">Username</label>
                 <input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />

@@ -547,7 +547,7 @@
     </div>
     <div class="col-2">
       <button style="width: 100%;" type="button" class="btn btn-primary" [disabled]="isAssigningSupplierRessource" (click)="saveNew()">
-        <i class="fa fa-spinner fa-spin" *ngIf="isAssigningSupplierRessource"></i>
+        <i  [ngClass]="isAssigningSupplierRessource ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
         Save
       </button>
     </div>
@@ -588,7 +588,7 @@
           <div class="modal-footer customFooter">
             <button type="button" class="btn btn-secondary" (click)="CloseAssignModal()">Close</button>
             <button type="button" class="btn btn-primary" (click)="AssignPackageSuppliers()" [disabled]="isAssigningSupplierList">
-              <i class="fa fa-spinner fa-spin" *ngIf="isAssigningSupplierList"></i>
+              <i  [ngClass]="isAssigningSupplierList ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
               Save</button>
           </div>
         </div>
@@ -637,7 +637,7 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="CloseSendEmailModal()">Close</button>
           <button type="button" class="btn btn-primary" (click)="sendEmail()" [disabled]="sendingEmail">
-            <i class="fa fa-spinner fa-spin" *ngIf="sendingEmail"></i>
+            <i  [ngClass]="sendingEmail ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
             Send</button>
         </div>
       </div>

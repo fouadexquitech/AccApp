@@ -73,24 +73,20 @@ export class LoginComponent implements OnInit {
                         .subscribe(data => {
                             if(data)
                             {
-                               this.router.navigate([this.returnUrl]);
-                                
+                               this.router.navigate([this.returnUrl]);                             
                             }
                             else
                             {
-                                this.toastr.error('Please set project currency');
-                                
+                                this.toastr.error('Please set project currency');                                
                             }
                         },
                         error => {
                             this.toastr.error('Error getting project currency:' + error);
                             this.loading = false;
-                        });
-                       
+                        }); 
                     }
                     else
-                    {
-                        
+                    {                       
                         this.toastr.error('Invalid credentials');
                         this.form.patchValue({
                             password: ''
@@ -115,6 +111,9 @@ export class LoginComponent implements OnInit {
 
     getProjects(event: any)
     {
+        this.projects =null
+        this.f.project.reset
+
         let select = event.target as HTMLSelectElement;
         let dbSeq = +this.f.country.value;
         this.loginService.getProjects(dbSeq).subscribe((data) => {
@@ -123,6 +122,4 @@ export class LoginComponent implements OnInit {
             }
         });
     }
-
-
 }

@@ -48,7 +48,7 @@
       <!-- <i class="fa fa-spinner fa-spin" *ngIf="isValidatingExcel"></i>
       Validate Excel</button> -->
       
-      <i class="fa fa-spinner fa-spin" *ngIf="(isValidatingExcel)" ></i>
+      <i  [ngClass]="isValidatingExcel ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
       Validate Excel</button>
     </div>
   
@@ -90,9 +90,12 @@
       (click)="viewTechnicalConditions()">
       View Technical Conditions</button>
       <button type="button" class="btn btn-secondary" *ngIf="false"
-      (click)="sendTechnicalConditions()" [disabled]="isSendingTechConditions">
-      <i class="fa fa-spinner fa-spin" *ngIf="isSendingTechConditions"></i>
-      Send Technical Conditions</button>
+        (click)="sendTechnicalConditions()" [disabled]="isSendingTechConditions">
+      
+        <i  [ngClass]="isSendingTechConditions ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
+        Send Technical Conditions
+      </button>
+      
       <div class="alert alert-success" *ngIf="false">
         Technical Conditions Sent
         <i class="fa fa-check"></i>
@@ -656,7 +659,7 @@
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary" [disabled]="isAssigning">
-            <i class="fa fa-spinner fa-spin" *ngIf="isAssigning"></i>
+            <i  [ngClass]="isAssigning ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
             Send</button>
           <button type="button" class="btn btn-secondary" (click)="CloseEmailTemplateModal()">
             Close</button>
@@ -763,7 +766,7 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="closeViewTechnicalConditionsModal()">Close</button>
           <button type="button" class="btn btn-primary" (click)="sendTechnicalConditions()" [disabled]="isSendingTechConditions">
-            <i class="fa fa-spinner fa-spin" *ngIf="isSendingTechConditions"></i>
+            <i  [ngClass]="isSendingTechConditions ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
            Send</button>
         </div>
       </div>
