@@ -57,6 +57,13 @@
                 </button>
                 <!-- [disabled]="isSearching" -->
             </div>
+            <div class="col-sm-2 form-group">
+                <button class="btn btn-success" (click)="ExportExcelVerification()"
+                    style="width: 250px;font-size: 12px;height: 30px;">
+                    <i  [ngClass]="isExportExcelVerif ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
+                    Export Verification
+                </button>
+            </div>
         </div>
         
 

@@ -106,6 +106,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   isExportExcelDry:boolean=false;
   isExportExcelDryBoq:boolean=false;
   isExportExcelNotAssigned:boolean=false;
+  isExportExcelVerif:boolean=false;
 // AH28032023
   public boqPackagesData: Object[] = [
     { id: 0, desc: 'All Items' },
@@ -1468,6 +1469,27 @@ validateExcelBeforeAssign(){
       }
     });
   }
+
+  ExportExcelVerification(){
+    this.isExportExcelVerif=true;
+    let costDB=this.user.usrLoggedCostDB;
+    let userName=this.user.usrId;
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+  
+    this.assignPackageService.ExportExcelVerification(this.SearchInput,costDB,userName).subscribe((data) => {
+    this.isExportExcelVerif=false;
+      if (data) {
+          let a = document.createElement('a');
+          a.id = 'downloader';
+          a.target = '_blank'; 
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
+          a.click();     
+        }
+      });
+    }
 
   ExportNotAssigned(){
     let costDB=this.user.usrLoggedCostDB;

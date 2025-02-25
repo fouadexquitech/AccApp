@@ -143,6 +143,13 @@ export class AssignPackageService {
     );
     }
 
+    ExportExcelVerification(input: SearchInput , costDB :string,userName:string) : Observable<any> 
+    {
+      return this.http.post(this.baseUrl + 'Package/ExportExcelVerification?costDB=' + costDB+'&userName='+userName, input).pipe(
+        map(res => res), catchError(this.handleError)
+    );
+    }
+
     ExportNotAssigned(costDB :string) : Observable<any> 
     {
       return this.http.post(this.baseUrl + 'Package/ExportNotAssigned?costDB=' + costDB, costDB).pipe(
