@@ -565,7 +565,7 @@ public user : User;
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-    this.packageSupplierService.GetSupplierPackagesList(this.PackageId).subscribe((data) => {
+    this.packageSupplierService.GetSupplierPackagesList(this.PackageId,CostConn).subscribe((data) => {
       if (data) {
         this.SupplierPackagesList = data;
         this.selectedSuppliers = [];

@@ -1478,8 +1478,9 @@ validateExcelBeforeAssign(){
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
   
     this.assignPackageService.ExportExcelVerification(this.SearchInput,costDB,userName).subscribe((data) => {
-    this.isExportExcelVerif=false;
+    
       if (data) {
+          this.isExportExcelVerif=false;
           let a = document.createElement('a');
           a.id = 'downloader';
           a.target = '_blank'; 
@@ -1488,6 +1489,8 @@ validateExcelBeforeAssign(){
           a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
           a.click();     
         }
+        this.isExportExcelVerif=false;
+        console.log(this.isExportExcelVerif);
       });
     }
 

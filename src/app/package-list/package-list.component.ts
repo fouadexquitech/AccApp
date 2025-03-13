@@ -116,7 +116,7 @@ export class PackageListComponent implements OnInit, OnDestroy {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-    this.packageSupplierService.GetSupplierPackagesList(idPkge).subscribe((data) => {
+    this.packageSupplierService.GetSupplierPackagesList(idPkge,CostConn).subscribe((data) => {
       if (data) {
         this.SupplierPackagesList = data;
       }

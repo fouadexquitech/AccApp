@@ -49,7 +49,7 @@ export class PackageSupplierService {
     formData.append('assignPackageTemplate' , JSON.stringify(assignPackageTemplate));
     attachements.forEach(attachement =>{
     formData.append(attachement?.name, attachement , attachement?.name);
-  });
+    });
   
     return this.http.post(this.baseUrl + 'SupplierPackages/AssignPackageSuppliers', formData).pipe(
       map(res => res), catchError(this.handleError)
@@ -78,8 +78,8 @@ export class PackageSupplierService {
     );
   }
 
-  GetSupplierPackagesList(PackId: number): Observable<any> {
-    return this.http.get(this.baseUrl + 'SupplierPackages/GetSupplierPackagesList?packageid=' + PackId).pipe(
+  GetSupplierPackagesList(PackId: number,CostConn: string): Observable<any> {
+    return this.http.get(this.baseUrl + 'SupplierPackages/GetSupplierPackagesList?packageid=' + PackId+ '&CostConn='+CostConn).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
