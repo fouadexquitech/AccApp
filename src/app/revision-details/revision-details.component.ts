@@ -312,7 +312,7 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
     
     let filterItemDesc = document.getElementById('filterItemDesc') as HTMLInputElement;
     let filterResource = document.getElementById('filterResource') as HTMLInputElement;
-      this.packageSupplierService.GetRevisionDetails(prRevId, filterItemDesc.value, filterResource.value).subscribe(data=>{
+      this.packageSupplierService.GetRevisionDetails(prRevId, filterItemDesc.value, filterResource.value,CostConn).subscribe(data=>{
           if(data)
           {
             this.RevisionDetailsBoqItems = [];

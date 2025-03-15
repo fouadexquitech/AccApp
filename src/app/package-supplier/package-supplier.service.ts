@@ -43,7 +43,7 @@ export class PackageSupplierService {
     );
   }
 
-  AssignPackageSuppliers(assignPackageTemplate : AssignPackageTemplate, attachements : File[]): Observable<any> {
+  AssignPackageSuppliers(assignPackageTemplate : AssignPackageTemplate, attachements : File[],CostConn: string): Observable<any> {
     const formData = new FormData();
   
     formData.append('assignPackageTemplate' , JSON.stringify(assignPackageTemplate));
@@ -51,7 +51,7 @@ export class PackageSupplierService {
     formData.append(attachement?.name, attachement , attachement?.name);
     });
   
-    return this.http.post(this.baseUrl + 'SupplierPackages/AssignPackageSuppliers', formData).pipe(
+    return this.http.post(this.baseUrl + 'SupplierPackages/AssignPackageSuppliers?CostConn=' + CostConn, formData).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
@@ -90,8 +90,8 @@ export class PackageSupplierService {
     );
   }
 
-  GetSupplierPackagesRevision(packageSupplierId: number): Observable<any> {
-    return this.http.get(this.baseUrl + 'SupplierPackagesRev/GetSupplierPackagesRevision?packageSupplierId=' + packageSupplierId).pipe(
+  GetSupplierPackagesRevision(packageSupplierId: number,CostConn: string): Observable<any> {
+    return this.http.get(this.baseUrl + 'SupplierPackagesRev/GetSupplierPackagesRevision?packageSupplierId=' + packageSupplierId+ '&CostConn='+CostConn).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
@@ -102,9 +102,9 @@ export class PackageSupplierService {
     );
   }
 
-  validateExcelBeforeAssign(packId: number, byBoq : number) : Observable<any> 
+  validateExcelBeforeAssign(packId: number, byBoq : number,CostConn: string) : Observable<any> 
   {
-    return this.http.post(this.baseUrl + 'SupplierPackages/ValidateExcelBeforeAssign?packId=' + packId + '&byBoq=' + byBoq, null).pipe(
+    return this.http.post(this.baseUrl + 'SupplierPackages/ValidateExcelBeforeAssign?packId=' + packId + '&byBoq=' + byBoq+ '&CostConn='+CostConn, null).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
@@ -117,21 +117,21 @@ export class PackageSupplierService {
   }
 
 
-  AddRevision(PackageSupplierId: number, PackSuppDate: string, input: File, CurrencyId : number, ExchangeRate : number, discount : number, addedItem : number): Observable<any> {
+  AddRevision(PackageSupplierId: number, PackSuppDate: string, input: File, CurrencyId : number, ExchangeRate : number, discount : number, addedItem : number,CostConn: string): Observable<any> {
     const formData = new FormData();
     formData.append('ExcelFile' , input , input.name)
     return this.http.post(this.baseUrl + 'RevisionDetails/AddRevision?PackageSupplierId=' + 
     PackageSupplierId + '&PackSuppDate=' + 
     PackSuppDate + '&curId=' + 
-    CurrencyId + '&ExchRate=' + ExchangeRate+ '&Discount=' + discount+'&AddedItem=' + addedItem, formData).pipe(
+    CurrencyId + '&ExchRate=' + ExchangeRate+ '&Discount=' + discount+'&AddedItem=' + addedItem+ '&CostConn='+CostConn, formData).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
   
 
-  GetRevisionDetails(RevisionId : number, itemDesc : string, resource : string)
+  GetRevisionDetails(RevisionId : number, itemDesc : string, resource : string,CostConn: string)
   {
-    return this.http.get(this.baseUrl + 'RevisionDetails/GetRevisionDetails?RevisionId=' + RevisionId + '&itemDesc=' + itemDesc + '&resource=' + resource).pipe(
+    return this.http.get(this.baseUrl + 'RevisionDetails/GetRevisionDetails?RevisionId=' + RevisionId + '&itemDesc=' + itemDesc + '&resource=' + resource+ '&CostConn='+CostConn).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
@@ -164,44 +164,44 @@ export class PackageSupplierService {
     );
  }
 
- sendTechnicalConditions(packId : number, techCondModel : TechCondModel, userName : string)
+ sendTechnicalConditions(packId : number, techCondModel : TechCondModel, userName : string, CostConn: string)
  {
   let headers = new HttpHeaders().set('Content-Type','application/json');
    
     let body = JSON.stringify(techCondModel);
-    return this.http.post(this.baseUrl + 'Conditions/SendTechnicalConditions?packId=' + packId + '&userName=' + userName, body, {headers: headers}).pipe(
+    return this.http.post(this.baseUrl + 'Conditions/SendTechnicalConditions?packId=' + packId + '&userName=' + userName+ '&CostConn='+CostConn, body, {headers: headers}).pipe(
     map(res => res), catchError(this.handleError)
   );
  }
 
- updateTechnicalConditions(packageId : number, packageSupliersRevisionID: number, input: File)
+ updateTechnicalConditions(packageId : number, packageSupliersRevisionID: number, input: File,CostConn: string)
  {
   const formData = new FormData();
   formData.append('ExcelFile' , input , input.name)
-    return this.http.post(this.baseUrl + 'Conditions/UpdateTechnicalConditions?PackageSupliersRevisionID=' + packageSupliersRevisionID + '&packageId=' + packageId, formData).pipe(
+    return this.http.post(this.baseUrl + 'Conditions/UpdateTechnicalConditions?PackageSupliersRevisionID=' + packageSupliersRevisionID + '&packageId=' + packageId+ '&CostConn='+CostConn, formData).pipe(
     map(res => res), catchError(this.handleError)
   );
  }
 
- updateCommercialConditions(packageSupliersRevisionID: number, input: File)
+ updateCommercialConditions(packageSupliersRevisionID: number, input: File,CostConn: string)
  {
   const formData = new FormData();
   formData.append('ExcelFile' , input , input.name)
-    return this.http.post(this.baseUrl + 'Conditions/UpdateCommercialConditions?PackageSupliersRevisionID=' + packageSupliersRevisionID, formData).pipe(
+    return this.http.post(this.baseUrl + 'Conditions/UpdateCommercialConditions?PackageSupliersRevisionID=' + packageSupliersRevisionID+ '&CostConn='+CostConn, formData).pipe(
     map(res => res), catchError(this.handleError)
   );
  }
 
- getComConditions(packSupId :number) : Observable<any>
+ getComConditions(packSupId :number,CostConn: string) : Observable<any>
  {
-  return this.http.get(this.baseUrl + 'Conditions/GetComConditions?packSupId=' + packSupId).pipe(
+  return this.http.get(this.baseUrl + 'Conditions/GetComConditions?packSupId=' + packSupId+ '&CostConn='+CostConn).pipe(
     map(res => res), catchError(this.handleError)
   );
  }
 
- getTechConditions(packId : number) : Observable<any>
+ getTechConditions(packId : number,CostConn: string ) : Observable<any>
  {
-  return this.http.get(this.baseUrl + 'Conditions/GetTechConditions?packId=' + packId).pipe(
+  return this.http.get(this.baseUrl + 'Conditions/GetTechConditions?packId=' + packId+ '&CostConn='+CostConn).pipe(
     map(res => res), catchError(this.handleError)
   );
  }
@@ -236,36 +236,36 @@ export class PackageSupplierService {
     return Promise.reject(error.message || error);
   }
 
-  GetComCondReplyByRevision(revisionId: number): Observable<any> {
-    return this.http.get(this.baseUrl + 'Conditions/GetComCondReplyByRevision?revisionid=' + revisionId).pipe(
+  GetComCondReplyByRevision(revisionId: number,CostConn: string): Observable<any> {
+    return this.http.get(this.baseUrl + 'Conditions/GetComCondReplyByRevision?revisionid=' + revisionId+ '&CostConn='+CostConn).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
 
-  GetTechCondReplyByRevision(revisionId: number): Observable<any> {
-    return this.http.get(this.baseUrl + 'Conditions/GetTechCondReplyByRevision?revisionid=' + revisionId).pipe(
+  GetTechCondReplyByRevision(revisionId: number,CostConn: string    ): Observable<any> {
+    return this.http.get(this.baseUrl + 'Conditions/GetTechCondReplyByRevision?revisionid=' + revisionId+ '&CostConn='+CostConn).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
 
   //AH30012024
-  GetSupplierList_NotAssignetPackage(IdPkge: number): Observable<any> {
-    return this.http.get(this.baseUrl + 'Supplier/GetSupplierList_NotAssignetPackage?packID=' + IdPkge).pipe(
+  GetSupplierList_NotAssignetPackage(IdPkge: number,CostConn: string): Observable<any> {
+    return this.http.get(this.baseUrl + 'Supplier/GetSupplierList_NotAssignetPackage?packID=' + IdPkge+ '&CostConn='+CostConn).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
 
-  getTechConditionsByPackage(packId : number,revisionId :number) : Observable<any>
+  getTechConditionsByPackage(packId : number,revisionId :number,CostConn: string ) : Observable<any>
   {
-   return this.http.get(this.baseUrl + 'Conditions/GetTechConditionsByPackage?packId=' + packId + '&revisionId=' + revisionId ).pipe(
+   return this.http.get(this.baseUrl + 'Conditions/GetTechConditionsByPackage?packId=' + packId + '&revisionId=' + revisionId + '&CostConn='+CostConn).pipe(
      map(res => res), catchError(this.handleError)
    );
   }
   //AH30012024
 
-  getRevisionAcceptance(revId : number)
+  getRevisionAcceptance(revId : number,CostConn: string)
   {
-    return this.http.post(this.baseUrl + 'RevisionDetails/GetRevisionAcceptance?revId=' + revId, null).pipe(
+    return this.http.post(this.baseUrl + 'RevisionDetails/GetRevisionAcceptance?revId=' + revId+ '&CostConn='+CostConn, null).pipe(
       map(res => res), catchError(this.handleError)
     );
   }

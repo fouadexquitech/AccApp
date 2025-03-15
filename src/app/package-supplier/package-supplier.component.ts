@@ -241,7 +241,7 @@ public user : User;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
       this.isSendingTechConditions = true;
-      this.packageSupplierService.sendTechnicalConditions(Number(this.PackageId), null, this.loginService.userValue?.usrId).subscribe(data=>{
+      this.packageSupplierService.sendTechnicalConditions(Number(this.PackageId), null, this.loginService.userValue?.usrId,CostConn).subscribe(data=>{
         this.isSendingTechConditions = false;
           if(data)
           {
@@ -637,7 +637,7 @@ public user : User;
           files.push(attachement.file);
         });
 
-        this.packageSupplierService.AssignPackageSuppliers(assignPackageTemplate, files).subscribe((data) => {
+        this.packageSupplierService.AssignPackageSuppliers(assignPackageTemplate, files,CostConn).subscribe((data) => {
           this.isAssigning = false;
           if (data) {
             //this.spinner.hide();
@@ -664,7 +664,7 @@ public user : User;
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-      this.packageSupplierService.getComConditions(packSupId).subscribe(data=>{
+      this.packageSupplierService.getComConditions(packSupId,CostConn).subscribe(data=>{
           this.comConditions = data;
           // console.log(this.comConditions);
       });
@@ -673,7 +673,7 @@ public user : User;
   GetSupplierPackagesRevision(packageSupplierId: number) {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.packageSupplierService.GetSupplierPackagesRevision(packageSupplierId).subscribe((data) => {
+    this.packageSupplierService.GetSupplierPackagesRevision(packageSupplierId,CostConn).subscribe((data) => {
       if (data) {
         this.SupplierPackagesRevList = data;
       }
@@ -749,7 +749,7 @@ public user : User;
       if (this.selectedFile != null) 
         {
           this.addingRevision = true;
-          this.packageSupplierService.AddRevision(this.selectedPsId, date.value, this.selectedFile, this.selectedCurrencyId, this.exchangeRate,Number(discount.value),Number(addedItem)).subscribe((data) => {
+          this.packageSupplierService.AddRevision(this.selectedPsId, date.value, this.selectedFile, this.selectedCurrencyId, this.exchangeRate,Number(discount.value),Number(addedItem),CostConn).subscribe((data) => {
             if (data) {
               // Refresh Supplier Package Revision List
               this.addingRevision = false;
@@ -797,7 +797,7 @@ public user : User;
       }      
     }
     
-    this.packageSupplierService.validateExcelBeforeAssign(this.PackageId, Number(localStorage.getItem('assignByBoqOnly'))).subscribe((data) => {
+    this.packageSupplierService.validateExcelBeforeAssign(this.PackageId, Number(localStorage.getItem('assignByBoqOnly')),CostConn).subscribe((data) => {
       this.isValidatingExcel = false;
       if (data) {
         // this.spinner.hide();
@@ -910,7 +910,7 @@ public user : User;
     //AH18012024
     // this.packageSupplierService.updateCommercialConditions(this.selectedPackageSupplier?.psId, this.selectedCommercialCondFile).subscribe(data=>{
     //AH18012024 
-    this.packageSupplierService.updateCommercialConditions(this.selectedPackageSupplierRevision?.prRevId, this.selectedCommercialCondFile).subscribe(data=>{
+    this.packageSupplierService.updateCommercialConditions(this.selectedPackageSupplierRevision?.prRevId, this.selectedCommercialCondFile,CostConn).subscribe(data=>{
       this.isUpdatingCommercialConditions = false;  
       if(data)
         {
@@ -938,7 +938,7 @@ public user : User;
     }
 
     this.isUpdatingTechnicalConditions = true;
-    this.packageSupplierService.updateTechnicalConditions(this.PackageId, this.selectedPackageSupplierRevision?.prRevId, this.selectedTechnicalCondFile).subscribe(data=>{
+    this.packageSupplierService.updateTechnicalConditions(this.PackageId, this.selectedPackageSupplierRevision?.prRevId, this.selectedTechnicalCondFile,CostConn).subscribe(data=>{
       this.isUpdatingTechnicalConditions = false;  
       if(data)
         {
@@ -998,7 +998,7 @@ public user : User;
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-      this.packageSupplierService.GetRevisionDetails(prRevId, '', '').subscribe(data=>{
+      this.packageSupplierService.GetRevisionDetails(prRevId, '', '',CostConn).subscribe(data=>{
           if(data)
           {
             this.RevisionDetailsList = data;
@@ -1132,7 +1132,7 @@ public user : User;
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-      this.packageSupplierService.getTechConditions(this.PackageId).subscribe(data=>{
+      this.packageSupplierService.getTechConditions(this.PackageId,CostConn).subscribe(data=>{
           if(data)
           {
             this.techConditions = data;
@@ -1182,7 +1182,7 @@ public user : User;
       let CostConn=this.user.usrLoggedConnString;
       this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-      this.packageSupplierService.GetComCondReplyByRevision(Number(revisionId)).subscribe(data=>{
+      this.packageSupplierService.GetComCondReplyByRevision(Number(revisionId),CostConn).subscribe(data=>{
         this.conditionsReplyList = data;
       });
     }
@@ -1200,7 +1200,7 @@ public user : User;
       let CostConn=this.user.usrLoggedConnString;
       this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-      this.packageSupplierService.GetTechCondReplyByRevision(Number(revisionId)).subscribe(data=>{
+      this.packageSupplierService.GetTechCondReplyByRevision(Number(revisionId),CostConn).subscribe(data=>{
         this.conditionsReplyList = data;
       });
     }
@@ -1210,7 +1210,7 @@ public user : User;
       let CostConn=this.user.usrLoggedConnString;
       this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-        this.packageSupplierService.getTechConditionsByPackage(this.PackageId,revisionId).subscribe(data=>{
+        this.packageSupplierService.getTechConditionsByPackage(this.PackageId,revisionId,CostConn).subscribe(data=>{
             if(data)
             {
               this.techConditions = data;
@@ -1224,7 +1224,7 @@ public user : User;
       let CostConn=this.user.usrLoggedConnString;
       this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-      this.packageSupplierService.GetSupplierList_NotAssignetPackage(IdPkge).subscribe((data) => {
+      this.packageSupplierService.GetSupplierList_NotAssignetPackage(IdPkge,CostConn).subscribe((data) => {
         if (data) {
           this.SupplierList = data;
         }
@@ -1262,7 +1262,7 @@ openAcceptanceCommentsModal(revisionId : any, prRevNo : any, psSupName : any)
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     
-      this.packageSupplierService.getRevisionAcceptance(revId).subscribe(data=>{
+      this.packageSupplierService.getRevisionAcceptance(revId,CostConn).subscribe(data=>{
         if(data)
         {
             this.acceptanceComments = data;

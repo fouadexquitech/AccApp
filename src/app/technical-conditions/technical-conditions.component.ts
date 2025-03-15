@@ -103,7 +103,7 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
     console.log(3);
 
     this.isSendingTechConditions = true;
-    this.packageSupplierService.sendTechnicalConditions(Number(this.packageId), techCondModel, this.loginService.userValue?.usrId).subscribe(data=>{
+    this.packageSupplierService.sendTechnicalConditions(Number(this.packageId), techCondModel, this.loginService.userValue?.usrId,CostConn).subscribe(data=>{
       this.isSendingTechConditions = false;
         if(data)
         {      
@@ -284,7 +284,7 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
   //     this.list = data;
       
   //  });
-  this.packageSupplierService.getTechConditionsByPackage(this.packageId, 0).subscribe(data=>{
+  this.packageSupplierService.getTechConditionsByPackage(this.packageId, 0, CostConn).subscribe(data=>{
     this.list = data;
  });
 //AH052024

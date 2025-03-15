@@ -1194,7 +1194,7 @@ validateExcelBeforeAssign(){
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-    this.packageSupplierService.validateExcelBeforeAssign(this.SelectedPackage, Number(localStorage.getItem('assignByBoqOnly'))).subscribe((data) => {
+    this.packageSupplierService.validateExcelBeforeAssign(this.SelectedPackage, Number(localStorage.getItem('assignByBoqOnly')),CostConn).subscribe((data) => {
       this.isValidatingExcel = false;
       if (data) {
         // this.spinner.hide();
