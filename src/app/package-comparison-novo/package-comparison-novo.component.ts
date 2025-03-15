@@ -1706,7 +1706,7 @@ export class PackageComparisonNovoComponent implements OnInit {
                 'tbody-wrapper-byboq'
               ) as HTMLDivElement;
               tbody_wrapper_byboq.style.width = table_by_boq.clientWidth + 'px';
-            }, 500);
+            }, 100);
           }
         });
     }
