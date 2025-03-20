@@ -20,113 +20,113 @@ export class AssignPackageService {
         );
     }
 
-    GetBOQDivList(body : any): Observable<any> {
-        return this.http.post(this.baseUrl + 'Search/GetBOQDivList',body).pipe(
+    GetBOQDivList(body : any,CostConn: string): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetBOQDivList?CostConn=' + CostConn,body).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
 
-    GetBOQLevel2List(body : any): Observable<any> {
-        return this.http.post(this.baseUrl + 'Search/GetBOQLevel2List',body).pipe(
+    GetBOQLevel2List(body : any,CostConn: string): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetBOQLevel2List?CostConn=' + CostConn,body).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
     
-    GetBOQLevel3List(body : any): Observable<any> {
-        return this.http.post(this.baseUrl + 'Search/GetBOQLevel3List',body).pipe(
+    GetBOQLevel3List(body : any,CostConn: string): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetBOQLevel3List?CostConn=' + CostConn,body).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
 
-    GetBOQLevel4List(body : any): Observable<any> {
-        return this.http.post(this.baseUrl + 'Search/GetBOQLevel4List',body).pipe(
+    GetBOQLevel4List(body : any,CostConn: string): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetBOQLevel4List?CostConn=' + CostConn,body).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
 
-    GetRESTypeList(body : any): Observable<any> {
-        return this.http.post(this.baseUrl + 'Search/GetResTypeList', body).pipe(
+    GetRESTypeList(body : any,CostConn: string): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetResTypeList?CostConn=' + CostConn, body).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
 
-    GetRessourcesList(body : any): Observable<any> {
-        return this.http.post(this.baseUrl + 'Search/GetRessourcesList', body).pipe(
+    GetRessourcesList(body : any,CostConn: string): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetRessourcesList?CostConn=' + CostConn, body).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
 
 
     
-    GetBOQLevel2ListBy(body : any): Observable<any> {
-        return this.http.post(this.baseUrl + 'Search/GetBOQLevel2ListBy',body).pipe(
+    GetBOQLevel2ListBy(body : any,CostConn: string): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetBOQLevel2ListBy?CostConn=' + CostConn,body).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
 
-    GetBOQLevel3ListByLevel2(body : any): Observable<any> {
-        return this.http.post(this.baseUrl + 'Search/GetBOQLevel3ListByLevel2', body).pipe(
+    GetBOQLevel3ListByLevel2(body : any,CostConn: string): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetBOQLevel3ListByLevel2?CostConn=' + CostConn, body).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
     
-    GetBOQLevel4ListByLevel3(body : any): Observable<any> {
-        return this.http.post(this.baseUrl + 'Search/GetBOQLevel4ListByLevel3', body).pipe(
+    GetBOQLevel4ListByLevel3(body : any,CostConn: string): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetBOQLevel4ListByLevel3?CostConn=' + CostConn, body).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
 
-    GetRessourcesListByLevels(body : any): Observable<any> {
-        return this.http.post(this.baseUrl + 'Search/GetRessourcesListByLevels', body).pipe(
+    GetRessourcesListByLevels(body : any,CostConn: string): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetRessourcesListByLevels?CostConn=' + CostConn, body).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
 
-    GetRESDivList(): Observable<any> {
-        return this.http.get(this.baseUrl + 'Search/GetRESDivList').pipe(
+    GetRESDivList(CostConn: string): Observable<any> {
+        return this.http.get(this.baseUrl + 'Search/GetRESDivList?CostConn=' + CostConn).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
 
-    GetPackageList(usedPack : boolean): Observable<any> {
-        return this.http.get(this.baseUrl + 'Search/GetPackagesList?usedPackages=' + usedPack).pipe(
+    GetPackageList(usedPack : boolean,CostConn: string): Observable<any> {
+        return this.http.get(this.baseUrl + 'Search/GetPackagesList?usedPackages='+ usedPack+ '&CostConn='+CostConn).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
 
-    GetRESPackageList(): Observable<any> {
-        return this.http.get(this.baseUrl + 'Search/GetRESPackageList').pipe(
+    GetRESPackageList(CostConn: string): Observable<any> {
+        return this.http.get(this.baseUrl + 'Search/GetRESPackageList?CostConn=' + CostConn).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
 
-    GetSheetDescList(): Observable<any> {
-        return this.http.get(this.baseUrl + 'Search/GetSheetDescList').pipe(
+    GetSheetDescList(CostConn: string): Observable<any> {
+        return this.http.get(this.baseUrl + 'Search/GetSheetDescList?CostConn=' + CostConn).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
 
-    GetOriginalBoqList(input: SearchInput , costDB :string): Observable<any> {
+    GetOriginalBoqList(input: SearchInput , costDB :string,CostConn: string): Observable<any> {
         return this.http.post(
-            this.baseUrl + 'Package/GetOriginalBoqList?costDB=' + costDB, input).pipe(
+            this.baseUrl + 'Package/GetOriginalBoqList?costDB=' + costDB+ '&CostConn='+CostConn, input).pipe(
                 map(res => res), catchError(this.handleError)
             );
     }
 
-    GetBoqList(itemO: string, input: SearchInput): Observable<any> {
-        return this.http.post(this.baseUrl + 'Package/GetBoqList?ItemO=' + itemO, input).pipe(
+    GetBoqList(itemO: string, input: SearchInput,CostConn: string): Observable<any> {
+        return this.http.post(this.baseUrl + 'Package/GetBoqList?ItemO=' + itemO+ '&CostConn='+CostConn, input).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
 
-    GetAllBoqList(input: SearchInput): Observable<any> {
-        return this.http.post(this.baseUrl + 'Package/GetAllBoqList', input).pipe(
+    GetAllBoqList(input: SearchInput,CostConn: string): Observable<any> {
+        return this.http.post(this.baseUrl + 'Package/GetAllBoqList?CostConn=' + CostConn, input).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
 
-    AssignPackage(input: AssignPackages): Observable<any> {
-        return this.http.post(this.baseUrl + 'Package/AssignPackages', input).pipe(
+    AssignPackage(input: AssignPackages,CostConn: string): Observable<any> {
+        return this.http.post(this.baseUrl + 'Package/AssignPackages?CostConn=' + CostConn, input).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
@@ -136,61 +136,61 @@ export class AssignPackageService {
         return Promise.reject(error.message || error);
     }
 
-    ExportBoqExcel(input: SearchInput , costDB :string) : Observable<any> 
+    ExportBoqExcel(input: SearchInput , costDB :string,CostConn: string) : Observable<any> 
     {
-      return this.http.post(this.baseUrl + 'Package/ExportBoqExcel?costDB=' + costDB, input).pipe(
+      return this.http.post(this.baseUrl + 'Package/ExportBoqExcel?costDB=' + costDB+ '&CostConn='+CostConn, input).pipe(
         map(res => res), catchError(this.handleError)
     );
     }
 
-    ExportExcelVerification(input: SearchInput , costDB :string,userName:string) : Observable<any> 
+    ExportExcelVerification(input: SearchInput , costDB :string,userName:string,CostConn: string) : Observable<any> 
     {
-      return this.http.post(this.baseUrl + 'Package/ExportExcelVerification?costDB=' + costDB+'&userName='+userName, input).pipe(
+      return this.http.post(this.baseUrl + 'Package/ExportExcelVerification?costDB=' + costDB+'&userName='+userName+ '&CostConn='+CostConn, input).pipe(
         map(res => res), catchError(this.handleError)
     );
     }
 
-    ExportNotAssigned(costDB :string) : Observable<any> 
+    ExportNotAssigned(costDB :string,CostConn: string) : Observable<any> 
     {
-      return this.http.post(this.baseUrl + 'Package/ExportNotAssigned?costDB=' + costDB, costDB).pipe(
+      return this.http.post(this.baseUrl + 'Package/ExportNotAssigned?costDB=' + costDB+ '&CostConn='+CostConn, costDB).pipe(
         map(res => res), catchError(this.handleError)
     );
     }
 
-    ExportExcelPackagesCost(withBoq:number, costDB :string, input: SearchInput) : Observable<any> 
+    ExportExcelPackagesCost(withBoq:number, costDB :string, input: SearchInput,CostConn: string) : Observable<any> 
     {
-      return this.http.post(this.baseUrl + 'Package/ExportExcelPackagesCost?costDB='+costDB+'&withBoq='+withBoq,input).pipe(
+      return this.http.post(this.baseUrl + 'Package/ExportExcelPackagesCost?costDB='+costDB+'&withBoq='+withBoq+ '&CostConn='+CostConn,input).pipe(
         map(res => res), catchError(this.handleError)
     );
     }
 
-    updateOriginalBoqQty(item : OriginalBoqModel)
+    updateOriginalBoqQty(item : OriginalBoqModel,CostConn: string)
     {
-      return this.http.post(this.baseUrl + 'Package/updateOriginalBoqQty', item).pipe(
+      return this.http.post(this.baseUrl + 'Package/updateOriginalBoqQty?CostConn=' + CostConn, item).pipe(
         map(res => res), catchError(this.handleError)
     );
     }
 
-    updateBoqResQty(item : BoqModel)
+    updateBoqResQty(item : BoqModel,CostConn: string)
     {
-      return this.http.post(this.baseUrl + 'Package/updateBoqResQty', item).pipe(
+      return this.http.post(this.baseUrl + 'Package/updateBoqResQty?CostConn=' + CostConn, item).pipe(
         map(res => res), catchError(this.handleError)
     );
     }
     
-    updateBoqTradeDesc(originalBoqList: OriginalBoqModel[], tradeDesc:string): Observable<any> 
+    updateBoqTradeDesc(originalBoqList: OriginalBoqModel[], tradeDesc:string,CostConn: string): Observable<any> 
     {
-        return this.http.post(this.baseUrl + 'Package/updateBoqTradeDesc?tradeDesc=' + tradeDesc, originalBoqList).pipe(
+        return this.http.post(this.baseUrl + 'Package/updateBoqTradeDesc?tradeDesc=' + tradeDesc+ '&CostConn='+CostConn, originalBoqList).pipe(
             map(res => res), catchError(this.handleError)
         );
     }
 
-    getBoqResourceRecords(dataTablesParameters: any) : Observable<any>
+    getBoqResourceRecords(dataTablesParameters: any,CostConn: string) : Observable<any>
     {
         const header = new HttpHeaders()
         .set('Content-type', 'application/json');
         const body = JSON.stringify(dataTablesParameters);
-        return this.http.post<any>(this.baseUrl + 'Package/GetBoqResourceRecords',body, { headers: header }
+        return this.http.post<any>(this.baseUrl + 'Package/GetBoqResourceRecords?CostConn=' + CostConn,body, { headers: header }
         );
     }
 }

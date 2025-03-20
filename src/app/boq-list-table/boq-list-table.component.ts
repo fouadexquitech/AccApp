@@ -27,9 +27,7 @@ export class BoqListTableComponent implements OnInit {
   
   constructor() { }
 
-  ngOnInit() {
-    
-  }
+  ngOnInit() { }
 
   public setData(arr : any[])
   {   

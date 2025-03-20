@@ -61,7 +61,7 @@ export class PackageListComponent implements OnInit, OnDestroy {
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
 //AH072024
-    this.assignPackageService.GetPackageList(true).subscribe((data) => {
+    this.assignPackageService.GetPackageList(true,CostConn).subscribe((data) => {
       this.isSearching = false;
       if (data) {
         let newarr = data.sort((a:any, b:any) => (a.pkgeName - b.pkgeName) ? 1 : -1);

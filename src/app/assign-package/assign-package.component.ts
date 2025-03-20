@@ -322,7 +322,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-    this.assignPackageService.GetBOQDivList(body).subscribe((data) => {
+    this.assignPackageService.GetBOQDivList(body,CostConn).subscribe((data) => {
       if (data) {
         this.BOQDivList = data;
         this.selectedBOQDivList = data;
@@ -334,7 +334,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   GetBOQLevel2List(body : any) {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetBOQLevel2List(body).subscribe((data) => {
+    this.assignPackageService.GetBOQLevel2List(body,CostConn).subscribe((data) => {
       if (data) {
         this.BOQLevelList = data;
         this.selectedBOQLevel2List = data;
@@ -346,7 +346,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   GetBOQLevel3List(body : any) {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetBOQLevel3List(body).subscribe((data) => {
+    this.assignPackageService.GetBOQLevel3List(body,CostConn).subscribe((data) => {
       if (data) {
         this.BOQLevelList = data;
         this.selectedBOQLevel3List = data;
@@ -358,7 +358,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   GetBOQLevel4List(body : any) {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetBOQLevel4List(body).subscribe((data) => {
+    this.assignPackageService.GetBOQLevel4List(body,CostConn).subscribe((data) => {
       if (data) {
         this.BOQLevelList = data;
         this.selectedBOQLevel4List = data;
@@ -370,7 +370,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   GetRESDivList() {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetRESDivList().subscribe((data) => {
+    this.assignPackageService.GetRESDivList(CostConn).subscribe((data) => {
       if (data) {
         this.RESDivList = data;
         this.selectedRESDivList = data;
@@ -381,7 +381,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   GetRESTypeList(body : any) {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetRESTypeList(body).subscribe((data) => {
+    this.assignPackageService.GetRESTypeList(body,CostConn).subscribe((data) => {
       if (data) {
         this.RESTypeList = data;
         this.selectedRESTypeList = data;
@@ -393,7 +393,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 //Get all packages
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetPackageList(false).subscribe((data) => {
+    this.assignPackageService.GetPackageList(false,CostConn).subscribe((data) => {
       if (data) {
         this.PackageList = data;
         this.selectedPackages = this.PackageList;
@@ -411,7 +411,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   GetRessourcesList(body : any) {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetRessourcesList(body).subscribe((data) => {
+    this.assignPackageService.GetRessourcesList(body,CostConn).subscribe((data) => {
       if (data) {
         this.ressourceList = data;
         this.selectedRessources = this.ressourceList;
@@ -495,7 +495,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   GetRESPackageList() {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetRESPackageList().subscribe((data) => {
+    this.assignPackageService.GetRESPackageList(CostConn).subscribe((data) => {
       if (data) {
         this.RESPackageList = data;
         this.selectedFilterResPackages = data;
@@ -506,7 +506,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   GetSheetDescList() {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetSheetDescList().subscribe((data) => {
+    this.assignPackageService.GetSheetDescList(CostConn).subscribe((data) => {
       if (data) {
         this.SheetDescList = data;
         this.selectedSheetDescList = data;
@@ -531,7 +531,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-    this.assignPackageService.GetOriginalBoqList(input,costDB)
+    this.assignPackageService.GetOriginalBoqList(input,costDB,CostConn)
     .pipe(finalize(()=>{
       this.isSearching = false;
     }))
@@ -562,7 +562,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-    this.assignPackageService.GetBoqList(itemO, input).subscribe((data) => {
+    this.assignPackageService.GetBoqList(itemO, input,CostConn).subscribe((data) => {
       if (data) {
         let lst = this.SelectedBoqList;
         let pkg = this.SelectedPackage;
@@ -809,7 +809,7 @@ return;
                   let CostConn=this.user.usrLoggedConnString;
                   this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-                  this.assignPackageService.GetBoqList(itemO, this.SearchInput).subscribe((data) => {
+                  this.assignPackageService.GetBoqList(itemO, this.SearchInput,CostConn).subscribe((data) => {
                     if (data) {
                       this.BoqList = data;
                       let selectedBoqArr = this.SelectedBoqList;                     
@@ -874,7 +874,7 @@ return;
         dataTablesParameters.boqIds = this.selectedBoqsV2.join();
         dataTablesParameters.selectedBoqIds = this.selectedBoqsResV2.join();
 
-        this.assignPackageService.getBoqResourceRecords(dataTablesParameters).subscribe(resp => {
+        this.assignPackageService.getBoqResourceRecords(dataTablesParameters,CostConn).subscribe(resp => {
             that.boqsList = resp.data;
             this.resourcesSelected = that.boqsList.length > 0;
             // Calling the DT trigger to manually render the table
@@ -1037,7 +1037,7 @@ return;
         let CostConn=this.user.usrLoggedConnString;
         this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-        this.assignPackageService.GetAllBoqList(this.SearchInput).subscribe((data) => {
+        this.assignPackageService.GetAllBoqList(this.SearchInput,CostConn).subscribe((data) => {
           if (data) {
             
             let selectedBoqArr = this.SelectedBoqList;
@@ -1142,7 +1142,7 @@ AssignPackages() {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-    this.assignPackageService.AssignPackage(this.assignPackages).pipe(finalize(()=>{
+    this.assignPackageService.AssignPackage(this.assignPackages,CostConn).pipe(finalize(()=>{
       this.isAssigning = false;
     }))
     .subscribe((data) => {
@@ -1456,7 +1456,7 @@ validateExcelBeforeAssign(){
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-    this.assignPackageService.ExportBoqExcel(this.SearchInput,costDB).subscribe((data) => {
+    this.assignPackageService.ExportBoqExcel(this.SearchInput,costDB,CostConn).subscribe((data) => {
       this.isExportExcel=false;
       if (data) {
         let a = document.createElement('a');
@@ -1477,7 +1477,7 @@ validateExcelBeforeAssign(){
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
   
-    this.assignPackageService.ExportExcelVerification(this.SearchInput,costDB,userName).subscribe((data) => {
+    this.assignPackageService.ExportExcelVerification(this.SearchInput,costDB,userName,CostConn).subscribe((data) => {
     
       if (data) {
           this.isExportExcelVerif=false;
@@ -1504,7 +1504,7 @@ validateExcelBeforeAssign(){
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-      this.assignPackageService.ExportNotAssigned(costDB).subscribe((data) => {
+      this.assignPackageService.ExportNotAssigned(costDB,CostConn).subscribe((data) => {
         this.isExportExcelNotAssigned=false;
         if (data) {
           let a = document.createElement('a');
@@ -1529,7 +1529,7 @@ validateExcelBeforeAssign(){
         let CostConn=this.user.usrLoggedConnString;
         this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-        this.assignPackageService.ExportExcelPackagesCost(withBoq,costDB,this.SearchInput)
+        this.assignPackageService.ExportExcelPackagesCost(withBoq,costDB,this.SearchInput,CostConn)
         .pipe(finalize(() =>{
           if (withBoq==1)
             this.isExportExcelDryBoq=false;
@@ -1636,7 +1636,7 @@ validateExcelBeforeAssign(){
       let CostConn=this.user.usrLoggedConnString;
       this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-      this.assignPackageService.updateOriginalBoqQty(this.currentOrigBoq).subscribe(response => {
+      this.assignPackageService.updateOriginalBoqQty(this.currentOrigBoq,CostConn).subscribe(response => {
         this.updating = false;
         if (response) {
           this.toastr.success('Updated successfuly');
@@ -1656,7 +1656,7 @@ validateExcelBeforeAssign(){
       let CostConn=this.user.usrLoggedConnString;
       this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-      this.assignPackageService.updateBoqResQty(this.currentBoqRes).subscribe(response => {
+      this.assignPackageService.updateBoqResQty(this.currentBoqRes,CostConn).subscribe(response => {
         this.updating = false;
         if (response) {
           this.toastr.success('Updated successfuly');
@@ -1683,7 +1683,7 @@ validateExcelBeforeAssign(){
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     
-    this.assignPackageService.updateBoqTradeDesc(this.OriginalBoqList,desc).subscribe((data) => {
+    this.assignPackageService.updateBoqTradeDesc(this.OriginalBoqList,desc,CostConn).subscribe((data) => {
       if (data) {
        // this.SelectedBoqList = [];
        // this.SelectedOriginalBoqList = [];

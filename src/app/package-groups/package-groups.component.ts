@@ -208,7 +208,7 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-    this.assignPackageService.GetRESDivList().subscribe((data) => {
+    this.assignPackageService.GetRESDivList(CostConn).subscribe((data) => {
       if (data) {
         this.RESDivList = data;
         this.selectedRESDivList = data;
@@ -233,7 +233,7 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-    this.assignPackageService.GetBOQDivList(body).subscribe((data) => {
+    this.assignPackageService.GetBOQDivList(body,CostConn).subscribe((data) => {
       if (data) {
         this.BOQDivList = data;
         
@@ -244,7 +244,7 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
   GetSheetDescList() {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetSheetDescList().subscribe((data) => {
+    this.assignPackageService.GetSheetDescList(CostConn).subscribe((data) => {
       if (data) {
         this.SheetDescList = data;
         this.selectedSheetDescList = data;
@@ -255,7 +255,7 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
   GetRESTypeList() {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetRESTypeList(null).subscribe((data) => {
+    this.assignPackageService.GetRESTypeList(null,CostConn).subscribe((data) => {
       if (data) {
         this.RESTypeList = data;
         this.selectedRESTypeList = data;

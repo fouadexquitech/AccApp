@@ -69,7 +69,7 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
       let CostConn=this.user.usrLoggedConnString;
       this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-      this.packageSupplierService.GetSupplierPackagesSingleRevision(RevisionId).subscribe(data=>{
+      this.packageSupplierService.GetSupplierPackagesSingleRevision(RevisionId,CostConn).subscribe(data=>{
         this.Revision = data;
         
         this.GetRevisionDetails(this.Revision.prRevId);
@@ -93,7 +93,7 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
   { 
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.packageSupplierService.GetSupplierPackage(prPackSuppId).subscribe(data=>{
+    this.packageSupplierService.GetSupplierPackage(prPackSuppId,CostConn).subscribe(data=>{
       this.supplierPackage = data;
   });
   }
@@ -180,7 +180,7 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
             }
     }
 
-    this.revisionDetailsService.UpdateRevisionDetailsPriceByBoq(revisionDetails).subscribe(data=>
+    this.revisionDetailsService.UpdateRevisionDetailsPriceByBoq(revisionDetails,CostConn).subscribe(data=>
       {
         this.saving = false;
         if(data)
@@ -276,7 +276,7 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
         }
       }
 
-      this.revisionDetailsService.UpdateRevisionDetailsPrice(revisionDetails).subscribe(data=>
+      this.revisionDetailsService.UpdateRevisionDetailsPrice(revisionDetails,CostConn).subscribe(data=>
         {
           this.saving = false;
           if(data)

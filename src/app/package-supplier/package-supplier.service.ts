@@ -30,15 +30,15 @@ export class PackageSupplierService {
     );
   }
 
-  DeleteField(fieldId : number)
+  DeleteField(fieldId : number,CostConn: string)
   {
-    return this.http.post(this.baseUrl + 'SupplierPackagesRev/DeleteField?fieldId=' + fieldId, null).pipe(
+    return this.http.post(this.baseUrl + 'SupplierPackagesRev/DeleteField?fieldId=' + fieldId+ '&CostConn='+CostConn, null).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
 
-  GetFields(revisionId: number): Observable<any> {
-    return this.http.get(this.baseUrl + 'SupplierPackagesRev/GetFields?revisionid=' + revisionId).pipe(
+  GetFields(revisionId: number,CostConn: string): Observable<any> {
+    return this.http.get(this.baseUrl + 'SupplierPackagesRev/GetFields?revisionid=' + revisionId+ '&CostConn='+CostConn).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
@@ -84,8 +84,8 @@ export class PackageSupplierService {
     );
   }
 
-  GetSupplierPackage(psId: number): Observable<any> {
-    return this.http.get(this.baseUrl + 'SupplierPackages/GetSupplierPackage?psId=' + psId).pipe(
+  GetSupplierPackage(psId: number,CostConn: string): Observable<any> {
+    return this.http.get(this.baseUrl + 'SupplierPackages/GetSupplierPackage?psId=' + psId+ '&CostConn='+CostConn).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
@@ -96,8 +96,8 @@ export class PackageSupplierService {
     );
   }
 
-  GetSupplierPackagesSingleRevision(revision: number): Observable<any> {
-    return this.http.get(this.baseUrl + 'SupplierPackagesRev/GetSupplierPackagesSingleRevision?revisionId=' + revision).pipe(
+  GetSupplierPackagesSingleRevision(revision: number,CostConn: string): Observable<any> {
+    return this.http.get(this.baseUrl + 'SupplierPackagesRev/GetSupplierPackagesSingleRevision?revisionId=' + revision+ '&CostConn='+CostConn).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
@@ -136,8 +136,8 @@ export class PackageSupplierService {
     );
   }
 
-  AddField(revId: number, lbl: string, val: number, type : number): Observable<any> {
-    return this.http.post(this.baseUrl + 'SupplierPackagesRev/AddField?revId=' + revId + '&lbl=' + lbl + '&val=' + val + '&type=' + type, null).pipe(
+  AddField(revId: number, lbl: string, val: number, type : number,CostConn: string): Observable<any> {
+    return this.http.post(this.baseUrl + 'SupplierPackagesRev/AddField?revId=' + revId + '&lbl=' + lbl + '&val=' + val + '&type=' + type+ '&CostConn='+CostConn, null).pipe(
       map(res => res), catchError(this.handleError)
     );
   }

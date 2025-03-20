@@ -224,7 +224,7 @@ public user : User;
     .then((confirmed) => {
       if(confirmed)
         {
-          this.packageSupplierService.DeleteField(Number(fieldId)).subscribe(data=>{
+          this.packageSupplierService.DeleteField(Number(fieldId),CostConn).subscribe(data=>{
             if(data)
             {
               this.toastr.success('Deleted successfuly');
@@ -286,7 +286,7 @@ public user : User;
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-    this.packageSupplierService.GetFields(Number(revisionId)).subscribe(data=>{
+    this.packageSupplierService.GetFields(Number(revisionId),CostConn).subscribe(data=>{
       this.revisionFieldsList = data;
     });
   }
@@ -961,7 +961,7 @@ public user : User;
     var valueType = document.getElementById("valueType") as HTMLSelectElement;
 
     if (labelInput.value && valueInput.value && valueType.selectedIndex > 0) {
-      this.packageSupplierService.AddField(this.selectedRevisionId, labelInput.value, Number(valueInput.value), Number(valueType.value)).subscribe((data) => {
+      this.packageSupplierService.AddField(this.selectedRevisionId, labelInput.value, Number(valueInput.value), Number(valueType.value),CostConn).subscribe((data) => {
         this.SupplierPackagesRevList.find(x => x.prRevId == this.selectedRevisionId).prTotPrice = data;
         this.CloseFieldModal();
         this.toastr.success("A new field has been added !")

@@ -302,8 +302,7 @@ export class PackageComparisonNovoComponent implements OnInit {
   GetSupplierList() {
     let CostConn = this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => {});
-    this.packageSupplierService
-      .GetSupplierList(this.packageId)
+    this.packageSupplierService.GetSupplierList(this.packageId)
       .subscribe((data) => {
         if (data) {
           this.supplierList = data;
@@ -327,8 +326,7 @@ export class PackageComparisonNovoComponent implements OnInit {
     //this.techConditionsReplies = [];
     let CostConn = this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => {});
-    this.packageComparisonService
-      .GetSupplierPackagesList(this.packageId)
+    this.packageComparisonService.GetSupplierPackagesList(this.packageId,CostConn)
       .subscribe((data) => {
         if (data) {
           this.SupplierPackagesList = data;
@@ -410,8 +408,7 @@ export class PackageComparisonNovoComponent implements OnInit {
     this.loginService.CheckConnection(CostConn).subscribe((data) => {});
 
     if (this.byGroup && !this.byBoq) {
-      this.packageComparisonService
-        .getComparisonSheetResourcesByGroup(this.packageId, this.SearchInput)
+      this.packageComparisonService.getComparisonSheetResourcesByGroup(this.packageId, this.SearchInput,CostConn)
         .subscribe((data) => {
           if (data) {
             this.groupingBoqGroupList = data;
@@ -419,8 +416,7 @@ export class PackageComparisonNovoComponent implements OnInit {
           }
         });
     } else if (this.byGroup && this.byBoq) {
-      this.packageComparisonService
-        .getComparisonSheetBoqByGroup(this.packageId, this.SearchInput)
+      this.packageComparisonService.getComparisonSheetBoqByGroup(this.packageId, this.SearchInput,CostConn)
         .subscribe((data) => {
           if (data) {
             this.groupingBoqGroupList = data;
@@ -433,8 +429,7 @@ export class PackageComparisonNovoComponent implements OnInit {
   getTechCondReplies() {
     let CostConn = this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => {});
-    this.packageComparisonService
-      .getTechCondReplies(this.packageId, this.costDB)
+    this.packageComparisonService.getTechCondReplies(this.packageId, this.costDB,CostConn)
       .subscribe((data) => {
         this.techConditionsReplies = data;
       });
@@ -443,8 +438,7 @@ export class PackageComparisonNovoComponent implements OnInit {
   getComCondReplies() {
     let CostConn = this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => {});
-    this.packageComparisonService
-      .getComCondReplies(this.packageId, this.costDB)
+    this.packageComparisonService.getComCondReplies(this.packageId, this.costDB,CostConn)
       .subscribe((data) => {
         this.comConditionsReplies = data;
       });
@@ -502,12 +496,7 @@ export class PackageComparisonNovoComponent implements OnInit {
           supplierResItemList: ressourceItems,
         };
         this.isAssigningSupplierList = true;
-        this.packageComparisonService
-          .AssignSupplierListRessourceList(
-            this.packageId,
-            true,
-            assignSuppliertRes
-          )
+        this.packageComparisonService.AssignSupplierListRessourceList(this.packageId,true,assignSuppliertRes,CostConn)
           .subscribe((data) => {
             this.isAssigningSupplierList = false;
             if (data) {
@@ -564,8 +553,7 @@ export class PackageComparisonNovoComponent implements OnInit {
           supplierBoqItemList: boqItems,
         };
         this.isAssigningSupplierList = true;
-        this.packageComparisonService
-          .AssignSupplierListBoqList(this.packageId, true, assignSuppliertBoq)
+        this.packageComparisonService.AssignSupplierListBoqList(this.packageId, true, assignSuppliertBoq,CostConn)
           .subscribe((data) => {
             this.isAssigningSupplierList = false;
             if (data) {
@@ -613,12 +601,11 @@ export class PackageComparisonNovoComponent implements OnInit {
           supplierGroupList: groups,
         };
         this.isAssigningSupplierList = true;
-        this.packageComparisonService
-          .AssignSupplierListGroupList(
+        this.packageComparisonService.AssignSupplierListGroupList(
             this.packageId,
             this.byBoq,
             true,
-            assignSupplierGroup
+            assignSupplierGroup,CostConn
           )
           .subscribe((data) => {
             this.isAssigningSupplierList = false;
@@ -696,10 +683,9 @@ export class PackageComparisonNovoComponent implements OnInit {
 
   getEmailTemplate(lang: string) {
     let CostConn = this.user.usrLoggedConnString;
-
     this.loginService.CheckConnection(CostConn).subscribe((data) => {});
-    this.packageSupplierService
-      .GetEmailTemplate(lang, this.packageId, '', '')
+
+    this.packageSupplierService.GetEmailTemplate(lang, this.packageId, '', '')
       .subscribe((data) => {
         this.f.template.setValue(data?.etContent);
       });
@@ -708,6 +694,7 @@ export class PackageComparisonNovoComponent implements OnInit {
   getManagementEmail() {
     let CostConn = this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => {});
+
     this.selectedTopManagementList = [];
     this.packageComparisonService.getManagementEmail('').subscribe((data) => {
       this.topManagementList = data;
@@ -747,7 +734,7 @@ export class PackageComparisonNovoComponent implements OnInit {
             this.packageId,
             this.SearchInput,
             this.packSuppId,
-            this.costDB
+            this.costDB,CostConn
           )
           .subscribe((data) => {
             if (data) {
@@ -772,7 +759,7 @@ export class PackageComparisonNovoComponent implements OnInit {
             this.packageId,
             this.SearchInput,
             this.packSuppId,
-            this.costDB
+            this.costDB,CostConn
           )
           .subscribe((data) => {
             if (data) {
@@ -799,7 +786,7 @@ export class PackageComparisonNovoComponent implements OnInit {
             this.packageId,
             this.SearchInput,
             this.packSuppId,
-            this.costDB
+            this.costDB,CostConn
           )
           .subscribe((data) => {
             if (data) {
@@ -824,7 +811,7 @@ export class PackageComparisonNovoComponent implements OnInit {
             this.packageId,
             this.SearchInput,
             this.packSuppId,
-            this.costDB
+            this.costDB,CostConn
           )
           .subscribe((data) => {
             if (data) {
@@ -861,7 +848,7 @@ export class PackageComparisonNovoComponent implements OnInit {
         this.packageId,
         this.SearchInput,
         this.packSuppId,
-        this.costDB
+        this.costDB,CostConn
       )
       .subscribe((res) => {
         if (res) {
@@ -895,7 +882,7 @@ export class PackageComparisonNovoComponent implements OnInit {
         this.packageId,
         this.SearchInput,
         this.packSuppId,
-        this.costDB
+        this.costDB,CostConn
       )
       .subscribe((res) => {
         this.generatingContract = false;
@@ -949,8 +936,7 @@ export class PackageComparisonNovoComponent implements OnInit {
       files.push(file.file);
     });
 
-    this.packageComparisonService
-      .sendCompToManagement(topManagementTemplate, files)
+    this.packageComparisonService.sendCompToManagement(topManagementTemplate, files,CostConn)
       .subscribe((data) => {
         this.sendingEmail = false;
         if (data) {
@@ -1040,7 +1026,7 @@ export class PackageComparisonNovoComponent implements OnInit {
             .AssignSupplierRessource(
               this.packageId,
               false,
-              this.supplierResrouces
+              this.supplierResrouces,CostConn
             )
             .subscribe((data) => {
               this.isAssigningSupplierRessource = false;
@@ -1122,7 +1108,7 @@ export class PackageComparisonNovoComponent implements OnInit {
         } else {
           this.isAssigningSupplierBoq = true;
           this.packageComparisonService
-            .AssignSupplierBOQ(this.packageId, false, this.supplierBoq)
+            .AssignSupplierBOQ(this.packageId, false, this.supplierBoq,CostConn)
             .subscribe((data) => {
               this.isAssigningSupplierBoq = false;
               if (data) {
@@ -1199,7 +1185,7 @@ export class PackageComparisonNovoComponent implements OnInit {
                   this.packageId,
                   this.byBoq,
                   false,
-                  this.supplierGroups
+                  this.supplierGroups,CostConn
                 )
                 .subscribe((data) => {
                   this.isAssigningSupplierGroup = false;
@@ -1287,7 +1273,7 @@ export class PackageComparisonNovoComponent implements OnInit {
             .AssignSupplierRessource(
               this.packageId,
               true,
-              this.supplierResrouces
+              this.supplierResrouces,CostConn
             )
             .subscribe((data) => {
               this.isAssigningSupplierRessource = false;
@@ -1357,7 +1343,7 @@ export class PackageComparisonNovoComponent implements OnInit {
         } else {
           this.isAssigningSupplierBoq = true;
           this.packageComparisonService
-            .AssignSupplierBOQ(this.packageId, true, this.supplierBoq)
+            .AssignSupplierBOQ(this.packageId, true, this.supplierBoq,CostConn)
             .subscribe((data) => {
               this.isAssigningSupplierBoq = false;
               if (data) {
@@ -1439,7 +1425,7 @@ export class PackageComparisonNovoComponent implements OnInit {
                   this.packageId,
                   this.byBoq,
                   true,
-                  this.supplierGroups
+                  this.supplierGroups,CostConn
                 )
                 .subscribe((data) => {
                   this.isAssigningSupplierGroup = false;
@@ -1672,7 +1658,7 @@ export class PackageComparisonNovoComponent implements OnInit {
     this.searching = true;
     if (!this.byBoq) {
       this.packageComparisonService
-        .getComparisonSheet(this.packageId, this.SearchInput)
+        .getComparisonSheet(this.packageId, this.SearchInput,CostConn)
         .subscribe((data) => {
           this.searching = false;
           if (data) {
@@ -1685,7 +1671,7 @@ export class PackageComparisonNovoComponent implements OnInit {
         });
     } else {
       this.packageComparisonService
-        .getComparisonSheetByBoq(this.packageId, this.SearchInput)
+        .getComparisonSheetByBoq(this.packageId, this.SearchInput,CostConn)
         .subscribe((data) => {
           this.searching = false;
           if (data) {
@@ -1777,7 +1763,7 @@ export class PackageComparisonNovoComponent implements OnInit {
     this.loginService.CheckConnection(CostConn).subscribe((data) => {});
 
     this.packageComparisonService
-      .GetPackageSuppliersPrice(this.packageId, this.SearchInput)
+      .GetPackageSuppliersPrice(this.packageId, this.SearchInput,CostConn)
       .subscribe((data) => {
         if (data) {
           this.packageSuppliersPrices = data;
@@ -1788,7 +1774,8 @@ export class PackageComparisonNovoComponent implements OnInit {
   GetRESDivList() {
     let CostConn = this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => {});
-    this.assignPackageService.GetRESDivList().subscribe((data) => {
+
+    this.assignPackageService.GetRESDivList(CostConn).subscribe((data) => {
       if (data) {
         this.RESDivList = data;
         this.selectedRESDivList = data;
@@ -1799,7 +1786,8 @@ export class PackageComparisonNovoComponent implements OnInit {
   GetBOQDivList(body: any) {
     let CostConn = this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => {});
-    this.assignPackageService.GetBOQDivList(body).subscribe((data) => {
+
+    this.assignPackageService.GetBOQDivList(body,CostConn).subscribe((data) => {
       if (data) {
         this.BOQDivList = data;
       }
@@ -1809,7 +1797,8 @@ export class PackageComparisonNovoComponent implements OnInit {
   GetSheetDescList() {
     let CostConn = this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => {});
-    this.assignPackageService.GetSheetDescList().subscribe((data) => {
+
+    this.assignPackageService.GetSheetDescList(CostConn).subscribe((data) => {
       if (data) {
         this.SheetDescList = data;
         this.selectedSheetDescList = data;
@@ -1820,7 +1809,8 @@ export class PackageComparisonNovoComponent implements OnInit {
   GetRESTypeList(body: any) {
     let CostConn = this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => {});
-    this.assignPackageService.GetRESTypeList(body).subscribe((data) => {
+
+    this.assignPackageService.GetRESTypeList(body,CostConn).subscribe((data) => {
       if (data) {
         this.RESTypeList = data;
         this.selectedRESTypeList = data;
@@ -1829,29 +1819,29 @@ export class PackageComparisonNovoComponent implements OnInit {
   }
 
   onSelectAllSheetDesc() {
-    this.selectedSheetDescList = [];
-    this.SheetDescList.forEach((item) => {
+      this.selectedSheetDescList = [];
+      this.SheetDescList.forEach((item) => {
       this.selectedSheetDescList.push(item.obSheetDesc);
     });
   }
 
   onSelectAllRESDiv() {
-    this.selectedRESDivList = [];
-    this.RESDivList.forEach((item) => {
+      this.selectedRESDivList = [];
+      this.RESDivList.forEach((item) => {
       this.selectedRESDivList.push(item.boqDiv);
     });
   }
 
   onSelectAllBOQDiv() {
-    this.selectedBOQDivList = [];
-    this.BOQDivList.forEach((item) => {
+      this.selectedBOQDivList = [];
+      this.BOQDivList.forEach((item) => {
       this.selectedBOQDivList.push(item.sectionO);
     });
   }
 
   onSelectAllRESType() {
-    this.selectedRESTypeList = [];
-    this.RESTypeList.forEach((item) => {
+      this.selectedRESTypeList = [];
+      this.RESTypeList.forEach((item) => {
       this.selectedRESTypeList.push(item.boqCtg);
     });
   }
@@ -1964,7 +1954,7 @@ export class PackageComparisonNovoComponent implements OnInit {
     // console.log(item.itemO);
     // console.log(item.isNewItem);
     this.packageComparisonService
-      .excludBoq(this.packageId, item.itemO, item.isNewItem, item.isExcluded)
+      .excludBoq(this.packageId, item.itemO, item.isNewItem, item.isExcluded,CostConn)
       .subscribe((data) => {
         this.onSearch();
       });
@@ -1983,7 +1973,7 @@ export class PackageComparisonNovoComponent implements OnInit {
         boqRes.boqSeq,
         boqRes.isNewItem,
         boqRes.isAlternative,
-        boqRes.isExcluded
+        boqRes.isExcluded,CostConn
       )
       .subscribe((data) => {
         this.onSearch();

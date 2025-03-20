@@ -19,12 +19,11 @@ export class RevisionDetailsService {
     }
 
     
-    UpdateRevisionDetailsPrice(revisionDetails : RevisionDetailsList[])
+    UpdateRevisionDetailsPrice(revisionDetails : RevisionDetailsList[],CostConn: string)
     {
-      
         let body = JSON.stringify(revisionDetails);
         
-        return this.http.post(this.baseUrl + 'RevisionDetails/UpdateRevisionDetailsPrice', body, {
+        return this.http.post(this.baseUrl + 'RevisionDetails/UpdateRevisionDetailsPrice?CostConn=' + CostConn, body, {
           headers:new HttpHeaders()
           .set('Content-Type','application/json')
           }).pipe(
@@ -32,12 +31,12 @@ export class RevisionDetailsService {
       );
     }
 
-    UpdateRevisionDetailsPriceByBoq(revisionDetails : RevisionDetailsList[])
+    UpdateRevisionDetailsPriceByBoq(revisionDetails : RevisionDetailsList[],CostConn: string)
     {
       
         let body = JSON.stringify(revisionDetails);
         
-        return this.http.post(this.baseUrl + 'RevisionDetails/UpdateRevisionDetailsPriceByBoq', body, {
+        return this.http.post(this.baseUrl + 'RevisionDetails/UpdateRevisionDetailsPriceByBoq?CostConn=' + CostConn, body, {
           headers:new HttpHeaders()
           .set('Content-Type','application/json')
           }).pipe(

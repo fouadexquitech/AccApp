@@ -85,7 +85,7 @@ export class AssignPackageFilterComponent implements OnInit {
   GetBOQDivList(body : any) {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetBOQDivList(body).subscribe((data) => {
+    this.assignPackageService.GetBOQDivList(body,CostConn).subscribe((data) => {
       if (data) {
         this.BOQDivList = data;
         this.selectedBOQDivList = data;
@@ -110,7 +110,7 @@ export class AssignPackageFilterComponent implements OnInit {
   GetBOQLevel2List(body : any) {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetBOQLevel2List(body).subscribe((data) => {
+    this.assignPackageService.GetBOQLevel2List(body,CostConn).subscribe((data) => {
       if (data) {
         this.BOQLevelList = data;
         this.selectedBOQLevel2List = data;
@@ -122,7 +122,7 @@ export class AssignPackageFilterComponent implements OnInit {
   GetBOQLevel3List(body : any) {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetBOQLevel3List(body).subscribe((data) => {
+    this.assignPackageService.GetBOQLevel3List(body,CostConn).subscribe((data) => {
       if (data) {
         this.BOQLevelList = data;
         this.selectedBOQLevel3List = data;
@@ -134,7 +134,7 @@ export class AssignPackageFilterComponent implements OnInit {
   GetBOQLevel4List(body : any) {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetBOQLevel4List(body).subscribe((data) => {
+    this.assignPackageService.GetBOQLevel4List(body,CostConn).subscribe((data) => {
       if (data) {
         this.BOQLevelList = data;
         this.selectedBOQLevel4List = data;
@@ -146,7 +146,7 @@ export class AssignPackageFilterComponent implements OnInit {
   GetRESDivList() {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetRESDivList().subscribe((data) => {
+    this.assignPackageService.GetRESDivList(CostConn).subscribe((data) => {
       if (data) {
         this.RESDivList = data;
         this.selectedRESDivList = data;
@@ -157,7 +157,7 @@ export class AssignPackageFilterComponent implements OnInit {
   GetRESTypeList(body : any) {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetRESTypeList(body).subscribe((data) => {
+    this.assignPackageService.GetRESTypeList(body,CostConn).subscribe((data) => {
       if (data) {
         this.RESTypeList = data;
         this.selectedRESTypeList = data;
@@ -177,7 +177,7 @@ export class AssignPackageFilterComponent implements OnInit {
 
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetRessourcesListByLevels(body).subscribe((data) => {
+    this.assignPackageService.GetRessourcesListByLevels(body,CostConn).subscribe((data) => {
       if (data) {
         this.ressourceList = data;
         this.selectedRessources = this.ressourceList;
@@ -185,14 +185,14 @@ export class AssignPackageFilterComponent implements OnInit {
       }
     });
 
-    this.assignPackageService.GetBOQLevel3ListByLevel2(body).subscribe((data) => {
+    this.assignPackageService.GetBOQLevel3ListByLevel2(body,CostConn).subscribe((data) => {
       if (data) {
         this.BOQLevelList = data;
         this.selectedBOQLevel3List = data;
       }
     });
     
-    this.assignPackageService.GetBOQLevel4ListByLevel3(body).subscribe((data) => {
+    this.assignPackageService.GetBOQLevel4ListByLevel3(body,CostConn).subscribe((data) => {
       if (data) {
         this.BOQLevelList = data;
         this.selectedBOQLevel4List = data;
@@ -274,7 +274,7 @@ export class AssignPackageFilterComponent implements OnInit {
     // });
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetPackageList(true).subscribe((data) => {
+    this.assignPackageService.GetPackageList(true,CostConn).subscribe((data) => {
       if (data) {
         this.PackageList = data;
         this.selectedPackages = this.PackageList;
@@ -286,7 +286,7 @@ export class AssignPackageFilterComponent implements OnInit {
   GetRESPackageList() {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetRESPackageList().subscribe((data) => {
+    this.assignPackageService.GetRESPackageList(CostConn).subscribe((data) => {
       if (data) {
         this.RESPackageList = data;
         this.selectedFilterResPackages = data;
@@ -297,7 +297,7 @@ export class AssignPackageFilterComponent implements OnInit {
   GetSheetDescList() {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetSheetDescList().subscribe((data) => {
+    this.assignPackageService.GetSheetDescList(CostConn).subscribe((data) => {
       if (data) {
         this.SheetDescList = data;
         this.selectedSheetDescList = data;
@@ -422,7 +422,7 @@ export class AssignPackageFilterComponent implements OnInit {
   GetRessourcesList(body : any) {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetRessourcesList(body).subscribe((data) => {
+    this.assignPackageService.GetRessourcesList(body,CostConn).subscribe((data) => {
       if (data) {
         this.ressourceList = data;
         this.selectedRessources = this.ressourceList;

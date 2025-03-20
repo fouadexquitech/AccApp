@@ -256,7 +256,7 @@ export class PackageComparisonComponent implements OnInit {
     let costDB=this.user.usrLoggedCostDB;
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-     this.packageComparisonService.getTechCondReplies( this.PackageId,costDB).subscribe(data=>{
+     this.packageComparisonService.getTechCondReplies( this.PackageId,costDB,CostConn).subscribe(data=>{
         this.techConditionsReplies = data;
      });
   }
@@ -266,7 +266,7 @@ export class PackageComparisonComponent implements OnInit {
     let costDB=this.user.usrLoggedCostDB;
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-     this.packageComparisonService.getComCondReplies( this.PackageId,costDB).subscribe(data=>{
+     this.packageComparisonService.getComCondReplies( this.PackageId,costDB,CostConn).subscribe(data=>{
         this.comConditionsReplies = data;
      });
   }
@@ -278,7 +278,7 @@ export class PackageComparisonComponent implements OnInit {
   GetRESDivList() {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetRESDivList().subscribe((data) => {
+    this.assignPackageService.GetRESDivList(CostConn).subscribe((data) => {
       if (data) {
         this.RESDivList = data;
         this.selectedRESDivList = data;
@@ -289,7 +289,7 @@ export class PackageComparisonComponent implements OnInit {
   GetRESTypeList() {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetRESTypeList(null).subscribe((data) => {
+    this.assignPackageService.GetRESTypeList(null,CostConn).subscribe((data) => {
       if (data) {
         this.RESTypeList = data;
         this.selectedRESTypeList = data;
@@ -300,7 +300,7 @@ export class PackageComparisonComponent implements OnInit {
   GetSheetDescList() {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.assignPackageService.GetSheetDescList().subscribe((data) => {
+    this.assignPackageService.GetSheetDescList(CostConn).subscribe((data) => {
       if (data) {
         this.SheetDescList = data;
         this.selectedSheetDescList = data;
@@ -314,7 +314,7 @@ export class PackageComparisonComponent implements OnInit {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-    this.packageComparisonService.GetPackageSuppliersPrice(this.PackageId, this.SearchInput).subscribe((data) => {
+    this.packageComparisonService.GetPackageSuppliersPrice(this.PackageId, this.SearchInput,CostConn).subscribe((data) => {
       this.searching = false;
       if (data) {
         
@@ -495,7 +495,7 @@ export class PackageComparisonComponent implements OnInit {
     this.techConditionsReplies = [];
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.packageComparisonService.GetSupplierPackagesList(this.PackageId).subscribe((data) => {
+    this.packageComparisonService.GetSupplierPackagesList(this.PackageId,CostConn).subscribe((data) => {
       if (data) {
         this.SupplierPackagesList = data;
         this.byBoq = this.SupplierPackagesList[0].psByBoq;
@@ -566,7 +566,7 @@ export class PackageComparisonComponent implements OnInit {
         let CostConn=this.user.usrLoggedConnString;
         this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-        this.packageComparisonService.AssignSupplierListRessourceList(this.PackageId, true, assignSuppliertRes).subscribe((data) => {
+        this.packageComparisonService.AssignSupplierListRessourceList(this.PackageId, true, assignSuppliertRes,CostConn).subscribe((data) => {
           this.isAssigningSupplierList = false;
           if (data) {
             this.supplierPercent = [];
@@ -616,7 +616,7 @@ export class PackageComparisonComponent implements OnInit {
         let CostConn=this.user.usrLoggedConnString;
         this.loginService.CheckConnection(CostConn).subscribe((data) => { });
         
-        this.packageComparisonService.AssignSupplierListBoqList(this.PackageId, true, assignSuppliertBoq).subscribe((data) => {
+        this.packageComparisonService.AssignSupplierListBoqList(this.PackageId, true, assignSuppliertBoq,CostConn).subscribe((data) => {
           this.isAssigningSupplierList = false;
           if (data) {
             this.supplierPercent = [];
@@ -812,7 +812,7 @@ export class PackageComparisonComponent implements OnInit {
         let CostConn=this.user.usrLoggedConnString;
         this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-        this.packageComparisonService.AssignSupplierRessource(this.PackageId, true, this.supplierResrouces).subscribe((data) => {
+        this.packageComparisonService.AssignSupplierRessource(this.PackageId, true, this.supplierResrouces,CostConn).subscribe((data) => {
         this.isAssigningSupplierRessource = false;
         if (data) {
         this.supplierResrouces = [];
@@ -916,7 +916,7 @@ export class PackageComparisonComponent implements OnInit {
         let CostConn=this.user.usrLoggedConnString;
         this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-        this.packageComparisonService.AssignSupplierBOQ(this.PackageId, true, this.supplierBOQ).subscribe((data) => {
+        this.packageComparisonService.AssignSupplierBOQ(this.PackageId, true, this.supplierBOQ,CostConn).subscribe((data) => {
         this.isAssigningSupplierRessource = false;
         if (data) {
         this.supplierBOQ = [];
@@ -1016,7 +1016,7 @@ export class PackageComparisonComponent implements OnInit {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-    this.assignPackageService.GetBOQDivList(body).subscribe((data) => {
+    this.assignPackageService.GetBOQDivList(body,CostConn).subscribe((data) => {
       if (data) {
         this.BOQDivList = data;
         this.selectedBOQDivList = data;
