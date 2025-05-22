@@ -31,9 +31,9 @@ export class packagesService {
     return this.http.post(environment.baseApiUrl + 'api/package/Addpackage', list);
   }
 
-  deletepackage(id : number)
+  deletepackage(id : number,CostConn: string)
   {
-    return this.http.post(environment.baseApiUrl + 'api/package/Deletepackage?id=' + id, null);
+    return this.http.post(environment.baseApiUrl + 'api/package/Deletepackage?id=' + id + '&CostConn='+CostConn, null);
   }
 
   updatepackage(user : Package)

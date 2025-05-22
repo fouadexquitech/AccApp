@@ -242,8 +242,10 @@ export class PackagesComponent implements OnInit {
     //console.log(resp);
     if(resp.success)
     {
+      let CostConn=this.user.usrLoggedConnString;
+
       this.deleting = true;
-      this.packagesService.deletepackage(id).subscribe((data : any)=>{
+      this.packagesService.deletepackage(id,CostConn).subscribe((data : any)=>{
       this.deleting = false;
         if(data.success)
         {

@@ -763,12 +763,17 @@ return;
     let currentPageSizeSelect = document.getElementsByName('originalBOQTable_length')[0] as HTMLSelectElement;
     let currentPageSize = +currentPageSizeSelect.value;
     let index = i - (currentPageIndex * currentPageSize);
+
     this.CurrentRowIndex = index;
-    this.SelectedBoqQty = this.OriginalBoqList[index]["qtyO"];
-    let rowNumber = this.OriginalBoqList[index]["rowNumber"];
+    this.SelectedBoqQty = this.OriginalBoqList[i]["qtyO"];
+    let rowNumber = this.OriginalBoqList[i]["rowNumber"];
     
     let itemO = this.OriginalBoqList[i]["itemO"];
     let originalBOQTable = document.getElementById('originalBOQTable') as HTMLTableElement;
+
+    console.log("PageIndex:"+currentPageIndex,"PageSize:"+currentPageSize,"idx:"+index,"i:"+i,"rowNo:"+rowNumber,"itemO:"+ itemO);
+    // console.log(this.OriginalBoqList);
+
     //check the selected row
     if(originalBOQTable)
     {
@@ -791,7 +796,10 @@ return;
                 this.selectedBoqsResV2.push(itemO);
                 
                 this.SelectedOriginalBoqList.push({ rowNumber: this.SelectedOriginalBoqRow.rowNumber, scope: this.SelectedPackage,tradeDesc: null ,itemO:this.SelectedOriginalBoqRow.itemO});
-                this.GetBoqList(this.OriginalBoqList[index]["itemO"], this.SearchInput);
+                //AH042025
+                // this.GetBoqList(this.OriginalBoqList[index]["itemO"], this.SearchInput);
+                this.GetBoqList(itemO, this.SearchInput);
+                ///AH042025
               }
                else 
               {
@@ -1246,6 +1254,15 @@ validateExcelBeforeAssign(){
     this.boqsList = [];
     this.resourcesSelected = false;
     this.checkboxesAll = false;
+
+//AH05052025.
+    this.SelectedBoqList = [];
+    this.selectedBoqsV2 = [];
+    this.selectedBoqsResV2 = [];
+    this.editDisplayedBoqList([], false);
+    this.FinalUnitPrice = 0;
+    this.FinalTotalPrice = 0;
+///AH05052025.
 
     this.GetOriginalBoqList(this.SearchInput);
   }

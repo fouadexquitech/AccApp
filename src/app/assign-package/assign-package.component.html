@@ -194,7 +194,7 @@
                                     <th scope="col"></th>
                                     <th scope="col" class="text-center">Unit Price</th>
                                     <th scope="col" class="text-center">Final Total ({{boqFinalTotal | number: '1.0-0'}})</th>
-                                    <th scope="col">Assigned Package</th>
+                                    <!-- <th scope="col">Assigned Package</th> -->
                                     <th scope="col">Status</th>
                                     <th scope="col"></th>
                                 </tr>
@@ -230,7 +230,7 @@
                                     (click)="editOriginalBoqQty(editModal,item)"><i class="fa-solid fa-edit"></i></a></td>
                                     <td class="text-center">{{item.unitRateO | number: '1.0-2' }}</td>
                                     <td class="text-center">{{(item.unitRateO * item.qtyO) | number: '1.0-0' }}</td>
-                                    <td [ngClass]="item.assignedPackage != '' ? 'text-danger' : ''">{{item.assignedPackage}}</td>
+                                    <!-- <td [ngClass]="item.assignedPackage != '' ? 'text-danger' : ''">{{item.assignedPackage}}</td> -->
                                     <td [ngClass]="item.boqStatus != '' ? 'text-danger' : ''"> {{item.boqStatus}}</td>
                                     <td> </td>
                                 </tr>
