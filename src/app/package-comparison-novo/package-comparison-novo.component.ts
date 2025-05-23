@@ -1505,10 +1505,8 @@ export class PackageComparisonNovoComponent implements OnInit {
 
     if (!this.byBoq) {
       this.CurrentLevelList.forEach((level) => {
-        level.items.forEach((item) => {
-          item.groupingResources.forEach((resource) => {
-            total += resource.totalPrice;
-          });
+        level.groupingResources.forEach((resource) => {
+          total += resource.totalPrice;
         });
       });
     } else {
@@ -1525,10 +1523,8 @@ export class PackageComparisonNovoComponent implements OnInit {
     let totalQotation = 0;
     if (!this.byBoq) {
       this.CurrentLevelList.forEach((level) => {
-        level.items.forEach((item) => {
-          item.groupingResources.forEach((resource) => {
-            totalQotation += resource.quotationAmt;
-          });
+        level.groupingResources.forEach((resource) => {
+          totalQotation += resource.quotationAmt;
         });
       });
     } else {
@@ -1704,15 +1700,33 @@ export class PackageComparisonNovoComponent implements OnInit {
     this.searching = true;
     if (!this.byBoq) {
       this.packageComparisonService
-        .getComparisonSheet(this.packageId, this.SearchInput, CostConn)
+        .getComparisonSheet(
+          this.packageId,
+          this.SearchInput,
+          CostConn,
+          this.cGroup
+        )
         .subscribe((data) => {
           this.searching = false;
+
           if (data) {
             //AH04042024
             // this.comparisonList = data;
             this.CurrentLevelList = data;
+
             //AH04042024
             this.getSuppliersPrice();
+
+            setTimeout(() => {
+              const table_by_boq = document.getElementById(
+                'table-by-boq'
+              ) as HTMLTableElement;
+
+              const tbody_wrapper_byboq = document.getElementById(
+                'tbody-wrapper-byboq'
+              ) as HTMLDivElement;
+              tbody_wrapper_byboq.style.width = table_by_boq.clientWidth + 'px';
+            }, 100);
           }
         });
     } else {
@@ -1920,6 +1934,27 @@ export class PackageComparisonNovoComponent implements OnInit {
     //console.log(this.selectedResources);
   }
 
+  selectAllResources(target: any) {
+    this.selectedResources = [];
+    let checkbox = target as HTMLInputElement;
+    //AH09042024
+    // this.comparisonList.forEach(item=>{
+    this.CurrentLevelList.forEach((level) => {
+      level.groupingResources.forEach((resource) => {
+        //AH09042024
+        resource.isChecked = checkbox.checked;
+        if (checkbox.checked) {
+          this.selectedResources.push(resource.boqSeq);
+          //this.show = true;//AH09042024
+        } else {
+          let index = this.selectedResources.indexOf(resource.boqSeq);
+          this.selectedResources.splice(index, 1);
+          //this.show = false;//AH09042024
+        }
+      });
+    });
+  }
+
   selectResourcesByItem(event: any, item: GroupingBoq) {
     let allCheckbox = document.getElementById(
       'selectAllResourcesByItem'
@@ -1983,6 +2018,37 @@ export class PackageComparisonNovoComponent implements OnInit {
 
     allCheckbox.checked = everythingChecked;
     //console.log(this.selectedResources);
+  }
+
+  selectResourceNeo(event: any, resource: GroupingResource) {
+    let allCheckbox = document.getElementById(
+      'selectAllResources'
+    ) as HTMLInputElement;
+    let checkbox = event.target as HTMLInputElement;
+    resource.isChecked = checkbox.checked;
+    let allChecked: boolean = true;
+
+    if (checkbox.checked) {
+      this.selectedResources.push(resource.boqSeq);
+      // this.show = true;//AH09042024
+    } else {
+      let index = this.selectedResources.indexOf(resource.boqSeq);
+      this.selectedResources.splice(index, 1);
+      //this.show = false;//AH09042024
+    }
+
+    let everythingChecked: boolean = true;
+
+    this.CurrentLevelList.forEach((level) => {
+      level.groupingResources.forEach((resource) => {
+        if (!resource.isChecked) {
+          everythingChecked = false;
+          return;
+        }
+      });
+    });
+    //AH09042024
+    allCheckbox.checked = everythingChecked;
   }
 
   isAssigned(event: any) {

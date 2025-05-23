@@ -418,7 +418,8 @@ export class PackageComparisonService {
   getComparisonSheet(
     packId: number,
     input: SearchInput,
-    CostConn: string
+    CostConn: string,
+    c: string
   ): Observable<any> {
     return this.http
       .post(
@@ -426,7 +427,9 @@ export class PackageComparisonService {
           'RevisionDetails/GetComparisonSheet?packageId=' +
           packId +
           '&CostConn=' +
-          CostConn,
+          CostConn +
+          '&c=' +
+          c,
         input
       )
       .pipe(

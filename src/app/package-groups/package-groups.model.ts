@@ -92,6 +92,7 @@ export class GroupingPackageSupplierPrice {
 export class GroupingLevelModel {
   public levelName: string = '';
   public items: GroupingBoq[] = [];
+  public groupingResources: GroupingResource[] = [];
   public c_Description: string;
   public c_TotalBudget: number = 0;
   public groupingSupplierC_Prices: any[] = [];
