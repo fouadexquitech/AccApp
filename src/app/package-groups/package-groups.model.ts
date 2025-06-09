@@ -98,3 +98,10 @@ export class GroupingLevelModel {
   public groupingSupplierC_Prices: any[] = [];
 }
 //AH02032024
+
+export class CLevelGrouping {
+  public groupingLevels: GroupingLevelModel[] = [];
+  public groupingSupplierC_Prices: any[] = [];
+  public c_Description: string;
+  public c_TotalBudget: number = 0;
+}

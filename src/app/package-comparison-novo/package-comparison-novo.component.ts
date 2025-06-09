@@ -34,6 +34,7 @@ import {
 import { PackageComparisonService } from '../package-comparison/package-comparison.service';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import {
+  CLevelGrouping,
   GroupingBoq,
   GroupingBoqGroup,
   GroupingLevelModel,
@@ -132,7 +133,7 @@ export class PackageComparisonNovoComponent implements OnInit {
   public user: User;
   costDB: string = '';
   LevelModelList: GroupingLevelModel[] = [];
-  CurrentLevelList: GroupingLevelModel[] = [];
+  CurrentLevelList: CLevelGrouping[] = [];
   modalScrollDistance = 2;
   modalScrollThrottle = 50;
   sum = 4;
@@ -284,16 +285,16 @@ export class PackageComparisonNovoComponent implements OnInit {
     return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
   }
 
-  onScroll() {
-    //add another "sum" items
-    const start = this.sum;
-    this.sum += 4;
-    for (let i = start; i < this.sum; ++i) {
-      if (this.LevelModelList.length - 1 >= i) {
-        this.CurrentLevelList.push(this.LevelModelList[i]);
-      }
-    }
-  }
+  // onScroll() {
+  //   //add another "sum" items
+  //   const start = this.sum;
+  //   this.sum += 4;
+  //   for (let i = start; i < this.sum; ++i) {
+  //     if (this.LevelModelList.length - 1 >= i) {
+  //       this.CurrentLevelList.push(this.LevelModelList[i]);
+  //     }
+  //   }
+  // }
   //AH25022024
 
   isResourceSelected(boqSeq: number) {
@@ -477,14 +478,16 @@ export class PackageComparisonNovoComponent implements OnInit {
     if (!this.byBoq && !this.byGroup) {
       let ressourceItems: ressourceItem[] = [];
       //AH042024
-      this.CurrentLevelList.forEach((level) => {
-        level.items.forEach((boq: GroupingBoq, i: any) => {
-          // this.comparisonList.forEach((boq : GroupingBoq, i : any)=>{
-          //AH042024
-          boq.groupingResources.forEach((resource) => {
-            if (resource.isChecked) {
-              ressourceItems.push({ resId: resource.boqSeq });
-            }
+      this.CurrentLevelList.forEach((clevel) => {
+        clevel.groupingLevels.forEach((level) => {
+          level.items.forEach((boq: GroupingBoq, i: any) => {
+            // this.comparisonList.forEach((boq : GroupingBoq, i : any)=>{
+            //AH042024
+            boq.groupingResources.forEach((resource) => {
+              if (resource.isChecked) {
+                ressourceItems.push({ resId: resource.boqSeq });
+              }
+            });
           });
         });
       });
@@ -538,17 +541,19 @@ export class PackageComparisonNovoComponent implements OnInit {
       let boqItems: boqItem[] = [];
 
       //AH042024
-      this.CurrentLevelList.forEach((level) => {
-        level.items.forEach((boq: GroupingBoq, i: any) => {
-          // this.comparisonList.forEach((boq : GroupingBoq, i : any)=>{
-          //AH042024
-          if (boq.isChecked) {
-            boqItems.push({
-              boqItemID: boq.itemO,
-              isNewItem: boq.isAlternative,
-              isAlternative: boq.isAlternative,
-            });
-          }
+      this.CurrentLevelList.forEach((cLevel) => {
+        cLevel.groupingLevels.forEach((level) => {
+          level.items.forEach((boq: GroupingBoq, i: any) => {
+            // this.comparisonList.forEach((boq : GroupingBoq, i : any)=>{
+            //AH042024
+            if (boq.isChecked) {
+              boqItems.push({
+                boqItemID: boq.itemO,
+                isNewItem: boq.isAlternative,
+                isAlternative: boq.isAlternative,
+              });
+            }
+          });
         });
       });
 
@@ -1092,46 +1097,48 @@ export class PackageComparisonNovoComponent implements OnInit {
       let oneItemChecked = false;
       let qtyIsValid = true;
       //AH042024
-      this.CurrentLevelList.forEach((level) => {
-        level.items.forEach((boq: GroupingBoq, i: any) => {
-          // this.comparisonList.forEach((boq : GroupingBoq, i : any)=>{
-          //AH042024
-          if (boq.isChecked) {
-            oneItemChecked = true;
-            let itemO = boq.itemO;
-            let isNew = boq.isNewItem;
-            let isAlternative = boq.isAlternative;
-            let totalQty = 0;
-            let sups = boq.groupingPackageSuppliersPrices;
-            boq.validPerc = true;
-            this.supplierBoqQty = [];
-            sups.forEach((sup, j) => {
-              if (sup.supplierName != 'Ideal') {
-                totalQty += sup.assignedQty;
-              }
-              if (totalQty <= boq.quotationQty) {
-                this.supplierBoqQty.push({
-                  supID: sup.supplierId,
-                  qty: sup.assignedQty,
-                });
-              }
-            });
+      this.CurrentLevelList.forEach((cLevel) => {
+        cLevel.groupingLevels.forEach((level) => {
+          level.items.forEach((boq: GroupingBoq, i: any) => {
+            // this.comparisonList.forEach((boq : GroupingBoq, i : any)=>{
+            //AH042024
+            if (boq.isChecked) {
+              oneItemChecked = true;
+              let itemO = boq.itemO;
+              let isNew = boq.isNewItem;
+              let isAlternative = boq.isAlternative;
+              let totalQty = 0;
+              let sups = boq.groupingPackageSuppliersPrices;
+              boq.validPerc = true;
+              this.supplierBoqQty = [];
+              sups.forEach((sup, j) => {
+                if (sup.supplierName != 'Ideal') {
+                  totalQty += sup.assignedQty;
+                }
+                if (totalQty <= boq.quotationQty) {
+                  this.supplierBoqQty.push({
+                    supID: sup.supplierId,
+                    qty: sup.assignedQty,
+                  });
+                }
+              });
 
-            //alert(totalPerc);
-            if (totalQty != boq.quotationQty) {
-              qtyIsValid = false;
-              boq.validPerc = false;
+              //alert(totalPerc);
+              if (totalQty != boq.quotationQty) {
+                qtyIsValid = false;
+                boq.validPerc = false;
+              }
+
+              const newSupplierBoq: SupplierBOQ = {
+                boqItemID: itemO,
+                supplierPercents: [],
+                supplierQtys: this.supplierBoqQty,
+                isAlternative: isAlternative,
+                isNewItem: isNew,
+              };
+              this.supplierBoq.push(newSupplierBoq);
             }
-
-            const newSupplierBoq: SupplierBOQ = {
-              boqItemID: itemO,
-              supplierPercents: [],
-              supplierQtys: this.supplierBoqQty,
-              isAlternative: isAlternative,
-              isNewItem: isNew,
-            };
-            this.supplierBoq.push(newSupplierBoq);
-          }
+          });
         });
       });
 
@@ -1504,15 +1511,19 @@ export class PackageComparisonNovoComponent implements OnInit {
     let total = 0;
 
     if (!this.byBoq) {
-      this.CurrentLevelList.forEach((level) => {
-        level.groupingResources.forEach((resource) => {
-          total += resource.totalPrice;
+      this.CurrentLevelList.forEach((cLevel) => {
+        cLevel.groupingLevels.forEach((level) => {
+          level.groupingResources.forEach((resource) => {
+            total += resource.totalPrice;
+          });
         });
       });
     } else {
-      this.CurrentLevelList.forEach((level) => {
-        level.items.forEach((item) => {
-          total += item.totalPrice;
+      this.CurrentLevelList.forEach((cLevel) => {
+        cLevel.groupingLevels.forEach((level) => {
+          level.items.forEach((item) => {
+            total += item.totalPrice;
+          });
         });
       });
     }
@@ -1522,15 +1533,19 @@ export class PackageComparisonNovoComponent implements OnInit {
   getTotalQuotation() {
     let totalQotation = 0;
     if (!this.byBoq) {
-      this.CurrentLevelList.forEach((level) => {
-        level.groupingResources.forEach((resource) => {
-          totalQotation += resource.quotationAmt;
+      this.CurrentLevelList.forEach((cLevel) => {
+        cLevel.groupingLevels.forEach((level) => {
+          level.groupingResources.forEach((resource) => {
+            totalQotation += resource.quotationAmt;
+          });
         });
       });
     } else {
-      this.CurrentLevelList.forEach((level) => {
-        level.items.forEach((item) => {
-          totalQotation += item.quotationAmt;
+      this.CurrentLevelList.forEach((cLevel) => {
+        cLevel.groupingLevels.forEach((level) => {
+          level.items.forEach((item) => {
+            totalQotation += item.quotationAmt;
+          });
         });
       });
     }
@@ -1582,14 +1597,16 @@ export class PackageComparisonNovoComponent implements OnInit {
     let element = event.target as HTMLInputElement;
 
     //AH042024
-    this.CurrentLevelList.forEach((level) => {
-      level.items.forEach((boq: GroupingBoq, i: number) => {
-        //this.comparisonList.forEach((boq : GroupingBoq,i : number)=>{
-        //AH042024
-        if (boq.itemO === item.itemO) {
-          this.searchSupQtyByBoq(Number(element.value), item, sup);
-          return;
-        }
+    this.CurrentLevelList.forEach((cLevel) => {
+      cLevel.groupingLevels.forEach((level) => {
+        level.items.forEach((boq: GroupingBoq, i: number) => {
+          //this.comparisonList.forEach((boq : GroupingBoq,i : number)=>{
+          //AH042024
+          if (boq.itemO === item.itemO) {
+            this.searchSupQtyByBoq(Number(element.value), item, sup);
+            return;
+          }
+        });
       });
     });
   }
@@ -1768,18 +1785,20 @@ export class PackageComparisonNovoComponent implements OnInit {
     let checkbox = target as HTMLInputElement;
     //AH09042024
     // this.comparisonList.forEach(item=>{
-    this.CurrentLevelList.forEach((level) => {
-      level.items.forEach((item) => {
-        //AH09042024
-        item.isChecked = checkbox.checked;
-        if (checkbox.checked) {
-          this.selectedBoqItems.push(item.itemO);
-          //this.show = true;//AH09042024
-        } else {
-          let index = this.selectedBoqItems.indexOf(item.itemO);
-          this.selectedBoqItems.splice(index, 1);
-          //this.show = false;//AH09042024
-        }
+    this.CurrentLevelList.forEach((cLevel) => {
+      cLevel.groupingLevels.forEach((level) => {
+        level.items.forEach((item) => {
+          //AH09042024
+          item.isChecked = checkbox.checked;
+          if (checkbox.checked) {
+            this.selectedBoqItems.push(item.itemO);
+            //this.show = true;//AH09042024
+          } else {
+            let index = this.selectedBoqItems.indexOf(item.itemO);
+            this.selectedBoqItems.splice(index, 1);
+            //this.show = false;//AH09042024
+          }
+        });
       });
     });
   }
@@ -1811,12 +1830,14 @@ export class PackageComparisonNovoComponent implements OnInit {
     //     }
     // });
 
-    this.CurrentLevelList.forEach((level) => {
-      level.items.forEach((item) => {
-        if (!item.isChecked) {
-          everythingChecked = false;
-          return;
-        }
+    this.CurrentLevelList.forEach((cLevel) => {
+      cLevel.groupingLevels.forEach((level) => {
+        level.items.forEach((item) => {
+          if (!item.isChecked) {
+            everythingChecked = false;
+            return;
+          }
+        });
       });
     });
     //AH09042024
@@ -1939,18 +1960,20 @@ export class PackageComparisonNovoComponent implements OnInit {
     let checkbox = target as HTMLInputElement;
     //AH09042024
     // this.comparisonList.forEach(item=>{
-    this.CurrentLevelList.forEach((level) => {
-      level.groupingResources.forEach((resource) => {
-        //AH09042024
-        resource.isChecked = checkbox.checked;
-        if (checkbox.checked) {
-          this.selectedResources.push(resource.boqSeq);
-          //this.show = true;//AH09042024
-        } else {
-          let index = this.selectedResources.indexOf(resource.boqSeq);
-          this.selectedResources.splice(index, 1);
-          //this.show = false;//AH09042024
-        }
+    this.CurrentLevelList.forEach((cLevel) => {
+      cLevel.groupingLevels.forEach((level) => {
+        level.groupingResources.forEach((resource) => {
+          //AH09042024
+          resource.isChecked = checkbox.checked;
+          if (checkbox.checked) {
+            this.selectedResources.push(resource.boqSeq);
+            //this.show = true;//AH09042024
+          } else {
+            let index = this.selectedResources.indexOf(resource.boqSeq);
+            this.selectedResources.splice(index, 1);
+            //this.show = false;//AH09042024
+          }
+        });
       });
     });
   }
@@ -2039,12 +2062,14 @@ export class PackageComparisonNovoComponent implements OnInit {
 
     let everythingChecked: boolean = true;
 
-    this.CurrentLevelList.forEach((level) => {
-      level.groupingResources.forEach((resource) => {
-        if (!resource.isChecked) {
-          everythingChecked = false;
-          return;
-        }
+    this.CurrentLevelList.forEach((cLevel) => {
+      cLevel.groupingLevels.forEach((level) => {
+        level.groupingResources.forEach((resource) => {
+          if (!resource.isChecked) {
+            everythingChecked = false;
+            return;
+          }
+        });
       });
     });
     //AH09042024
