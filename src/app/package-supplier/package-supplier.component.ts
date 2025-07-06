@@ -318,13 +318,16 @@ public user : User;
   ngOnInit(): void {
       this.params = this.route.params.subscribe(params => {
       this.PackageId = Number(params['packageId']);
-      if(localStorage.getItem('assignByBoqOnly') == null)
-      {
-        //AH022025
-        // localStorage.setItem('assignByBoqOnly', '0');
-        localStorage.setItem('assignByBoqOnly', '1');
-        ///AH022025
-      }
+      
+      localStorage.setItem('assignByBoqOnly', '1');
+
+      // if(localStorage.getItem('assignByBoqOnly') == null)
+      // {
+      //   //AH022025
+      //   // localStorage.setItem('assignByBoqOnly', '0');
+      //   localStorage.setItem('assignByBoqOnly', '1');
+      //   ///AH022025
+      // }
    
       if (this.PackageId != null && this.PackageId != 0) {
         this.GetPackageById(Number(this.PackageId));
