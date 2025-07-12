@@ -153,6 +153,15 @@
                                 <label class="form-check-label" for="flexSwitchCheckDefault">By Boq Item Only</label>
                             </div>
 
+                            <div class="col-sm-2 form-group">
+                                <button type="button" class="btn btn-primary"
+                                    style="float: right; width: 100%;font-size: small;height: 30px;"
+                                    
+                                    (click)="AddResModalOpen()">
+                                    <span *ngIf="isAssigning" class="spinner-border spinner-border-sm mr-1"></span>
+                                    add New Ressource
+                                </button>
+                            </div>
 
                             <!-- <div class="col-sm-6 form-group">
                                 <button type="button" class="btn btn-secondary" style="float: right; width: 100%;"
@@ -252,67 +261,67 @@
     </div>
 
 
-        <!--BOQ Details Modal-->
-        <ng-template #DtlBoqModal let-modal>
-            <form [formGroup]="formEdit">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="modal-basic-title">BOQ Details ...</h4>
-                    <!-- <button type="button" class="btn close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-                        <span aria-hidden="true">&times;</span>
-                    </button> -->
-                </div>
-    
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="form-group p-1">
-                            <ng-container>
-                                <strong>L2 :</strong>{{SelectedOriginalBoqRow.l2}}
-                            </ng-container>
-                        </div>
-                        <div class="form-group p-1">
-                            <ng-container>
-                                <strong>L3 :</strong>{{SelectedOriginalBoqRow.l3}}
-                            </ng-container>
-                        </div>
-                        <div class="form-group p-1">
-                            <ng-container>
-                                <strong>L4 :</strong>{{SelectedOriginalBoqRow.l4}}
-                            </ng-container>
-                        </div>
-                        <div class="form-group p-1">
-                            <ng-container>
-                                <strong>C1 :</strong>{{SelectedOriginalBoqRow.c1}}
-                            </ng-container>
-                        </div>
-                        <div class="form-group p-1">
-                            <ng-container>
-                                <strong>C2 :</strong>{{SelectedOriginalBoqRow.c2}}
-                            </ng-container>
-                        </div>
-                        <div class="form-group p-1">
-                            <ng-container>
-                                <strong>C3 :</strong>{{SelectedOriginalBoqRow.c3}}
-                            </ng-container>
-                        </div>
-                        <div class="form-group p-1">
-                            <ng-container>
-                                <strong>C4 :</strong>{{SelectedOriginalBoqRow.c4}}
-                            </ng-container>
-                        </div>
+    <!--BOQ Details Modal-->
+    <ng-template #DtlBoqModal let-modal>
+        <form [formGroup]="formEdit">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modal-basic-title">BOQ Details ...</h4>
+                <!-- <button type="button" class="btn close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                    <span aria-hidden="true">&times;</span>
+                </button> -->
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group p-1">
+                        <ng-container>
+                            <strong>L2 :</strong>{{SelectedOriginalBoqRow.l2}}
+                        </ng-container>
+                    </div>
+                    <div class="form-group p-1">
+                        <ng-container>
+                            <strong>L3 :</strong>{{SelectedOriginalBoqRow.l3}}
+                        </ng-container>
+                    </div>
+                    <div class="form-group p-1">
+                        <ng-container>
+                            <strong>L4 :</strong>{{SelectedOriginalBoqRow.l4}}
+                        </ng-container>
+                    </div>
+                    <div class="form-group p-1">
+                        <ng-container>
+                            <strong>C1 :</strong>{{SelectedOriginalBoqRow.c1}}
+                        </ng-container>
+                    </div>
+                    <div class="form-group p-1">
+                        <ng-container>
+                            <strong>C2 :</strong>{{SelectedOriginalBoqRow.c2}}
+                        </ng-container>
+                    </div>
+                    <div class="form-group p-1">
+                        <ng-container>
+                            <strong>C3 :</strong>{{SelectedOriginalBoqRow.c3}}
+                        </ng-container>
+                    </div>
+                    <div class="form-group p-1">
+                        <ng-container>
+                            <strong>C4 :</strong>{{SelectedOriginalBoqRow.c4}}
+                        </ng-container>
                     </div>
                 </div>
+            </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" (click)="modal.close('Cancel click')">Close</button>
-                </div>
-            </form>
-        </ng-template>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="modal.close('Cancel click')">Close</button>
+            </div>
+        </form>
+    </ng-template>
 
     <!--Edit Original BOQ Modal-->
     <ng-template #editModal let-modal>
         <form [formGroup]="formEdit" (ngSubmit)="onEditSubmit(true)">
             <div class="modal-header">
-                <h4 class="modal-title" id="modal-basic-title">Edit Qty</h4>
+                <h4 class="modal-title" id="modal-basic-title">Edit BOQ Qty</h4>
                 <!-- <button type="button" class="btn close" aria-label="Close" (click)="modal.dismiss('Cross click')">
                     <span aria-hidden="true">&times;</span>
                 </button> -->
@@ -363,11 +372,11 @@
         </form>
     </ng-template>
 
-    <!--Edit BOQ Resssources Modal-->
+    <!--Edit Resssources Modal-->
     <ng-template #editRessourcesModal let-modal>
         <form [formGroup]="formEdit" (ngSubmit)="onEditSubmit(false)">
             <div class="modal-header">
-                <h4 class="modal-title" id="modal-basic-title">Edit Qty</h4>
+                <h4 class="modal-title" id="modal-basic-title">Edit Res. Qty</h4>
                 <!-- <button type="button" class="btn close" aria-label="Close" (click)="modal.dismiss('Cross click')">
                     <span aria-hidden="true">&times;</span>
                 </button> -->
@@ -417,6 +426,92 @@
             </div>
         </form>
     </ng-template>
+
+
+    <div class="modal fade" id="addResModal" tabindex="-1" aria-labelledby="addResLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+    
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addresLabel">Add New Ressource</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+    
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group p-2">
+                            <label>Division :</label>
+                            <select class="form-select" id="addResDiv" >
+                                <option></option>
+                                <option *ngFor="let item of selectedBOQDivList" [value]="item.sectionO">{{
+                                    item.sectionO }}
+                                <option>
+                            </select>
+                            <!-- <mat-form-field  class="full-width-field">
+                                <mat-label>RES Type</mat-label>
+                                <mat-select [(ngModel)]="addResType">
+                                 <mat-divider></mat-divider>
+                                    <mat-option  [value]=""></mat-option>
+                                    <mat-option  [value]="'L'">L</mat-option>
+                                    <mat-option  [value]="'M'">M</mat-option> 
+                                </mat-select>
+                            </mat-form-field> -->
+
+                        </div>
+                        <div class="form-group p-2">
+                            <label>Ressource Type :</label>
+                            <select class="form-select" id="addResType" >
+                                <option></option>
+                                <option value="L">L</option>
+                                <option value="M">M</option>
+                                <option value="S">S</option>
+                                <option value="E">E</option>
+                                <option value="O">O</option>
+                                <option value="K">K</option>
+                                <option value="X">X</option>
+                                <option value="Y">Y</option>
+                            </select>
+                            <!-- <mat-form-field  class="full-width-field">
+                                <mat-label>RES Type</mat-label>
+                                <mat-select [(ngModel)]="addResType">
+                                 <mat-divider></mat-divider>
+                                    <mat-option  [value]=""></mat-option>
+                                    <mat-option  [value]="'L'">L</mat-option>
+                                    <mat-option  [value]="'M'">M</mat-option> 
+                                </mat-select>
+                            </mat-form-field> -->
+
+                        </div>
+                        <div class="form-group p-2">
+                            <label>Description</label>
+                            <input type="text" class="form-control" id="addResDesc">
+                        </div>
+                        <div class="form-group p-2">
+                            <label>Unit</label>
+                            <input type="text" class="form-control" id="addResUnit">
+                        </div>
+                        <div class="form-group p-2">
+                            <label>Qty</label>
+                            <input type="number" class="form-control" id="addResQty">
+                        </div>
+                        <div class="form-group p-2">
+                            <label>Unit Rate</label>
+                            <input type="number" class="form-control" id="addResUnitRate">
+                        </div>
+                        <div class="form-group p-2">
+                            <label>Discounted U.R.</label>
+                            <input type="number" class="form-control" id="addDiscountedResUnitRate">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="AddResModalClose()">Close</button>
+                    <button type="button" class="btn btn-primary" (click)="AddRessource()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <app-assign-package-filter #assignPackageFilter (searchEvent)="searchFromDrawer($event)" (clearEvent)="clearFilter($event)"></app-assign-package-filter>
 </section>

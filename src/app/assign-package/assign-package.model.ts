@@ -39,6 +39,7 @@ export class BoqModel {
     public boqQty: number = 0;  //Final Qty
     public boqBillQty: number = 0;
     public boqScopeQty: number = 0;
+    public boqUpriceDisc: number = 0;
 }
 
 export class SearchInput {
@@ -118,6 +119,11 @@ export class AssignPackages {
     public assignBoqList: AssignBoqList[] = [];
     public boqSeqs : number[] = [];
     public packageId : number = 0;
+}
+
+export class AddNewBoqRessourceModel {
+    public newRessource: BoqModel;
+    public boqList: AssignPackages;
 }
 
 

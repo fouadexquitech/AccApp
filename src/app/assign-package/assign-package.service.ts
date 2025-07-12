@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
-import { AssignPackages, SearchInput ,OriginalBoqModel,BoqModel} from './assign-package.model';
+import { AssignPackages, SearchInput ,OriginalBoqModel,BoqModel,AddNewBoqRessourceModel} from './assign-package.model';
 
 @Injectable()
 export class AssignPackageService {
@@ -163,6 +163,12 @@ export class AssignPackageService {
         map(res => res), catchError(this.handleError)
     );
     }
+
+    AddNewBoqRessource(item: AddNewBoqRessourceModel,CostConn: string,userName:string): Observable<any> {
+        return this.http.post(this.baseUrl + 'Package/AddNewBoqRessource?CostConn=' + CostConn +'&userName='+userName,item).pipe(
+          map(res => res), catchError(this.handleError)
+        );
+      }
 
     updateOriginalBoqQty(item : OriginalBoqModel,CostConn: string)
     {

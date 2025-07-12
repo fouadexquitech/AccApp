@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
-import { AssignBoqList, AssignOriginalBoqList, AssignPackages, BOQDivList,BOQLevelList, BoqModel, OriginalBoqModel, PackageList, RESDivList, RESPackageList, RessourceList, RESTypeList, SearchInput, SheetDescList } from './assign-package.model';
+import { AssignBoqList, AssignOriginalBoqList, AssignPackages, BOQDivList,BOQLevelList, BoqModel, OriginalBoqModel, PackageList, RESDivList, RESPackageList, RessourceList, RESTypeList, SearchInput, SheetDescList,AddNewBoqRessourceModel } from './assign-package.model';
 import { AssignPackageService } from './assign-package.service';
 import { DataTableDirective} from 'angular-datatables';
 import {environment} from '../../environments/environment';
@@ -107,11 +107,12 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   isExportExcelDryBoq:boolean=false;
   isExportExcelNotAssigned:boolean=false;
   isExportExcelVerif:boolean=false;
+  // addResType:string="";
 // AH28032023
   public boqPackagesData: Object[] = [
     { id: 0, desc: 'All Items' },
     { id: 1, desc: 'With Assigned Packages' },
-    { id: 2, desc: 'Without Assigned Packages' }
+    { id: 5, desc: 'Without Assigned Packages' }
 ];
 
   public dtTrigger: Subject<any> = new Subject<any>();
@@ -198,7 +199,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     }
 // AH28032023
 
-  ngOnInit(): void {
+  ngOnInit(): void 
+{
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
@@ -262,16 +264,16 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     // };
     
     // this.ConnectToDB(this.user.usrLoggedConnString);
-    // let body : any = {
-    //   level2 : this.SearchInput.boqLevel2,
-    //   level3 : this.SearchInput.boqLevel3,
-    //   level4 : this.SearchInput.boqLevel4,
-    //   resType: this.SearchInput.rESType,
-    //   boqDiv: this.SearchInput.bOQDiv
-    // };
+    let body : any = {
+      level2 : this.SearchInput.boqLevel2,
+      level3 : this.SearchInput.boqLevel3,
+      level4 : this.SearchInput.boqLevel4,
+      resType: this.SearchInput.rESType,
+      boqDiv: this.SearchInput.bOQDiv
+    };
 
 
-    // this.GetBOQDivList();
+    this.GetBOQDivList(body);
     // this.GetBOQLevel2List(body);
     // this.GetBOQLevel3List(body);
     // this.GetBOQLevel4List(body);
@@ -1639,6 +1641,58 @@ validateExcelBeforeAssign(){
     });
     this.boqListTable.setFinalTotalPrice(this.FinalTotalPrice);
   }
+
+  AddResModalOpen() {
+    $("#addResModal").modal('show')
+  }
+
+
+  AddResModalClose() {
+    $("#addResModal").modal('hide');
+    var labelInput = document.getElementById("labelInput") as HTMLInputElement;
+    var valueInput = document.getElementById("valueInput") as HTMLInputElement;
+    var valueType = document.getElementById("valueType") as HTMLSelectElement;
+    labelInput.value = null;
+    valueInput.value = null;
+    valueType.selectedIndex = 0;
+  }
+
+  AddRessource() {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+    
+    let newRes = new BoqModel();
+    newRes.boqDiv = (document.getElementById("addResDiv") as HTMLInputElement).value;;
+    newRes.boqCtg = (document.getElementById("addResType") as HTMLInputElement).value;;
+    newRes.resDescription = (document.getElementById("addResDesc") as HTMLInputElement).value;
+    newRes.boqQty = Number((document.getElementById("addResQty") as HTMLInputElement).value);
+    newRes.boqBillQty = Number((document.getElementById("addResQty") as HTMLInputElement).value);
+    newRes.boqScopeQty = Number((document.getElementById("addResQty") as HTMLInputElement).value);
+    newRes.boqUnitMesure = (document.getElementById("addResUnit") as HTMLInputElement).value;
+    newRes.boqUprice = Number((document.getElementById("addResUnitRate") as HTMLSelectElement).value);
+    newRes.boqUpriceDisc =Number(( document.getElementById("addDiscountedResUnitRate") as HTMLSelectElement).value);
+    
+    let userName=this.user.usrId;
+    console.log(userName);
+    console.log(newRes);
+    if (newRes.resDescription !="" && newRes.boqCtg !="" && newRes.boqQty > 0 && newRes.boqUnitMesure !="" && newRes.boqUprice >0 && newRes.boqUpriceDisc>0) {
+      
+      let addNewBoqRessourceModel = new AddNewBoqRessourceModel();
+      this.assignPackages.assignOriginalBoqList=this.SelectedOriginalBoqList;
+      addNewBoqRessourceModel.boqList=this.assignPackages;
+      addNewBoqRessourceModel.newRessource=newRes;
+
+      this.assignPackageService.AddNewBoqRessource(addNewBoqRessourceModel,CostConn,userName).subscribe((data) => {
+        this.AddResModalClose();
+        this.toastr.success("A new Ressource has been added !")
+      });
+    } else {
+      this.toastr.error("Please Fill All Fields !")
+    }
+
+  }
+
+
 
   onEditSubmit(origBoq: boolean) {
     this.submitted = true;
