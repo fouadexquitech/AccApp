@@ -16,25 +16,13 @@
       </mat-cell>
       <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
+
     <ng-container matColumnDef="boqItem">
       <mat-header-cell *matHeaderCellDef>
         BOQ
       </mat-header-cell>
-      <mat-cell *matCellDef="let item">{{ item.boqItem }}</mat-cell>
-      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
-    </ng-container>
-    <ng-container matColumnDef="boqDiv">
-      <mat-header-cell *matHeaderCellDef>
-        Div
-      </mat-header-cell>
-      <mat-cell *matCellDef="let item">{{ item.boqDiv }}</mat-cell>
-      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
-    </ng-container>
-    <ng-container matColumnDef="boqCtg">
-      <mat-header-cell *matHeaderCellDef>
-        Type
-      </mat-header-cell>
-      <mat-cell *matCellDef="let item">{{ item.boqCtg }}</mat-cell>
+      <mat-cell *matCellDef="let item">
+        <span [ngClass]="item.boqInsertedFromVendan ==1 ? 'text-danger' : ''">{{ item.boqItem }}</span></mat-cell>
       <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
@@ -42,8 +30,25 @@
       <mat-header-cell *matHeaderCellDef  style="width: 200px;">
         Resource Description
       </mat-header-cell>
-      <mat-cell *matCellDef="let item" style="width: 200px;">{{ item.resDescription }}</mat-cell>
+      <mat-cell *matCellDef="let item" style="width: 200px;">
+        <span [ngClass]="item.boqInsertedFromVendan ==1 ? 'text-danger' : ''">{{ item.resDescription }}</span></mat-cell>
       <mat-footer-cell *matFooterCellDef style="width: 200px;"></mat-footer-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="boqDiv">
+      <mat-header-cell *matHeaderCellDef>
+        Div
+      </mat-header-cell>
+      <mat-cell *matCellDef="let item">{{ item.boqDiv }}</mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="boqCtg">
+      <mat-header-cell *matHeaderCellDef>
+        Type
+      </mat-header-cell>
+      <mat-cell *matCellDef="let item">{{ item.boqCtg }}</mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
     <ng-container matColumnDef="boqUnitMesure">
@@ -84,7 +89,9 @@
       <mat-header-cell *matHeaderCellDef>
         Unit Price
       </mat-header-cell>
-      <mat-cell *matCellDef="let item">{{ item.boqUprice | number: '1.0-2' }}</mat-cell>
+      <mat-cell *matCellDef="let item">{{ item.boqUprice | number: '1.0-2' }}
+      <!-- <a class="btn btn-link p-2" title="Edit" (click)="editUnitPrice(item)" *ngIf="item.boqInsertedFromVendan==1"><i class="fa fa-edit"></i></a> -->
+      </mat-cell>
       <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 

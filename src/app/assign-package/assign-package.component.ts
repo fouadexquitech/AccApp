@@ -84,6 +84,9 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   mode : string = 'add';
   EditBoqQtyModalLabel : string = '';
   formEdit: FormGroup;
+  formEditUnitPriceRes: FormGroup;
+  form: FormGroup;
+  formTrade:FormGroup;
   submitted : boolean = false;
   updating : boolean = false;
   currentOrigBoq : OriginalBoqModel;
@@ -91,8 +94,6 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   modalReference : any;
   modalOptions:NgbModalOptions;
   closeResult: string;
-  form: FormGroup;
-  formTrade:FormGroup;
   isValidatingExcel : boolean = false;
   PackageName = "";
   FilePath = "";
@@ -685,7 +686,30 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.modalReference.result.then((result : any) => {
       if(!result)
       {
-          
+      }
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason : any) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
+  openUnitPriceEditModal(event : any)
+  {
+    console.log(10);
+    this.mode = 'edit';
+    this.SelectedBoqRow = event.boqItem;
+    this.EditBoqQtyModalLabel = 'Edit Boq Unit Price';
+
+    this.formEditUnitPriceRes = this.formBuilder.group({
+      // boq: [item.itemO, Validators.required],
+      QtyScope: [event.boqItem.boqUprice, [Validators.required]] ,
+      // billQtyO :     [event.boqItem.boq] 
+    });
+    this.currentBoqRes = event.boqItem;
+    this.modalReference = this.modalService.open(this.editRessourcesModal, this.modalOptions);
+    this.modalReference.result.then((result : any) => {
+      if(!result)
+      {
       }
       this.closeResult = `Closed with: ${result}`;
     }, (reason : any) => {
@@ -1581,7 +1605,7 @@ validateExcelBeforeAssign(){
   }
     //convenience getter for easy access to form fields
     get f() { return this.formEdit.controls; }
-
+    get ff() { return this.formEditUnitPriceRes.controls; }
 
   editOriginalBoqQty(content : any, item : OriginalBoqModel)
   {
@@ -1675,24 +1699,48 @@ validateExcelBeforeAssign(){
     let userName=this.user.usrId;
     console.log(userName);
     console.log(newRes);
-    if (newRes.resDescription !="" && newRes.boqCtg !="" && newRes.boqQty > 0 && newRes.boqUnitMesure !="" && newRes.boqUprice >0 && newRes.boqUpriceDisc>0) {
-      
+    if (newRes.resDescription !="" && newRes.boqCtg !="" && newRes.boqQty > 0 && newRes.boqUnitMesure !="" && newRes.boqUprice >0 && newRes.boqUpriceDisc>0) 
+    { 
       let addNewBoqRessourceModel = new AddNewBoqRessourceModel();
       this.assignPackages.assignOriginalBoqList=this.SelectedOriginalBoqList;
       addNewBoqRessourceModel.boqList=this.assignPackages;
       addNewBoqRessourceModel.newRessource=newRes;
 
-      this.assignPackageService.AddNewBoqRessource(addNewBoqRessourceModel,CostConn,userName).subscribe((data) => {
+        this.assignPackageService.AddNewBoqRessource(addNewBoqRessourceModel,CostConn,userName).subscribe((data) => {
         this.AddResModalClose();
         this.toastr.success("A new Ressource has been added !")
       });
-    } else {
+    } 
+    else 
+    {
       this.toastr.error("Please Fill All Fields !")
     }
-
   }
 
+  onEditUnitPriceResSubmit() {
+    this.submitted = true;
+    if (this.formEditUnitPriceRes.invalid) { return; }
 
+    this.updating = true;
+    this.currentBoqRes.boqUprice = this.ff.resUnitPrice.value;
+
+    let CostConn = this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
+    this.assignPackageService.updateBoqRes(this.currentBoqRes, CostConn,2).subscribe(response => {
+      this.updating = false;
+      if (response) {
+        this.toastr.success('Updated successfuly');
+        //this.onSearch();
+        this.recalculateFinalTotals();
+        this.modalReference.close();
+      }
+      else {
+        this.toastr.error('An error occured');
+      }
+    });
+
+  }
 
   onEditSubmit(origBoq: boolean) {
     this.submitted = true;
@@ -1721,13 +1769,12 @@ validateExcelBeforeAssign(){
       });
     }
     else {
-
       this.currentBoqRes.boqScopeQty = this.f.QtyScope.value;
 
       let CostConn=this.user.usrLoggedConnString;
       this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-      this.assignPackageService.updateBoqResQty(this.currentBoqRes,CostConn).subscribe(response => {
+      this.assignPackageService.updateBoqRes(this.currentBoqRes,CostConn,1).subscribe(response => {
         this.updating = false;
         if (response) {
           this.toastr.success('Updated successfuly');

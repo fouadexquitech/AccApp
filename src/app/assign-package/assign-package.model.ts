@@ -40,6 +40,7 @@ export class BoqModel {
     public boqBillQty: number = 0;
     public boqScopeQty: number = 0;
     public boqUpriceDisc: number = 0;
+    public boqInsertedFromVendan: number = 0;
 }
 
 export class SearchInput {

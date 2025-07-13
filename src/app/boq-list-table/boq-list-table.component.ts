@@ -12,7 +12,8 @@ export class BoqListTableComponent implements OnInit {
   @Output() selectBoqEvent = new EventEmitter<any>();
   @Output() selectAllBoqEvent = new EventEmitter<any>();
   @Output() editQtyEvent = new EventEmitter<any>();
-
+  @Output() editUnitPriceEvent = new EventEmitter<any>();
+  
   ELEMENT_DATA: any[] = [];
 
   dataSource: MatTableDataSource<any>;
@@ -48,6 +49,13 @@ export class BoqListTableComponent implements OnInit {
   editQty(item : any)
   {
      this.editQtyEvent.emit({
+      boqItem : item
+     });
+  }
+
+  editUnitPrice(item : any)
+  {
+     this.editUnitPriceEvent.emit({
       boqItem : item
      });
   }

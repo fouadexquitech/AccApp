@@ -255,7 +255,7 @@
         
         <div class="row">
             <div class="col-lg-12">
-                <app-boq-list-table #boqListTable (selectBoqEvent)="onSelectBoqOnTable($event)" (selectAllBoqEvent)="onSelectAllBoqOnTable($event)" (editQtyEvent)="openQtyEditModal($event)"></app-boq-list-table>
+                <app-boq-list-table #boqListTable (selectBoqEvent)="onSelectBoqOnTable($event)" (selectAllBoqEvent)="onSelectAllBoqOnTable($event)" (editQtyEvent)="openQtyEditModal($event)" (editUnitPriceEvent)="openUnitPriceEditModal($event)"></app-boq-list-table>
             </div>
         </div>
     </div>
@@ -317,7 +317,7 @@
         </form>
     </ng-template>
 
-    <!--Edit Original BOQ Modal-->
+    <!--Edit Qty Original BOQ Modal-->
     <ng-template #editModal let-modal>
         <form [formGroup]="formEdit" (ngSubmit)="onEditSubmit(true)">
             <div class="modal-header">
@@ -372,7 +372,7 @@
         </form>
     </ng-template>
 
-    <!--Edit Resssources Modal-->
+    <!--Edit Qty Resssources Modal-->
     <ng-template #editRessourcesModal let-modal>
         <form [formGroup]="formEdit" (ngSubmit)="onEditSubmit(false)">
             <div class="modal-header">
@@ -427,7 +427,38 @@
         </form>
     </ng-template>
 
+    <!--Edit Unit Price Ressources Modal-->
+    <ng-template #editUnitPriceResModal let-modal>
+        <form [formGroup]="formEditUnitPriceRes" (ngSubmit)="onEditUnitPriceResSubmit()">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modal-basic-title">Edit Unit Price</h4>
+            </div>
 
+            <div class="modal-body">
+                <div class="row">                   
+                    <div class="form-group p-2">
+                        <label>Unit Price</label>
+                        <input type="number" class="form-control" formControlName="resUnitPrice"
+                            [ngClass]="{ 'is-invalid': submitted && f.resUnitPrice.errors  || (f.resUnitPrice.value < 0 )}">
+                        <div *ngIf="submitted && f.resUnitPrice.errors || (f.resUnitPrice.value < 0 ) "
+                            class="invalid-feedback">
+                            <div *ngIf="f.resUnitPrice.errors?.required">Unit Price is required</div>
+                            <div *ngIf="f.resUnitPrice.value < 0 ">Invalid Unit Price</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <ng-container *ngIf="f.resUnitPrice.value < 0">
+                    <button type="submit" class="btn btn-primary" [disabled]="updating">
+                        <span *ngIf="updating" class="spinner-border spinner-border-sm mr-1"></span>Update</button>
+                </ng-container>
+                <button type="button" class="btn btn-secondary" (click)="modal.close('Cancel click')">Close</button>
+            </div>
+        </form>
+    </ng-template>
+
+    <!--Add New Ressource Modal-->
     <div class="modal fade" id="addResModal" tabindex="-1" aria-labelledby="addResLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
