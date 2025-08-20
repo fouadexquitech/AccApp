@@ -18,11 +18,12 @@
     </ng-container>
 
     <ng-container matColumnDef="boqItem">
-      <mat-header-cell *matHeaderCellDef>
+      <mat-header-cell *matHeaderCellDef >
         BOQ
       </mat-header-cell>
-      <mat-cell *matCellDef="let item">
-        <span [ngClass]="item.boqInsertedFromVendan ==1 ? 'text-danger' : ''">{{ item.boqItem }}</span></mat-cell>
+      <mat-cell *matCellDef="let item"  [ngStyle]="item.boqInsertedFromVendan == 1 ? {'background-color': 'aquamarine'} : {}">
+       {{ item.boqItem }}
+      </mat-cell>
       <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
@@ -30,12 +31,13 @@
       <mat-header-cell *matHeaderCellDef  style="width: 200px;">
         Resource Description
       </mat-header-cell>
-      <mat-cell *matCellDef="let item" style="width: 200px;">
-        <span [ngClass]="item.boqInsertedFromVendan ==1 ? 'text-danger' : ''">{{ item.resDescription }}</span></mat-cell>
+      <mat-cell *matCellDef="let item" style="text-align: left;width: 200px;">
+       {{ item.resDescription }}
+      </mat-cell>
       <mat-footer-cell *matFooterCellDef style="width: 200px;"></mat-footer-cell>
     </ng-container>
 
-    <ng-container matColumnDef="boqDiv">
+    <ng-container matColumnDef="boqDiv" >
       <mat-header-cell *matHeaderCellDef>
         Div
       </mat-header-cell>
@@ -90,7 +92,7 @@
         Unit Price
       </mat-header-cell>
       <mat-cell *matCellDef="let item">{{ item.boqUprice | number: '1.0-2' }}
-      <!-- <a class="btn btn-link p-2" title="Edit" (click)="editUnitPrice(item)" *ngIf="item.boqInsertedFromVendan==1"><i class="fa fa-edit"></i></a> -->
+      <a class="btn btn-link p-2" title="Edit" (click)="editUnitPrice(item)" *ngIf="item.boqInsertedFromVendan==1"><i class="fa fa-edit"></i></a>
       </mat-cell>
       <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>

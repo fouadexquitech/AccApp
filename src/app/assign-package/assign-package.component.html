@@ -154,7 +154,7 @@
                             </div>
 
                             <div class="col-sm-2 form-group">
-                                <button type="button" class="btn btn-primary"
+                                <button type="button" class="btn btn-primary" [disabled]="(SelectedOriginalBoqList.length == 0 && SelectedBoqList.length == 0)"
                                     style="float: right; width: 100%;font-size: small;height: 30px;"
                                     
                                     (click)="AddResModalOpen()">
@@ -193,7 +193,8 @@
                                     <th scope="col"></th>
                                     <th scope="col">Row#</th>
                                     <th scope="col">Div</th>
-                                    <th scope="col">BOQ Item</th>
+                                    <th scope="col">BOQ SN</th>
+                                    <th scope="col">BOQ Ref</th>
                                     <th scope="col" style="width: 30%;">BOQ Description</th>
                                     <!-- <th scope="col">Trade Description</th> -->
                                     <th scope="col" class="text-center">Unit</th>
@@ -228,7 +229,8 @@
                                         (click)="editOriginalBoqQty(DtlBoqModal,item)" ><i class="fa-solid fa-circle-info"></i></a></td>
                                     <td style="width:3%;">{{item.rowNumber}}</td>
                                     <td style="width:3%;">{{item.sectionO}}</td>
-                                    <td style="width:15%;">{{item.itemO}}</td>
+                                    <td style="width:5%;">{{item.boqRefNumber}}</td>
+                                    <td style="width:5%;">{{item.itemO}}</td>
                                     <td style="width:30%;">{{item.descriptionO}}</td>
                                     <!-- <td>{{item.obTradeDesc}}</td> -->
                                     <td class="text-center">{{item.unitO}}</td>
@@ -439,17 +441,17 @@
                     <div class="form-group p-2">
                         <label>Unit Price</label>
                         <input type="number" class="form-control" formControlName="resUnitPrice"
-                            [ngClass]="{ 'is-invalid': submitted && f.resUnitPrice.errors  || (f.resUnitPrice.value < 0 )}">
-                        <div *ngIf="submitted && f.resUnitPrice.errors || (f.resUnitPrice.value < 0 ) "
+                            [ngClass]="{ 'is-invalid': submitted && ff.resUnitPrice.errors  || (ff.resUnitPrice.value < 0 )}">
+                        <div *ngIf="submitted && ff.resUnitPrice.errors || (ff.resUnitPrice.value < 0 ) "
                             class="invalid-feedback">
-                            <div *ngIf="f.resUnitPrice.errors?.required">Unit Price is required</div>
-                            <div *ngIf="f.resUnitPrice.value < 0 ">Invalid Unit Price</div>
+                            <div *ngIf="ff.resUnitPrice.errors?.required">Unit Price is required</div>
+                            <div *ngIf="ff.resUnitPrice.value < 0 ">Invalid Unit Price</div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <ng-container *ngIf="f.resUnitPrice.value < 0">
+                <ng-container *ngIf="ff.resUnitPrice.value >= 0">
                     <button type="submit" class="btn btn-primary" [disabled]="updating">
                         <span *ngIf="updating" class="spinner-border spinner-border-sm mr-1"></span>Update</button>
                 </ng-container>
@@ -530,7 +532,7 @@
                             <input type="number" class="form-control" id="addResUnitRate">
                         </div>
                         <div class="form-group p-2">
-                            <label>Discounted U.R.</label>
+                            <label>% Discount</label>
                             <input type="number" class="form-control" id="addDiscountedResUnitRate">
                         </div>
                     </div>

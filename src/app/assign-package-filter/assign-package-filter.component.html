@@ -120,14 +120,17 @@ width: 600px !important; min-width: 0px !important;" fixed
             </div>
         </div>
         <div class="row p-2">
-            <div class="col-lg-6 p-2 form-group">
-                <input type="text" #inputText class="form-control" [(ngModel)]="SearchInput.bOQItem" placeholder="BOQ Item"
+            <div class="col-lg-3 p-2 form-group">
+                <input type="text" #inputText class="form-control" [(ngModel)]="SearchInput.boqRefNumber" placeholder="BOQ SN"
+                    [ngClass]="{'selected-input': SearchInput.boqRefNumber }">
+            </div>   
+            <div class="col-lg-3 p-2 form-group">
+                <input type="text" #inputText class="form-control" [(ngModel)]="SearchInput.bOQItem" placeholder="BOQ Ref"
                     [ngClass]="{'selected-input': SearchInput.bOQItem }">
             </div>
             <div class="col-lg-6 p-2 form-group">
                 <input type="text" #inputText1 class="form-control" [(ngModel)]="SearchInput.bOQDesc" placeholder="BOQ Desc"
-                                        [ngClass]="{'selected-input': SearchInput.bOQDesc }"
-                                       >
+                    [ngClass]="{'selected-input': SearchInput.bOQDesc }">                             
             </div>
         </div>
         <div class="row p-2">

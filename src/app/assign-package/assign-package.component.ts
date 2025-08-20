@@ -30,6 +30,7 @@ declare var $: any;
 export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit {
   @ViewChild('assignPackageFilter') assignPackageFilter : AssignPackageFilterComponent;
   @ViewChild('editRessourcesModal') editRessourcesModal : any;
+  @ViewChild('editUnitPriceResModal') editUnitPriceResModal : any;
   @ViewChild('boqListTable') boqListTable : BoqListTableComponent;
   isShown: boolean = false; // hidden by default
   isAssignShown: boolean = false; // hidden by default
@@ -523,6 +524,10 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     this.boqListTable?.setFinalTotalPrice(0);
     //AH31122024
 
+    //AH082025
+    this.SelectedOriginalBoqList= [];
+    ///AH082025
+
     this.OriginalBoqList = [];
     this.displayedResList = [];
     this.boqFinalTotal = 0;
@@ -674,7 +679,11 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   {
     this.mode = 'edit';
     this.SelectedBoqRow = event.boqItem;
-    this.EditBoqQtyModalLabel = 'Edit Boq Qty';
+
+    if(this.SelectedBoqRow.boqInsertedFromVendan==1)
+      this.EditBoqQtyModalLabel = 'Edit Unit Price';
+    else
+      this.EditBoqQtyModalLabel = 'Edit Boq Qty';
 
     this.formEdit = this.formBuilder.group({
       // boq: [item.itemO, Validators.required],
@@ -695,18 +704,16 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   openUnitPriceEditModal(event : any)
   {
-    console.log(10);
+    console.log(100);
     this.mode = 'edit';
     this.SelectedBoqRow = event.boqItem;
     this.EditBoqQtyModalLabel = 'Edit Boq Unit Price';
-
+ 
     this.formEditUnitPriceRes = this.formBuilder.group({
-      // boq: [item.itemO, Validators.required],
-      QtyScope: [event.boqItem.boqUprice, [Validators.required]] ,
-      // billQtyO :     [event.boqItem.boq] 
+      resUnitPrice: [event.boqItem.boqUprice, [Validators.required]] ,
     });
     this.currentBoqRes = event.boqItem;
-    this.modalReference = this.modalService.open(this.editRessourcesModal, this.modalOptions);
+    this.modalReference = this.modalService.open(this.editUnitPriceResModal, this.modalOptions);
     this.modalReference.result.then((result : any) => {
       if(!result)
       {
@@ -1667,6 +1674,14 @@ validateExcelBeforeAssign(){
   }
 
   AddResModalOpen() {
+    const firstBoqDiv = this.BoqList[0].boqDiv;
+    
+    // Set dropdown value using native DOM
+    const selectElement = document.getElementById("addResDiv") as HTMLSelectElement;
+    if (selectElement) {
+      selectElement.value = firstBoqDiv;
+    }
+
     $("#addResModal").modal('show')
   }
 
@@ -1686,8 +1701,8 @@ validateExcelBeforeAssign(){
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     
     let newRes = new BoqModel();
-    newRes.boqDiv = (document.getElementById("addResDiv") as HTMLInputElement).value;;
-    newRes.boqCtg = (document.getElementById("addResType") as HTMLInputElement).value;;
+    newRes.boqDiv = (document.getElementById("addResDiv") as HTMLInputElement).value;
+    newRes.boqCtg = (document.getElementById("addResType") as HTMLInputElement).value;
     newRes.resDescription = (document.getElementById("addResDesc") as HTMLInputElement).value;
     newRes.boqQty = Number((document.getElementById("addResQty") as HTMLInputElement).value);
     newRes.boqBillQty = Number((document.getElementById("addResQty") as HTMLInputElement).value);
@@ -1706,10 +1721,18 @@ validateExcelBeforeAssign(){
       addNewBoqRessourceModel.boqList=this.assignPackages;
       addNewBoqRessourceModel.newRessource=newRes;
 
-        this.assignPackageService.AddNewBoqRessource(addNewBoqRessourceModel,CostConn,userName).subscribe((data) => {
+      this.assignPackageService.AddNewBoqRessource(addNewBoqRessourceModel, CostConn, userName).subscribe((data) => {
+        if (data) 
+        {
+          this.toastr.success("A new Ressource has been added !");
+          this.GetOriginalBoqList(this.SearchInput);
+        }
+        else
+          this.toastr.error("You have no Permission !");
+
         this.AddResModalClose();
-        this.toastr.success("A new Ressource has been added !")
       });
+      
     } 
     else 
     {

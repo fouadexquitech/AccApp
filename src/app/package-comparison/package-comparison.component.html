@@ -73,7 +73,7 @@
                 </div>
     
                 <div class="col-sm-2 form-group">                   
-                    <label>BOQ Item</label>                       
+                    <label>BOQ Ref</label>                       
                     <input type="text" class="form-control" [(ngModel)]="SearchInput.bOQItem">         
                 </div>
     
@@ -433,8 +433,6 @@
         <tr>
           <td [attr.colspan]="totalPackageSuppliersPrice.length + 4">
             <table class="table table-bordered">
-            
-                  
               <tr *ngFor="let cond of techConditionsReplies ;  let i = index">
                 <td style="width:70%">{{cond.description}}</td>
                 <td *ngFor="let reply of cond.replies" style="width:30%">
@@ -445,10 +443,8 @@
                   </table>
                 </td>
               </tr>
-        </table>
+            </table>
           </td>
-         
-        
         </tr>
         <tr>
           <td [attr.colspan]="totalPackageSuppliersPrice.length + 4"><strong>Commercial Conditions</strong></td>

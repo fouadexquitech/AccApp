@@ -20,6 +20,7 @@ export class OriginalBoqModel {
     public c2: string = "";
     public c3: string = "";
     public c4: string = "";
+    public boqRefNumber: string = "";
 }
 
 export class BoqModel {
@@ -65,6 +66,7 @@ export class SearchInput {
     public isRessourcesAssigned: number = 0;
     public costDB :string='';
     public boqStatus: string = "";
+    public boqRefNumber: string = "";
 }
 
 export class BOQDivList {

@@ -112,7 +112,7 @@ export class PackageComparisonNovoComponent implements OnInit {
   selectedBoqItems: string[] = [];
   selectedGroups: number[] = [];
   columns: string[] = ['Resource', 'Unit', 'Qty', 'U. price', 'T. Price'];
-  columnsByBoq: string[] = ['Boq Item', 'Unit', 'Qty', 'U. price', 'T. Price'];
+  columnsByBoq: string[] = ['Boq Ref', 'Unit', 'Qty', 'U. price', 'T. Price'];
   isAssigningSupplierRessource: boolean = false;
   isAssigningSupplierBoq: boolean = false;
   isAssigningSupplierList: boolean = false;
