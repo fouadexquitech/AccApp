@@ -379,7 +379,7 @@
                           >Bud. Qty</ng-container
                         >
                         <ng-container *ngIf="sup.supplierName != 'Ideal'"
-                          >Assigned Qty 
+                          >Qty As.
                         </ng-container>
                       </td>
                       <td
@@ -446,8 +446,8 @@
                     </td>
                     <!-- <td style="width: 200px" class="text-center">
                       {{ resource.boqSeq }}
-                    </td> -->
-                    <td style="width: 300px" class="text-left">
+                    </td>
+                    <td style="width: 300px" class="text-center">
                       {{ resource.resourceDescription }}
                     </td>
                     <td style="width: 50px" class="text-center">
@@ -926,11 +926,11 @@
                     </tr>
                     <tr>
                       <td class="text-center">
-                        <ng-container *ngIf="sup.supplierName == 'Ideal'">
-                          Bud. Qty
-                        </ng-container>                       
-                        <ng-container *ngIf="sup.supplierName != 'Ideal'">
-                          Assigned Qty 
+                        <ng-container *ngIf="sup.supplierName == 'Ideal'"
+                          >Qty Bud.</ng-container
+                        >
+                        <ng-container *ngIf="sup.supplierName != 'Ideal'"
+                          >Qty As.
                         </ng-container>
                       </td>
                       <td class="text-center">
