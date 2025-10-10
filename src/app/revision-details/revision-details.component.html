@@ -51,61 +51,61 @@
              <table class="display table table-bordered" *ngIf="level.items.length > 0">
                 <tr>
                     <th>BOQ</th>
-                    <th>Item Description</th>
-                    <th>Alternative</th>
-                    <th>New</th>
-                    <th>ACC Qty</th>
-                    <th>Supp Qty</th>
-                    <th>U. Price</th>
-                    <th>Discount %</th>
-                    <th>Final U. Price</th>
-                    <th>Total Price</th>
+                    <th style="width:20%;text-align:left">Item Description</th>
+                    <th style="text-align:center">Alternative</th>
+                    <th style="text-align:center">New</th>
+                    <th style="text-align:center">ACC Qty</th>
+                    <th style="text-align:center">Supp Qty</th>
+                    <th style="text-align:center">U. Price</th>
+                    <th style="text-align:center">Discount %</th>
+                    <th style="text-align:center">Final U. Price</th>
+                    <th style="text-align:center">Total Price</th>
                     <th>Comments</th>
                 </tr>
                 <tr *ngFor="let item of level.items; let i = index" [ngStyle]="{'background-color': item.isAlternative ? '#0c74784d' : (item.isNew ? '#bfa6544d' : null) }">
                   <td>{{item.rdBoqItem}}</td>
-                  <td>{{item.rdItemDescription}}</td>
+                  <td style="width:20%;text-align:left">{{item.rdItemDescription}}</td>
                   <td><i class="fa fa-check" *ngIf="item.isAlternative"></i></td>
                   <td><i class="fa fa-check" *ngIf="item.isNew"></i></td>
-                  <td>{{item.rdQuotationQty | number : '1.0-2' }}</td>
-                  <td>{{item.rdQty | number : '1.0-2' }}</td>
-                  <td>{{item.rdPrice | number : '1.0-2' }}</td>
-                  <td>{{item.rdDiscount | number : '1.0-2' }}</td>
-                  <td>{{item.rdPriceAfterDiscount | number : '1.0-2'}}</td>
-                  <td>{{item.rdTotalPrice | number : '1.0-0'}}</td>
-                  <td>{{item.comments}}</td>
+                  <td style="text-align:center">{{item.rdQuotationQty | number : '1.0-2' }}</td>
+                  <td style="text-align:center">{{item.rdQty | number : '1.0-2' }}</td>
+                  <td style="text-align:center">{{item.rdPrice | number : '1.0-2' }}</td>
+                  <td style="text-align:center">{{item.rdDiscount | number : '1.0-2' }}</td>
+                  <td style="text-align:center">{{item.rdPriceAfterDiscount | number : '1.0-2'}}</td>
+                  <td style="text-align:center">{{item.rdTotalPrice | number : '1.0-0'}}</td>
+                  <td style="text-align:left">{{item.comments}}</td>
                 </tr>
             </table>
           </div>
           <div class="card-body" *ngIf="psByBoq == 0">
             <table class="display table table-bordered" *ngIf="level.items.length > 0">
               <tr>
-                <th>BOQ</th>
-                <th>Item Description</th>
-                <th>Resource Desc.</th>
-                <th>Alternative</th>
-                <th>New</th>
-                <th>ACC Qty</th>
-                <th>Supp Qty</th>
-                <th>U. Price</th>
-                <th>Discount %</th>
-                <th>Final U. Price</th>
-                <th>Total Price</th>
+                <!-- <th>BOQ</th>
+                <th>Item Description</th> -->
+                <th style="width:20%">Resource Desc.</th>
+                <th style="text-align:center">is Alt?</th>
+                <th style="text-align:center">is New?</th>
+                <th style="text-align:center">ACC Qty</th>
+                <th style="text-align:center">Supp Qty</th>
+                <th style="text-align:center">U. Price</th>
+                <th style="text-align:center">Discount %</th>
+                <th style="text-align:center">Final U. Price</th>
+                <th style="text-align:center">Total Price</th>
                 <th>Comment</th>
               </tr>
               <tr *ngFor="let item of level.items; let i = index" [ngStyle]="{'background-color': item.isAlternative ? '#0c74784d' : (item.isNew ? '#bfa6544d' : null) }">
-                <td>{{item.rdBoqItem}}</td>
-                <td>{{item.rdBoqItemDescription}}</td>
-                <td>{{item.rdItemDescription}}</td>
-                <td><i class="fa fa-check" *ngIf="item.isAlternative"></i></td>
-                <td><i class="fa fa-check" *ngIf="item.isNew"></i></td>
-                <td>{{item.rdQuotationQty | number : '1.0-2' }}</td>
-                <td>{{item.rdQty | number : '1.0-2'}}</td>
-                <td>{{item.rdPrice | number : '1.0-2' }}</td>
-                <td>{{item.rdDiscount | number : '1.0-2' }}</td>
-                <td>{{item.rdPriceAfterDiscount | number : '1.0-2'}}</td>
-                <td>{{item.rdTotalPrice | number : '1.0-0'}}</td>
-                <td>{{item.comments}}</td>
+                <!-- <td>{{item.rdBoqItem}}</td>
+                <td>{{item.rdBoqItemDescription}}</td> -->
+                <td style="width:20%;text-align:left">{{item.rdItemDescription}}</td>
+                <td style="text-align:center"><i class="fa fa-check" *ngIf="item.isAlternative"></i></td>
+                <td style="text-align:center"><i class="fa fa-check" *ngIf="item.isNew"></i></td>
+                <td style="text-align:center">{{item.rdQuotationQty | number : '1.0-2' }}</td>
+                <td style="text-align:center">{{item.rdQty | number : '1.0-2'}}</td>
+                <td style="text-align:center">{{item.rdPrice | number : '1.0-2' }}</td>
+                <td style="text-align:center">{{item.rdDiscount | number : '1.0-2' }}</td>
+                <td style="text-align:center">{{item.rdPriceAfterDiscount | number : '1.0-2'}}</td>
+                <td style="text-align:center">{{item.rdTotalPrice | number : '1.0-0'}}</td>
+                <td style="text-align:left">{{item.comments}}</td>
               </tr>
           </table>
           </div>

@@ -35,7 +35,7 @@
           <div class="card-header">
             <div class="row">
               <div class="col-sm-2 form-group" *ngIf="byBoq">
-                <h5 style="display: inline-block">
+                <h6 style="display: inline-block">
                   <label>Group By</label>&nbsp;
                   <label>
                     <input
@@ -56,7 +56,7 @@
                     />
                     C2
                   </label>
-                </h5>
+                </h6>
               </div>
               <div class="col-sm-2 form-group">
                 <h5 style="display: inline-block">
@@ -137,9 +137,7 @@
                   [disabled]="generatingContract"
                 >
                   <span *ngIf="generatingContract"> Generating...</span>
-                  <span *ngIf="!generatingContract"
-                    >Generate Contracts BOQ</span
-                  >
+                  <span *ngIf="!generatingContract" style="font-size:12px;" >Generate Contracts BOQ</span>
                 </button>
               </div>
             </div>
@@ -333,7 +331,7 @@
                     (change)="selectAllResources($event.target)"
                   />
                 </th>
-                <th class="text-center" style="width: 200px">Resource Seq</th>
+                <!-- <th class="text-center" style="width: 200px">Resource Seq</th> -->
                 <th class="text-center" style="width: 300px">
                   Resource Description
                 </th>
@@ -389,7 +387,7 @@
                           >Qty Bud.</ng-container
                         >
                         <ng-container *ngIf="sup.supplierName != 'Ideal'"
-                          >Qty As.
+                          >Qty Assigned
                         </ng-container>
                       </td>
                       <td
@@ -454,9 +452,9 @@
 
                       <input type="hidden" [value]="resource.boqSeq" />
                     </td>
-                    <td style="width: 200px" class="text-center">
+                    <!-- <td style="width: 200px" class="text-center">
                       {{ resource.boqSeq }}
-                    </td>
+                    </td> -->
                     <td style="width: 300px" class="text-center">
                       {{ resource.resourceDescription }}
                     </td>
@@ -631,7 +629,7 @@
                   </tr>
                   <tr style="background-color: #ddd">
                     <td style="width: 50px"></td>
-                    <td style="width: 200px"></td>
+                    <!-- <td style="width: 200px"></td> -->
                     <th style="width: 300px" class="text-center">
                       {{ level.c_Description }}
                     </th>
@@ -673,7 +671,7 @@
                 <tr>
                   <!-- <td colspan="7"><strong>Sub-Total</strong></td> -->
                   <td class="text-center" style="width: 50px"></td>
-                  <td class="text-center" style="width: 200px"></td>
+                  <!-- <td class="text-center" style="width: 200px"></td> -->
                   <th class="text-center" style="width: 300px">Sub-Total</th>
                   <td class="text-center" style="width: 50px"></td>
                   <th class="text-center" style="width: 50px"></th>
@@ -701,7 +699,7 @@
                   <!-- <td colspan="7"><strong>Additional Fees</strong></td> -->
 
                   <td class="text-center" style="width: 50px"></td>
-                  <td class="text-center" style="width: 200px"></td>
+                  <!-- <td class="text-center" style="width: 200px"></td> -->
                   <th class="text-center" style="width: 300px">
                     Additional Fees
                   </th>
@@ -749,7 +747,7 @@
                   <!-- <td colspan="5"><strong></strong></td> -->
 
                   <td class="text-center" style="width: 50px"></td>
-                  <td class="text-center" style="width: 200px"></td>
+                  <!-- <td class="text-center" style="width: 200px"></td> -->
                   <th class="text-center" style="width: 300px">Grand Total</th>
                   <td class="text-center" style="width: 50px"></td>
                   <th class="text-center" style="width: 50px"></th>
@@ -979,7 +977,7 @@
                           >Qty Bud.</ng-container
                         >
                         <ng-container *ngIf="sup.supplierName != 'Ideal'"
-                          >Qty As.
+                          >Qty Assigned
                         </ng-container>
                       </td>
                       <td
@@ -1827,9 +1825,9 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="generateContractModalLabel">
+          <h3 class="modal-title" id="generateContractModalLabel">
             Generate Contracts BOQ
-          </h5>
+          </h3>
           <button
             type="button"
             class="btn-close"
@@ -1937,7 +1935,7 @@
                 *ngIf="isAssigningSupplierList"
                 class="spinner-border spinner-border-sm mr-1"
               ></span>
-              Save2
+              Save
             </button>
           </div>
         </div>

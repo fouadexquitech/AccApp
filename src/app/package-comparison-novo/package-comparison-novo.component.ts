@@ -791,14 +791,7 @@ export class PackageComparisonNovoComponent implements OnInit {
           });
       } else {
         this.packageComparisonService
-          .GetComparisonSheetByBoq_Excel(
-            this.packageId,
-            this.SearchInput,
-            this.packSuppId,
-            this.costDB,
-            CostConn
-          )
-          .subscribe((data) => {
+          .GetComparisonSheetByBoq_Excel(this.packageId,this.SearchInput,this.packSuppId,this.costDB,CostConn,this.cGroup).subscribe((data) => {
             if (data) {
               //this.spinner.hide();
               this.generatingFile = false;
@@ -882,15 +875,8 @@ export class PackageComparisonNovoComponent implements OnInit {
       return;
     }
 
-    this.packageComparisonService
-      .generateSuppliersContractsExcel(
-        this.packageId,
-        this.SearchInput,
-        this.packSuppId,
-        this.costDB,
-        CostConn
-      )
-      .subscribe((res) => {
+    this.packageComparisonService.generateSuppliersContractsExcel(this.packageId, this.SearchInput, this.packSuppId,
+        this.costDB, CostConn,this.cGroup ).subscribe((res) => {
         if (res) {
           let a = document.createElement('a');
           a.id = 'downloader';
@@ -923,7 +909,7 @@ export class PackageComparisonNovoComponent implements OnInit {
         this.SearchInput,
         this.packSuppId,
         this.costDB,
-        CostConn
+        CostConn,this.cGroup
       )
       .subscribe((res) => {
         this.generatingContract = false;
@@ -1087,8 +1073,9 @@ export class PackageComparisonNovoComponent implements OnInit {
               }
             });
         }
-      } else {
-        this.toastr.warning('You must selected at least one resource');
+      } 
+      else {
+        this.toastr.warning('You must selected at least one resource.');
       }
     } else if (this.byBoq && !this.byGroup) {
       //byBoq only
@@ -1747,14 +1734,7 @@ export class PackageComparisonNovoComponent implements OnInit {
           }
         });
     } else {
-      this.packageComparisonService
-        .getComparisonSheetByBoq(
-          this.packageId,
-          this.SearchInput,
-          CostConn,
-          this.cGroup
-        )
-        .subscribe((data) => {
+      this.packageComparisonService.getComparisonSheetByBoq(this.packageId,this.SearchInput,CostConn,this.cGroup).subscribe((data) => {
           this.searching = false;
           if (data) {
             //console.log(data);
