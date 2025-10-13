@@ -150,7 +150,7 @@ export class TechnicalConditionsComponent implements OnInit, OnDestroy {
             {
                 arr = [];
                 items.forEach(item=>{
-                  arr.push({id : item.groupId, name : item.groupDescription, package : {idPkge : this.packageId, pkgeName : this.packageName}, userId : ''});
+                  arr.push({id : item.groupId, name : item.groupDescription, package : {idPkge : this.packageId, pkgeName : this.packageName,suplierSubmitted:false}, userId : ''});
                 });
                 
             }

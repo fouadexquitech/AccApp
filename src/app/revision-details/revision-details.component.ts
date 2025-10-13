@@ -398,6 +398,22 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
      return this.replaceAll(str, '~', " : ");
   }
 
+  getTotalRdTotalPrice(level: any): number {
+    if (!level.items) return 0;
+    return level.items.reduce((sum: number, item: any) => sum + (item.rdTotalPrice || 0), 0);
+  }
+
+  getTotalRdTotalQty(level: any): number {
+    if (!level.items) return 0;
+    return level.items.reduce((sum: number, item: any) => sum + (item.rdQuotationQty || 0), 0);
+  }
+
+  getTotalRdTotalSupQty(level: any): number {
+    if (!level.items) return 0;
+    return level.items.reduce((sum: number, item: any) => sum + (item.rdQty || 0), 0);
+  }
+
+
   replaceAll(str : string, find : string, replace : string) {
     return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
   }

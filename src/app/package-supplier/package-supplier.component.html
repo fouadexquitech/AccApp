@@ -31,7 +31,7 @@
     <!-- <div class="col-sm-3 form-group" *ngIf="SupplierPackagesList.length == 0 && FilePath != null"> -->
     <div class="col-sm-2 form-group" >
       <button type="button" 
-      class="btn btn-primary" 
+      class="btn btn-secondary" 
       [disabled]="(selectedSuppliers.length == 0 || isAssigning)"
       (click)="OpenEmailTemplateModal(0,0,null,-1)" style="font-size:12px;">
       <!--<span *ngIf="isAssigning" class="spinner-border spinner-border-sm mr-1"></span>-->
@@ -159,7 +159,7 @@
                   <button class="btn btn-warning" (click)="routeToRevisionDetails(rev.prRevId, item.psByBoq, item.psId)">Rev. Details</button>
                 </td>
                 <td style="text-align: center;">
-                  <button type="button" class="btn btn-primary" (click)="OpenFieldModal(rev.prRevId)">Add Field</button>
+                  <button type="button" class="btn btn-secondary" (click)="OpenFieldModal(rev.prRevId)">Add Field</button>
                 </td>
                 <td style="text-align: center;">
                   <button class="btn btn-secondary" (click)="openFieldsListModal(rev.prRevId, rev.prRevNo, item.psSupName)">View Fields</button>

@@ -2118,4 +2118,9 @@ export class PackageComparisonNovoComponent implements OnInit {
     this.cGroup = level;
     this.onSearch();
   }
+
+  goBack()
+  {
+      this.router.navigate(['/package-supplier', this.packageId]);
+  }
 }

@@ -34,7 +34,7 @@
             </div>
             <div class="col-sm-3 form-group p-2">
               <br>
-              <button class="btn btn-secondary" (click)="goBack()">Back to Package Supplier</button>
+              <button class="btn btn-primary" (click)="goBack()">Back to Package Supplier</button>
             </div>
           </div>
         </div>
@@ -45,13 +45,14 @@
           [infiniteScrollThrottle]="modalScrollThrottle" (scrolled)="onScroll()">
           <div class="card-header">
              <span [innerHTML]="getSplittedLevelName(level.levelName)" *ngIf="level.levelName"></span>
-             <span *ngIf="!level.levelName">From Drawing</span>
+             <!-- <span *ngIf="!level.levelName">From Drawing</span> -->
           </div>
           <div class="card-body" *ngIf="psByBoq == 1">
              <table class="display table table-bordered" *ngIf="level.items.length > 0">
                 <tr>
                     <th>BOQ</th>
                     <th style="width:20%;text-align:left">Item Description</th>
+                    <th style="text-align:center">Unit</th>
                     <th style="text-align:center">Alternative</th>
                     <th style="text-align:center">New</th>
                     <th style="text-align:center">ACC Qty</th>
@@ -65,6 +66,7 @@
                 <tr *ngFor="let item of level.items; let i = index" [ngStyle]="{'background-color': item.isAlternative ? '#0c74784d' : (item.isNew ? '#bfa6544d' : null) }">
                   <td>{{item.rdBoqItem}}</td>
                   <td style="width:20%;text-align:left">{{item.rdItemDescription}}</td>
+                  <td style="text-align:center">{{item.unit}}</td>
                   <td><i class="fa fa-check" *ngIf="item.isAlternative"></i></td>
                   <td><i class="fa fa-check" *ngIf="item.isNew"></i></td>
                   <td style="text-align:center">{{item.rdQuotationQty | number : '1.0-2' }}</td>
@@ -75,6 +77,21 @@
                   <td style="text-align:center">{{item.rdTotalPrice | number : '1.0-0'}}</td>
                   <td style="text-align:left">{{item.comments}}</td>
                 </tr>
+                <!-- ✅ Add a total row -->
+                <tr style="font-weight:bold; background-color:#f5f5f5">
+                  <td colspan="5" style="text-align:right;">Total:</td>
+                  <td style="text-align:center;">
+                    {{ getTotalRdTotalQty(level) | number:'1.0-0' }}
+                  </td>
+                  <td style="text-align:center;">
+                    {{ getTotalRdTotalSupQty(level) | number:'1.0-0' }}
+                  </td>
+                  <td colspan="3"></td>
+                  <td style="text-align:center;">
+                    {{ getTotalRdTotalPrice(level) | number:'1.0-0' }}
+                  </td>
+                  <td></td>
+                </tr>
             </table>
           </div>
           <div class="card-body" *ngIf="psByBoq == 0">
@@ -83,10 +100,11 @@
                 <!-- <th>BOQ</th>
                 <th>Item Description</th> -->
                 <th style="width:20%">Resource Desc.</th>
-                <th style="text-align:center">is Alt?</th>
-                <th style="text-align:center">is New?</th>
+                <th style="text-align:center">Unit</th>
+                <!-- <th style="text-align:center">is Alt?</th>
+                <th style="text-align:center">is New?</th> -->
                 <th style="text-align:center">ACC Qty</th>
-                <th style="text-align:center">Supp Qty</th>
+                <!-- <th style="text-align:center">Supp Qty</th> -->
                 <th style="text-align:center">U. Price</th>
                 <th style="text-align:center">Discount %</th>
                 <th style="text-align:center">Final U. Price</th>
@@ -97,9 +115,10 @@
                 <!-- <td>{{item.rdBoqItem}}</td>
                 <td>{{item.rdBoqItemDescription}}</td> -->
                 <td style="width:20%;text-align:left">{{item.rdItemDescription}}</td>
-                <td style="text-align:center"><i class="fa fa-check" *ngIf="item.isAlternative"></i></td>
-                <td style="text-align:center"><i class="fa fa-check" *ngIf="item.isNew"></i></td>
-                <td style="text-align:center">{{item.rdQuotationQty | number : '1.0-2' }}</td>
+                <td style="text-align:center">{{item.unit}}</td>
+                <!-- <td style="text-align:center"><i class="fa fa-check" *ngIf="item.isAlternative"></i></td>
+                <td style="text-align:center"><i class="fa fa-check" *ngIf="item.isNew"></i></td> -->
+                <!-- <td style="text-align:center">{{item.rdQuotationQty | number : '1.0-2' }}</td> -->
                 <td style="text-align:center">{{item.rdQty | number : '1.0-2'}}</td>
                 <td style="text-align:center">{{item.rdPrice | number : '1.0-2' }}</td>
                 <td style="text-align:center">{{item.rdDiscount | number : '1.0-2' }}</td>
@@ -107,6 +126,19 @@
                 <td style="text-align:center">{{item.rdTotalPrice | number : '1.0-0'}}</td>
                 <td style="text-align:left">{{item.comments}}</td>
               </tr>
+                <!-- ✅ Add a total row -->
+                <tr style="font-weight:bold; background-color:#f5f5f5">
+                  <td></td>
+                  <td style="text-align:center;">Total:</td>
+                  <td style="text-align:center;">
+                    {{ getTotalRdTotalQty(level) | number:'1.0-0' }}
+                  </td>
+                  <td colspan="3"></td>
+                  <td style="text-align:center;">
+                    {{ getTotalRdTotalPrice(level) | number:'1.0-0' }}
+                  </td>
+                  <td></td>
+                </tr>
           </table>
           </div>
         </div>

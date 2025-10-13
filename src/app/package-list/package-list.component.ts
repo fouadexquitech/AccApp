@@ -127,4 +127,20 @@ export class PackageListComponent implements OnInit, OnDestroy {
     this.toggleClass = (this.isShown ? 'fa-solid fa-toggle-on' : 'fa-solid fa-toggle-off');
   }
 
+  onCompare(idPkge:number , PackageName:string) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+    this.packageSupplierService.GetSupplierPackagesList(idPkge,CostConn).subscribe((data) => {
+      if (data) {
+        this.SupplierPackagesList = data;
+        console.log(this.SupplierPackagesList[0])
+        this.selectedPackId=idPkge;
+        console.log(1)
+        this.router.navigate(['package-comparison-novo'], { state: { packageId: idPkge, packageName :PackageName, byBoq : (this.SupplierPackagesList[0]?.psByBoq == 1) , packSuppId : this.SupplierPackagesList[0].psId} });
+        console.log(2)
+      }
+    });
+
+  }
+
 }

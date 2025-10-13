@@ -184,7 +184,7 @@ export class PackageGroupsComponent implements OnInit, OnDestroy {
           let group : ComparisonPackageGroup = {
             id : 0, 
             name : formValue[0], 
-            package : {idPkge : this.packageId, pkgeName : null}, 
+            package : {idPkge : this.packageId, pkgeName : null,suplierSubmitted:false}, 
             userId : this.loginService.userValue?.usrId}
             this.packageGroupsService.addGroup(group).subscribe(data=>{
                 if(data)

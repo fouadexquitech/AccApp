@@ -40,6 +40,8 @@ export class SupplierPackagesList {
     public psSupName: string = '';
     public psByBoq : number = 0;
     public tecCondSent : boolean = false;
+    public revisionStatus : number = 0;
+    public supSubmitted : boolean = false;
 }
 
 export class SupplierPackagesRevList {

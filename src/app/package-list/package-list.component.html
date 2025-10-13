@@ -24,6 +24,7 @@
                                 <th scope="col"></th>
                                 <th scope="col" *ngIf="false"></th>
                                 <th scope="col"></th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -54,20 +55,35 @@
                                     <!-- <div class="card-body" *ngIf="isShown && item.idPkge == selectedPackId"> -->
                                     <table id="tbSupp" class="table" *ngIf="isShown && item.idPkge == selectedPackId" >
                                         <tbody>
+                                            <tr>
+                                                <td>
+                                                    Supplier
+                                                </td>
+                                                <td>
+                                                    RFQ Priced?
+                                                </td>
+                                            </tr>
                                             <tr *ngFor="let sup of SupplierPackagesList; let j = index">
                                                 <td *ngIf="item.idPkge == sup.psPackId">
                                                     {{sup.psSupName}}
+                                                </td>
+                                                <td *ngIf="item.idPkge == sup.psPackId">
+                                                    {{sup.supSubmitted}}
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
                                     <!-- </div> -->
                                 </td>
+                                <td>                                   
+                                    <button type="button" *ngIf="item.suplierSubmitted == true" style="width: 100%;font-size:14px;"  class="btn btn-primary" 
+                                    (click)="onCompare(item.idPkge,item.pkgeName )">Compare Quotations</button>             
+                                </td>
                             </tr>
                         </tbody>
                         <tfoot *ngIf="isSearching && PackageList.length == 0">
                             <tr>
-                                <td colspan="5" style="text-align: center;">
+                                <td colspan="6" style="text-align: center;">
                                     <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
                                 </td>
                             </tr>
