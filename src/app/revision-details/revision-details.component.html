@@ -55,13 +55,13 @@
                     <th style="text-align:center">Unit</th>
                     <th style="text-align:center">Alternative</th>
                     <th style="text-align:center">New</th>
-                    <th style="text-align:center">ACC Qty</th>
-                    <th style="text-align:center">Supp Qty</th>
-                    <th style="text-align:center">U. Price</th>
-                    <th style="text-align:center">Discount %</th>
-                    <th style="text-align:center">Final U. Price</th>
-                    <th style="text-align:center">Total Price</th>
-                    <th>Sup. Comment</th>
+                    <th style="text-align:right">ACC Qty</th>
+                    <th style="text-align:right">Supp Qty</th>
+                    <th style="text-align:right">U. Price</th>
+                    <th style="text-align:right">Discount %</th>
+                    <th style="text-align:right">Final U. Price</th>
+                    <th style="text-align:right">Total Price</th>
+                    <th style="text-align:center">Sup. Comment</th>
                 </tr>
                 <tr *ngFor="let item of level.items; let i = index" [ngStyle]="{'background-color': item.isAlternative ? '#0c74784d' : (item.isNew ? '#bfa6544d' : null) }">
                   <td>{{item.rdBoqItem}}</td>
@@ -103,13 +103,13 @@
                 <th style="text-align:center">Unit</th>
                 <!-- <th style="text-align:center">is Alt?</th>
                 <th style="text-align:center">is New?</th> -->
-                <th style="text-align:center">ACC Qty</th>
+                <th style="text-align:right">ACC Qty</th>
                 <!-- <th style="text-align:center">Supp Qty</th> -->
-                <th style="text-align:center">U. Price</th>
-                <th style="text-align:center">Discount %</th>
-                <th style="text-align:center">Final U. Price</th>
-                <th style="text-align:center">Total Price</th>
-                <th>Comment</th>
+                <th style="text-align:right">U. Price</th>
+                <th style="text-align:right">Discount %</th>
+                <th style="text-align:right">Final U. Price</th>
+                <th style="text-align:right">Total Price</th>
+                <th style="text-align:center">Sup. Comment</th>
               </tr>
               <tr *ngFor="let item of level.items; let i = index" [ngStyle]="{'background-color': item.isAlternative ? '#0c74784d' : (item.isNew ? '#bfa6544d' : null) }">
                 <!-- <td>{{item.rdBoqItem}}</td>

@@ -13,6 +13,10 @@
       font-weight: bold;
       background-color: rgb(218, 218, 226);
     }
+
+    .text-right    {
+      text-align:right;
+    }
   </style>
 
   <nav aria-label="breadcrumb" class="p-2">
@@ -316,10 +320,10 @@
                     <td style="width: 50px" class="text-center">
                       {{ resource.unit }}
                     </td>
-                    <td style="width: 300px" class="text-center">
-                      <table style="table-layout: fixed">
+                    <td style="width: 300px ;text-align: right" class="text-right">
+                      <table style="table-layout: fixed" class="text-right">
                         <tr>
-                          <td class="text-right">
+                          <td style="text-align:right" class="text-right">
                             {{ resource.qty | number : "1.0-2" }}
                           </td>
                           <td class="text-right">
