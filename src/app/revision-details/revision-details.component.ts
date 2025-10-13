@@ -349,7 +349,7 @@ export class RevisionDetailsComponent implements OnInit, OnDestroy {
                   c2:'',
                   c3:'',
                   c4:'',
-                  boqRefNumber:''
+                  boqRefNumber:'',comment:''
                 };
                 //const found = this.RevisionDetailsBoqItems.find(elem => elem.itemO === rev.rdBoqItem);
                 //console.log(found); 

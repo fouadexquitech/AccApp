@@ -61,7 +61,7 @@
                     <th style="text-align:center">Discount %</th>
                     <th style="text-align:center">Final U. Price</th>
                     <th style="text-align:center">Total Price</th>
-                    <th>Comments</th>
+                    <th>Sup. Comment</th>
                 </tr>
                 <tr *ngFor="let item of level.items; let i = index" [ngStyle]="{'background-color': item.isAlternative ? '#0c74784d' : (item.isNew ? '#bfa6544d' : null) }">
                   <td>{{item.rdBoqItem}}</td>
@@ -69,25 +69,25 @@
                   <td style="text-align:center">{{item.unit}}</td>
                   <td><i class="fa fa-check" *ngIf="item.isAlternative"></i></td>
                   <td><i class="fa fa-check" *ngIf="item.isNew"></i></td>
-                  <td style="text-align:center">{{item.rdQuotationQty | number : '1.0-2' }}</td>
-                  <td style="text-align:center">{{item.rdQty | number : '1.0-2' }}</td>
-                  <td style="text-align:center">{{item.rdPrice | number : '1.0-2' }}</td>
-                  <td style="text-align:center">{{item.rdDiscount | number : '1.0-2' }}</td>
-                  <td style="text-align:center">{{item.rdPriceAfterDiscount | number : '1.0-2'}}</td>
-                  <td style="text-align:center">{{item.rdTotalPrice | number : '1.0-0'}}</td>
+                  <td style="text-align:right">{{item.rdQuotationQty | number : '1.0-2' }}</td>
+                  <td style="text-align:right">{{item.rdQty | number : '1.0-2' }}</td>
+                  <td style="text-align:right">{{item.rdPrice | number : '1.0-2' }}</td>
+                  <td style="text-align:right">{{item.rdDiscount | number : '1.0-2' }}</td>
+                  <td style="text-align:right">{{item.rdPriceAfterDiscount | number : '1.0-2'}}</td>
+                  <td style="text-align:right">{{item.rdTotalPrice | number : '1.0-0'}}</td>
                   <td style="text-align:left">{{item.comments}}</td>
                 </tr>
                 <!-- ✅ Add a total row -->
                 <tr style="font-weight:bold; background-color:#f5f5f5">
                   <td colspan="5" style="text-align:right;">Total:</td>
-                  <td style="text-align:center;">
+                  <td style="text-align:right;">
                     {{ getTotalRdTotalQty(level) | number:'1.0-0' }}
                   </td>
-                  <td style="text-align:center;">
+                  <td style="text-align:right;">
                     {{ getTotalRdTotalSupQty(level) | number:'1.0-0' }}
                   </td>
                   <td colspan="3"></td>
-                  <td style="text-align:center;">
+                  <td style="text-align:right;">
                     {{ getTotalRdTotalPrice(level) | number:'1.0-0' }}
                   </td>
                   <td></td>
@@ -119,22 +119,22 @@
                 <!-- <td style="text-align:center"><i class="fa fa-check" *ngIf="item.isAlternative"></i></td>
                 <td style="text-align:center"><i class="fa fa-check" *ngIf="item.isNew"></i></td> -->
                 <!-- <td style="text-align:center">{{item.rdQuotationQty | number : '1.0-2' }}</td> -->
-                <td style="text-align:center">{{item.rdQty | number : '1.0-2'}}</td>
-                <td style="text-align:center">{{item.rdPrice | number : '1.0-2' }}</td>
-                <td style="text-align:center">{{item.rdDiscount | number : '1.0-2' }}</td>
-                <td style="text-align:center">{{item.rdPriceAfterDiscount | number : '1.0-2'}}</td>
-                <td style="text-align:center">{{item.rdTotalPrice | number : '1.0-0'}}</td>
+                <td style="text-align:right">{{item.rdQty | number : '1.0-2'}}</td>
+                <td style="text-align:right">{{item.rdPrice | number : '1.0-2' }}</td>
+                <td style="text-align:right">{{item.rdDiscount | number : '1.0-2' }}</td>
+                <td style="text-align:right">{{item.rdPriceAfterDiscount | number : '1.0-2'}}</td>
+                <td style="text-align:right">{{item.rdTotalPrice | number : '1.0-0'}}</td>
                 <td style="text-align:left">{{item.comments}}</td>
               </tr>
                 <!-- ✅ Add a total row -->
                 <tr style="font-weight:bold; background-color:#f5f5f5">
                   <td></td>
                   <td style="text-align:center;">Total:</td>
-                  <td style="text-align:center;">
+                  <td style="text-align:right;">
                     {{ getTotalRdTotalQty(level) | number:'1.0-0' }}
                   </td>
                   <td colspan="3"></td>
-                  <td style="text-align:center;">
+                  <td style="text-align:right;">
                     {{ getTotalRdTotalPrice(level) | number:'1.0-0' }}
                   </td>
                   <td></td>

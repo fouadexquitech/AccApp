@@ -186,14 +186,14 @@
                             class="row-border hover" style="font-size:smaller;">
                             <thead>
                                 <tr>
-                                    <th scope="col" style="width: 3%;">
+                                    <th scope="col" style="width: 1%;">
                                         <input type="checkbox" [(ngModel)]="checkboxesAll" class="form-check-input" *ngIf="OriginalBoqList.length > 0"
                                             (change)="checkAllOriginalBoq2($event)">
                                     </th>
-                                    <th scope="col"></th>
+                                    <th scope="col" style="width:1%;"></th>
                                     <th scope="col">Row#</th>
                                     <th scope="col">Div</th>
-                                    <th scope="col">BOQ SN</th>
+                                    <th scope="col">SN</th>
                                     <th scope="col">BOQ Ref</th>
                                     <th scope="col" style="width: 30%;">BOQ Description</th>
                                     <!-- <th scope="col">Trade Description</th> -->
@@ -206,7 +206,7 @@
                                     <th scope="col" class="text-center">Final Total ({{boqFinalTotal | number: '1.0-0'}})</th>
                                     <!-- <th scope="col">Assigned Package</th> -->
                                     <th scope="col">Status</th>
-                                    <th scope="col"></th>
+                                    <th scope="col">Comments</th>
                                 </tr>
                             </thead>
                            
@@ -220,17 +220,17 @@
                             <tbody>
                                 <!-- <tr *ngFor="let item of OriginalBoqList ; let i = index" style="cursor: pointer;"
                                      [ngClass]="{'HighlightedRow': i === CurrentRowIndex }" (click)="selectRow($event, i)"> -->
-                                 <tr *ngFor="let item of OriginalBoqList ; let i = index" style="cursor: pointer;"
+                                    <tr *ngFor="let item of OriginalBoqList ; let i = index" style="cursor: pointer;"
                                      [ngClass]="{'HighlightedRow': i === CurrentRowIndex }" (click)="selectRow($event, i)" >
-                                    <td style="width: 3%;"><input disabled #checkboxes class="form-check-input" style="cursor: pointer;" 
+                                    <td style="width: 1%;"><input disabled #checkboxes class="form-check-input" style="cursor: pointer;" 
                                         type="checkbox" [checked]="item.isSelected" (change)="selectRow($event, i)"></td>
                                     <!-- <td><input #checkboxes class="form-check-input" style="cursor: pointer;" type="checkbox" [checked]="item.isSelected"></td> -->
-                                    <td style="width:3%;"><a class="btn btn-link" title="Dtl"
+                                    <td style="width:1%;"><a class="btn btn-link" title="Dtl"
                                         (click)="editOriginalBoqQty(DtlBoqModal,item)" ><i class="fa-solid fa-circle-info"></i></a></td>
-                                    <td style="width:3%;">{{item.rowNumber}}</td>
-                                    <td style="width:3%;">{{item.sectionO}}</td>
-                                    <td style="width:5%;">{{item.boqRefNumber}}</td>
-                                    <td style="width:5%;">{{item.itemO}}</td>
+                                    <td style="width:2%;">{{item.rowNumber}}</td>
+                                    <td style="width:2%;">{{item.sectionO}}</td>
+                                    <td style="width:3%;">{{item.boqRefNumber}}</td>
+                                    <td style="width:3%;">{{item.itemO}}</td>
                                     <td style="width:30%;">{{item.descriptionO}}</td>
                                     <!-- <td>{{item.obTradeDesc}}</td> -->
                                     <td class="text-center">{{item.unitO}}</td>
@@ -243,7 +243,9 @@
                                     <td class="text-center">{{(item.unitRateO * item.qtyO) | number: '1.0-0' }}</td>
                                     <!-- <td [ngClass]="item.assignedPackage != '' ? 'text-danger' : ''">{{item.assignedPackage}}</td> -->
                                     <td [ngClass]="item.boqStatus != '' ? 'text-danger' : ''"> {{item.boqStatus}}</td>
-                                    <td> </td>
+                                    <td> <input type="text" [(ngModel)]="item.obTradeDesc" (blur)="updateComment(item)" placeholder="Enter comment"
+                                        class="form-control" [ngStyle]="{ 'width': item.obTradeDesc ? '15vw' : '100%' }"/>
+                                    </td>
                                 </tr>
                             </tbody>
 

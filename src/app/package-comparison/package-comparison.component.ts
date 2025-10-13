@@ -434,7 +434,7 @@ export class PackageComparisonComponent implements OnInit {
           c2:'',
           c3:'',
           c4:'',
-          boqRefNumber:''
+          boqRefNumber:'',comment:''
        };
        this.RevisionDetailsBoqItems.push(item);
       });

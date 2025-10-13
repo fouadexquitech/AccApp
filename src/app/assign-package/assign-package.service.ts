@@ -199,4 +199,10 @@ export class AssignPackageService {
         return this.http.post<any>(this.baseUrl + 'Package/GetBoqResourceRecords?CostConn=' + CostConn,body, { headers: header }
         );
     }
+
+    updateComment(boqItem: string, comment: string,CostConn: string) {
+        console.log(boqItem)
+        console.log(comment)
+        return this.http.get(this.baseUrl + 'Package/updateBoqComment?boqItem=' + boqItem+ '&comments='+comment+'&CostConn=' + CostConn);
+      }
 }

@@ -1842,6 +1842,16 @@ validateExcelBeforeAssign(){
     });
   }
 
+  updateComment(item: any) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+    // console.log(item.itemO)
+    this.assignPackageService.updateComment(item.itemO, item.obTradeDesc,CostConn).subscribe({
+      next: () => console.log('Comment updated successfully'),
+      error: (err) => console.error('Failed to update comment:', err)
+    });
+  }
+
   searchFromDrawer(event : SearchInput)
   {
     this.SearchInput = event;

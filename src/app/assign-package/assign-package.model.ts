@@ -21,6 +21,7 @@ export class OriginalBoqModel {
     public c3: string = "";
     public c4: string = "";
     public boqRefNumber: string = "";
+    public comment: string = "";
 }
 
 export class BoqModel {
@@ -42,6 +43,7 @@ export class BoqModel {
     public boqScopeQty: number = 0;
     public boqUpriceDisc: number = 0;
     public boqInsertedFromVendan: number = 0;
+    public boqWBS: string = "";
 }
 
 export class SearchInput {
