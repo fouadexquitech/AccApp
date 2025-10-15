@@ -1,20 +1,20 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
-import { LoginComponent } from './login/login.component';
-import { AssignPackageComponent } from './assign-package/assign-package.component';
-import { NavComponent } from './nav/nav.component';
-import { HomeComponent } from './home/home.component';
-import { AlertComponent } from './_components';
-import { AssignPackageService } from './assign-package/assign-package.service';
+import { AppComponent } from '../app.component';
+import { AppRoutingModule } from '../app-routing.module';
+import { LoginComponent } from '../login/login.component';
+import { AssignPackageComponent } from '../assign-package/assign-package.component';
+import { NavComponent } from '../nav/nav.component';
+import { HomeComponent } from '../home/home.component';
+import { AlertComponent } from '../_components';
+import { AssignPackageService } from '../assign-package/assign-package.service';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap'
-import { PackageListComponent } from './package-list/package-list.component';
-import { PackageSupplierComponent } from './package-supplier/package-supplier.component';
+import { PackageListComponent } from '../package-list/package-list.component';
+import { PackageSupplierComponent } from '../package-supplier/package-supplier.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 //Angular Material Stuff
 import { MatSelectModule } from '@angular/material/select';
@@ -28,30 +28,31 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatTableModule} from '@angular/material/table';
 import {MatSortModule} from '@angular/material/sort';
 import {MatDividerModule} from '@angular/material/divider';
-import { PackageComparisonComponent } from './package-comparison/package-comparison.component';
-import { JwtInterceptor, ErrorInterceptor } from './_helpers';
+import { PackageComparisonComponent } from '../package-comparison/package-comparison.component';
+import { JwtInterceptor, ErrorInterceptor } from '../_helpers';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { NgSelect2Module } from 'ng-select2';
 import { DataTablesModule } from 'angular-datatables';
-import { ConfirmationDialogComponent } from './_components/confirmation-dialog/confirmation-dialog.component';
+import { ConfirmationDialogComponent } from '../_components/confirmation-dialog/confirmation-dialog.component';
 
-import { ConfirmationDialogService } from './_components/confirmation-dialog/confirmation-dialog.service';
-import { RevisionDetailsComponent } from './revision-details/revision-details.component';
+import { ConfirmationDialogService } from '../_components/confirmation-dialog/confirmation-dialog.service';
+import { RevisionDetailsComponent } from '../revision-details/revision-details.component';
 import { AngularEditorModule } from '@kolkov/angular-editor';
-import { ManagementUsersComponent } from './management-users/management-users.component';
+import { ManagementUsersComponent } from '../management-users/management-users.component';
 import { ConfirmBoxConfigModule, DialogConfigModule, NgxAwesomePopupModule, ToastNotificationConfigModule } from '@costlydeveloper/ngx-awesome-popup';
-import { TechnicalConditionsComponent } from './technical-conditions/technical-conditions.component';
-import { PackageGroupsComponent } from './package-groups/package-groups.component';
-import { PackageComparisonNovoComponent } from './package-comparison-novo/package-comparison-novo.component';
+import { TechnicalConditionsComponent } from '../technical-conditions/technical-conditions.component';
+import { PackageGroupsComponent } from '../package-groups/package-groups.component';
+import { PackageComparisonNovoComponent } from '../package-comparison-novo/package-comparison-novo.component';
 import { TagInputModule } from 'ngx-chips';
-import { SuppliersComponent } from './suppliers/suppliers.component';
-import { PackagesComponent } from './packages/packages.component';
-import { ScrollContainerComponent } from './_components/scroll-container/scroll-container.component';
-import { BoqListTableComponent } from './boq-list-table/boq-list-table.component';
-import { AssignPackageFilterComponent } from './assign-package-filter/assign-package-filter.component';
-import { FuseDrawerModule } from './@fuse/drawer';
+import { SuppliersComponent } from '../suppliers/suppliers.component';
+import { PackagesComponent } from '../packages/packages.component';
+import { ScrollContainerComponent } from '../_components/scroll-container/scroll-container.component';
+import { BoqListTableComponent } from '../boq-list-table/boq-list-table.component';
+import { AssignPackageFilterComponent } from '../assign-package-filter/assign-package-filter.component';
+import { FuseDrawerModule } from '../@fuse/drawer';
 import { InfiniteScrollModule } from "ngx-infinite-scroll";
+import { WbsListComponent } from './wbs-list.component';
 
 @NgModule({
   declarations: [
@@ -74,7 +75,8 @@ import { InfiniteScrollModule } from "ngx-infinite-scroll";
     PackagesComponent,
     ScrollContainerComponent,
     BoqListTableComponent,
-    AssignPackageFilterComponent
+    AssignPackageFilterComponent,
+    WbsListComponent
   ],
   imports: [
     BrowserModule,

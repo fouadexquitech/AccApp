@@ -1,0 +1,10 @@
+th {
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+  }
+
+  ::ng-deep table.dataTable td.dataTables_empty {
+    display: none;
+}
