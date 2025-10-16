@@ -1,4 +1,4 @@
-export class Wbs {
+export class wbs {
     public div: string = "";
     public wbsCode: string = "";
     public wbsDesc: string = "";

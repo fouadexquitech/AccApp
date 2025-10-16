@@ -2,9 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TopManagement } from '../package-comparison/package-comparison.model';
 import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
+
 export class ManagementUsersService {
   baseUrl: string = '';
 

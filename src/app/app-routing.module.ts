@@ -13,7 +13,7 @@ import { PackageListComponent } from './package-list/package-list.component';
 import { PackageSupplierComponent } from './package-supplier/package-supplier.component';
 import { RevisionDetailsComponent } from './revision-details/revision-details.component';
 import { TechnicalConditionsComponent } from './technical-conditions/technical-conditions.component';
-
+import { WbsListComponent } from './wbs-list/wbs-list.component';
 import { AuthGuard } from './_helpers';
 
 
@@ -32,7 +32,7 @@ const routes: Routes = [
   { path: 'packages', component: PackagesComponent, canActivate: [AuthGuard] },
   { path: 'technical-conditions/:packageId/:packageName', component: TechnicalConditionsComponent, canActivate: [AuthGuard] },
   { path: 'package-groups/:packageId/:pkgeName/:byBoq', component: PackageGroupsComponent, canActivate: [AuthGuard] },
-
+  { path: 'wbs-list', component: WbsListComponent, canActivate: [AuthGuard] },
   // otherwise redirect to home
   { path: '**', redirectTo: '' }
 ];
