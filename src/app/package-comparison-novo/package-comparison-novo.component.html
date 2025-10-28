@@ -628,7 +628,9 @@
                         <td class="text-left" style="width: 27%">
                           <strong>ACC Condition</strong>
                         </td>
-                        <td></td>
+                        <td *ngFor="let sup of comConditionSuppliers">
+                          <strong>{{sup}}</strong>
+                        </td>
                       </tr>
                     </table>
                   </td>
@@ -1086,7 +1088,9 @@
                         <td class="text-left" style="width: 27%">
                           <strong>ACC Condition</strong>
                         </td>
-                        <td></td>
+                        <td *ngFor="let sup of comConditionSuppliers">
+                          <strong>{{sup}}</strong>
+                        </td>
                       </tr>
                     </table>
                   </td>

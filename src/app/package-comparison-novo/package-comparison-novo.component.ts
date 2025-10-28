@@ -120,6 +120,7 @@ export class PackageComparisonNovoComponent implements OnInit {
   byGroup: boolean = false;
   techConditionsReplies: DisplayCondition[] = [];
   comConditionsReplies: DisplayCondition[] = [];
+  comConditionSuppliers : any[] = [];
   topManagementList: TopManagement[] = [];
   selectedTopManagementList: TopManagement[] = [];
   htmlContent: string = '';
@@ -457,6 +458,14 @@ export class PackageComparisonNovoComponent implements OnInit {
       .getComCondReplies(this.packageId, this.costDB, CostConn)
       .subscribe((data) => {
         this.comConditionsReplies = data;
+        this.comConditionsReplies.forEach((cond) => {
+          cond.replies.forEach((rep) => {
+            this.comConditionSuppliers.push(rep.supplierName);
+          });
+        });
+
+        this.comConditionSuppliers = [...new Set(this.comConditionSuppliers)];
+        
       });
   }
 
