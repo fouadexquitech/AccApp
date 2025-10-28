@@ -457,7 +457,6 @@ export class PackageComparisonNovoComponent implements OnInit {
       .getComCondReplies(this.packageId, this.costDB, CostConn)
       .subscribe((data) => {
         this.comConditionsReplies = data;
-        console.log(this.comConditionsReplies);
       });
   }
 
