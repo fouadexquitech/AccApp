@@ -62,6 +62,7 @@ export class LoginComponent implements OnInit {
         //this.spinner.show();
         let projSeq = this.selectedProject;
         console.log(this.f.project.value);
+
         this.loginService.login(this.f.username.value, this.f.password.value, this.f.project.value)
             .pipe(first())
             .subscribe(data => {
@@ -86,7 +87,7 @@ export class LoginComponent implements OnInit {
                         }); 
                     }
                     else
-                    {                       
+                    {                  
                         this.toastr.error('Invalid credentials');
                         this.form.patchValue({
                             password: ''

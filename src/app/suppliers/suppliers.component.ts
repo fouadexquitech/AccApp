@@ -388,20 +388,21 @@ export class SuppliersComponent implements OnInit {
     let ids : number[] = [];
     this.creatingAccounts = true;
     b.classList.add('disabled');
-   
+    
+    console.log(this.user.usrEmail);
+
     this.selectedSuppliers.forEach(_supplier=>{
       list.push({
         supplierId : _supplier.supID,
         phoneNumber : _supplier.phoneNumber,
         displayName : _supplier.supName,
-        email : _supplier.supEmail
-
+        email : _supplier.supEmail,
+        procEngEmail : this.user.usrEmail
       });
       ids.push(_supplier.supID);
     });
 
-    this.suppliersService.createPortalAccount(list)
-    .subscribe((res : any)=>{
+    this.suppliersService.createPortalAccount(list).subscribe((res : any)=>{
         if(res.success)
         {
             this.updatePortalAccountFlag(ids, b);

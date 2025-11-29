@@ -584,6 +584,8 @@ public user : User;
   AssignSuppliers() {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+    
+    let TSConn=this.user.usrLoggedTSConnString;
 
     //this.spinner.show();
     this.isAssigning = true;
@@ -640,7 +642,7 @@ public user : User;
           files.push(attachement.file);
         });
 
-        this.packageSupplierService.AssignPackageSuppliers(assignPackageTemplate, files,CostConn).subscribe((data) => {
+        this.packageSupplierService.AssignPackageSuppliers(assignPackageTemplate, files,CostConn,TSConn).subscribe((data) => {
           this.isAssigning = false;
           if (data) {
             //this.spinner.hide();

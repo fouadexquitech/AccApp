@@ -43,7 +43,7 @@ export class PackageSupplierService {
     );
   }
 
-  AssignPackageSuppliers(assignPackageTemplate : AssignPackageTemplate, attachements : File[],CostConn: string): Observable<any> {
+  AssignPackageSuppliers(assignPackageTemplate : AssignPackageTemplate, attachements : File[],CostConn: string,TSConn: string): Observable<any> {
     const formData = new FormData();
   
     formData.append('assignPackageTemplate' , JSON.stringify(assignPackageTemplate));
@@ -51,7 +51,7 @@ export class PackageSupplierService {
     formData.append(attachement?.name, attachement , attachement?.name);
     });
   
-    return this.http.post(this.baseUrl + 'SupplierPackages/AssignPackageSuppliers?CostConn=' + CostConn, formData).pipe(
+    return this.http.post(this.baseUrl + 'SupplierPackages/AssignPackageSuppliers?CostConn=' + CostConn +'&TSConn='+TSConn, formData).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
