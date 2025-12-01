@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
-import { User } from '../_models';
+import { User,LoginResponse } from '../_models';
 import {ProjectCurrency,Project} from '../login/login.model'
 
 @Injectable({
@@ -47,12 +47,13 @@ export class LoginService {
   }
 
   login(username : string, password : string, projSeq : number) {
-    return this.http.post<User>(environment.baseApiUrl + 'api/Logon/GetLogin?user=' + username + '&pass=' + password + '&projSeq=' + projSeq, null)
-        .pipe(map(user => {
+    return this.http.post<LoginResponse>(
+      environment.baseApiUrl + 'api/Logon/GetLogin?user=' + username + '&pass=' + password + '&projSeq=' + projSeq, null)
+        .pipe(map(resp => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('user', JSON.stringify(user));
-            this.userSubject.next(user);
-            return user;
+            localStorage.setItem('user', JSON.stringify(resp.user));
+            this.userSubject.next(resp.user);
+            return resp;
         }));
   }
 

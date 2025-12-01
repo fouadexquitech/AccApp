@@ -65,10 +65,10 @@ export class LoginComponent implements OnInit {
 
         this.loginService.login(this.f.username.value, this.f.password.value, this.f.project.value)
             .pipe(first())
-            .subscribe(data => {
+            .subscribe(resp => {
                 this.loading = false;
                 
-                    if(data)
+                    if(resp.success)
                     {
                         this.loginService.getProjectCurrency(this.f.project.value).pipe(first())
                         .subscribe(data => {
@@ -88,7 +88,7 @@ export class LoginComponent implements OnInit {
                     }
                     else
                     {                  
-                        this.toastr.error('Invalid credentials');
+                        this.toastr.error(resp.message);
                         this.form.patchValue({
                             password: ''
                          });

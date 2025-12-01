@@ -13,6 +13,8 @@
     usrLoggedTSConnString: string = null;
 }
 
-// export class Project {
-//     projName: string = "";
-// }
+export class LoginResponse {
+    success: boolean = false;
+    user : User = null;
+    message: string = "";
+}
