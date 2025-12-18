@@ -642,19 +642,47 @@ public user : User;
           files.push(attachement.file);
         });
 
-        this.packageSupplierService.AssignPackageSuppliers(assignPackageTemplate, files,CostConn,TSConn).subscribe((data) => {
-          this.isAssigning = false;
-          if (data) {
-            //this.spinner.hide();
-            this.toastr.success("Supplier(s) assigned successfuly");
-            this.GetSupplierPackagesList();
-            this.CloseEmailTemplateModal();
-          }
-          else
-          {
-            this.toastr.error("An error occured");
-          }
-        });
+        this.packageSupplierService
+          .AssignPackageSuppliers(assignPackageTemplate, files, CostConn, TSConn)
+          .subscribe({
+            next: (res) => {
+              this.isAssigning = false;
+
+              if (res?.success) {
+                this.toastr.success('Supplier(s) assigned successfully');
+                this.GetSupplierPackagesList();
+                this.CloseEmailTemplateModal();
+              } else 
+              {
+                this.toastr.error(res?.message || 'An error occurred');
+              }
+            },
+            error: (err) => {
+              this.isAssigning = false;
+
+              const errorMsg =
+                err?.error?.message || 'Unexpected error occurred';
+
+              this.toastr.error(errorMsg);
+            }
+          });
+
+        // this.packageSupplierService.AssignPackageSuppliers(assignPackageTemplate, files,CostConn,TSConn)
+        // .subscribe((data) => {
+        //   this.isAssigning = false;
+        //   if (data) 
+        //   {
+        //     //this.spinner.hide();
+        //     this.toastr.success("Supplier(s) assigned successfuly");
+        //     this.GetSupplierPackagesList();
+        //     this.CloseEmailTemplateModal();
+        //   }
+        //   else
+        //   {
+        //     this.toastr.error("An error occured");
+        //   }
+        // });
+
       }
 
     } else {

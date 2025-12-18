@@ -47,8 +47,8 @@ export class PackageSupplierService {
     const formData = new FormData();
   
     formData.append('assignPackageTemplate' , JSON.stringify(assignPackageTemplate));
-    attachements.forEach(attachement =>{
-    formData.append(attachement?.name, attachement , attachement?.name);
+    attachements.forEach(file  =>{
+    formData.append(file ?.name, file  , file ?.name);
     });
   
     return this.http.post(this.baseUrl + 'SupplierPackages/AssignPackageSuppliers?CostConn=' + CostConn +'&TSConn='+TSConn, formData).pipe(
