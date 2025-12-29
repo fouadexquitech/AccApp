@@ -101,9 +101,9 @@
       <mat-header-cell *matHeaderCellDef>
         Final Net Amount ({{finalTotalPrice | number: '1.0-0' }})
       </mat-header-cell>
-      <mat-cell *matCellDef="let item">{{item.boqScopeQty * item.boqUprice | number: '1.0-0' }}</mat-cell>
-      <mat-footer-cell *matFooterCellDef>
-        <span class="fw-bolder">{{finalTotalPrice | number: '1.0-0' }}</span>
+      <mat-cell *matCellDef="let item">{{item.boqQty * item.boqUprice | number: '1.0-0' }}</mat-cell>
+      <mat-footer-cell *matFooterCellDef >
+        <span class="fw-bolder" >{{finalTotalPrice | number: '1.0-0' }}</span>
       </mat-footer-cell>
     </ng-container>
 

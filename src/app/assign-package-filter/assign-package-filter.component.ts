@@ -31,10 +31,17 @@ export class AssignPackageFilterComponent implements OnInit {
   BOQDivList: BOQDivList[] = [];
   public selectedBOQDivList : BOQDivList[] = [];
   
-  BOQLevelList: BOQLevelList[] = [];
+  BOQLevel2List: BOQLevelList[] = [];
+  BOQLevel3List: BOQLevelList[] = [];
+  BOQLevel4List: BOQLevelList[] = [];
+  BOQLevel5List: BOQLevelList[] = [];
+  BOQLevel6List: BOQLevelList[] = [];
+  // BOQLevelList: BOQLevelList[] = [];
   public selectedBOQLevel2List : BOQLevelList[] = [];
   public selectedBOQLevel3List : BOQLevelList[] = [];
   public selectedBOQLevel4List : BOQLevelList[] = [];
+  public selectedBOQLevel5List : BOQLevelList[] = [];
+  public selectedBOQLevel6List : BOQLevelList[] = [];
 
   RESDivList: RESDivList[] = [];
   selectedRESDivList : RESDivList[] = [];
@@ -64,6 +71,8 @@ export class AssignPackageFilterComponent implements OnInit {
       level2 : this.SearchInput.boqLevel2,
       level3 : this.SearchInput.boqLevel3,
       level4 : this.SearchInput.boqLevel4,
+      level5 : this.SearchInput.boqLevel5,
+      level6 : this.SearchInput.boqLevel6,
       resType: this.SearchInput.rESType,
       boqDiv: this.SearchInput.bOQDiv
     };
@@ -72,6 +81,8 @@ export class AssignPackageFilterComponent implements OnInit {
     this.GetBOQLevel2List(body);
     this.GetBOQLevel3List(body);
     this.GetBOQLevel4List(body);
+    this.GetBOQLevel5List(body);
+    this.GetBOQLevel6List(body);
     this.GetRESDivList();
     this.GetRESTypeList(body);
     this.GetPackageList();
@@ -112,7 +123,7 @@ export class AssignPackageFilterComponent implements OnInit {
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetBOQLevel2List(body,CostConn).subscribe((data) => {
       if (data) {
-        this.BOQLevelList = data;
+        this.BOQLevel2List = data;
         this.selectedBOQLevel2List = data;
         //console.log(data)
       }
@@ -124,7 +135,7 @@ export class AssignPackageFilterComponent implements OnInit {
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetBOQLevel3List(body,CostConn).subscribe((data) => {
       if (data) {
-        this.BOQLevelList = data;
+        this.BOQLevel3List = data;
         this.selectedBOQLevel3List = data;
         //console.log(data)
       }
@@ -136,8 +147,32 @@ export class AssignPackageFilterComponent implements OnInit {
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.assignPackageService.GetBOQLevel4List(body,CostConn).subscribe((data) => {
       if (data) {
-        this.BOQLevelList = data;
+        this.BOQLevel4List = data;
         this.selectedBOQLevel4List = data;
+        //console.log(data)
+      }
+    });
+  }
+
+  GetBOQLevel5List(body : any) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+    this.assignPackageService.GetBOQLevel5List(body,CostConn).subscribe((data) => {
+      if (data) {
+        this.BOQLevel5List = data;
+        this.selectedBOQLevel5List = data;
+        //console.log(data)
+      }
+    });
+  }
+
+  GetBOQLevel6List(body : any) {
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+    this.assignPackageService.GetBOQLevel6List(body,CostConn).subscribe((data) => {
+      if (data) {
+        this.BOQLevel6List = data;
+        this.selectedBOQLevel6List = data;
         //console.log(data)
       }
     });
@@ -171,6 +206,8 @@ export class AssignPackageFilterComponent implements OnInit {
       level2 : this.SearchInput.boqLevel2,
       level3 : this.SearchInput.boqLevel3,
       level4 : this.SearchInput.boqLevel4,
+      level5 : this.SearchInput.boqLevel5,
+      level6 : this.SearchInput.boqLevel6,
       resType: this.SearchInput.rESType,
       boqDiv: this.SearchInput.bOQDiv
     };
@@ -187,17 +224,32 @@ export class AssignPackageFilterComponent implements OnInit {
 
     this.assignPackageService.GetBOQLevel3ListByLevel2(body,CostConn).subscribe((data) => {
       if (data) {
-        this.BOQLevelList = data;
+        this.BOQLevel3List = data;
         this.selectedBOQLevel3List = data;
       }
     });
     
     this.assignPackageService.GetBOQLevel4ListByLevel3(body,CostConn).subscribe((data) => {
       if (data) {
-        this.BOQLevelList = data;
+        this.BOQLevel4List = data;
         this.selectedBOQLevel4List = data;
       }
     });
+
+    this.assignPackageService.GetBOQLevel5ListByLevel4(body,CostConn).subscribe((data) => {
+      if (data) {
+        this.BOQLevel5List = data;
+        this.selectedBOQLevel5List = data;
+      }
+    });
+
+    this.assignPackageService.GetBOQLevel6ListByLevel5(body,CostConn).subscribe((data) => {
+      if (data) {
+        this.BOQLevel6List = data;
+        this.selectedBOQLevel6List = data;
+      }
+    });
+    
   }
 
   filterBOQDiv(event: KeyboardEvent)
@@ -206,20 +258,24 @@ export class AssignPackageFilterComponent implements OnInit {
     
     let result: BOQDivList[] = [];
     for(let a of this.BOQDivList){
-      if(a.sectionO.toLowerCase().indexOf(txt.value.toLowerCase()) > -1){
+      if(a.sectionO.toLowerCase().indexOf(txt.value.toLowerCase()) > -1)
+      {
         result.push(a)
       }
     }
     this.selectedBOQDivList = result;
   }
 
-  filterBOQLevel(event: KeyboardEvent)
+  filterBOQLevel2(event: KeyboardEvent)
   {
     const txt = event.target as HTMLInputElement;
+    console.log(this.BOQLevel2List)
     
     let result: BOQLevelList[] = [];
-    for(let a of this.BOQLevelList){
-      if(a.level.toLowerCase().indexOf(txt.value.toLowerCase()) > -1){
+    for(let a of this.BOQLevel2List){
+      console.log(a.level)
+      if(a.level.toLowerCase().indexOf(txt.value.toLowerCase()) > -1)
+      {
         result.push(a)
       }
     }
@@ -229,10 +285,13 @@ export class AssignPackageFilterComponent implements OnInit {
   filterBOQLevel3(event: KeyboardEvent)
   {
     const txt = event.target as HTMLInputElement;
+    console.log(this.BOQLevel3List)
 
     let result: BOQLevelList[] = [];
-    for(let a of this.BOQLevelList){
-      if(a.level.toLowerCase().indexOf(txt.value.toLowerCase()) > -1){
+
+    for(let a of this.BOQLevel3List){
+      if((a.level ?? '').toLowerCase().indexOf(txt.value.toLowerCase()) > -1)
+      {
         result.push(a)
       }
     }
@@ -244,12 +303,38 @@ export class AssignPackageFilterComponent implements OnInit {
     const txt = event.target as HTMLInputElement;
     
     let result: BOQLevelList[] = [];
-    for(let a of this.BOQLevelList){
-      if(a.level.toLowerCase().indexOf(txt.value.toLowerCase()) > -1){
+    for(let a of this.BOQLevel4List){
+      if((a.level ?? '').toLowerCase().indexOf(txt.value.toLowerCase()) > -1){
         result.push(a)
       }
     }
     this.selectedBOQLevel4List = result;
+  }
+
+  filterBOQLevel5(event: KeyboardEvent)
+  {
+    const txt = event.target as HTMLInputElement;
+    
+    let result: BOQLevelList[] = [];
+    for(let a of this.BOQLevel5List){
+      if((a.level ?? '').toLowerCase().indexOf(txt.value.toLowerCase()) > -1){
+        result.push(a)
+      }
+    }
+    this.selectedBOQLevel5List = result;
+  }
+
+  filterBOQLevel6(event: KeyboardEvent)
+  {
+    const txt = event.target as HTMLInputElement;
+    
+    let result: BOQLevelList[] = [];
+    for(let a of this.BOQLevel6List){
+      if((a.level ?? '').toLowerCase().indexOf(txt.value.toLowerCase()) > -1){
+        result.push(a)
+      }
+    }
+    this.selectedBOQLevel6List = result;
   }
 
   filterSheetDesc(event: KeyboardEvent)
@@ -349,9 +434,12 @@ export class AssignPackageFilterComponent implements OnInit {
      return ( (this.SearchInput.bOQDesc == null || this.SearchInput.bOQDesc == '') &&
       this.SearchInput.bOQDiv.length == 0 &&
       (this.SearchInput.bOQItem == null || this.SearchInput.bOQItem == '') &&
+      (this.SearchInput.boqRefNumber == null || this.SearchInput.boqRefNumber == '') &&
       this.SearchInput.boqLevel2.length == 0 &&
       this.SearchInput.boqLevel3.length == 0 &&
       this.SearchInput.boqLevel4.length == 0 &&
+      this.SearchInput.boqLevel5.length == 0 &&
+      this.SearchInput.boqLevel6.length == 0 &&
       this.SearchInput.boqResourceSeq.length == 0 &&
       (this.SearchInput.fromRow == null || this.SearchInput.fromRow == '') &&
       (this.SearchInput.toRow == null || this.SearchInput.toRow == '') &&
@@ -372,9 +460,12 @@ export class AssignPackageFilterComponent implements OnInit {
       this.SearchInput.bOQDesc = null;
       this.SearchInput.bOQDiv = [];
       this.SearchInput.bOQItem = null;
+      this.SearchInput.boqRefNumber= null;
       this.SearchInput.boqLevel2 = [];
       this.SearchInput.boqLevel3 = [];
       this.SearchInput.boqLevel4 = [];
+      this.SearchInput.boqLevel5 = [];
+      this.SearchInput.boqLevel6 = [];
       this.SearchInput.boqResourceSeq = [];
       this.SearchInput.fromRow = null;
       this.SearchInput.isItemsAssigned = 0;
@@ -393,7 +484,6 @@ export class AssignPackageFilterComponent implements OnInit {
       ///Ah22082024
       //this.searchEvent.emit(this.SearchInput);
   }
-
 
   search(){
       this.searchEvent.emit(this.SearchInput);
@@ -437,6 +527,8 @@ export class AssignPackageFilterComponent implements OnInit {
       level2 : this.SearchInput.boqLevel2,
       level3 : this.SearchInput.boqLevel3,
       level4 : this.SearchInput.boqLevel4,
+      level5 : this.SearchInput.boqLevel5,
+      level6 : this.SearchInput.boqLevel6,
       resType: this.SearchInput.rESType,
       boqDiv: this.SearchInput.bOQDiv
     };
@@ -444,6 +536,8 @@ export class AssignPackageFilterComponent implements OnInit {
     this.GetBOQDivList(body);
     this.GetBOQLevel3List(body);
     this.GetBOQLevel4List(body);
+    this.GetBOQLevel5List(body);
+    this.GetBOQLevel6List(body);
     this.GetRESTypeList(body);
     this.GetRessourcesList(body) ;
   }
@@ -454,6 +548,8 @@ export class AssignPackageFilterComponent implements OnInit {
       level2 : this.SearchInput.boqLevel2,
       level3 : this.SearchInput.boqLevel3,
       level4 : this.SearchInput.boqLevel4,
+      level5 : this.SearchInput.boqLevel5,
+      level6 : this.SearchInput.boqLevel6,
       resType: this.SearchInput.rESType,
       boqDiv: this.SearchInput.bOQDiv
     };
@@ -461,6 +557,8 @@ export class AssignPackageFilterComponent implements OnInit {
     this.GetBOQDivList(body);
     this.GetBOQLevel2List(body);
     this.GetBOQLevel4List(body);
+    this.GetBOQLevel5List(body);
+    this.GetBOQLevel6List(body);
     this.GetRESTypeList(body);
     this.GetRessourcesList(body) ;
   }
@@ -471,6 +569,8 @@ export class AssignPackageFilterComponent implements OnInit {
       level2 : this.SearchInput.boqLevel2,
       level3 : this.SearchInput.boqLevel3,
       level4 : this.SearchInput.boqLevel4,
+      level5 : this.SearchInput.boqLevel5,
+      level6 : this.SearchInput.boqLevel6,
       resType: this.SearchInput.rESType,
       boqDiv: this.SearchInput.bOQDiv
     };
@@ -478,6 +578,50 @@ export class AssignPackageFilterComponent implements OnInit {
     this.GetBOQDivList(body);
     this.GetBOQLevel2List(body);
     this.GetBOQLevel3List(body);
+    this.GetBOQLevel5List(body);
+    this.GetBOQLevel6List(body);
+    this.GetRESTypeList(body);
+    this.GetRessourcesList(body) ;
+  }
+
+  L5_AfterUpdate()
+  {
+    let body : any = {
+      level2 : this.SearchInput.boqLevel2,
+      level3 : this.SearchInput.boqLevel3,
+      level4 : this.SearchInput.boqLevel4,
+      level5 : this.SearchInput.boqLevel5,
+      level6 : this.SearchInput.boqLevel6,
+      resType: this.SearchInput.rESType,
+      boqDiv: this.SearchInput.bOQDiv
+    };
+
+    this.GetBOQDivList(body);
+    this.GetBOQLevel2List(body);
+    this.GetBOQLevel3List(body);
+    this.GetBOQLevel4List(body);
+    this.GetBOQLevel6List(body);
+    this.GetRESTypeList(body);
+    this.GetRessourcesList(body) ;
+  }
+
+  L6_AfterUpdate()
+  {
+    let body : any = {
+      level2 : this.SearchInput.boqLevel2,
+      level3 : this.SearchInput.boqLevel3,
+      level4 : this.SearchInput.boqLevel4,
+      level5 : this.SearchInput.boqLevel5,
+      level6 : this.SearchInput.boqLevel6,
+      resType: this.SearchInput.rESType,
+      boqDiv: this.SearchInput.bOQDiv
+    };
+
+    this.GetBOQDivList(body);
+    this.GetBOQLevel2List(body);
+    this.GetBOQLevel3List(body);
+    this.GetBOQLevel4List(body);
+    this.GetBOQLevel5List(body);
     this.GetRESTypeList(body);
     this.GetRessourcesList(body) ;
   }
@@ -487,6 +631,8 @@ export class AssignPackageFilterComponent implements OnInit {
       level2 : this.SearchInput.boqLevel2,
       level3 : this.SearchInput.boqLevel3,
       level4 : this.SearchInput.boqLevel4,
+      level5 : this.SearchInput.boqLevel5,
+      level6 : this.SearchInput.boqLevel6,
       resType: this.SearchInput.rESType,
       boqDiv: this.SearchInput.bOQDiv
     };
@@ -495,6 +641,8 @@ export class AssignPackageFilterComponent implements OnInit {
     this.GetBOQLevel2List(body);
     this.GetBOQLevel3List(body);
     this.GetBOQLevel4List(body);
+    this.GetBOQLevel5List(body);
+    this.GetBOQLevel6List(body);
     this.GetRessourcesList(body) ;
   }
 
@@ -503,6 +651,8 @@ export class AssignPackageFilterComponent implements OnInit {
       level2 : this.SearchInput.boqLevel2,
       level3 : this.SearchInput.boqLevel3,
       level4 : this.SearchInput.boqLevel4,
+      level5 : this.SearchInput.boqLevel5,
+      level6 : this.SearchInput.boqLevel6,
       resType: this.SearchInput.rESType,
       boqDiv: this.SearchInput.bOQDiv
     };
@@ -511,6 +661,8 @@ export class AssignPackageFilterComponent implements OnInit {
     this.GetBOQLevel2List(body);
     this.GetBOQLevel3List(body);
     this.GetBOQLevel4List(body);
+    this.GetBOQLevel5List(body);
+    this.GetBOQLevel6List(body);
     this.GetRESTypeList(body);
   }
 
@@ -519,6 +671,8 @@ export class AssignPackageFilterComponent implements OnInit {
       level2 : this.SearchInput.boqLevel2,
       level3 : this.SearchInput.boqLevel3,
       level4 : this.SearchInput.boqLevel4,
+      level5 : this.SearchInput.boqLevel5,
+      level6 : this.SearchInput.boqLevel6,
       resType: this.SearchInput.rESType,
       boqDiv: this.SearchInput.bOQDiv
     };
@@ -526,9 +680,10 @@ export class AssignPackageFilterComponent implements OnInit {
     this.GetBOQLevel2List(body);
     this.GetBOQLevel3List(body);
     this.GetBOQLevel4List(body);
+    this.GetBOQLevel5List(body);
+    this.GetBOQLevel6List(body);
     this.GetRESTypeList(body);
     this.GetRessourcesList(body) ;
   }
 
- 
 }

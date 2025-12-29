@@ -17,7 +17,7 @@ width: 600px !important; min-width: 0px !important;" fixed
 [mode]="'over'" [name]="'assignPackageFilter'" 
 [position]="'right'" #assignPackageFilter [ngClass]="{'drawer': opened, 'drawer-rtl': false}"
 >
-<div class="container" style="padding-top: 100px; padding-left: 0px; padding-right: 0px;">
+<div class="container" style="padding-top: 40px; padding-left: 0px; padding-right: 0px;">
     <div class="card">
     <div class="card-header bg-white">
       <div class="d-flex justify-content-between">
@@ -44,7 +44,8 @@ width: 600px !important; min-width: 0px !important;" fixed
         </div>
       </div>
     </div>
-    <div class="card-body" style="max-height : calc(100vh - 200px); overflow: auto;">
+    <div class="card-body" style="max-height : calc(100vh - 120px); overflow: auto;">
+       
         <div class="row p-2">
             <div class="col-lg-6 form-group">
                 <mat-form-field class="full-width-field">
@@ -65,24 +66,18 @@ width: 600px !important; min-width: 0px !important;" fixed
                 <!-- appearance="fill" -->
                 <mat-form-field  class="full-width-field">  
                     <mat-label>Level 2</mat-label>
-                    <mat-select [(ngModel)]="SearchInput.boqLevel2" multiple
-                        (ngModelChange)="L2_AfterUpdate()">
-                        <input matInput type="text" focused="'true'" (keyup)="filterBOQLevel($event)" (keydown)="$event.stopPropagation()"
+                    <mat-select [(ngModel)]="SearchInput.boqLevel2" multiple (ngModelChange)="L2_AfterUpdate()">
+                        <input matInput type="text" focused="'true'" (keyup)="filterBOQLevel2($event)" (keydown)="$event.stopPropagation()"
                             class="mat-filter">
-                        <span class="fa fa-search input-icon"></span>
+                            <span class="fa fa-search input-icon"></span>
                         <mat-divider></mat-divider>
 
-                        <mat-option *ngFor="let item of selectedBOQLevel2List" [value]="item.level">{{
-                            item.level }}
+                        <mat-option *ngFor="let item of selectedBOQLevel2List" [value]="item.level">
+                            {{ item.level }}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
-
-            
-
-            
-            
         </div>
 
         <div class="row p-2">
@@ -113,6 +108,41 @@ width: 600px !important; min-width: 0px !important;" fixed
                         <mat-divider></mat-divider>
 
                         <mat-option style="font-size:12px;" *ngFor="let item of selectedBOQLevel4List" [value]="item.level">{{
+                            item.level }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div> 
+
+        <div class="row p-2">
+            <div class="col-lg-6 form-group">
+                <mat-form-field  class="full-width-field">
+                    <mat-label>Level 5</mat-label>
+                    <mat-select [(ngModel)]="SearchInput.boqLevel5" multiple
+                        (ngModelChange)="L5_AfterUpdate()">
+                        <input matInput type="text" focused="'true'" (keyup)="filterBOQLevel5($event)" (keydown)="$event.stopPropagation()"
+                            class="mat-filter">
+                        <span class="fa fa-search input-icon"></span>
+                        <mat-divider></mat-divider>
+
+                        <mat-option *ngFor="let item of selectedBOQLevel5List" [value]="item.level">{{
+                            item.level }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-lg-6 form-group">
+                <mat-form-field class="full-width-field">
+                    <mat-label>Level 6</mat-label>
+                    <mat-select [(ngModel)]="SearchInput.boqLevel6" multiple
+                        (ngModelChange)="L6_AfterUpdate()">
+                        <input matInput type="text" focused="'true'" (keyup)="filterBOQLevel6($event)" (keydown)="$event.stopPropagation()"
+                            class="mat-filter">
+                        <span class="fa fa-search input-icon"></span>
+                        <mat-divider></mat-divider>
+
+                        <mat-option style="font-size:12px;" *ngFor="let item of selectedBOQLevel6List" [value]="item.level">{{
                             item.level }}
                         </mat-option>
                     </mat-select>
@@ -193,7 +223,6 @@ width: 600px !important; min-width: 0px !important;" fixed
                 </mat-form-field>
             </div>
             <div class="col-lg-6 form-group">
-        
                 <mat-form-field class="full-width-field">
                     <mat-label>RES Div</mat-label>
                     <mat-select [(ngModel)]="SearchInput.rESDiv" multiple>
@@ -206,8 +235,6 @@ width: 600px !important; min-width: 0px !important;" fixed
                             item.boqDiv }}</mat-option>
                     </mat-select>
                 </mat-form-field>
-
-
             </div>
         </div>
         <div class="row p-2">
@@ -220,11 +247,9 @@ width: 600px !important; min-width: 0px !important;" fixed
                         <span class="fa fa-search input-icon"></span>
                         <mat-divider></mat-divider>
 
-                        <mat-option *ngFor="let item of selectedRESTypeList" [value]="item.boqCtg">{{
-                            item.boqCtg }}</mat-option>
+                        <mat-option *ngFor="let item of selectedRESTypeList" [value]="item.boqCtg">{{ item.boqCtg }}</mat-option>
                     </mat-select>
                 </mat-form-field>
-
             </div>
             <div class="col-lg-6 form-group">
              <input type="text" class="form-control" [(ngModel)]="SearchInput.rESDesc" placeholder="RES Description"

@@ -244,7 +244,7 @@
                                     <!-- <td [ngClass]="item.assignedPackage != '' ? 'text-danger' : ''">{{item.assignedPackage}}</td> -->
                                     <td [ngClass]="item.boqStatus != '' ? 'text-danger' : ''"> {{item.boqStatus}}</td>
                                     <td> <input type="text" [(ngModel)]="item.obTradeDesc" (blur)="updateComment(item)" placeholder="Enter comment"
-                                        class="form-control" [ngStyle]="{ 'width': item.obTradeDesc ? '15vw' : '100%' }"/>
+                                        class="form-control small-placeholder" [ngStyle]="{ 'width': item.obTradeDesc ? '15vw' : '100%' }"/>
                                     </td>
                                 </tr>
                             </tbody>
@@ -290,6 +290,16 @@
                     <div class="form-group p-1">
                         <ng-container>
                             <strong>L4 :</strong>{{SelectedOriginalBoqRow.l4}}
+                        </ng-container>
+                    </div>
+                    <div class="form-group p-1">
+                        <ng-container>
+                            <strong>L5 :</strong>{{SelectedOriginalBoqRow.l5}}
+                        </ng-container>
+                    </div>
+                    <div class="form-group p-1">
+                        <ng-container>
+                            <strong>L6 :</strong>{{SelectedOriginalBoqRow.l6}}
                         </ng-container>
                     </div>
                     <div class="form-group p-1">

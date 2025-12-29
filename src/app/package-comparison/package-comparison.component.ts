@@ -430,6 +430,8 @@ export class PackageComparisonComponent implements OnInit {
           l2:'',
           l3:'',
           l4:'',
+          l5:'',
+          l6:'',
           c1:'',
           c2:'',
           c3:'',

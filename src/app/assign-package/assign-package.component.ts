@@ -666,7 +666,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     
     if (!evt.target.checked)
     {
-      this.FinalTotalPrice -= this.SelectedBoqRow.boqUprice * this.SelectedBoqRow.boqScopeQty;
+      this.FinalTotalPrice -= this.SelectedBoqRow.boqUprice * this.SelectedBoqRow.boqQty;
       this.FinalUnitPrice -= this.SelectedBoqRow.totalUnitPrice;
       this.SelectedBoqList = this.SelectedBoqList.filter(x=>x.boqSeq != this.SelectedBoqRow.boqSeq);
 
@@ -730,14 +730,14 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     
     if (!this.SelectedBoqRow.isSelected)
     {
-      this.FinalTotalPrice -= this.SelectedBoqRow.boqUprice * this.SelectedBoqRow.boqScopeQty;
+      this.FinalTotalPrice -= this.SelectedBoqRow.boqUprice * this.SelectedBoqRow.boqQty;
       this.FinalUnitPrice -= this.SelectedBoqRow.totalUnitPrice;
       let index = this.SelectedBoqList.findIndex(x=>x.boqSeq === this.SelectedBoqRow.boqSeq);
       this.SelectedBoqList.splice(index,1);
     }
     else
     {
-      this.FinalTotalPrice += this.SelectedBoqRow.boqUprice * this.SelectedBoqRow.boqScopeQty;
+      this.FinalTotalPrice += this.SelectedBoqRow.boqUprice * this.SelectedBoqRow.boqQty;
       this.FinalUnitPrice += this.SelectedBoqRow.totalUnitPrice;
       this.SelectedBoqList.push(this.SelectedBoqRow);
     }
@@ -861,8 +861,7 @@ return;
                         
                         selectedBoqArr.splice(subIndex, 1);
                     });
-
-                    
+    
                     this.editDisplayedBoqList(this.BoqList, false);
                     //this.reloadBoqResources();
                     }
@@ -969,7 +968,7 @@ return;
         
         if(add)
         {
-          this.FinalTotalPrice += (boq.boqScopeQty * boq.boqUprice);
+          this.FinalTotalPrice += (boq.boqQty * boq.boqUprice);
           this.FinalUnitPrice += (boq.totalUnitPrice);
           //AH14092023
           // if(item)
@@ -990,7 +989,7 @@ return;
         }
         else
         {
-            this.FinalTotalPrice -= (boq.boqScopeQty * boq.boqUprice);
+            this.FinalTotalPrice -= (boq.boqQty * boq.boqUprice);
             this.FinalUnitPrice -= (boq.totalUnitPrice);
              //AH14092023
             // if(item)
@@ -1614,6 +1613,7 @@ validateExcelBeforeAssign(){
     get f() { return this.formEdit.controls; }
     get ff() { return this.formEditUnitPriceRes.controls; }
 
+    
   editOriginalBoqQty(content : any, item : OriginalBoqModel)
   {
     this.mode = 'edit';

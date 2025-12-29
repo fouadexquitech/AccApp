@@ -58,5 +58,22 @@ th {
    display: none
    }
 
+   .small-placeholder::placeholder {
+    font-size: 11px;
+  }
+  
+  .small-placeholder {
+    font-size: 11px;
+  }
+
+  /* Browser compatibility */
+  .small-placeholder::-webkit-input-placeholder {
+    font-size: 11px;
+  }
+  
+  .small-placeholder:-ms-input-placeholder {
+    font-size: 11px;
+  }
+
  
  

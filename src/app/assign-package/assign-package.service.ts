@@ -44,6 +44,18 @@ export class AssignPackageService {
         );
     }
 
+    GetBOQLevel5List(body : any,CostConn: string): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetBOQLevel5List?CostConn=' + CostConn,body).pipe(
+            map(res => res), catchError(this.handleError)
+        );
+    }
+
+    GetBOQLevel6List(body : any,CostConn: string): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetBOQLevel6List?CostConn=' + CostConn,body).pipe(
+            map(res => res), catchError(this.handleError)
+        );
+    }
+
     GetRESTypeList(body : any,CostConn: string): Observable<any> {
         return this.http.post(this.baseUrl + 'Search/GetResTypeList?CostConn=' + CostConn, body).pipe(
             map(res => res), catchError(this.handleError)
@@ -72,6 +84,18 @@ export class AssignPackageService {
     
     GetBOQLevel4ListByLevel3(body : any,CostConn: string): Observable<any> {
         return this.http.post(this.baseUrl + 'Search/GetBOQLevel4ListByLevel3?CostConn=' + CostConn, body).pipe(
+            map(res => res), catchError(this.handleError)
+        );
+    }
+
+    GetBOQLevel5ListByLevel4(body : any,CostConn: string): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetBOQLevel5ListByLevel4?CostConn=' + CostConn, body).pipe(
+            map(res => res), catchError(this.handleError)
+        );
+    }
+
+    GetBOQLevel6ListByLevel5(body : any,CostConn: string): Observable<any> {
+        return this.http.post(this.baseUrl + 'Search/GetBOQLevel6ListByLevel5?CostConn=' + CostConn, body).pipe(
             map(res => res), catchError(this.handleError)
         );
     }

@@ -16,6 +16,8 @@ export class OriginalBoqModel {
     public l2: string = "";
     public l3: string = "";
     public l4: string = "";
+    public l5: string = "";
+    public l6: string = "";
     public c1: string = "";
     public c2: string = "";
     public c3: string = "";
@@ -62,6 +64,8 @@ export class SearchInput {
     public boqLevel2: string[] = [];
     public boqLevel3:  string[] = [];
     public boqLevel4: string[] = [];
+    public boqLevel5: string[] = [];
+    public boqLevel6: string[] = [];
     public obTradeDesc: string = null;
     public isItemsAssigned: number = 0;
     public boqResourceSeq: string[] = [];

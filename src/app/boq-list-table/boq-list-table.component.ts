@@ -106,11 +106,13 @@ export class BoqListTableComponent implements OnInit {
     console.log(selectedBoqRow.isSelected);
     if(event.target.checked)
     {
-      this.finalTotalPrice += selectedBoqRow.boqUprice * selectedBoqRow.boqScopeQty;
+      // this.finalTotalPrice += selectedBoqRow.boqUprice * selectedBoqRow.boqScopeQty;
+      this.finalTotalPrice += selectedBoqRow.boqUprice * selectedBoqRow.boqQty;
     }
     else
     {
-      this.finalTotalPrice -= selectedBoqRow.boqUprice * selectedBoqRow.boqScopeQty;
+      // this.finalTotalPrice -= selectedBoqRow.boqUprice * selectedBoqRow.boqScopeQty;
+      this.finalTotalPrice -= selectedBoqRow.boqUprice * selectedBoqRow.boqQty;
     }
 
     this.selectBoqEvent.emit({
