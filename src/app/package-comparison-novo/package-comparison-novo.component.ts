@@ -454,8 +454,7 @@ export class PackageComparisonNovoComponent implements OnInit {
   getComCondReplies() {
     let CostConn = this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => {});
-    this.packageComparisonService
-      .getComCondReplies(this.packageId, this.costDB, CostConn)
+    this.packageComparisonService.getComCondReplies(this.packageId, this.costDB, CostConn)
       .subscribe((data) => {
         this.comConditionsReplies = data;
         this.comConditionsReplies.forEach((cond) => {

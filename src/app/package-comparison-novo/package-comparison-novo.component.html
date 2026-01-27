@@ -17,6 +17,10 @@
     .text-right    {
       text-align:right;
     }
+
+    .cc-title {
+      font-size: 14px;
+    }
   </style>
 
   <nav aria-label="breadcrumb" class="p-2">
@@ -214,6 +218,7 @@
     </div>
     <div class="row p-2">
       <div class="col-sm-12 table-responsive">
+
         <!--by Resources-->
         <div class="table-container" *ngIf="!byBoq">
           <table id="table-by-boq">
@@ -677,6 +682,7 @@
                 </th>
                 <th class="text-center" style="width: 50px">Exclud</th>
                 <th class="text-center" style="width: 50px">Unit</th>
+                
                 <th class="text-center" style="width: 300px">
                   <table style="table-layout: fixed">
                     <tr>
@@ -702,8 +708,7 @@
                   </table>
                 </th>
 
-                <th style="width: 500px"
-                  *ngFor="let sup of CurrentLevelList[0]?.groupingLevels[0]?.items[0].groupingPackageSuppliersPrices">
+                <th style="width: 500px" *ngFor="let sup of CurrentLevelList[0]?.groupingLevels[0]?.items[0].groupingPackageSuppliersPrices">
                   <table style="width: 100%" style="border: none;">
                     <tr>
                       <td [attr.colspan]="sup.supplierName != 'Ideal' ? '4' : '4'" class="text-center"
@@ -743,8 +748,10 @@
             <div class="tbody-wrapper" id="tbody-wrapper-byboq">
               <ng-container *ngFor="let cLevel of CurrentLevelList; let idx = index">
                 <tbody *ngFor="let level of cLevel.groupingLevels; let ind = index">
+                 
                   <tr>
-                    <td colspan="10">
+                    <!-- <td colspan="10"> -->
+                    <td>
                       <span [innerHTML]="getSplittedLevelName(level.levelName)" *ngIf="level.levelName"></span>
                       <span *ngIf="!level.levelName">From Drawing</span>
                     </td>
@@ -1055,10 +1062,7 @@
                 <tr>
                   <td [attr.colspan]="SupplierPackagesList.length + 10">
                     <table class="table table-bordered">
-                      <tr *ngFor="
-                          let cond of techConditionsReplies;
-                          let i = index
-                        ">
+                      <tr *ngFor="let cond of techConditionsReplies;let i = index">
                         <td class="text-left" style="width: 6%">
                           {{ cond.description }}
                         </td>
@@ -1078,37 +1082,40 @@
                 </tr>
 
                 <tr *ngIf="comConditionsReplies?.length > 0" class="bg-secondary text-white">
-                  <td [attr.colspan]="SupplierPackagesList.length + 10" class="table table-bordered">
+                  <!-- <td [attr.colspan]="SupplierPackagesList.length + 10" class="table table-bordered"> -->
+                  <td style="width: 100%" class="table table-bordered">
                     <!--<strong>Commercial Conditions</strong> -->
-                    <table style="width: 100%">
+                    <table style="width: 100%;color:white; font-size:14px;text-align:center;">
                       <tr>
-                        <td class="text-left" style="width: 29%">
-                          <strong>Commercial Conditions</strong>
+                        <td class="text-center" style="width: 650px;">
+                          <strong class="cc-title">Commercial Conditions.</strong>
                         </td>
-                        <td class="text-left" style="width: 27%">
-                          <strong>ACC Condition</strong>
+                        <td class="text-center" style="width: 600px;">
+                          <strong class="cc-title">ACC Condition</strong>
                         </td>
-                        <td *ngFor="let sup of comConditionSuppliers">
-                          <strong>{{sup}}</strong>
+                        <td *ngFor="let sup of comConditionSuppliers" style="width: 500px;text-align:center;">
+                          <strong class="cc-title">{{sup}}</strong>
                         </td>
                       </tr>
                     </table>
                   </td>
                 </tr>
+
                 <tr>
-                  <td [attr.colspan]="packageSuppliersPrices.length + 10">
+                  <!-- <td [attr.colspan]="packageSuppliersPrices.length + 10"> -->
+                  <td>
                     <table class="table table-bordered">
                       <tr *ngFor="let cond of comConditionsReplies; let i = index">
-                        <td class="text-left" style="width: 29%">
+                        <td class="text-left" style="width: 650px">
                           {{ cond.description }}
                         </td>
-                        <td class="text-left" style="width: 27%">
+                        <td class="text-left" style="width: 600px">
                           {{ cond.accCondition }}
                         </td>
                         <td *ngFor="let reply of cond.replies">
                           <table class="table">
                             <tr>
-                              <td class="text-center">
+                              <td class="text-center" style="width: 500px">
                                 {{ reply.reply }}
                               </td>
                             </tr>
