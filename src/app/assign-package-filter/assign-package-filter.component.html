@@ -173,9 +173,20 @@ width: 600px !important; min-width: 0px !important;" fixed
                     [ngClass]="{'selected-input': SearchInput.toRow }">
             </div>
             <div class="col-lg-6 p-2 form-group">
-                <input type="text" class="form-control" [(ngModel)]="SearchInput.obTradeDesc" placeholder="Trade Description"
-                     [ngClass]="{'selected-input': SearchInput.obTradeDesc }" >
-             </div>
+                <!-- <input type="text" class="form-control" [(ngModel)]="SearchInput.obTradeDesc" placeholder="Trade Description"
+                                 [ngClass]="{'selected-input': SearchInput.obTradeDesc }" > -->
+            
+                <mat-form-field class="full-width-field">
+                    <mat-label>VO Items</mat-label>
+                    <mat-select [(ngModel)]="SearchInput.voItems">
+            
+                        <mat-divider></mat-divider>
+                        <mat-option [value]="0"> All Items </mat-option>
+                        <mat-option [value]="1"> Only VO Items</mat-option>
+                        <mat-option [value]="2"> Without VO Items</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
         </div>
         <div class="row p-2">
             <div class="col-lg-6 form-group">
@@ -272,8 +283,8 @@ width: 600px !important; min-width: 0px !important;" fixed
                 </mat-form-field>
             </div>
             <div class="col-lg-6">
-                <mat-form-field  class="full-width-field">
-                    <mat-label>Assigned Ressources</mat-label>
+                <mat-form-field   style="font-size: 16px;">
+                    <mat-label >Assigned Ressources</mat-label>
                     <mat-select [(ngModel)]="SearchInput.isRessourcesAssigned">
                      <mat-divider></mat-divider>
                         <mat-option  [value]="0"></mat-option>

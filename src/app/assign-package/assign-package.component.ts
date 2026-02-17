@@ -72,7 +72,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
   FinalUnitPrice: number = 0;
   FinalTotalPrice : number = 0;
   SelectedBoqRow = new BoqModel();
-  public dtOptions: DataTables.Settings = {};
+  public dtOptions: DataTables.Settings = {   pageLength: 100,
+                                              dom: '<"dt-label">rtip'};
   public dtOptions2 : DataTables.Settings = {};
   // public dtTrigger: Subject<any> = new Subject<any>();
   public select2Options : Select2.Options = {};
@@ -145,6 +146,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
     
 // AH28032023
+
    clearAllSearch()
      {
       this.assignPackageFilter.clearFilter();
@@ -301,6 +303,18 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
 
   ngAfterViewInit() {
     this.dtTrigger.next();
+
+    setTimeout(() => {
+      const labelDiv = document.querySelector('.dt-label');
+      if (labelDiv) {
+        labelDiv.innerHTML = `
+        <span class="badge bg-warning text-dark">
+          VO BOQ ITEMS
+        </span>
+      `;
+      }
+    }, 0);
+
   }
 
   toggleShow() {

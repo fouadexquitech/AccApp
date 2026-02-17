@@ -452,7 +452,8 @@ export class AssignPackageFilterComponent implements OnInit {
       (this.SearchInput.rESPackage == null || this.SearchInput.rESPackage == '') &&
       this.SearchInput.rESType.length == 0 &&
       (this.SearchInput.sheetDesc == null || this.SearchInput.sheetDesc == '') &&
-      this.SearchInput.isRessourcesAssigned == 0);
+      this.SearchInput.isRessourcesAssigned == 0 &&
+      this.SearchInput.voItems ==0);
   }
 
   public clearFilter()
@@ -479,6 +480,7 @@ export class AssignPackageFilterComponent implements OnInit {
       this.SearchInput.sheetDesc = null;
       this.SearchInput.toRow = null;
       this.SearchInput.isRessourcesAssigned = 0;
+      this.SearchInput.voItems = 0;
       //Ah22082024
       //this.GetRessourcesListByLevels();
       ///Ah22082024

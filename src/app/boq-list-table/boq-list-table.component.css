@@ -53,5 +53,12 @@
 
 .mat-cell {
   text-align: center;
-  justify-content:center;
+  justify-content: center;
+}
+
+.vo-items {
+  background-color: #fff3cd;
+  /* أصفر فاتح */
+  font-weight: 600;
+  /* border-left: 4px solid #ffc107; */
 }

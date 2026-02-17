@@ -24,6 +24,7 @@ export class OriginalBoqModel {
     public c4: string = "";
     public boqRefNumber: string = "";
     public comment: string = "";
+    public isVO : boolean = false;
 }
 
 export class BoqModel {
@@ -46,6 +47,8 @@ export class BoqModel {
     public boqUpriceDisc: number = 0;
     public boqInsertedFromVendan: number = 0;
     public boqWBS: string = "";
+    public boqVoSeq : number = 0;
+    public isExternat : boolean = false;
 }
 
 export class SearchInput {
@@ -73,6 +76,7 @@ export class SearchInput {
     public costDB :string='';
     public boqStatus: string = "";
     public boqRefNumber: string = "";
+    public voItems: number = 0;
 }
 
 export class BOQDivList {

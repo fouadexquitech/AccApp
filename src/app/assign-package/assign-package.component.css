@@ -75,5 +75,16 @@ th {
     font-size: 11px;
   }
 
+    .vo-items {
+      background-color: #fff3cd;
+      /* أصفر فاتح */
+      font-weight: 600;
+      /* border-left: 4px solid #ffc107; */
+    }
+  
+    .vo-label {
+      padding-top: 1px;
+    }
+
  
  
