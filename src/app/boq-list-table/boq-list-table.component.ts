@@ -150,4 +150,20 @@ export class BoqListTableComponent implements OnInit {
        return this.ELEMENT_DATA.length == checked;
   }
 
+  getItemCssClass(item: any): string {
+  if (item.boqInsertedFromVendan === 1) {
+    return 'items-Inserted-Vd';
+  }
+
+  if (item.boqVoSeq > 0 && item.isExternal) {
+    return 'vo-items-external';
+  }
+
+  if (item.boqVoSeq > 0 && !item.isExternal) {
+    return 'vo-items-local';
+  }
+
+  return '';
+}
+
 }

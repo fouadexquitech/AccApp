@@ -589,6 +589,7 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
         let lst = this.SelectedBoqList;
         let pkg = this.SelectedPackage;
         this.BoqList = data;
+        console.log(this.BoqList)
         this.BoqList.forEach(function(element){
           element.isSelected = true;
           if(!lst.includes(element, 0))

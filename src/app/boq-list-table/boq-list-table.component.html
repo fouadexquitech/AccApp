@@ -21,8 +21,8 @@
       <mat-header-cell *matHeaderCellDef >
         BOQ
       </mat-header-cell>
-      <mat-cell *matCellDef="let item" [ngClass]="{'vo-items': (item.boqVoSeq>0)}"  [ngStyle]="item.boqInsertedFromVendan == 1 ? {'background-color': 'aquamarine'} : {}">
-       {{ item.boqItem }}
+      <mat-cell *matCellDef="let item" [ngClass]="getItemCssClass(item)">
+       {{ item.boqItem }} 
       </mat-cell>
       <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
@@ -145,6 +145,8 @@
   <div *ngIf="!dataSource || dataSource?.filteredData.length === 0" class="p-3 text-center">
     <h5>No items selected</h5>
   </div>
-
+  <div *ngIf="dataSource?.filteredData.length > 0" class="p-3 text-center">
+    <label class="items-Inserted-Vd"> Items:Inserted from VD</label>&nbsp;<label class="vo-items-local"> Items:VO-Local</label>&nbsp; <label class="vo-items-external"> Items:VO-External</label>
+  </div>
 </app-scroll-container>
 

@@ -48,7 +48,7 @@ export class BoqModel {
     public boqInsertedFromVendan: number = 0;
     public boqWBS: string = "";
     public boqVoSeq : number = 0;
-    public isExternat : boolean = false;
+    public isExternal : boolean = false;
 }
 
 export class SearchInput {
