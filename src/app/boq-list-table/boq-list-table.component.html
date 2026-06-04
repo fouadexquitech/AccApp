@@ -83,7 +83,7 @@
       </mat-header-cell>
       <mat-cell *matCellDef="let item">{{ item.boqScopeQty | number: '1.0-2' }} 
         <a class="btn btn-link p-2" title="Edit" (click)="editQty(item)" *ngIf="item.isSelected"><i class="fa fa-edit"></i></a>
-    </mat-cell>
+      </mat-cell>
     <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
@@ -92,7 +92,7 @@
         Unit Price
       </mat-header-cell>
       <mat-cell *matCellDef="let item">{{ item.boqUprice | number: '1.0-2' }}
-      <a class="btn btn-link p-2" title="Edit" (click)="editUnitPrice(item)" *ngIf="item.boqInsertedFromVendan==1"><i class="fa fa-edit"></i></a>
+        <a class="btn btn-link p-2" title="Edit" (click)="editUnitPrice(item)" *ngIf="item.boqInsertedFromVendan==1 || (item.boqVoSeq > 0 && item.isExternal)"><i class="fa fa-edit"></i></a>
       </mat-cell>
       <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>

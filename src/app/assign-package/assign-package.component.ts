@@ -722,6 +722,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     console.log(100);
     this.mode = 'edit';
     this.SelectedBoqRow = event.boqItem;
+    let voBkdSeq =  event.boqItem.boqVoBkdSeq;
+     console.log(voBkdSeq);
     this.EditBoqQtyModalLabel = 'Edit Boq Unit Price';
  
     this.formEditUnitPriceRes = this.formBuilder.group({
@@ -1268,6 +1270,28 @@ validateExcelBeforeAssign(){
     });
   }
 
+  exportBKD(){
+    //this.spinner.show();
+    this.isExportExcel=true;
+    let CostConn=this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+    
+    this.packageSupplierService.validateExcelBeforeAssign(-1,1,CostConn).subscribe((data) => {
+      this.isExportExcel=false;
+      if (data) {
+        // this.spinner.hide();
+        // this.toastr.success("Success !!")
+        let a = document.createElement('a');
+        a.id = 'downloader';
+        a.target = '_blank'; 
+        a.style.visibility = "hidden";
+        document.body.appendChild(a);
+        a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
+        a.click();
+      }
+    });
+  }
+
   GetPackageById(IdPkge: number) {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
@@ -1765,7 +1789,9 @@ validateExcelBeforeAssign(){
     let CostConn = this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-    this.assignPackageService.updateBoqRes(this.currentBoqRes, CostConn,2).subscribe(response => {
+    this.assignPackageService.updateBoqRes(this.currentBoqRes, CostConn,
+                                          this.user.usrLoggedTSConnString,
+                                          this.user.usrEmail,2).subscribe(response => {
       this.updating = false;
       if (response) {
         this.toastr.success('Updated successfuly');
@@ -1812,11 +1838,14 @@ validateExcelBeforeAssign(){
       let CostConn=this.user.usrLoggedConnString;
       this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-      this.assignPackageService.updateBoqRes(this.currentBoqRes,CostConn,1).subscribe(response => {
+      let TSConn=this.user.usrLoggedTSConnString;
+
+      this.assignPackageService.updateBoqRes(this.currentBoqRes,CostConn,TSConn,this.user.usrEmail,1).subscribe(response => {
         this.updating = false;
         if (response) {
           this.toastr.success('Updated successfuly');
-          //this.onSearch();
+          // this.onSearch();
+          this.GetOriginalBoqList(this.SearchInput);
           this.recalculateFinalTotals();
           this.modalReference.close();
         }

@@ -617,7 +617,9 @@ public user : User;
       });
       //AH24012024
       this.SupplierInput.forEach(supplier=>{
-        this.SupplierInputList.push({supplierInput : supplier, comercialCondList : comCondList, emailTemplate : null, filePath : this.FilePath , technicalCondList:techCondList});
+        this.SupplierInputList.push({supplierInput : supplier, comercialCondList : comCondList, 
+                                      emailTemplate : null, filePath : this.FilePath ,
+                                      technicalCondList:techCondList});
       });
 
       if (this.SupplierInputList.length > 0) {

@@ -33,7 +33,6 @@ export class RevisionDetailsService {
 
     UpdateRevisionDetailsPriceByBoq(revisionDetails : RevisionDetailsList[],CostConn: string)
     {
-      
         let body = JSON.stringify(revisionDetails);
         
         return this.http.post(this.baseUrl + 'RevisionDetails/UpdateRevisionDetailsPriceByBoq?CostConn=' + CostConn, body, {

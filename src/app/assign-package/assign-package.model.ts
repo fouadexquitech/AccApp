@@ -48,6 +48,7 @@ export class BoqModel {
     public boqInsertedFromVendan: number = 0;
     public boqWBS: string = "";
     public boqVoSeq : number = 0;
+    public boqVoBkdSeq : number = 0;
     public isExternal : boolean = false;
 }
 

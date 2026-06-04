@@ -1,71 +1,76 @@
 <app-nav></app-nav>
-<section  >
 
-    <!-- <nav aria-label="breadcrumb" class="p-2" style="height: 32px;">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Assign Packages</li>
-        </ol>
-    </nav> -->
-    <div class="container-fluid" >
-        <div class="row p-4"  style="height: 55px;"  >
-            <!-- <div class="col-sm-2 form-group">
-                <button type="button" class="btn btn-primary" [disabled]="isSearching"
-                    style="float: right; width: 100%;font-size: small" (click)="onSearch()">
-                    <i class="fa fa-spinner fa-spin" *ngIf="isSearching"></i>
-                    Search</button>
+<section>
 
-            </div> -->
-            <!-- <div class="col-sm-2 form-group" >
-                <button type="button" class="btn btn-primary" style="float: right; width: 100%;font-size: small;height: 10px;"
-                    (click)="clearAllSearch()">Clear Search</button>
-            </div> -->
-            <div class="col-sm-2 form-group">
-                <button type="button" class="btn btn-danger" 
-                style="width:100%;font-size: 12px;height: 30px;"
-                    (click)="clearAllSelections()" [disabled]="SelectedOriginalBoqList.length == 0">Clear All
-                    Selections</button>
-            </div>
-            <div class="col-sm-2 form-group">
-                <button class="btn btn-success" (click)="ExportExcelBoq()"
-                    style="width: 250px;font-size: 12px;height: 30px;">
-                    <i  [ngClass]="isExportExcel ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
-                    <!-- <i class="fa fa-spinner fa-spin" *ngIf="isSearching"></i> -->
-                    Export Searched Ressources
-                </button>
-                <!-- [disabled]="isSearching" -->
-            </div>
-            <div class="col-sm-2 form-group">
-                <button class="btn btn-success" (click)="ExportExcelPackagesCost(0)"
-                    style="width: 250px;font-size:12px;height: 30px;">
-                    <i  [ngClass]="isExportExcelDry ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
-                    Export Packages Dry Cost
-                </button>
-            </div>
-            <div class="col-sm-2 form-group">
-                <button class="btn btn-success" (click)="ExportExcelPackagesCost(1)"
-                    style="width: 250px;font-size: 12px;height: 30px;">
-                    <i  [ngClass]="isExportExcelDryBoq ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
-                    Export Packages Cost with BOQ
-                </button>
-            </div>
-            <div class="col-sm-2 form-group">
-                <button class="btn btn-success" (click)="ExportNotAssigned()"
-                    style="width: 250px;font-size: 12px;height: 30px;">
-                    <i  [ngClass]="isExportExcelNotAssigned ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
-                    Export Not Assigned Items
-                </button>
-                <!-- [disabled]="isSearching" -->
-            </div>
-            <div class="col-sm-2 form-group">
-                <button class="btn btn-success" (click)="ExportExcelVerification()"
-                    style="width: 250px;font-size: 12px;height: 30px;">
-                    <i  [ngClass]="isExportExcelVerif ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
-                    Export Verification
-                </button>
-            </div>
-        </div>
-        
+    <div class="container-fluid toolbar-container">
+
+  <div class="export-toolbar">
+
+    <div class="toolbar-left">
+      <button type="button"
+        class="btn btn-danger btn-sm clear-btn"
+        (click)="clearAllSelections()"
+        [disabled]="SelectedOriginalBoqList.length == 0">
+        Clear All
+      </button>
+    </div>
+
+    <div class="toolbar-right">
+
+      <div class="toolbar-title">
+        <i class="fa fa-file-export"></i>
+        <span>Export Actions</span>
+      </div>
+
+      <!-- <button class="btn btn-success btn-sm toolbar-btn" (click)="exportBKD()">
+        <i [ngClass]="isExportExcel ? 'fa-solid fa-circle-notch fa-spin' : 'fa fa-file-excel'"></i>
+        BKD
+      </button> -->
+      
+<button 
+  class="btn btn-success btn-sm toolbar-btn"
+  (click)="exportBKD()"
+  [disabled]="isExportExcel">
+
+  <i 
+    [ngClass]="isExportExcel ? 'fa-solid fa-circle-notch fa-spin' : 'fa-solid fa-file-excel'">
+  </i>
+
+  {{ isExportExcel ? ' Exporting...' : ' BKD' }}
+</button>
+
+
+      <button class="btn btn-success btn-sm toolbar-btn" (click)="ExportExcelBoq()">
+        <i [ngClass]="isExportExcel ? 'fa-solid fa-circle-notch fa-spin' : 'fa fa-file-excel'"></i>
+        Resources
+      </button>
+
+      <button class="btn btn-success btn-sm toolbar-btn" (click)="ExportExcelPackagesCost(0)">
+        <i [ngClass]="isExportExcelDry ? 'fa-solid fa-circle-notch fa-spin' : 'fa fa-download'"></i>
+        Dry Cost
+      </button>
+
+      <button class="btn btn-success btn-sm toolbar-btn" (click)="ExportExcelPackagesCost(1)">
+        <i [ngClass]="isExportExcelDryBoq ? 'fa-solid fa-circle-notch fa-spin' : 'fa fa-download'"></i>
+        Cost + BOQ
+      </button>
+
+      <button class="btn btn-success btn-sm toolbar-btn" (click)="ExportNotAssigned()">
+        <i [ngClass]="isExportExcelNotAssigned ? 'fa-solid fa-circle-notch fa-spin' : 'fa fa-list'"></i>
+        Not Assigned
+      </button>
+
+      <button class="btn btn-success btn-sm toolbar-btn" (click)="ExportExcelVerification()">
+        <i [ngClass]="isExportExcelVerif ? 'fa-solid fa-circle-notch fa-spin' : 'fa fa-check-circle'"></i>
+        Verification
+      </button>
+
+    </div>
+
+  </div>
+
+
+
 
        
         <div class="row" >

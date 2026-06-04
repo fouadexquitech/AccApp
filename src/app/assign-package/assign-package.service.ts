@@ -201,9 +201,9 @@ export class AssignPackageService {
     );
     }
 
-    updateBoqRes(item : BoqModel,CostConn: string,type : number)
+    updateBoqRes(item : BoqModel,CostConn: string,TSConn: string,usrEmail:string,type : number)
     {
-      return this.http.post(this.baseUrl + 'Package/updateBoqRes?CostConn=' + CostConn+ '&type='+type, item).pipe(
+      return this.http.post(this.baseUrl + 'Package/updateBoqRes?CostConn=' + CostConn+'&TSConn='+TSConn +'&usrEmail='+usrEmail +'&type='+type, item).pipe(
         map(res => res), catchError(this.handleError)
     );
     }
