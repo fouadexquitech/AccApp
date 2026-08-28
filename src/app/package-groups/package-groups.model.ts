@@ -15,9 +15,9 @@ export class ComparisonPackageGroup {
 
 export class GroupingResource {
   public boqSeq: number = 0;
-  public resourceSeq: string = null;
-  public resourceDescription: string = null;
-  public unit: string = null;
+  public resourceSeq: string = '';
+  public resourceDescription: string = '';
+  public unit: string = '';
   public isSelected: boolean = false;
   public isChecked: boolean = false;
   public qty: number = 0;

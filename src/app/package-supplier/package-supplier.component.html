@@ -1,255 +1,354 @@
-
-
-  <!--<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-beat">
+<!--<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-beat">
     <p style="font-size: 20px; color: white">Loading...</p>
   </ngx-spinner>-->
-  <app-nav></app-nav>
-  <section>
+<app-nav></app-nav>
+<section>
   <nav aria-label="breadcrumb" class="p-2">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
-        <li class="breadcrumb-item"><a [routerLink]="['/package-list']">Packages List</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Package Supplier</li>
-        <li class="breadcrumb-item active" aria-current="page"><strong> {{ PackageName }}</strong></li>
+      <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
+      <li class="breadcrumb-item"><a [routerLink]="['/package-list']">Packages List</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Package Supplier</li>
+      <li class="breadcrumb-item active" aria-current="page"><strong> {{ PackageName }}</strong></li>
     </ol>
   </nav>
   <div class="container-fluid">
 
-  <div class="row">
-    <!-- <div class="col-sm-12 form-group" *ngIf="SupplierPackagesList.length == 0 && FilePath != null"> -->
-    <div class="col-sm-4 form-group">
-        <mat-form-field class="full-width-field"  style="width: 100%;font-size:12px;">
-          <mat-label>Suppliers</mat-label>
-          <mat-select multiple [(ngModel)]="selectedSuppliers"  >
-            <input matInput type="text" focused="'true'" (keyup)="filterSuppliers($event)" (keydown)="$event.stopPropagation()" class="mat-filter">
+    <div class="row">
+
+      <!-- Portal Status -->
+      <div class="col-sm-2 form-group">
+
+        <label for="supplierPortalStatus" style="font-size: 11px; margin-bottom: 2px;">
+
+          Supplier Group
+        </label>
+
+        <select id="supplierPortalStatus" name="supplierPortalStatus" class="form-select"
+          style="width: 100%; font-size: 12px; height: 40px;" [(ngModel)]="selectedPortalStatus"
+          (change)="onPortalStatusChange()" [disabled]="isLoadingSuppliers || isAssigning">
+
+          <option [ngValue]="1">
+            With Portal Account
+          </option>
+
+          <option [ngValue]="0">
+            Without Portal Account
+          </option>
+
+        </select>
+
+      </div>
+
+      <!-- Supplier Dropdown -->
+      <div class="col-sm-4 form-group">
+
+        <mat-form-field class="full-width-field" style="width: 100%; font-size: 12px;">
+
+          <mat-label>
+            {{
+            selectedPortalStatus === 1
+            ? 'Suppliers With Portal Account'
+            : 'Suppliers Without Portal Account'
+            }}
+          </mat-label>
+
+          <mat-select multiple [(ngModel)]="selectedSuppliers" [disabled]="isLoadingSuppliers || isAssigning"
+            (selectionChange)="onSupplierSelectionChange()">
+
+            <input matInput type="text" class="mat-filter" placeholder="Search supplier"
+              (keyup)="filterSuppliers($event)" (keydown)="$event.stopPropagation()">
+
             <span class="fa fa-search input-icon"></span>
+
             <mat-divider></mat-divider>
-            <mat-option *ngFor="let item of SupplierList" [value]="item.supID" style="width: 600px;" >{{item.supName}}</mat-option>
+
+            <mat-option *ngIf="isLoadingSuppliers" disabled>
+
+              Loading suppliers...
+
+            </mat-option>
+
+            <mat-option *ngFor="let item of SupplierList" [value]="item.supID" style="width: 600px;">
+
+              {{ item.supName }}
+
+            </mat-option>
+
+            <mat-option *ngIf="
+            !isLoadingSuppliers &&
+            SupplierList.length === 0
+          " disabled>
+
+              {{
+              selectedPortalStatus === 1
+              ? 'No unassigned suppliers with portal account found'
+              : 'No unassigned suppliers without portal account found'
+              }}
+
+            </mat-option>
+
           </mat-select>
+
+          <mat-hint>
+
+            {{
+            selectedPortalStatus === 1
+            ? 'Showing suppliers with an active portal account'
+            : 'Showing suppliers without a portal account'
+            }}
+
+          </mat-hint>
+
         </mat-form-field>
-    </div>
-    <!-- <div class="col-sm-3 form-group" *ngIf="SupplierPackagesList.length == 0 && FilePath != null"> -->
-    <div class="col-sm-2 form-group" >
-      <button type="button" 
-      class="btn btn-secondary" 
-      [disabled]="(selectedSuppliers.length == 0 || isAssigning)"
-      (click)="OpenEmailTemplateModal(0,0,null,-1)" style="font-size:12px;">
-      <!--<span *ngIf="isAssigning" class="spinner-border spinner-border-sm mr-1"></span>-->
-      Assign Supplier & Send mail</button>
+
+      </div>
+
+      <!-- Assign and Send Email -->
+      <div class="col-sm-2 form-group">
+
+        <button type="button" class="btn btn-secondary" style="font-size: 12px; margin-top: 20px;" [disabled]="
+        selectedSuppliers.length === 0 ||
+        isAssigning ||
+        isLoadingSuppliers
+      " (click)="OpenEmailTemplateModal(0, 0, null, -1)">
+
+          Assign Supplier & Send mail
+
+        </button>
+
+      </div>
+
+      <!-- Validate Excel -->
+      <div class="col-sm-2 form-group">
+
+        <button type="button" class="btn btn-success" style="
+        width: 100%;
+        font-size: 12px;
+        margin-top: 20px;
+      " [disabled]="isValidatingExcel" (click)="validateExcelBeforeAssign()">
+
+          <i [ngClass]="
+          isValidatingExcel
+            ? 'fa-solid fa-circle-notch fa-spin'
+            : ''
+        ">
+          </i>
+
+          Validate Excel
+
+        </button>
+
+      </div>
+
+      <!-- By BOQ -->
+      <div class="col-sm-2 form-group form-check form-switch" style="margin-top: 27px;" *ngIf="FilePath == null">
+
+        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="flexSwitchCheckDefault"
+          [checked]="assignByBoqOnly === '1'" (change)="flexSwitchCheckDefaultChange($event)">
+
+        <label class="form-check-label" for="flexSwitchCheckDefault" style="font-size: 11px;">
+
+          By Boq Item Only
+
+        </label>
+
+      </div>
+
     </div>
 
-    <div class="col-sm-2 form-group" >
-      <button style="width: 100%;font-size:12px;" type="button" class="btn btn-success" 
-      (click)="validateExcelBeforeAssign()">
-      <!-- <div class="col-sm-3 form-group" *ngIf="FilePath == null"> 
-        <button style="width: 100%;" type="button" class="btn btn-success"
-      [disabled]="(FilePath != null || isValidatingExcel)"
-      (click)="validateExcelBeforeAssign()"> -->
-      <!-- <i class="fa fa-spinner fa-spin" *ngIf="isValidatingExcel"></i>
-      Validate Excel</button> -->
-      
-      <i  [ngClass]="isValidatingExcel ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
-      Validate Excel</button>
-    </div>
-  
-    <div class="col-sm-2 form-group form-check form-switch" *ngIf="FilePath == null">
-      <input class="form-check-input" type="checkbox" 
-      id="flexSwitchCheckDefault" name="flexSwitchCheckDefault" [checked]="assignByBoqOnly == '1'"
-      (change)="flexSwitchCheckDefaultChange($event)">
-      <label class="form-check-label" for="flexSwitchCheckDefault" style="font-size:11px;">By Boq Item Only</label>
-    </div>
-    <!-- <div class="col-sm-2 form-group" >
-      <button style="width: 100%;font-size:12px;" type="button" class="btn btn-success" 
-      (click)="exportQuotations()">Export Quotations</button>
-    </div> -->
-    <!-- <div class="col-sm-2 form-group">
-      <button type="button" class="btn btn-secondary" style="float: right; width: 100%;" 
-      (click)="openGenerateContract()" [disabled]="generatingContract">
-      <span *ngIf="generatingContract"> Generating...</span>
-      <span *ngIf="!generatingContract">Export Quotations</span>
-     </button>
-    </div>  -->
-    <div class="col-sm-2 form-group" *ngIf="SupplierPackagesList.length>0">
-      <button type="button" style="width: 100%;font-size:14px;"  class="btn btn-primary" 
-      (click)="onCompare()">Compare Quotations</button>
-    </div>
-  </div>
+    <br>
 
-  <br>
-
-  <div class="row">
-    
+    <div class="row">
 
 
-    <div class="col-sm-2 form-group" *ngIf="SupplierPackagesList.length > 0 && FilePath != null">
-      <button type="button" class="btn btn-secondary" 
-      (click)="onGrouping()">Grouping</button>
+
+      <div class="col-sm-2 form-group" *ngIf="SupplierPackagesList.length > 0 && FilePath != null">
+        <button type="button" class="btn btn-secondary" (click)="onGrouping()">Grouping</button>
+      </div>
+      <div class="col-sm-3 form-group" *ngIf="SupplierPackagesList.length > 0 && FilePath != null">
+        <button type="button" class="btn btn-secondary" (click)="viewTechnicalConditions()">
+          View Technical Conditions</button>
+        <button type="button" class="btn btn-secondary" *ngIf="false" (click)="sendTechnicalConditions()"
+          [disabled]="isSendingTechConditions">
+
+          <i [ngClass]="isSendingTechConditions ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
+          Send Technical Conditions
+        </button>
+
+        <div class="alert alert-success" *ngIf="false">
+          Technical Conditions Sent
+          <i class="fa fa-check"></i>
+        </div>
+      </div>
     </div>
-    <div class="col-sm-3 form-group" *ngIf="SupplierPackagesList.length > 0 && FilePath != null">
-      <button type="button" class="btn btn-secondary"
-      (click)="viewTechnicalConditions()">
-      View Technical Conditions</button>
-      <button type="button" class="btn btn-secondary" *ngIf="false"
-        (click)="sendTechnicalConditions()" [disabled]="isSendingTechConditions">
-      
-        <i  [ngClass]="isSendingTechConditions ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
-        Send Technical Conditions
-      </button>
-      
-      <div class="alert alert-success" *ngIf="false">
-        Technical Conditions Sent
-        <i class="fa fa-check"></i>
+
+    <br>
+
+    <div class="row">
+
+      <div class="col-sm-12 form-group table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="display: none;">Package Supplier Id</th>
+              <th>Supplier Id</th>
+              <th>Supplier Name</th>
+              <th>Package Description</th>
+              <th colspan="4" class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let item of SupplierPackagesList; let i = index">
+            <tr>
+              <td style="display: none;">{{item.psId}}</td>
+              <td>{{item.psSuppId}}</td>
+              <td>{{item.psSupName}}</td>
+              <td>{{PackageName}}</td>
+              <td class="text-center">
+                <button type="button" class="btn btn-primary" (click)="Toggle(item , i)">View</button>
+              </td>
+              <!--AH30012024-->
+              <td class="text-center"> <button type="button" class="btn btn-primary"
+                  (click)="OpenModal(item.psId)">Import RFQ Prices</button></td>
+              <td class="text-center"> <button type="button" class="btn btn-primary"
+                  (click)="OpenEmailTemplateModal(item.psSuppId,item.psId,item,i)">Add Revision</button></td>
+              <!--AH30012024-->
+              <td class="text-center"><button type="button" *ngIf="1>2" class="btn btn-secondary"
+                  (click)="openUpdateTechnicalCondModal(item)">Upload Technical Conditions</button></td>
+              <td class="text-center"><button type="button" *ngIf="1>2" class="btn btn-secondary"
+                  (click)="openUpdateCommercialCondModal(item)">Upload Commercial Conditions</button></td>
+            </tr>
+            <tr *ngIf="currentRowIndex == i">
+              <td colspan="12">
+                <table *ngIf="SupplierPackagesRevList.length > 0" class="table">
+                  <thead>
+                    <tr>
+                      <th>Revision Id</th>
+                      <th>Revision No</th>
+                      <th>Revision Date</th>
+                      <th>Expiry Date</th>
+                      <th>Total Price</th>
+                      <th>Currency</th>
+                      <th colspan="6" style="text-align: center;">Action</th>
+                  </thead>
+                  <tbody *ngFor="let rev of SupplierPackagesRevList; let j = index">
+                    <tr>
+                      <td>{{rev.prRevId}}</td>
+                      <td>{{rev.prRevNo}}</td>
+                      <td>{{rev.prRevDate | date: 'dd/MM/yyyy HH:mm'}}</td>
+                      <td>{{rev.prRevExpDate | date: 'dd/MM/yyyy'}}</td>
+                      <td>{{rev.prTotPrice | number : '1.2-2' }}</td>
+                      <td>{{rev.currency}}</td>
+                      <td style="text-align: center;">
+                        <button class="btn btn-warning"
+                          (click)="routeToRevisionDetails(rev.prRevId, item.psByBoq, item.psId)">Rev. Details</button>
+                      </td>
+                      <td style="text-align: center;">
+                        <button type="button" class="btn btn-secondary" (click)="OpenFieldModal(rev.prRevId)">Add
+                          Field</button>
+                      </td>
+                      <td style="text-align: center;">
+                        <button class="btn btn-secondary"
+                          (click)="openFieldsListModal(rev.prRevId, rev.prRevNo, item.psSupName)">View Fields</button>
+                      </td>
+                      <td style="text-align: center;">
+                        <button class="btn btn-secondary"
+                          (click)="openComCondReplyListModal(rev.prRevId, rev.prRevNo, item.psSupName)">Com.
+                          Conditions</button>
+                      </td>
+                      <td style="text-align: center;">
+                        <button class="btn btn-secondary"
+                          (click)="openTechCondReplyListModal(rev.prRevId, rev.prRevNo, item.psSupName)">Tech.
+                          Conditions</button>
+                      </td>
+                      <td style="text-align: center;">
+                        <button class="btn btn-secondary"
+                          (click)="openAcceptanceCommentsModal(rev.prRevId, rev.prRevNo, item.psSupName)">Acceptance
+                          Comments</button>
+                      </td>
+
+                    </tr>
+                    <tr *ngIf="currentRevRowIndex == j">
+                      <td colspan="12">
+                        <table datatable *ngIf="RevisionDetailsList.length > 0 && item.psByBoq == 1"
+                          [dtOptions]="dtOptions" class="table">
+                          <thead>
+                            <tr>
+
+                              <th>Item Description</th>
+                              <th>Price</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let dt of RevisionDetailsList; let k = index">
+                              <td>{{dt.rdItemDescription}}</td>
+                              <td><input *ngIf="dt.rdMissedPrice == 1" [value]="dt.rdPrice" type="number"
+                                  [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
+                                <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdPrice}}</span>
+                              </td>
+                            </tr>
+                          </tbody>
+
+                        </table>
+                        <table *ngIf="RevisionDetailsList.length > 0 && item.psByBoq == 0" class="table"
+                          [id]="'tblRevisionDtl-' + rev.prRevId">
+                          <thead>
+                            <tr>
+                              <th>Item</th>
+                              <th>Resources</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let it of RevisionDetailsBoqItems; let that = index">
+                              <td width="50%">
+                                {{it.descriptionO}}
+                              </td>
+                              <td>
+                                <table class="table"
+                                  *ngIf="checkIfItemExistsInResources(RevisionDetailsList, it.itemO) > 0">
+
+                                  <tbody>
+                                    <tr *ngFor="let dt of getResourcesPerItem(RevisionDetailsList, it.itemO)">
+                                      <td>
+                                        {{dt.rdItemDescription}}
+                                      </td>
+                                      <td style="width:30%"><input *ngIf="dt.rdMissedPrice == 1"
+                                          [id]="'price-' + dt.rdResourceSeq + '-' + + rev.prRevId" [value]="dt.rdPrice"
+                                          type="number"
+                                          [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
+                                        <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdPrice}}</span>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+
+                              </td>
+
+                            </tr>
+                          </tbody>
+                          <tfoot>
+                            <tr>
+                              <td></td>
+                              <td style="text-align: right;">
+                                <button class="btn btn-success btn-block"
+                                  (click)="UpdateRevisionPrices(rev.prRevId, 'tblRevisionDtl-' + rev.prRevId)">Update
+                                  Prices</button>
+                              </td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p *ngIf="SupplierPackagesRevList.length == 0" style="text-align: center;"><strong>No Revision Found
+                    !</strong></p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
-  
-  <br>
-  
-  <div class="row">
-
-  <div class="col-sm-12 form-group table-responsive">
-  <table class="table">
-    <thead>
-      <tr>
-        <th style="display: none;">Package Supplier Id</th>
-        <th>Supplier Id</th>
-        <th>Supplier Name</th>
-        <th>Package Description</th>
-        <th colspan="4" class="text-center">Actions</th>
-      </tr>
-    </thead>
-    <tbody *ngFor="let item of SupplierPackagesList; let i = index">
-      <tr>
-        <td style="display: none;">{{item.psId}}</td>
-        <td>{{item.psSuppId}}</td>
-        <td>{{item.psSupName}}</td>
-        <td>{{PackageName}}</td>
-        <td class="text-center">
-          <button type="button" class="btn btn-primary" (click)="Toggle(item , i)">View</button>
-        </td>
-<!--AH30012024-->
-        <!-- <td class="text-center"> <button type="button" class="btn btn-primary" (click)="OpenModal(item.psId)">Add Revision</button></td> -->
-        <td class="text-center"> <button type="button" class="btn btn-primary" (click)="OpenEmailTemplateModal(item.psSuppId,item.psId,item,i)">Add Revision</button></td>
-<!--AH30012024-->        
-        <td class="text-center"><button type="button" *ngIf="1>2" class="btn btn-secondary" (click)="openUpdateTechnicalCondModal(item)">Upload Technical Conditions</button></td>
-        <td class="text-center"><button type="button" *ngIf="1>2" class="btn btn-secondary" (click)="openUpdateCommercialCondModal(item)">Upload Commercial Conditions</button></td>  
-      </tr>
-      <tr *ngIf="currentRowIndex == i">
-        <td colspan="12">
-          <table *ngIf="SupplierPackagesRevList.length > 0" class="table">
-            <thead>
-              <tr>
-                <th>Revision Id</th>
-                <th>Revision No</th>
-                <th>Revision Date</th>
-                <th>Expiry Date</th>
-                <th>Total Price</th>
-                <th>Currency</th>
-                <th colspan="6" style="text-align: center;">Action</th>
-              </thead>
-            <tbody *ngFor="let rev of SupplierPackagesRevList; let j = index">
-              <tr>
-                <td>{{rev.prRevId}}</td>
-                <td>{{rev.prRevNo}}</td>
-                <td>{{rev.prRevDate | date: 'dd/MM/yyyy HH:mm'}}</td>
-                <td>{{rev.prRevExpDate | date: 'dd/MM/yyyy'}}</td>
-                <td>{{rev.prTotPrice | number : '1.2-2' }}</td>
-                <td>{{rev.currency}}</td>
-                <td style="text-align: center;">
-                  <button class="btn btn-warning" (click)="routeToRevisionDetails(rev.prRevId, item.psByBoq, item.psId)">Rev. Details</button>
-                </td>
-                <td style="text-align: center;">
-                  <button type="button" class="btn btn-secondary" (click)="OpenFieldModal(rev.prRevId)">Add Field</button>
-                </td>
-                <td style="text-align: center;">
-                  <button class="btn btn-secondary" (click)="openFieldsListModal(rev.prRevId, rev.prRevNo, item.psSupName)">View Fields</button>
-                </td>
-                <td style="text-align: center;">
-                  <button class="btn btn-secondary" (click)="openComCondReplyListModal(rev.prRevId, rev.prRevNo, item.psSupName)">Com. Conditions</button>
-                </td>
-                <td style="text-align: center;">
-                  <button class="btn btn-secondary" (click)="openTechCondReplyListModal(rev.prRevId, rev.prRevNo, item.psSupName)">Tech. Conditions</button>
-                </td>
-                <td style="text-align: center;">
-                  <button class="btn btn-secondary" (click)="openAcceptanceCommentsModal(rev.prRevId, rev.prRevNo, item.psSupName)">Acceptance Comments</button>
-                </td>
-                
-              </tr>
-              <tr *ngIf="currentRevRowIndex == j">
-                <td colspan="12">
-                  <table datatable *ngIf="RevisionDetailsList.length > 0 && item.psByBoq == 1" [dtOptions]="dtOptions" class="table">
-                    <thead>
-                      <tr>
-                        
-                        <th>Item Description</th>
-                        <th>Price</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let dt of RevisionDetailsList; let k = index">
-                          <td>{{dt.rdItemDescription}}</td>
-                          <td><input *ngIf="dt.rdMissedPrice == 1" 
-                            [value]="dt.rdPrice" type="number"
-                            [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                            <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdPrice}}</span></td>
-                        </tr>
-                    </tbody>
-                    
-                  </table>
-                  <table *ngIf="RevisionDetailsList.length > 0 && item.psByBoq == 0" class="table" [id]="'tblRevisionDtl-' + rev.prRevId">
-                    <thead>
-                      <tr>
-                        <th>Item</th>
-                        <th>Resources</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let it of RevisionDetailsBoqItems; let that = index">
-                        <td width="50%">
-                          {{it.descriptionO}}
-                        </td>
-                        <td>
-                          <table class="table" *ngIf="checkIfItemExistsInResources(RevisionDetailsList, it.itemO) > 0">
-                              
-                              <tbody>
-                                <tr *ngFor="let dt of getResourcesPerItem(RevisionDetailsList, it.itemO)">
-                                  <td>
-                                    {{dt.rdItemDescription}}
-                                  </td>
-                                  <td style="width:30%"><input *ngIf="dt.rdMissedPrice == 1" [id]="'price-' + dt.rdResourceSeq + '-' + + rev.prRevId"
-                                    [value]="dt.rdPrice" type="number"
-                                    [className]="dt.rdMissedPrice == 1 ? 'form-control border-danger' : 'form-control'">
-                                    <span *ngIf="dt.rdMissedPrice != 1">{{dt.rdPrice}}</span></td>
-                                </tr>
-                              </tbody>
-                          </table>
-                          
-                        </td>
-
-                      </tr>
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td></td>
-                      <td style="text-align: right;">
-                        <button class="btn btn-success btn-block" (click)="UpdateRevisionPrices(rev.prRevId, 'tblRevisionDtl-' + rev.prRevId)">Update Prices</button>
-                      </td>
-                    </tr>
-                  </tfoot>
-                  </table>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <p *ngIf="SupplierPackagesRevList.length == 0" style="text-align: center;"><strong>No Revision Found
-              !</strong></p>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-  </div>
-</div>
   <!-- Add Revision Modal -->
   <div class="modal fade" id="addRevisionModal" tabindex="-1" aria-labelledby="addRevisionLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -261,55 +360,51 @@
         <div class="modal-body" style="height: 460px;">
           <div class="row">
             <div class="col-sm-12 form-group">
-              <label for="revisionDate">Revision Date</label>           
-              <input type="date" id="revisionDate" name="revisionDate" 
-              class="form-control">
+              <label for="revisionDate">Revision Date</label>
+              <input type="date" id="revisionDate" name="revisionDate" class="form-control">
             </div>
           </div>
-<br>
+          <br>
           <div class="row">
             <div class="col-sm-12 form-group">
               <label for="currency">Currency</label>
-            
-              <ng-select [items]="CurrencyList" 
-                  bindLabel="curCode" 
-                  bindValue="curId" 
-                  placeholder="Select currency"
-                  [(ngModel)]="selectedCurrencyId"
-                  (change)="onCurrencyChange($event)">
-                      </ng-select>
+
+              <ng-select [items]="CurrencyList" bindLabel="curCode" bindValue="curId" placeholder="Select currency"
+                [(ngModel)]="selectedCurrencyId" (change)="onCurrencyChange($event)">
+              </ng-select>
             </div>
           </div>
-        <br>
-        <div class="row">
-          <div class="col-sm-12 form-group">
-             <label for="exchangeRate">Exchange Rate  (Project Currency: {{projectCurrency?.curCode}})</label> 
-             <!-- <label for="exchangeRate">Exchange Rate  (Project Currency: {{project.proj}})</label>  -->
-            <input type="number" id="exchangeRate" name="exchangeRate" [(ngModel)]="exchangeRate" class="form-control">
+          <br>
+          <div class="row">
+            <div class="col-sm-12 form-group">
+              <label for="exchangeRate">Exchange Rate (Project Currency: {{projectCurrency?.curCode}})</label>
+              <!-- <label for="exchangeRate">Exchange Rate  (Project Currency: {{project.proj}})</label>  -->
+              <input type="number" id="exchangeRate" name="exchangeRate" [(ngModel)]="exchangeRate"
+                class="form-control">
+            </div>
           </div>
-        </div>
 
-        <br>
-        <div class="row">
-          <div class="col-sm-12 form-group">
-            <label for="discount">Discount %</label>
-            <input type="number" id="discount" name="discount"  [(ngModel)]="discount" class="form-control">
+          <br>
+          <div class="row">
+            <div class="col-sm-12 form-group">
+              <label for="discount">Discount %</label>
+              <input type="number" id="discount" name="discount" [(ngModel)]="discount" class="form-control">
+            </div>
           </div>
-        </div>
-        <br>
-        <div class="row">
-          <div class="col-sm-12 form-group">
-          <input class="form-check-input" type="checkbox" id="addedItems"> 
-          <label class="form-check-label" for="addedItems">Add Items To Last Revision</label>
-        </div>
-        </div>
-        <br>
-          <div class="row"> 
-              <div class="col-sm-12 form-group">
-                <form>
-                  <input type="file" class="form-control-file" id="excelFile" (change)="onFileSelect($event)">
-                </form>
-              </div>
+          <br>
+          <!-- <div class="row">
+          <div class="col-sm-12 form-group" >
+            <input class="form-check-input" type="checkbox" id="addedItems">
+            <label class="form-check-label" for="addedItems" > Add Items To Last Revision</label>
+          </div>
+        </div> -->
+          <br>
+          <div class="row">
+            <div class="col-sm-12 form-group">
+              <form>
+                <input type="file" class="form-control-file" id="excelFile" (change)="onFileSelect($event)">
+              </form>
+            </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -342,7 +437,7 @@
             <div class="col-sm-12 form-group">
               <label>Value</label>
               <input type="number" class="form-control" id="valueInput">
-               <!-- oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"> -->
+              <!-- oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"> -->
             </div>
           </div>
           <br>
@@ -352,7 +447,7 @@
               <select class="form-select" id="valueType">
                 <option></option>
                 <option *ngFor="let type of fieldTypes" [value]="type.id">
-                    {{type.name}}
+                  {{type.name}}
                 </option>
               </select>
             </div>
@@ -373,323 +468,666 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="fieldsListLabel"><strong>Supplier: </strong> <label>{{selectedSupplierName}}</label> | <strong>Revision:</strong> <label>{{selectedRevisionNb}}</label> | Fields List</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="CloseFieldsListModal()"></button>
+          <h5 class="modal-title" id="fieldsListLabel"><strong>Supplier: </strong>
+            <label>{{selectedSupplierName}}</label> | <strong>Revision:</strong> <label>{{selectedRevisionNb}}</label> |
+            Fields List</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            (click)="CloseFieldsListModal()"></button>
         </div>
-        
+
         <div class="modal-body">
           <h4 *ngIf="revisionFieldsList.length == 0">No fields found</h4>
-            <table class="table" *ngIf="revisionFieldsList.length > 0">
-              <thead>
-                <tr>
-                  <th>Label</th>
-                  <th>Value</th>
-                  <th>Type</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let field of revisionFieldsList">
-                  <td>{{field.label}}</td>
-                  <td>{{field.value | number : '1.2-2'}}</td>
-                  <td>{{getElementOfArray(fieldTypes, field.type)}}</td>
-                  <td>
-                    <button class="btn btn-danger" title="Delete" (click)="deleteField(field.id, field.revisionId)"><i class="fa fa-times"></i></button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <table class="table" *ngIf="revisionFieldsList.length > 0">
+            <thead>
+              <tr>
+                <th>Label</th>
+                <th>Value</th>
+                <th>Type</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let field of revisionFieldsList">
+                <td>{{field.label}}</td>
+                <td>{{field.value | number : '1.2-2'}}</td>
+                <td>{{getElementOfArray(fieldTypes, field.type)}}</td>
+                <td>
+                  <button class="btn btn-danger" title="Delete" (click)="deleteField(field.id, field.revisionId)"><i
+                      class="fa fa-times"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="CloseFieldsListModal()">
             Close</button>
-        </div> 
-      </div>
-    </div>
-  </div>
-
-<!-- View Commercial Conditions Reply List Modal -->
-<div class="modal fade" id="comCondReplyListModal" tabindex="-1" aria-labelledby="fieldsListLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="fieldsListLabel"><strong>Supplier: </strong> <label>{{selectedSupplierName}}</label> | <strong>Revision:</strong> <label>{{selectedRevisionNb}}</label> | Commercial Conditions List</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="CloseFieldsListModal()"></button>
-      </div>
-      
-      <div class="modal-body">
-        <h4 *ngIf="conditionsReplyList.length == 0">No Commercial Conditions found</h4>
-          <table class="table" *ngIf="conditionsReplyList.length > 0">
-            <thead>
-              <tr>
-                <th>Condition</th>
-                <th>ACC Condition</th>
-                <th>Supplier Reply</th>
-                <!-- <th></th> -->
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let field of conditionsReplyList">
-                <td>{{field.condDesc}}</td>
-                <td>{{field.accCondValue}}</td>
-                <td>{{field.condReply}}</td>
-                <!-- <td>
-                  <button class="btn btn-danger" title="Delete" (click)="deleteField(field.id, field.revisionId)"><i class="fa fa-times"></i></button>
-                </td> -->
-              </tr>
-            </tbody>
-          </table>
-      </div>
-      <!-- <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="CloseFieldsListModal()">
-          Close</button>
-      </div>  -->
-    </div>
-  </div>
-</div>
-
-<!-- View Technical Conditions Reply List Modal -->
-<div class="modal fade" id="techCondReplyListModal" tabindex="-1" aria-labelledby="fieldsListLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="fieldsListLabel"><strong>Supplier: </strong> <label>{{selectedSupplierName}}</label> | <strong>Revision:</strong> <label>{{selectedRevisionNb}}</label> | Technical Conditions List</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="CloseFieldsListModal()"></button>
-      </div>
-      
-      <div class="modal-body">
-        <h4 *ngIf="conditionsReplyList.length == 0">No Technical Conditions found</h4>
-          <table class="table" *ngIf="conditionsReplyList.length > 0">
-            <thead>
-              <tr>
-                <th>Condition</th>
-                <th>ACC Condition</th>
-                <th>Supplier Reply</th>
-                <!-- <th></th> -->
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let field of conditionsReplyList">
-                <td>{{field.condDesc}}</td>
-                <td>{{field.accCondValue}}</td>
-                <td>{{field.condReply}}</td>
-                <!-- <td>
-                  <button class="btn btn-danger" title="Delete" (click)="deleteField(field.id, field.revisionId)"><i class="fa fa-times"></i></button>
-                </td> -->
-              </tr>
-            </tbody>
-          </table>
-      </div>
-      <!-- <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="CloseFieldsListModal()">
-          Close</button>
-      </div>  -->
-    </div>
-  </div>
-</div>
-
-  <!-- Email Template Modal -->
-  <div class="modal fade" id="emailTemplateModal" tabindex="-1" aria-labelledby="emailTemplateModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="emailTemplateModalLabel"><strong>Email Template</strong></h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="CloseEmailTemplateModal()"></button>
         </div>
-        
-        <form [formGroup]="formEmailTemplate" (ngSubmit)="onEmailTemplateSubmit()">
-          <div class="modal-body">
-          <!-- <div class="row">
-            <div class="col-sm-12 p-2">
-              CC List    
-              <tag-input [(ngModel)]="listCC" [modelAsStrings]="true"></tag-input>            
-              </div>
-          </div> -->
-
-
-          <div class="row">
-            <div class="col-sm-12 form-group">
-              <!-- <table style="width: 100%;">
-                <tr>
-                  <td style="width: 30%;"> -->
-                    <label for="revisionExpDate">Expiry Date :</label> 
-                  <!-- </td>
-                  <td style="width: 70%;"> -->
-
-                    <input type="date" class="form-control" formControlName="revisionExpDate"
-                    [ngClass]="{ 'is-invalid': formEmailSubmitted && f.revisionExpDate.errors }">
-                    <div *ngIf="formEmailSubmitted && f.revisionExpDate.errors" class="invalid-feedback">
-                      <div *ngIf="f.revisionExpDate.errors.required">*Required</div>
-                    </div>
-                    
-                  <!-- </td>
-                </tr>
-              </table>    -->
-            </div>
-          </div>
-
-          <div class="row">
-              <div class="col-sm-12 form-group">
-                <!-- <table style="width: 100%;">
-                  <tr>
-                    <td style="width: 30%;"> -->
-                      <label>Language :</label>
-                    <!-- </td>
-                    <td style="width: 70%;"> -->
-                      <select class="form-select" formControlName="language" (change)="onLanguageChange($event)"
-                        [ngClass]="{ 'is-invalid': formEmailSubmitted && f.language.errors }">
-                        <option></option>
-                        <option *ngFor="let lan of lstLanguages" [value]="lan">{{lan}}</option>
-                      </select>
-                      <div *ngIf="formEmailSubmitted && f.language.errors" class="invalid-feedback">
-                        <div *ngIf="f.language.errors.required">*Required</div>
-                      </div>
-                    <!-- </td>
-                  </tr>
-                </table> -->
-              </div>
-            </div>
-
-            <!-- <br> -->
-            <div class="row">
-              <div class="col-sm-12 form-group">
-                Template
-                <angular-editor formControlName="template" [config]="editorConfig"
-                [ngClass]="{ 'is-invalid': formEmailSubmitted && f.template.errors }"></angular-editor>
-                <!--<textarea class="form-control" rows="20" formControlName="template"
-                [ngClass]="{ 'is-invalid': formEmailSubmitted && f.template.errors }"></textarea>-->
-                <div *ngIf="formEmailSubmitted && f.template.errors" class="invalid-feedback">
-                  <div *ngIf="f.template.errors.required">*Required</div>
-                  
-              </div>
-              </div>
-            </div>
-            <!-- <br> -->
-            <div class="row">
-              <div class="col-sm-12 p-2">
-                <button type="button" class="btn btn-secondary" (click)="addAttachement()" [disabled]="topManagementAttachements.length > maxAttachements">Add Attachement</button>
-              </div>
-            <div class="col-sm-12 p-2">
-              <table class="table">
-                <tbody>
-                  <tr *ngFor="let attachement of topManagementAttachements; let i = index">
-                    <td>
-                      <input type="file" class="form-control" (change)="onAttachementSelect($event, i)">
-                    </td>
-                    <td>
-                      <a class="btn btn-link" (click)="removeAttachement(i)"><i class="fas fa-times text-danger"></i></a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            </div>
-
-            <br>
-
-            <div class="row">
-              <div class="col-sm-12 form-group">
-                <table class="table" >
-                    <thead>
-                      <tr>
-                        <th><input type="checkbox" (change)="checkAllComCond($event)" id="chkAllComCond" name="chkAllComCond"></th>
-                        <th>Commercial Condition</th>
-                        <th>ACC Condition</th>
-                      </tr>
-                    </thead>
-                    <tbody *ngIf="comConditions.length > 0">
-                        <tr *ngFor="let c of comConditions; let i = index">
-                          <td style="width:2%">
-                            <input type="checkbox" [checked]="c.checked" (change)="selectComCond($event, i)">
-                          </td>
-                            <td style="width:50%">
-                              {{c.cmDescription}}
-                            </td>
-                            <td style="width:48%">
-                              <input class="form-control" [(ngModel)]="c.cmAccCondValue"  value="{{c.cmAccCondValue}}" 
-                              (change)="updateComAccCondValue($event, i)">
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tfoot *ngIf="comConditions.length == 0">
-                      <tr>
-                        <td class="text-center">
-                          No data available
-                        </td>
-                      </tr>
-                    </tfoot>
-                </table>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-sm-12 form-group">
-                <table class="table" >
-                    <thead>
-                      <tr>
-                        <th><input type="checkbox" (change)="checkAllTechCond($event)" id="chkAllTecCond" name="chkAllTecCond"></th>
-                        <th>Technical Condition</th>
-                        <th>ACC Condition</th>
-                      </tr>
-                    </thead>
-                    <tbody *ngIf="techConditions.length > 0">
-                        <tr *ngFor="let c of techConditions; let i = index">
-                          <td style="width:2%">
-                            <input type="checkbox" [checked]="c.checked" (change)="selectTechCond($event, i)">
-                          </td>
-                            <td style="width:50%">
-                              {{c.tcDescription}}
-                            </td>
-                            <td style="width:48%">
-                              <input type="text" class="form-control" [(ngModel)]="c.tcAccCondValue"  value="{{c.tcAccCondValue}}" 
-                              (change)="updateTechAccCondValue($event, i)">
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tfoot *ngIf="techConditions.length == 0">
-                      <tr>
-                        <td class="text-center">
-                          No data available
-                        </td>
-                      </tr>
-                    </tfoot>
-                </table>
-              </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary" [disabled]="isAssigning">
-            <i  [ngClass]="isAssigning ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
-            Send</button>
-          <button type="button" class="btn btn-secondary" (click)="CloseEmailTemplateModal()">
-            Close</button>
-        </div>
-      </form>
       </div>
     </div>
   </div>
 
-   <!-- Update Technical Conditions Modal -->
-   <div class="modal fade" id="updateTechnicalCondModal" tabindex="-1" aria-labelledby="updateTechnicalCondLabel" aria-hidden="true">
+  <!-- View Commercial Conditions Reply List Modal -->
+  <div class="modal fade" id="comCondReplyListModal" tabindex="-1" aria-labelledby="fieldsListLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="updateTechnicalCondLabel">Update Technical Condition | {{selectedPackageSupplier?.psSupName}}</h5>
+          <h5 class="modal-title" id="fieldsListLabel"><strong>Supplier: </strong>
+            <label>{{selectedSupplierName}}</label> | <strong>Revision:</strong> <label>{{selectedRevisionNb}}</label> |
+            Commercial Conditions List</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            (click)="CloseFieldsListModal()"></button>
+        </div>
+
+        <div class="modal-body">
+          <h4 *ngIf="conditionsReplyList.length == 0">No Commercial Conditions found</h4>
+          <table class="table" *ngIf="conditionsReplyList.length > 0">
+            <thead>
+              <tr>
+                <th>Condition</th>
+                <th>ACC Condition</th>
+                <th>Supplier Reply</th>
+                <!-- <th></th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let field of conditionsReplyList">
+                <td>{{field.condDesc}}</td>
+                <td>{{field.accCondValue}}</td>
+                <td>{{field.condReply}}</td>
+                <!-- <td>
+                  <button class="btn btn-danger" title="Delete" (click)="deleteField(field.id, field.revisionId)"><i class="fa fa-times"></i></button>
+                </td> -->
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="CloseFieldsListModal()">
+          Close</button>
+      </div>  -->
+      </div>
+    </div>
+  </div>
+
+  <!-- View Technical Conditions Reply List Modal -->
+  <div class="modal fade" id="techCondReplyListModal" tabindex="-1" aria-labelledby="fieldsListLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="fieldsListLabel"><strong>Supplier: </strong>
+            <label>{{selectedSupplierName}}</label> | <strong>Revision:</strong> <label>{{selectedRevisionNb}}</label> |
+            Technical Conditions List</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            (click)="CloseFieldsListModal()"></button>
+        </div>
+
+        <div class="modal-body">
+          <h4 *ngIf="conditionsReplyList.length == 0">No Technical Conditions found</h4>
+          <table class="table" *ngIf="conditionsReplyList.length > 0">
+            <thead>
+              <tr>
+                <th>Condition</th>
+                <th>ACC Condition</th>
+                <th>Supplier Reply</th>
+                <!-- <th></th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let field of conditionsReplyList">
+                <td>{{field.condDesc}}</td>
+                <td>{{field.accCondValue}}</td>
+                <td>{{field.condReply}}</td>
+                <!-- <td>
+                  <button class="btn btn-danger" title="Delete" (click)="deleteField(field.id, field.revisionId)"><i class="fa fa-times"></i></button>
+                </td> -->
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="CloseFieldsListModal()">
+          Close</button>
+      </div>  -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Email Template Modal -->
+  <div class="modal fade" id="emailTemplateModal" tabindex="-1" aria-labelledby="emailTemplateModalLabel"
+    aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+
+      <div class="modal-content">
+
+        <div class="modal-header">
+
+          <h5 class="modal-title" id="emailTemplateModalLabel">
+            <strong>Email Template</strong>
+          </h5>
+
+          <button type="button" class="btn-close" aria-label="Close" [disabled]="isAssigning"
+            (click)="CloseEmailTemplateModal()">
+          </button>
+
+        </div>
+
+        <form [formGroup]="formEmailTemplate" novalidate>
+
+          <div class="modal-body">
+
+            <!-- Email To -->
+            <div class="row">
+
+              <div class="col-sm-12 form-group">
+
+                <!-- One editable Email To input per selected supplier -->
+                <div class="row">
+
+                  <div class="col-sm-12 form-group">
+
+                    <label class="mb-2">
+                      Email To :
+                      <span class="text-danger">*</span>
+                    </label>
+
+                    <div formArrayName="supplierEmails" class="supplier-email-list">
+
+                      <div *ngFor="
+                        let supplierEmailGroup of supplierEmailControls.controls;
+                        let i = index
+                      " [formGroupName]="i" class="supplier-email-row">
+
+                        <div class="row align-items-center">
+
+                          <div class="col-sm-4 form-group">
+
+                            <label class="supplier-email-name" [for]="'supplierEmail-' + i">
+
+                              {{
+                              supplierEmailGroup
+                              .get('supplierName')
+                              ?.value
+                              }}
+
+                            </label>
+
+                            <input type="hidden" formControlName="supplierId">
+
+                            <input type="hidden" formControlName="supplierName">
+
+                          </div>
+
+                          <div class="col-sm-8 form-group">
+
+                            <input type="text" class="form-control" formControlName="emailTo"
+                              [id]="'supplierEmail-' + i" autocomplete="off" placeholder="supplier@company.com"
+                              [ngClass]="{
+                              'is-invalid':
+                                formEmailSubmitted &&
+                                supplierEmailGroup
+                                  .get('emailTo')
+                                  ?.invalid
+                            }">
+
+                            <div *ngIf="
+                              formEmailSubmitted &&
+                              supplierEmailGroup
+                                .get('emailTo')
+                                ?.invalid
+                            " class="invalid-feedback">
+
+                              <div *ngIf="
+                                supplierEmailGroup
+                                  .get('emailTo')
+                                  ?.hasError('required')
+                              ">
+
+                                Supplier email is required.
+                              </div>
+
+                              <div *ngIf="
+                                supplierEmailGroup
+                                  .get('emailTo')
+                                  ?.hasError('invalidEmailList')
+                              ">
+
+                                One or more supplier email addresses
+                                are invalid.
+                              </div>
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                      <div *ngIf="
+                        formEmailSubmitted &&
+                        supplierEmailControls.length === 0
+                      " class="text-danger mt-2">
+
+                        No supplier email was found.
+                      </div>
+
+                    </div>
+
+                    <small class="form-text text-muted">
+                      Each supplier will receive a separate email.
+                      Each supplier email can be edited before sending.
+                      Multiple addresses for the same supplier can be
+                      separated using comma or semicolon.
+                    </small>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- Shared CC -->
+            <div class="row mt-3">
+
+              <div class="col-sm-12 form-group">
+
+                <label for="emailCc">
+                  CC :
+                </label>
+
+                <input type="text" id="emailCc" class="form-control" formControlName="emailCc" autocomplete="off"
+                  placeholder="email1@accsal.com; email2@accsal.com" [ngClass]="{
+                  'is-invalid':
+                    formEmailSubmitted &&
+                    f.emailCc.errors
+                }">
+
+                <small class="form-text text-muted">
+                  This CC list will be applied to each supplier email.
+                  Multiple addresses can be separated by comma or
+                  semicolon.
+                </small>
+
+                <div *ngIf="
+                  formEmailSubmitted &&
+                  f.emailCc.errors
+                " class="invalid-feedback">
+
+                  <div *ngIf="
+                    f.emailCc.errors.invalidEmailList
+                  ">
+
+                    One or more CC addresses are invalid.
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- Expiry Date -->
+            <div class="row mt-2">
+
+              <div class="col-sm-12 form-group">
+
+                <label for="revisionExpDate">
+                  Expiry Date :
+                </label>
+
+                <input type="date" id="revisionExpDate" class="form-control" formControlName="revisionExpDate"
+                  [ngClass]="{
+                       'is-invalid':
+                         formEmailSubmitted &&
+                         f.revisionExpDate.errors
+                     }">
+
+                <div *ngIf="
+                     formEmailSubmitted &&
+                     f.revisionExpDate.errors
+                   " class="invalid-feedback">
+
+                  <div *ngIf="f.revisionExpDate.errors.required">
+                    *Required
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- Language -->
+            <div class="row mt-2">
+
+              <div class="col-sm-12 form-group">
+
+                <label for="emailLanguage">
+                  Language :
+                </label>
+
+                <select id="emailLanguage" class="form-select" formControlName="language"
+                  (change)="onLanguageChange($event)" [ngClass]="{
+                        'is-invalid':
+                          formEmailSubmitted &&
+                          f.language.errors
+                      }">
+
+                  <option value=""></option>
+
+                  <option *ngFor="let lan of lstLanguages" [value]="lan">
+                    {{ lan }}
+                  </option>
+
+                </select>
+
+                <div *ngIf="
+                     formEmailSubmitted &&
+                     f.language.errors
+                   " class="invalid-feedback">
+
+                  <div *ngIf="f.language.errors.required">
+                    *Required
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- Template -->
+            <div class="row mt-2">
+
+              <div class="col-sm-12 form-group">
+
+                <label>Template :</label>
+
+                <angular-editor formControlName="template" [config]="editorConfig" [ngClass]="{
+                  'is-invalid':
+                    formEmailSubmitted &&
+                    f.template.errors
+                }">
+                </angular-editor>
+
+                <div *ngIf="
+                     formEmailSubmitted &&
+                     f.template.errors
+                   " class="text-danger mt-1">
+
+                  <small *ngIf="f.template.errors.required">
+                    *Required
+                  </small>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- Attachments -->
+            <div class="row mt-3">
+
+              <div class="col-sm-12 p-2">
+
+                <button type="button" class="btn btn-secondary" (click)="addAttachement()" [disabled]="
+                        isAssigning ||
+                        topManagementAttachements.length >=
+                        maxAttachements
+                      ">
+                  Add Attachment
+                </button>
+
+              </div>
+
+              <div class="col-sm-12 p-2">
+
+                <table class="table">
+
+                  <tbody>
+
+                    <tr *ngFor="
+                        let attachement
+                          of topManagementAttachements;
+                        let i = index
+                      ">
+
+                      <td>
+
+                        <input type="file" class="form-control" [disabled]="isAssigning" (change)="
+                               onAttachementSelect($event, i)
+                             ">
+
+                      </td>
+
+                      <td style="width: 50px">
+
+                        <button type="button" class="btn btn-link" [disabled]="isAssigning"
+                          (click)="removeAttachement(i)">
+
+                          <i class="fas fa-times text-danger"></i>
+                        </button>
+
+                      </td>
+
+                    </tr>
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            </div>
+
+            <!-- Commercial Conditions -->
+            <div class="row">
+
+              <div class="col-sm-12 form-group">
+
+                <table class="table">
+
+                  <thead>
+                    <tr>
+
+                      <th style="width: 2%">
+
+                        <input type="checkbox" id="chkAllComCond" name="chkAllComCond" [disabled]="isAssigning"
+                          (change)="checkAllComCond($event)">
+
+                      </th>
+
+                      <th>Commercial Condition</th>
+                      <th>ACC Condition</th>
+
+                    </tr>
+                  </thead>
+
+                  <tbody *ngIf="comConditions.length > 0">
+
+                    <tr *ngFor="
+                        let c of comConditions;
+                        let i = index
+                      ">
+
+                      <td style="width: 2%">
+
+                        <input type="checkbox" [checked]="c.checked" [disabled]="isAssigning"
+                          (change)="selectComCond($event, i)">
+
+                      </td>
+
+                      <td style="width: 50%">
+                        {{ c.cmDescription }}
+                      </td>
+
+                      <td style="width: 48%">
+
+                        <input type="text" class="form-control" [(ngModel)]="c.cmAccCondValue" [ngModelOptions]="{
+                               standalone: true
+                             }" [disabled]="isAssigning" (change)="
+                               updateComAccCondValue($event, i)
+                             ">
+
+                      </td>
+
+                    </tr>
+
+                  </tbody>
+
+                  <tfoot *ngIf="comConditions.length === 0">
+
+                    <tr>
+
+                      <td colspan="3" class="text-center">
+                        No data available
+                      </td>
+
+                    </tr>
+
+                  </tfoot>
+
+                </table>
+
+              </div>
+
+            </div>
+
+            <!-- Technical Conditions -->
+            <div class="row">
+
+              <div class="col-sm-12 form-group">
+
+                <table class="table">
+
+                  <thead>
+                    <tr>
+
+                      <th style="width: 2%">
+
+                        <input type="checkbox" id="chkAllTecCond" name="chkAllTecCond" [disabled]="isAssigning"
+                          (change)="checkAllTechCond($event)">
+
+                      </th>
+
+                      <th>Technical Condition</th>
+                      <th>ACC Condition</th>
+
+                    </tr>
+                  </thead>
+
+                  <tbody *ngIf="techConditions.length > 0">
+
+                    <tr *ngFor="
+                        let c of techConditions;
+                        let i = index
+                      ">
+
+                      <td style="width: 2%">
+
+                        <input type="checkbox" [checked]="c.checked" [disabled]="isAssigning"
+                          (change)="selectTechCond($event, i)">
+
+                      </td>
+
+                      <td style="width: 50%">
+                        {{ c.tcDescription }}
+                      </td>
+
+                      <td style="width: 48%">
+
+                        <input type="text" class="form-control" [(ngModel)]="c.tcAccCondValue" [ngModelOptions]="{
+                               standalone: true
+                             }" [disabled]="isAssigning" (change)="
+                               updateTechAccCondValue($event, i)
+                             ">
+
+                      </td>
+
+                    </tr>
+
+                  </tbody>
+
+                  <tfoot *ngIf="techConditions.length === 0">
+
+                    <tr>
+
+                      <td colspan="3" class="text-center">
+                        No data available
+                      </td>
+
+                    </tr>
+
+                  </tfoot>
+
+                </table>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="modal-footer">
+
+            <button type="button" class="btn btn-primary email-send-button" [disabled]="isAssigning"
+              (click)="onEmailTemplateSubmit()">
+
+              <span *ngIf="isAssigning" class="send-spinner" aria-hidden="true">
+              </span>
+
+              <span>
+                {{ isAssigning ? 'Sending...' : 'Send' }}
+              </span>
+
+            </button>
+
+            <button type="button" class="btn btn-secondary" [disabled]="isAssigning"
+              (click)="CloseEmailTemplateModal()">
+              Close
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- Update Technical Conditions Modal -->
+  <div class="modal fade" id="updateTechnicalCondModal" tabindex="-1" aria-labelledby="updateTechnicalCondLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="updateTechnicalCondLabel">Update Technical Condition |
+            {{selectedPackageSupplier?.psSupName}}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="row">
             <div class="col-sm-12 form-group p-2">
-             
-              <input type="file" class="form-control" id="inputTechnicalCondFile" name="inputTechnicalCondFile" (change)="inputTechnicalCondFile_change($event)"
-              accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+
+              <input type="file" class="form-control" id="inputTechnicalCondFile" name="inputTechnicalCondFile"
+                (change)="inputTechnicalCondFile_change($event)"
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
             </div>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="closeUpdateTechnicalCondModal()">Close</button>
-          <button type="button" class="btn btn-primary" (click)="updateTechnicalConditions()" [disabled]="isUpdatingTechnicalConditions">
-            
+          <button type="button" class="btn btn-primary" (click)="updateTechnicalConditions()"
+            [disabled]="isUpdatingTechnicalConditions">
+
             Save</button>
         </div>
       </div>
@@ -697,34 +1135,39 @@
   </div>
 
   <!-- Update Commercial Conditions Modal -->
-  <div class="modal fade" id="updateCommercialCondModal" tabindex="-1" aria-labelledby="updateCommercialCondLabel" aria-hidden="true">
+  <div class="modal fade" id="updateCommercialCondModal" tabindex="-1" aria-labelledby="updateCommercialCondLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="updateCommercialCondLabel">Update Commercial Condition | {{selectedPackageSupplier?.psSupName}}</h5>
+          <h5 class="modal-title" id="updateCommercialCondLabel">Update Commercial Condition |
+            {{selectedPackageSupplier?.psSupName}}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="row">
             <div class="col-sm-12 form-group p-2">
-             
-              <input type="file" class="form-control" id="inputCommercialCondFile" name="inputCommercialCondFile" (change)="inputCommercialCondFile_change($event)"
-              accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+
+              <input type="file" class="form-control" id="inputCommercialCondFile" name="inputCommercialCondFile"
+                (change)="inputCommercialCondFile_change($event)"
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
             </div>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="closeUpdateCommercialCondModal()">Close</button>
-          <button type="button" class="btn btn-primary" (click)="updateCommercialConditions()" [disabled]="isUpdatingCommercialConditions">
-           
+          <button type="button" class="btn btn-primary" (click)="updateCommercialConditions()"
+            [disabled]="isUpdatingCommercialConditions">
+
             Save</button>
         </div>
       </div>
     </div>
   </div>
 
-   <!--Technical Conditions Modal -->
-   <div class="modal fade" id="viewTechnicalConditionsModal" tabindex="-1" aria-labelledby="viewTechnicalConditionsModalLabel" aria-hidden="true">
+  <!--Technical Conditions Modal -->
+  <div class="modal fade" id="viewTechnicalConditionsModal" tabindex="-1"
+    aria-labelledby="viewTechnicalConditionsModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -735,75 +1178,79 @@
           <div class="row">
             <div class="col-sm-12 p-2">
               <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Condition</th>
-                      
-                      
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let c of techConditions">
-                        <td>
-                          {{c.tcDescription}}
-                        </td>
-                       
-                       
-                    </tr>
-                  </tbody>
-                  <tfoot *ngIf="techConditions.length == 0">
-                    <tr>
-                        <td class="text-center">
-                          No data available
-                        </td>
-                    
-                    </tr>
-                  </tfoot>
+                <thead>
+                  <tr>
+                    <th>Condition</th>
+
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let c of techConditions">
+                    <td>
+                      {{c.tcDescription}}
+                    </td>
+
+
+                  </tr>
+                </tbody>
+                <tfoot *ngIf="techConditions.length == 0">
+                  <tr>
+                    <td class="text-center">
+                      No data available
+                    </td>
+
+                  </tr>
+                </tfoot>
               </table>
             </div>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="closeViewTechnicalConditionsModal()">Close</button>
-          <button type="button" class="btn btn-primary" (click)="sendTechnicalConditions()" [disabled]="isSendingTechConditions">
-            <i  [ngClass]="isSendingTechConditions ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
-           Send</button>
+          <button type="button" class="btn btn-primary" (click)="sendTechnicalConditions()"
+            [disabled]="isSendingTechConditions">
+            <i [ngClass]="isSendingTechConditions ? 'fa-solid fa-circle-notch fa-spin' : ''"></i>
+            Send</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- View Acceptance comments Modal -->
-<div class="modal fade" id="acceptanceCommentsModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="fieldsListLabel"><strong>Supplier: </strong> <label>{{selectedSupplierName}}</label> | <strong>Revision:</strong> <label>{{selectedRevisionNb}}</label> | Acceptance Comments</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeAcceptanceComments()"></button>
-      </div>
-      
-      <div class="modal-body">
-        <h4 *ngIf="acceptanceComments.length == 0">No Acceptance Comments found</h4>
+  <div class="modal fade" id="acceptanceCommentsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="fieldsListLabel"><strong>Supplier: </strong>
+            <label>{{selectedSupplierName}}</label> | <strong>Revision:</strong> <label>{{selectedRevisionNb}}</label> |
+            Acceptance Comments</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            (click)="closeAcceptanceComments()"></button>
+        </div>
+
+        <div class="modal-body">
+          <h4 *ngIf="acceptanceComments.length == 0">No Acceptance Comments found</h4>
           <table class="table" *ngIf="acceptanceComments.length > 0">
             <thead>
               <tr>
                 <th>Comment</th>
                 <th></th>
-                
-               
+
+
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let acc of acceptanceComments">
                 <td>{{acc.acCaption}}</td>
                 <td><i class="fa fa-check" *ngIf="acc.acChecked"></i></td>
-                
+
               </tr>
             </tbody>
           </table>
+        </div>
+
       </div>
-    
     </div>
   </div>
-</div>
 </section>

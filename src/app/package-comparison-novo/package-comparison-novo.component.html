@@ -356,25 +356,19 @@
 
                     <!-- Price of Supplier -->
                     <td *ngFor="let sup of resource.groupingPackageSuppliersPrices" class="text-center">
-                      <!-- <ng-container *ngIf="(sup.isNewItem==false && sup.isAlternative==false)"> -->
                       <table class="table" tyle="table-layout: fixed">
                         <tr [ngClass]="sup.isCreatedByThisSupplier ? 'txt-NewItem' : ''">
                           <td class="text-right">
-                            <!-- <td *ngIf="show && item.isChecked" style="width:10%"> -->
-                            <!-- <p *ngFor="let sup of item.groupingPackageSuppliersPrices; let i = index"> -->
                             <ng-container *ngIf="sup.supplierName != 'Ideal' && !resource.isChecked">
                               {{ sup.assignedQty | number : "1.0-2" }}
                             </ng-container>
                             <ng-container *ngIf="sup.supplierName != 'Ideal' && resource.isChecked">
-                              <!-- <label>Qty: {{sup.supplierName}}</label>
-                                    &nbsp; -->
-                              <input class="form-control" type="number" style="height: 15px; width: 80px"
+
+                              <input class="form-control" type="number" style="height: 15px; width: 120px"
                                 [ngClass]="resource.validPerc ? '' : 'border-danger'"
                                 [value]="sup.supplierName != 'Ideal' ? sup.assignedQty : 0" />
                               <!-- (change)="setSupplierQtyByBoq($event, item, sup)" -->
                             </ng-container>
-                            <!-- </p> -->
-                            <!-- </td> -->
                             <!--  AH  <i class="fas fa-flag text-success" title="Quantity Assigned" *ngIf="sup.assignedQty > 0 && sup.supplierName !='Ideal'"></i>  -->
                           </td>
 
@@ -1457,10 +1451,18 @@
             <button type="button" class="btn btn-secondary" (click)="CloseAssignModal()">
               Close
             </button>
-            <button type="button" class="btn btn-primary" (click)="AssignPackageSuppliers()"
-              [disabled]="isAssigningSupplierList">
-              <span *ngIf="isAssigningSupplierList" class="spinner-border spinner-border-sm mr-1"></span>
-              Save
+
+            <button type="button" class="btn btn-primary" [disabled]="isAssigningSupplierList" (click)="AssignPackageSuppliers()">
+            
+              <span *ngIf="isAssigningSupplierList" class="spinner-border spinner-border-sm me-1">
+              </span>
+            
+              {{
+              isAssigningSupplierList
+              ? 'Saving...'
+              : 'Save'
+              }}
+            
             </button>
           </div>
         </div>

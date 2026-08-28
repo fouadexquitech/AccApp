@@ -4,72 +4,113 @@
 
     <div class="container-fluid toolbar-container">
 
-  <div class="export-toolbar">
+
+
+<div class="export-toolbar">
 
     <div class="toolbar-left">
-      <button type="button"
-        class="btn btn-danger btn-sm clear-btn"
-        (click)="clearAllSelections()"
-        [disabled]="SelectedOriginalBoqList.length == 0">
-        Clear All
-      </button>
+        <button type="button"
+                class="btn btn-danger btn-sm clear-btn"
+                (click)="clearAllSelections()"
+                [disabled]="SelectedOriginalBoqList.length == 0 || isToolbarBusy">
+            Clear All
+        </button>
     </div>
 
     <div class="toolbar-right">
 
-      <div class="toolbar-title">
-        <i class="fa fa-file-export"></i>
-        <span>Export Actions</span>
-      </div>
+        <div class="toolbar-title">
+            <span class="bi bi-box-arrow-up-right"></span>
+            <span>Export Actions</span>
+        </div>
 
-      <!-- <button class="btn btn-success btn-sm toolbar-btn" (click)="exportBKD()">
-        <i [ngClass]="isExportExcel ? 'fa-solid fa-circle-notch fa-spin' : 'fa fa-file-excel'"></i>
-        BKD
-      </button> -->
-      
-<button 
-  class="btn btn-success btn-sm toolbar-btn"
-  (click)="exportBKD()"
-  [disabled]="isExportExcel">
+        <!-- BKD -->
+        <button class="btn btn-success btn-sm toolbar-btn"
+                (click)="exportBKD()"
+                [disabled]="isToolbarBusy">
 
-  <i 
-    [ngClass]="isExportExcel ? 'fa-solid fa-circle-notch fa-spin' : 'fa-solid fa-file-excel'">
-  </i>
+            <span *ngIf="isToolbarButtonLoading('bkd')"
+                  class="spinner-border spinner-border-sm"></span>
 
-  {{ isExportExcel ? ' Exporting...' : ' BKD' }}
-</button>
+            <span *ngIf="!isToolbarButtonLoading('bkd')"
+                  class="bi bi-file-earmark-excel"></span>
 
+            BKD
+        </button>
 
-      <button class="btn btn-success btn-sm toolbar-btn" (click)="ExportExcelBoq()">
-        <i [ngClass]="isExportExcel ? 'fa-solid fa-circle-notch fa-spin' : 'fa fa-file-excel'"></i>
-        Resources
-      </button>
+        <!-- Resources -->
+        <button class="btn btn-success btn-sm toolbar-btn"
+                (click)="ExportExcelBoq()"
+                [disabled]="isToolbarBusy">
 
-      <button class="btn btn-success btn-sm toolbar-btn" (click)="ExportExcelPackagesCost(0)">
-        <i [ngClass]="isExportExcelDry ? 'fa-solid fa-circle-notch fa-spin' : 'fa fa-download'"></i>
-        Dry Cost
-      </button>
+            <span *ngIf="isToolbarButtonLoading('resources')"
+                  class="spinner-border spinner-border-sm"></span>
 
-      <button class="btn btn-success btn-sm toolbar-btn" (click)="ExportExcelPackagesCost(1)">
-        <i [ngClass]="isExportExcelDryBoq ? 'fa-solid fa-circle-notch fa-spin' : 'fa fa-download'"></i>
-        Cost + BOQ
-      </button>
+            <span *ngIf="!isToolbarButtonLoading('resources')"
+                  class="bi bi-boxes"></span>
 
-      <button class="btn btn-success btn-sm toolbar-btn" (click)="ExportNotAssigned()">
-        <i [ngClass]="isExportExcelNotAssigned ? 'fa-solid fa-circle-notch fa-spin' : 'fa fa-list'"></i>
-        Not Assigned
-      </button>
+            Resources
+        </button>
 
-      <button class="btn btn-success btn-sm toolbar-btn" (click)="ExportExcelVerification()">
-        <i [ngClass]="isExportExcelVerif ? 'fa-solid fa-circle-notch fa-spin' : 'fa fa-check-circle'"></i>
-        Verification
-      </button>
+        <!-- Dry Cost -->
+        <button class="btn btn-success btn-sm toolbar-btn"
+                (click)="ExportExcelPackagesCost(0)"
+                [disabled]="isToolbarBusy">
+
+            <span *ngIf="isToolbarButtonLoading('dry')"
+                  class="spinner-border spinner-border-sm"></span>
+
+            <span *ngIf="!isToolbarButtonLoading('dry')"
+                  class="bi bi-cash-stack"></span>
+
+            Dry Cost
+        </button>
+
+        <!-- Cost + BOQ -->
+        <button class="btn btn-success btn-sm toolbar-btn"
+                (click)="ExportExcelPackagesCost(1)"
+                [disabled]="isToolbarBusy">
+
+            <span *ngIf="isToolbarButtonLoading('dryboq')"
+                  class="spinner-border spinner-border-sm"></span>
+
+            <span *ngIf="!isToolbarButtonLoading('dryboq')"
+                  class="bi bi-currency-dollar"></span>
+
+            Cost + BOQ
+        </button>
+
+        <!-- Not Assigned -->
+        <button class="btn btn-success btn-sm toolbar-btn"
+                (click)="ExportNotAssigned()"
+                [disabled]="isToolbarBusy">
+
+            <span *ngIf="isToolbarButtonLoading('notassigned')"
+                  class="spinner-border spinner-border-sm"></span>
+
+            <span *ngIf="!isToolbarButtonLoading('notassigned')"
+                  class="bi bi-list-check"></span>
+
+            Not Assigned
+        </button>
+
+        <!-- Verification -->
+        <button class="btn btn-success btn-sm toolbar-btn"
+                (click)="ExportExcelVerification()"
+                [disabled]="isToolbarBusy">
+
+            <span *ngIf="isToolbarButtonLoading('verification')"
+                  class="spinner-border spinner-border-sm"></span>
+
+            <span *ngIf="!isToolbarButtonLoading('verification')"
+                  class="bi bi-check-circle-fill"></span>
+
+            Verification
+        </button>
 
     </div>
 
-  </div>
-
-
+</div>
 
 
        

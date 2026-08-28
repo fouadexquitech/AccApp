@@ -45,14 +45,15 @@ th {
    font-size: 13px;
  }
 
- .small-height-input{
-   max-height: 6px; 
+.small-height-input{
+   max-height: 6px;
    border-radius: 4px;
-   font-size: 9px !important; 
-   .mat-input-element{ 
-     font-size: 12px !important;  
-   }
- }
+   font-size: 9px !important;
+}
+
+.small-height-input .mat-input-element{
+   font-size: 12px !important;
+}
 
  ::ng-deep .dataTables_empty{
    display: none
@@ -201,4 +202,59 @@ section {
 
 .show-hide-section {
   margin-top: 2px !important;
+}
+
+
+
+.export-toolbar {
+  position: relative;
+}
+
+.export-toolbar-loading {
+  pointer-events: none;
+}
+
+.toolbar-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(1px);
+  border-radius: 6px;
+}
+
+.toolbar-overlay-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 8px 14px;
+  border-radius: 24px;
+
+  background: #ffffff;
+  border: 1px solid #d7e3eb;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+
+  font-size: 12px;
+  font-weight: 600;
+  color: #155724;
+}
+
+.toolbar-btn {
+  transition: all 0.2s ease-in-out;
+}
+
+.toolbar-btn i {
+  min-width: 14px;
+}
+
+.toolbar-btn:disabled,
+.clear-btn:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
 }

@@ -11,3 +11,75 @@
   height: 60vh;
   overflow-y: auto;
 }
+
+
+.supplier-email-list {
+  width: 100%;
+}
+
+.supplier-email-row {
+  padding: 8px 10px;
+  margin-bottom: 7px;
+
+  background: #f8fafb;
+  border: 1px solid #dce4e8;
+  border-radius: 5px;
+}
+
+.supplier-email-name {
+  margin: 0;
+
+  font-size: 12px;
+  font-weight: 600;
+  color: #37474f;
+
+  overflow-wrap: anywhere;
+}
+
+.supplier-email-row .form-control {
+  font-size: 12px;
+}
+
+.supplier-email-row:last-child {
+  margin-bottom: 0;
+}
+
+
+.email-send-button {
+  min-width: 100px;
+  height: 38px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.email-send-button:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.send-spinner {
+  width: 15px;
+  height: 15px;
+
+  display: inline-block;
+  flex: 0 0 15px;
+
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+
+  animation: send-spinner-rotation 0.7s linear infinite;
+}
+
+@keyframes send-spinner-rotation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

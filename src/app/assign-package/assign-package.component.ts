@@ -139,6 +139,37 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
     )
      {this.loginService.user.subscribe(x => this.user = x); }
 
+
+//AH072026
+// export toolbar state
+isToolbarBusy: boolean = false;
+activeToolbarButton: 'bkd' | 'resources' | 'dry' | 'dryboq' | 'notassigned' | 'verification' | null = null;
+toolbarLoadingText: string = '';
+
+private startToolbarLoading(
+  button: 'bkd' | 'resources' | 'dry' | 'dryboq' | 'notassigned' | 'verification',
+  text: string
+): void {
+  this.isToolbarBusy = true;
+  this.activeToolbarButton = button;
+  this.toolbarLoadingText = text;
+}
+
+private stopToolbarLoading(): void {
+  this.isToolbarBusy = false;
+  this.activeToolbarButton = null;
+  this.toolbarLoadingText = '';
+}
+
+isToolbarButtonLoading(
+  button: 'bkd' | 'resources' | 'dry' | 'dryboq' | 'notassigned' | 'verification'
+): boolean {
+  return this.isToolbarBusy && this.activeToolbarButton === button;
+}
+///AH072026
+
+
+
      openFilterDrawer(){
         this.assignPackageFilter.openDrawer();
      }
@@ -163,6 +194,8 @@ export class AssignPackageComponent implements OnDestroy, OnInit, AfterViewInit 
        this.SearchInput.boqLevel2= [];
        this.SearchInput.boqLevel3= [];
        this.SearchInput.boqLevel4= [];
+       this.SearchInput.boqLevel5= [];
+       this.SearchInput.boqLevel6= [];
        this.SearchInput.sheetDesc= '';
        this.SearchInput.isItemsAssigned= 0;
        this.SearchInput.package= 0;
@@ -1251,7 +1284,7 @@ validateExcelBeforeAssign(){
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-    this.packageSupplierService.validateExcelBeforeAssign(this.SelectedPackage, Number(localStorage.getItem('assignByBoqOnly')),CostConn).subscribe((data) => {
+    this.packageSupplierService.validateExcelBeforeAssign(this.SelectedPackage, Number(localStorage.getItem('assignByBoqOnly')),true,CostConn).subscribe((data) => {
       this.isValidatingExcel = false;
       if (data) {
         // this.spinner.hide();
@@ -1270,26 +1303,34 @@ validateExcelBeforeAssign(){
     });
   }
 
-  exportBKD(){
-    //this.spinner.show();
-    this.isExportExcel=true;
-    let CostConn=this.user.usrLoggedConnString;
+
+  exportBKD() {
+    this.startToolbarLoading('bkd', 'Exporting BKD...');
+
+    let CostConn = this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    
-    this.packageSupplierService.validateExcelBeforeAssign(-1,1,CostConn).subscribe((data) => {
-      this.isExportExcel=false;
-      if (data) {
-        // this.spinner.hide();
-        // this.toastr.success("Success !!")
-        let a = document.createElement('a');
-        a.id = 'downloader';
-        a.target = '_blank'; 
-        a.style.visibility = "hidden";
-        document.body.appendChild(a);
-        a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
-        a.click();
-      }
-    });
+
+    this.packageSupplierService.validateExcelBeforeAssign(-1, 1,true, CostConn)
+      .pipe(
+        finalize(() => this.stopToolbarLoading())
+      )
+      .subscribe({
+        next: (data) => {
+          if (data) {
+            let a = document.createElement('a');
+            a.id = 'downloader';
+            a.target = '_blank';
+            a.style.visibility = "hidden";
+            document.body.appendChild(a);
+            a.href = environment.baseApiUrl + 'api/SupplierPackages/DownloadFile?filename=' + data;
+            a.click();
+          }
+        },
+        error: (err) => {
+          console.error(err);
+          this.toastr.error('Failed to export BKD');
+        }
+      });
   }
 
   GetPackageById(IdPkge: number) {
@@ -1524,119 +1565,141 @@ validateExcelBeforeAssign(){
   }
 
  
-  ExportExcelBoq(){
-  //this.spinner.show();
-  //this.isValidatingExcel = true;
-    
-  //let flexSwitchCheckDefault = document.getElementById("flexSwitchCheckDefault") as HTMLInputElement;
-  //if(flexSwitchCheckDefault)
-  //{
-  //  if(flexSwitchCheckDefault.type == 'checkbox' && flexSwitchCheckDefault.checked)
-  //   {
-  //       localStorage.setItem('assignByBoqOnly', '1');
-  //    }      
-  //  }
-  let costDB=this.user.usrLoggedCostDB;
+ExportExcelBoq() {
+  let costDB = this.user.usrLoggedCostDB;
   this.assignPackages.assignOriginalBoqList = this.SelectedOriginalBoqList;
   this.assignPackages.assignBoqList = this.SelectedBoqList;
-  this.isExportExcel=true;
-  //this.assignPackageService.AssignPackage(this.assignPackages).subscribe((data) => {
-    let CostConn=this.user.usrLoggedConnString;
-    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-    this.assignPackageService.ExportBoqExcel(this.SearchInput,costDB,CostConn).subscribe((data) => {
-      this.isExportExcel=false;
-      if (data) {
-        let a = document.createElement('a');
-        a.id = 'downloader';
-        a.target = '_blank'; 
-        a.style.visibility = "hidden";
-        document.body.appendChild(a);
-        a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
-        a.click();     
-      }
-    });
-  }
+  this.startToolbarLoading('resources', 'Exporting Resources...');
 
-  ExportExcelVerification(){
-    this.isExportExcelVerif=true;
-    let costDB=this.user.usrLoggedCostDB;
-    let userName=this.user.usrId;
-    let CostConn=this.user.usrLoggedConnString;
-    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-  
-    this.assignPackageService.ExportExcelVerification(this.SearchInput,costDB,userName,CostConn).subscribe((data) => {
-    
-      if (data) {
-          this.isExportExcelVerif=false;
-          let a = document.createElement('a');
-          a.id = 'downloader';
-          a.target = '_blank'; 
-          a.style.visibility = "hidden";
-          document.body.appendChild(a);
-          a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
-          a.click();     
-        }
-        this.isExportExcelVerif=false;
-        console.log(this.isExportExcelVerif);
-      });
-    }
+  let CostConn = this.user.usrLoggedConnString;
+  this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-  ExportNotAssigned(){
-    let costDB=this.user.usrLoggedCostDB;
-    this.assignPackages.assignOriginalBoqList = this.SelectedOriginalBoqList;
-    this.assignPackages.assignBoqList = this.SelectedBoqList;
-    //this.assignPackageService.AssignPackage(this.assignPackages).subscribe((data) => {
-    this.isExportExcelNotAssigned=true;
-
-    let CostConn=this.user.usrLoggedConnString;
-    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-
-      this.assignPackageService.ExportNotAssigned(costDB,CostConn).subscribe((data) => {
-        this.isExportExcelNotAssigned=false;
+  this.assignPackageService.ExportBoqExcel(this.SearchInput, costDB, CostConn)
+    .pipe(
+      finalize(() => this.stopToolbarLoading())
+    )
+    .subscribe({
+      next: (data) => {
         if (data) {
           let a = document.createElement('a');
           a.id = 'downloader';
-          a.target = '_blank'; 
+          a.target = '_blank';
           a.style.visibility = "hidden";
           document.body.appendChild(a);
-          a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
-          a.click();     
+          a.href = environment.baseApiUrl + 'api/SupplierPackages/DownloadFile?filename=' + data;
+          a.click();
         }
-      });
-    }
-  
-    ExportExcelPackagesCost(withBoq:number){
-      let costDB=this.user.usrLoggedCostDB;
-      
-      if (withBoq==1)
-        this.isExportExcelDryBoq=true;
-      else
-        this.isExportExcelDry=true;
-  
-        let CostConn=this.user.usrLoggedConnString;
-        this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-
-        this.assignPackageService.ExportExcelPackagesCost(withBoq,costDB,this.SearchInput,CostConn)
-        .pipe(finalize(() =>{
-          if (withBoq==1)
-            this.isExportExcelDryBoq=false;
-          else
-            this.isExportExcelDry=false;
-        }))
-        .subscribe((data) => {
-          
-          if (data) {
-            let a = document.createElement('a');
-            a.id = 'downloader';
-            a.target = '_blank'; 
-            a.style.visibility = "hidden";
-            document.body.appendChild(a);
-            a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
-            a.click();     
-          }
-        });
+      },
+      error: (err) => {
+        console.error(err);
+        this.toastr.error('Failed to export Resources');
       }
+    });
+}
+
+
+ExportExcelVerification() {
+  let costDB = this.user.usrLoggedCostDB;
+  let userName = this.user.usrId;
+
+  this.startToolbarLoading('verification', 'Exporting Verification...');
+
+  let CostConn = this.user.usrLoggedConnString;
+  this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
+  this.assignPackageService.ExportExcelVerification(this.SearchInput, costDB, userName, CostConn)
+    .pipe(
+      finalize(() => this.stopToolbarLoading())
+    )
+    .subscribe({
+      next: (data) => {
+        if (data) {
+          let a = document.createElement('a');
+          a.id = 'downloader';
+          a.target = '_blank';
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          a.href = environment.baseApiUrl + 'api/SupplierPackages/DownloadFile?filename=' + data;
+          a.click();
+        }
+      },
+      error: (err) => {
+        console.error(err);
+        this.toastr.error('Failed to export Verification');
+      }
+    });
+}
+
+
+ExportNotAssigned() {
+  let costDB = this.user.usrLoggedCostDB;
+  this.assignPackages.assignOriginalBoqList = this.SelectedOriginalBoqList;
+  this.assignPackages.assignBoqList = this.SelectedBoqList;
+
+  this.startToolbarLoading('notassigned', 'Exporting Not Assigned...');
+
+  let CostConn = this.user.usrLoggedConnString;
+  this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
+  this.assignPackageService.ExportNotAssigned(costDB, CostConn)
+    .pipe(
+      finalize(() => this.stopToolbarLoading())
+    )
+    .subscribe({
+      next: (data) => {
+        if (data) {
+          let a = document.createElement('a');
+          a.id = 'downloader';
+          a.target = '_blank';
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          a.href = environment.baseApiUrl + 'api/SupplierPackages/DownloadFile?filename=' + data;
+          a.click();
+        }
+      },
+      error: (err) => {
+        console.error(err);
+        this.toastr.error('Failed to export Not Assigned');
+      }
+    });
+}
+
+  
+ExportExcelPackagesCost(withBoq: number) {
+  let costDB = this.user.usrLoggedCostDB;
+
+  if (withBoq === 1) {
+    this.startToolbarLoading('dryboq', 'Exporting Cost + BOQ...');
+  } else {
+    this.startToolbarLoading('dry', 'Exporting Dry Cost...');
+  }
+
+  let CostConn = this.user.usrLoggedConnString;
+  this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+
+  this.assignPackageService.ExportExcelPackagesCost(withBoq, costDB, this.SearchInput, CostConn)
+    .pipe(
+      finalize(() => this.stopToolbarLoading())
+    )
+    .subscribe({
+      next: (data) => {
+        if (data) {
+          let a = document.createElement('a');
+          a.id = 'downloader';
+          a.target = '_blank';
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          a.href = environment.baseApiUrl + 'api/SupplierPackages/DownloadFile?filename=' + data;
+          a.click();
+        }
+      },
+      error: (err) => {
+        console.error(err);
+        this.toastr.error(withBoq === 1 ? 'Failed to export Cost + BOQ' : 'Failed to export Dry Cost');
+      }
+    });
+}
 
 
   private getDismissReason(reason: any): string {

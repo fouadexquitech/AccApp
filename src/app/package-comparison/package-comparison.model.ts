@@ -71,7 +71,7 @@ export class SupplierGroups
 
 export class ressourceItem
 {
-    public resId : number = 0;
+    public resId : string = '';
 }
 
 export class boqItem

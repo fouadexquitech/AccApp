@@ -1,5 +1,20 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
@@ -16,22 +31,87 @@ import { ComparisonPackageGroup } from '../package-groups/package-groups.model';
 import { PackageGroupsService } from '../package-groups/package-groups.service';
 import { LoginService } from '../login/login.service';
 // AH052024
+import { finalize } from 'rxjs/operators';
 import { User } from '../_models';
 // AH052024
 
+interface SelectedSupplierEmail {
+  supplierId: number;
+  supplierName: string;
+  email: string;
+}
+
+
+export function emailListValidator(
+  required: boolean = false
+): ValidatorFn {
+
+  return (
+    control: AbstractControl
+  ): ValidationErrors | null => {
+
+    const rawValue: string =
+      control.value == null
+        ? ''
+        : String(control.value).trim();
+
+    if (!rawValue) {
+      return required
+        ? { required: true }
+        : null;
+    }
+
+    const emailList: string[] =
+      rawValue
+        .split(/[;,\r\n]+/)
+        .map((email: string) => email.trim())
+        .filter((email: string) => email.length > 0);
+
+    if (required && emailList.length === 0) {
+      return { required: true };
+    }
+
+    const emailExpression =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const containsInvalidEmail =
+      emailList.some(
+        (email: string) =>
+          !emailExpression.test(email)
+      );
+
+    return containsInvalidEmail
+      ? { invalidEmailList: true }
+      : null;
+  };
+}
+
 declare var $: any;
+
+
 @Component({
   selector: 'app-package-supplier',
   templateUrl: './package-supplier.component.html',
   styleUrls: ['./package-supplier.component.css']
 })
 
+
 export class PackageSupplierComponent implements OnInit, OnDestroy {
   params : any;
   PackageId: number = 0;
   PackageName = "";
   FilePath = "";
-  SupplierList: SupplierList[] = [];
+SupplierList: SupplierList[] = [];
+AllSupplierList: SupplierList[] = [];
+/*
+ * 1 = Suppliers with portal account
+ * 0 = Suppliers without portal account
+ *
+ * Default remains 1 to preserve the existing behavior.
+ */
+selectedPortalStatus: number = 1;
+isLoadingSuppliers: boolean = false;
+
   selectedSuppliers: Array<number> = [];
   checkedSuppliers: Array<number> = [];
   SupplierInput: SupplierInput[] = [];
@@ -66,11 +146,9 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
   lstEmailTemplate : EmailTemplate[] = [];
   lstLanguages : string[] = [];
   isUpdatingTechnicalConditions : boolean = false;
-  formEmailTemplate: FormGroup = new FormGroup({
-    language: new FormControl(''),
-    template: new FormControl(''),
-    revisionExpDate: new FormControl('')
-  });
+
+  formEmailTemplate: FormGroup ;
+
   addedTechConditions : TechConditions[] = [];
   groups : ComparisonPackageGroup[] = [];
   formEmailSubmitted = false;
@@ -147,31 +225,251 @@ maxAttachements : number = 5;
 public user : User;
 //AH052024
 
-  constructor(private router: Router, 
-    private packageSupplierService: PackageSupplierService, 
-    private spinner: NgxSpinnerService, 
-    private toastr: ToastrService,
-    private formBuilder : FormBuilder,
-    private route: ActivatedRoute,
-    private confirmationDialogService: ConfirmationDialogService,
-    private packageGroupsService : PackageGroupsService,
-    private loginService : LoginService) {
-    /*if (this.router.getCurrentNavigation().extras.state != undefined) {
-      this.PackageId = this.router.getCurrentNavigation().extras.state.packageId;
-    } else {
-      this.router.navigateByUrl("/package-list");
-    }*/
-    //AH052024
-    this.loginService.user.subscribe(x => this.user = x); 
-    //AH052024
+constructor(
+  private router: Router,
+  private packageSupplierService: PackageSupplierService,
+  private spinner: NgxSpinnerService,
+  private toastr: ToastrService,
+  private formBuilder: FormBuilder,
+  private route: ActivatedRoute,
+  private confirmationDialogService: ConfirmationDialogService,
+  private packageGroupsService: PackageGroupsService,
+  private loginService: LoginService,
+  private changeDetectorRef: ChangeDetectorRef
+) {
+  this.loginService.user.subscribe(
+    x => this.user = x
+  );
+
+  this.formEmailTemplate =
+    this.createEmailTemplateForm();
+}
+
+
+
+private createEmailTemplateForm(
+  emailCc: string = ''
+): FormGroup {
+
+  return this.formBuilder.group({
+    /*
+     * One FormGroup per selected supplier.
+     */
+    supplierEmails: this.formBuilder.array([]),
+
+    /*
+     * One shared CC field.
+     */
+    emailCc: [
+      emailCc,
+      [
+        emailListValidator(false)
+      ]
+    ],
+
+    language: [
+      '',
+      Validators.required
+    ],
+
+    template: [
+      '',
+      Validators.required
+    ],
+
+    revisionExpDate: [
+      '',
+      Validators.required
+    ]
+  });
+}
+
+private parseEmailList(
+  value: string | null | undefined
+): string[] {
+
+  if (!value) {
+    return [];
   }
 
+  const result: string[] =
+    String(value)
+      .split(/[;,\r\n]+/)
+      .map((email: string) =>
+        email.trim()
+      )
+      .filter((email: string) =>
+        email.length > 0
+      );
+
+  const uniqueEmails: string[] = [];
+
+  result.forEach((email: string) => {
+
+    const alreadyExists =
+      uniqueEmails.some(
+        (existingEmail: string) =>
+          existingEmail.toLowerCase() ===
+          email.toLowerCase()
+      );
+
+    if (!alreadyExists) {
+      uniqueEmails.push(email);
+    }
+  });
+
+  return uniqueEmails;
+}
+
+private joinEmailList(
+  emailList: string[]
+): string {
+
+  if (!emailList || emailList.length === 0) {
+    return '';
+  }
+
+  const uniqueEmails: string[] = [];
+
+  emailList.forEach((email: string) => {
+
+    if (!email || !email.trim()) {
+      return;
+    }
+
+    const cleanedEmail =
+      email.trim();
+
+    const alreadyExists =
+      uniqueEmails.some(
+        (existingEmail: string) =>
+          existingEmail.toLowerCase() ===
+          cleanedEmail.toLowerCase()
+      );
+
+    if (!alreadyExists) {
+      uniqueEmails.push(cleanedEmail);
+    }
+  });
+
+  return uniqueEmails.join('; ');
+}
+
+
+private getSelectedSupplierEmails(): string[] {
+
+  if (
+    !this.selectedSuppliers ||
+    this.selectedSuppliers.length === 0
+  ) {
+    return [];
+  }
+
+  /*
+   * Always search the complete master list,
+   * not the currently filtered dropdown list.
+   */
+  const sourceList: SupplierList[] =
+    this.AllSupplierList &&
+    this.AllSupplierList.length > 0
+      ? this.AllSupplierList
+      : this.SupplierList;
+
+  const selectedEmails: string[] = [];
+
+  this.selectedSuppliers.forEach(
+    (supplierId: number) => {
+
+      const supplierRecord:
+        SupplierList | undefined =
+        sourceList.find(
+          (supplier: SupplierList) =>
+            Number(supplier.supID) ===
+            Number(supplierId)
+        );
+
+      if (!supplierRecord) {
+
+        console.warn(
+          'Selected supplier was not found:',
+          supplierId
+        );
+
+        return;
+      }
+
+      const supplierEmail =
+        (supplierRecord.supEmail || '')
+          .trim();
+
+      if (supplierEmail) {
+
+        const emailsFromSupplier =
+          this.parseEmailList(
+            supplierEmail
+          );
+
+        emailsFromSupplier.forEach(
+          (email: string) => {
+
+            const alreadyAdded =
+              selectedEmails.some(
+                (existingEmail: string) =>
+                  existingEmail
+                    .toLowerCase() ===
+                  email.toLowerCase()
+              );
+
+            if (!alreadyAdded) {
+              selectedEmails.push(email);
+            }
+          }
+        );
+      } else {
+
+        console.warn(
+          'No email found for supplier:',
+          supplierRecord.supID,
+          supplierRecord.supName
+        );
+      }
+    }
+  );
+
+  return selectedEmails;
+}
 
   // onKey(event : any) {
   //   this.ccList.push (event.target.value);
   // }
 
- 
+onSupplierSelectionChange(): void {
+
+  /*
+   * The form array is rebuilt when opening the modal.
+   * No action is required while the modal is closed.
+   */
+  const modal =
+    document.getElementById(
+      'emailTemplateModal'
+    );
+
+  const modalIsOpen =
+    modal &&
+    modal.classList.contains('show');
+
+  if (!modalIsOpen) {
+    return;
+  }
+
+  this.buildSelectedSupplierEmailControls(
+    this.selectedPackageSupplier
+  );
+
+  this.changeDetectorRef
+    .detectChanges();
+}
+
   getGroups()
   {
     let CostConn=this.user.usrLoggedConnString;
@@ -433,56 +731,163 @@ public user : User;
       this.topManagementAttachements.push({id : 0, file : null});
   }
 
-  OpenEmailTemplateModal(supId: number,psId :number,packageSupplier : SupplierPackagesList,index:number) 
-  {
-    let CostConn=this.user.usrLoggedConnString;
-    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
-//AH052024
-//  this.lstLanguages = Language.languages;
-    this.GetEmailTemplateLanguageList();
-    let costDB=this.user.usrLoggedCostDB;
-    this.packageSupplierService.GetDefaultProjectEmailTemplate(costDB).subscribe((data) => {
-    this.selectedEmailTemplate = data;
-    this.formEmailTemplate.controls['language'].setValue(this.selectedEmailTemplate?.etLang);
-    this.formEmailTemplate.controls['template'].setValue(this.selectedEmailTemplate?.etContent || '');
-  
-    // var expdate = document.getElementById("revisionExpDate") as HTMLInputElement;
-    // expdate.value = new Date().toISOString().substring(0, 10);
-  });
-//AH052024
+OpenEmailTemplateModal(
+  supId: number,
+  psId: number,
+  packageSupplier: SupplierPackagesList,
+  index: number
+): void {
 
-    this.topManagementAttachements = [];
-    this.SupplierInputList = [];
-    this.listCC = [];
-    this.formEmailTemplate = this.formBuilder.group(
-      {
-        language: ['', Validators.required],
-        template: ['', Validators.required],
-        listCC :[[],[]],
-        revisionExpDate: ['', [Validators.required]]
-      }
+  const CostConn =
+    this.user.usrLoggedConnString;
+
+  this.loginService
+    .CheckConnection(CostConn)
+    .subscribe(() => { });
+
+  this.formEmailSubmitted = false;
+  this.isAssigning = false;
+
+  this.topManagementAttachements = [];
+  this.SupplierInput = [];
+  this.SupplierInputList = [];
+  this.listCC = [];
+
+  /*
+   * Add Revision button:
+   * use only the supplier belonging to that row.
+   *
+   * Main Assign Supplier button:
+   * supId is zero, therefore keep all dropdown selections.
+   */
+  if (supId > 0) {
+    this.selectedSuppliers = [
+      Number(supId)
+    ];
+  }
+
+  if (
+    !this.selectedSuppliers ||
+    this.selectedSuppliers.length === 0
+  ) {
+    this.toastr.error(
+      'Select at least one supplier.'
     );
-    this.getComConditions(psId);
-//AH24012024
-    this.GetTechnicalConditionsByPackage(psId);
-    if (supId>0)
-    {
-      this.selectedSuppliers = [];
-      this.selectedSuppliers.push(supId);
-    }
-    this.selectedPsId = psId;
-    this.selectedPackageSupplier = packageSupplier;
-    this.rowindex=index;
 
-//AH24012024
-    $("#emailTemplateModal").modal('show');
+    return;
   }
 
-  get f(): { [key: string]: AbstractControl } 
-  {
-    return this.formEmailTemplate.controls;
+  this.selectedPsId =
+    psId;
+
+  this.selectedPackageSupplier =
+    packageSupplier;
+
+  this.rowindex =
+    index;
+
+  const defaultCc =
+    this.user &&
+    this.user.usrEmail
+      ? this.user.usrEmail.trim()
+      : '';
+
+  this.formEmailTemplate =
+    this.createEmailTemplateForm(
+      defaultCc
+    );
+
+  /*
+   * Build one editable Email To control
+   * for every selected supplier.
+   */
+  this.buildSelectedSupplierEmailControls(
+    packageSupplier
+  );
+
+  const suppliersWithoutEmail =
+    this.supplierEmailControls.controls
+      .filter(
+        control =>
+          !control.get('emailTo')
+            ?.value
+      );
+
+  if (suppliersWithoutEmail.length > 0) {
+    this.toastr.warning(
+      'One or more selected suppliers do not have an email. Please enter the missing email before sending.'
+    );
   }
+
+  this.GetEmailTemplateLanguageList();
+
+  const costDB =
+    this.user.usrLoggedCostDB;
+
+  this.packageSupplierService
+    .GetDefaultProjectEmailTemplate(
+      costDB
+    )
+    .subscribe({
+      next: (data) => {
+
+        this.selectedEmailTemplate =
+          data;
+
+        this.formEmailTemplate.patchValue({
+          language:
+            this.selectedEmailTemplate
+              ?.etLang || '',
+
+          template:
+            this.selectedEmailTemplate
+              ?.etContent || ''
+        });
+      },
+
+      error: (error: any) => {
+
+        console.error(
+          'Unable to load default email template:',
+          error
+        );
+
+        this.toastr.error(
+          'Unable to load the default email template.'
+        );
+      }
+    });
+
+  this.getComConditions(psId);
+
+  this.GetTechnicalConditionsByPackage(
+    psId
+  );
+
+  $('#emailTemplateModal')
+    .modal('show');
+}
+
+
+get f(): { [key: string]: AbstractControl } {
+  return this.formEmailTemplate.controls;
+}
+
+get supplierEmailControls(): FormArray {
+  return this.formEmailTemplate.get(
+    'supplierEmails'
+  ) as FormArray;
+}
+
+getSupplierEmailGroup(
+  index: number
+): FormGroup {
+
+  return this.supplierEmailControls.at(
+    index
+  ) as FormGroup;
+}
 
   CloseEmailTemplateModal()
   {
@@ -490,27 +895,155 @@ public user : User;
     this.selectedEmailTemplate = null;
   }
 
-  onEmailTemplateSubmit(){
-    this.formEmailSubmitted = true;
-    
-    // var dte = document.getElementById("revisionExpDate") as HTMLInputElement;
-    // console.log(dte.value)
 
-    if (this.formEmailTemplate.invalid) {
-      // console.log(this.formEmailTemplate)  (to know the validations)
-      return;
-    }
-    else
-    {
-      // let ccList=this.ccList;
-      this.AssignSuppliers();
-    //AH18022024
-      this.Toggle( this.selectedPackageSupplier, this.rowindex) ;
-      // this.SupplierPackagesRevList = [];
-      // this.GetSupplierPackagesRevision(this.selectedPsId);
-    //AH18022024
-    }
+  onEmailTemplateSubmit(): void {
+
+  if (this.isAssigning) {
+    return;
   }
+
+  this.formEmailSubmitted = true;
+
+  if (!this.formEmailTemplate) {
+    this.toastr.error(
+      'Email form is not initialized.'
+    );
+
+    return;
+  }
+
+  if (
+    !this.supplierEmailControls ||
+    this.supplierEmailControls.length === 0
+  ) {
+    this.toastr.error(
+      'No selected supplier email was found.'
+    );
+
+    return;
+  }
+
+  /*
+   * Revalidate every supplier email explicitly.
+   */
+  this.supplierEmailControls.controls.forEach(
+    (control: AbstractControl) => {
+
+      control
+        .get('emailTo')
+        ?.markAsTouched();
+
+      control
+        .get('emailTo')
+        ?.updateValueAndValidity();
+    }
+  );
+
+  this.formEmailTemplate
+    .markAllAsTouched();
+
+  this.formEmailTemplate
+    .updateValueAndValidity();
+
+  if (this.formEmailTemplate.invalid) {
+
+    let validationMessage =
+      'Please complete all required fields.';
+
+    const invalidSupplier =
+      this.supplierEmailControls.controls.find(
+        (control: AbstractControl) =>
+          control.get('emailTo')?.invalid
+      );
+
+    if (invalidSupplier) {
+
+      const supplierName =
+        String(
+          invalidSupplier
+            .get('supplierName')
+            ?.value || ''
+        );
+
+      validationMessage =
+        'Please enter a valid Email To for supplier: ' +
+        supplierName;
+    } else if (
+      this.f.emailCc &&
+      this.f.emailCc.invalid
+    ) {
+      validationMessage =
+        'Please enter valid CC email addresses.';
+    } else if (
+      this.f.revisionExpDate &&
+      this.f.revisionExpDate.invalid
+    ) {
+      validationMessage =
+        'Expiry Date is required.';
+    } else if (
+      this.f.language &&
+      this.f.language.invalid
+    ) {
+      validationMessage =
+        'Language is required.';
+    } else if (
+      this.f.template &&
+      this.f.template.invalid
+    ) {
+      validationMessage =
+        'Email Template is required.';
+    }
+
+    this.toastr.error(
+      validationMessage
+    );
+
+    this.changeDetectorRef
+      .detectChanges();
+
+    return;
+  }
+
+  /*
+   * Set loading state before starting any processing.
+   */
+  this.isAssigning = true;
+
+  this.changeDetectorRef
+    .detectChanges();
+
+  /*
+   * Give the browser one rendering cycle so the
+   * spinner and Sending text appear immediately.
+   */
+  setTimeout(() => {
+
+    try {
+      this.AssignSuppliers();
+    } catch (error) {
+
+      this.isAssigning = false;
+
+      this.changeDetectorRef
+        .detectChanges();
+
+      console.error(
+        'AssignSuppliers client error:',
+        error
+      );
+
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Unable to prepare supplier assignment.';
+
+      this.toastr.error(
+        errorMessage
+      );
+    }
+
+  }, 0);
+}
 
   onLanguageChange(event : any)
   {
@@ -581,118 +1114,291 @@ public user : User;
     });
   }
 
-  AssignSuppliers() {
-    let CostConn=this.user.usrLoggedConnString;
-    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    
-    let TSConn=this.user.usrLoggedTSConnString;
 
-    //this.spinner.show();
-    this.isAssigning = true;
-    this.SupplierInput = [];
-    this.SupplierInputList= [];
-    
-    if (this.selectedSuppliers.length > 0) 
-    {
-      this.SupplierInput = [];
-      this.selectedSuppliers.forEach(element => {
-        this.SupplierInput.push({ supID: element });
+AssignSuppliers(): void {
+
+  if (
+    !this.selectedSuppliers ||
+    this.selectedSuppliers.length === 0
+  ) {
+    this.toastr.error(
+      'You should select at least one supplier.'
+    );
+
+    return;
+  }
+
+  if (
+    !this.formEmailTemplate ||
+    this.formEmailTemplate.invalid
+  ) {
+    this.formEmailTemplate
+      .markAllAsTouched();
+
+    this.toastr.error(
+      'Please complete all required email fields.'
+    );
+
+    return;
+  }
+
+  const CostConn =
+    this.user.usrLoggedConnString;
+
+  const TSConn =
+    this.user.usrLoggedTSConnString;
+
+  this.loginService
+    .CheckConnection(CostConn)
+    .subscribe(() => { });
+
+  const sharedEmailCc: string[] =
+    this.parseEmailList(
+      this.f.emailCc.value
+    );
+
+  const comCondList: Condition[] = [];
+
+  this.comConditions.forEach(c => {
+
+    if (c.checked) {
+      comCondList.push({
+        id: c.cmSeq,
+        description:
+          c.cmDescription,
+        ACCCondValue:
+          c.cmAccCondValue
       });
+    }
+  });
 
-      let comCondList : Condition[] = [];
-      this.comConditions.forEach(c=>{
-          if(c.checked)
-          {
-            comCondList.push({ id : c.cmSeq, description : c.cmDescription , ACCCondValue:c.cmAccCondValue });
-          }
+  const techCondList: Condition[] = [];
+
+  this.techConditions.forEach(c => {
+
+    if (c.checked) {
+      techCondList.push({
+        id: c.tcSeq,
+        description:
+          c.tcDescription,
+        ACCCondValue:
+          c.tcAccCondValue
       });
+    }
+  });
 
-      //AH24012024
-      let techCondList : Condition[] = [];
-      this.techConditions.forEach(c=>{
-          if(c.checked)
-          {
-            techCondList.push({ id : c.tcSeq, description : c.tcDescription , ACCCondValue:c.tcAccCondValue });
-          }
-      });
-      //AH24012024
-      this.SupplierInput.forEach(supplier=>{
-        this.SupplierInputList.push({supplierInput : supplier, comercialCondList : comCondList, 
-                                      emailTemplate : null, filePath : this.FilePath ,
-                                      technicalCondList:techCondList});
-      });
+  this.SupplierInput = [];
+  this.SupplierInputList = [];
+  this.listCC = sharedEmailCc.slice();
 
-      if (this.SupplierInputList.length > 0) {
-        this.SupplierInputList.forEach(sup=>{
-          sup.emailTemplate = this.f.template.value;
-        });
+  /*
+   * Build one SupplierInputList for every supplier,
+   * including only that supplier's edited mailTo.
+   */
+  this.supplierEmailControls.controls.forEach(
+    (control: AbstractControl) => {
 
-        // console.log(this.listCC);
+      const supplierId =
+        Number(
+          control
+            .get('supplierId')
+            ?.value
+        );
 
-        let assignPackageTemplate : AssignPackageTemplate = {
-          byBoq : Number(localStorage.getItem('assignByBoqOnly')),
-          listAttach : [],
-          listCC : [],
-          packId : this.PackageId,
-          supInputList : this.SupplierInputList,
-          userName : this.loginService.userValue?.usrId,
-          revisionExpiryDate : this.f.revisionExpDate.value,
-        };
+      const supplierName =
+        String(
+          control
+            .get('supplierName')
+            ?.value || ''
+        );
 
-        let files : File[] = [];
-        this.topManagementAttachements.forEach(attachement=>{
-          files.push(attachement.file);
-        });
+      const supplierMailTo =
+        this.parseEmailList(
+          control
+            .get('emailTo')
+            ?.value
+        );
 
-        this.packageSupplierService
-          .AssignPackageSuppliers(assignPackageTemplate, files, CostConn, TSConn)
-          .subscribe({
-            next: (res) => {
-              this.isAssigning = false;
-
-              if (res?.success) {
-                this.toastr.success('Supplier(s) assigned successfully');
-                this.GetSupplierPackagesList();
-                this.CloseEmailTemplateModal();
-              } else 
-              {
-                this.toastr.error(res?.message || 'An error occurred');
-              }
-            },
-            error: (err) => {
-              this.isAssigning = false;
-
-              const errorMsg =
-                err?.error?.message || 'Unexpected error occurred';
-
-              this.toastr.error(errorMsg);
-            }
-          });
-
-        // this.packageSupplierService.AssignPackageSuppliers(assignPackageTemplate, files,CostConn,TSConn)
-        // .subscribe((data) => {
-        //   this.isAssigning = false;
-        //   if (data) 
-        //   {
-        //     //this.spinner.hide();
-        //     this.toastr.success("Supplier(s) assigned successfuly");
-        //     this.GetSupplierPackagesList();
-        //     this.CloseEmailTemplateModal();
-        //   }
-        //   else
-        //   {
-        //     this.toastr.error("An error occured");
-        //   }
-        // });
-
+      if (supplierMailTo.length === 0) {
+        throw new Error(
+          'Email To is required for supplier ' +
+          supplierName
+        );
       }
 
-    } else {
-      //this.spinner.hide();
-      this.isAssigning = false;
-      this.toastr.error('You Should Select at Least 1 Supplier !!')
+      const supplierInput:
+        SupplierInput = {
+          supID: supplierId
+        };
+
+      this.SupplierInput.push(
+        supplierInput
+      );
+
+      const supplierInputList =
+        new SupplierInputList();
+
+      supplierInputList.supplierInput =
+        supplierInput;
+
+      supplierInputList.supplierName =
+        supplierName;
+
+      /*
+       * Only this supplier's edited To addresses.
+       */
+      supplierInputList.mailTo =
+        supplierMailTo;
+
+      supplierInputList.mailCC = [];
+
+      supplierInputList.comercialCondList =
+        comCondList.map(
+          condition => ({
+            ...condition
+          })
+        );
+
+      supplierInputList.technicalCondList =
+        techCondList.map(
+          condition => ({
+            ...condition
+          })
+        );
+
+      supplierInputList.emailTemplate =
+        this.f.template.value;
+
+      supplierInputList.filePath =
+        this.FilePath;
+
+      this.SupplierInputList.push(
+        supplierInputList
+      );
     }
-  }
+  );
+
+  const assignPackageTemplate =
+    new AssignPackageTemplate();
+
+  assignPackageTemplate.byBoq =
+    Number(
+      localStorage.getItem(
+        'assignByBoqOnly'
+      ) || 0
+    );
+
+  assignPackageTemplate.listAttach = [];
+
+  /*
+   * One shared CC only.
+   */
+  assignPackageTemplate.listCC =
+    sharedEmailCc;
+
+  assignPackageTemplate.packId =
+    this.PackageId;
+
+  assignPackageTemplate.supInputList =
+    this.SupplierInputList;
+
+  assignPackageTemplate.userName =
+    this.loginService
+      .userValue
+      ?.usrId || '';
+
+  assignPackageTemplate
+    .revisionExpiryDate =
+      this.f.revisionExpDate.value;
+
+  const files: File[] = [];
+
+  this.topManagementAttachements
+    .forEach(attachment => {
+
+      if (
+        attachment &&
+        attachment.file
+      ) {
+        files.push(
+          attachment.file
+        );
+      }
+    });
+
+
+  this.packageSupplierService
+    .AssignPackageSuppliers(
+      assignPackageTemplate,
+      files,
+      CostConn,
+      TSConn
+    )
+    .pipe(
+      finalize(() => {
+        this.isAssigning = false;
+      })
+    )
+    .subscribe({
+      next: (res: any) => {
+
+        if (
+          res === true ||
+          res?.success === true
+        ) {
+          this.toastr.success(
+            'Each supplier was assigned and emailed separately.'
+          );
+
+          this.GetSupplierPackagesList();
+
+          if (
+            this.selectedPackageSupplier &&
+            this.rowindex >= 0
+          ) {
+            this.Toggle(
+              this.selectedPackageSupplier,
+              this.rowindex
+            );
+          }
+
+          this.CloseEmailTemplateModal();
+        } else {
+          this.toastr.error(
+            res?.message ||
+            'Supplier assignment or email sending failed.'
+          );
+        }
+      },
+
+      error: (err: any) => {
+
+        console.error(
+          'Assign supplier error:',
+          err
+        );
+
+        const errorMessage =
+          err?.error?.message ||
+          err?.error ||
+          'Unexpected error occurred.';
+
+        this.toastr.error(
+          typeof errorMessage === 'string'
+            ? errorMessage
+            : 'Unexpected error occurred.'
+        );
+      }
+    });
+}
+
+private stopAssigning(): void {
+
+  this.isAssigning = false;
+
+  this.changeDetectorRef
+    .detectChanges();
+}
 
   getComConditions(packSupId :number)
   {
@@ -766,16 +1472,19 @@ public user : User;
     this.addingRevision = true;
     var date = document.getElementById("revisionDate") as HTMLInputElement;
     var discount = document.getElementById("discount") as HTMLInputElement;
-    var checkAddedItem= document.getElementById("addedItems") as HTMLInputElement;
     //var exchangeRate = document.getElementById("exchangeRate") as HTMLInputElement;
     
     let addedItem: number = 0;
 
-    if(checkAddedItem.type == 'checkbox'){
-    if (checkAddedItem.checked)
-      addedItem=1;
-    }
+    // var checkAddedItem= document.getElementById("addedItems") as HTMLInputElement;
+    // if(checkAddedItem.type == 'checkbox'){
+   
+    //   if (checkAddedItem.checked)
+    //   addedItem=1;
+    // }
   
+    addedItem=1;
+
     if (date.value) {
       if(this.selectedCurrencyId > 0)
       {
@@ -794,7 +1503,7 @@ public user : User;
               date.value = null;
               this.selectedFile = null;
               this.CloseModal();
-              this.toastr.success("A new revision has been added !")
+              this.toastr.success("Prices has been updated !")
             }
           });
         } 
@@ -812,7 +1521,9 @@ public user : User;
     {
       this.toastr.error("Please Select A Currency !")
     }
-    } else {
+    } 
+    else 
+    {
       this.toastr.error("Please Select A Date !")
     }
   }
@@ -832,7 +1543,7 @@ public user : User;
       }      
     }
     
-    this.packageSupplierService.validateExcelBeforeAssign(this.PackageId, Number(localStorage.getItem('assignByBoqOnly')),CostConn).subscribe((data) => {
+    this.packageSupplierService.validateExcelBeforeAssign(this.PackageId, Number(localStorage.getItem('assignByBoqOnly')),false,CostConn).subscribe((data) => {
       this.isValidatingExcel = false;
       if (data) {
         // this.spinner.hide();
@@ -1199,12 +1910,14 @@ public user : User;
       chkAll.checked = allChecked;
     }
 
-    checkAllTechCond(event : any)
-    {
-        let chk = event.target as HTMLInputElement;
-        this.comConditions.forEach(c=>{
-            c.checked = chk.checked;
-        });
+    checkAllTechCond(event: any): void {
+
+      const chk =
+        event.target as HTMLInputElement;
+
+      this.techConditions.forEach(c => {
+        c.checked = chk.checked;
+      });
     }
 
     openComCondReplyListModal(revisionId : any, prRevNo : any, psSupName : any)
@@ -1258,33 +1971,231 @@ public user : User;
         });
       }
 
-    GetSupplierList_NotAssignetPackage(IdPkge: number) {
-      let CostConn=this.user.usrLoggedConnString;
-      this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+GetSupplierList_NotAssignetPackage(
+  IdPkge: number
+): void {
 
-      this.packageSupplierService.GetSupplierList_NotAssignetPackage(IdPkge,CostConn).subscribe((data) => {
-        if (data) {
-          this.SupplierList = data;
-        }
-      });
-    }
+  const CostConn =
+    this.user.usrLoggedConnString;
 
-    filterSuppliers(event: KeyboardEvent) { 
-      const txt = event.target as HTMLInputElement;
+  if (!CostConn) {
+    this.AllSupplierList = [];
+    this.SupplierList = [];
+
+    this.toastr.error(
+      'Project database connection is not available.'
+    );
+
+    return;
+  }
+
+  this.isLoadingSuppliers = true;
+
+  this.loginService
+    .CheckConnection(CostConn)
+    .subscribe({
+      next: () => {
+
+        this.packageSupplierService
+          .GetSupplierList_NotAssignetPackage(
+            IdPkge,
+            this.selectedPortalStatus,
+            CostConn
+          )
+          .subscribe({
+            next: (data: SupplierList[]) => {
+
+              this.isLoadingSuppliers = false;
+
+              const suppliers =
+                data || [];
+
+              /*
+               * Keep an independent complete list.
+               * SupplierList is used only for dropdown filtering.
+               */
+              this.AllSupplierList =
+                suppliers.map(
+                  (supplier: SupplierList) => ({
+                    ...supplier
+                  })
+                );
+
+              this.SupplierList =
+                this.AllSupplierList.map(
+                  (supplier: SupplierList) => ({
+                    ...supplier
+                  })
+                );
+            },
+
+            error: (error: any) => {
+
+              this.isLoadingSuppliers = false;
+
+              this.AllSupplierList = [];
+              this.SupplierList = [];
+
+              console.error(
+                'Unable to load suppliers:',
+                error
+              );
+
+              this.toastr.error(
+                error?.error?.message ||
+                error?.message ||
+                'Unable to load suppliers.'
+              );
+            }
+          });
+      },
+
+      error: (connectionError: any) => {
+
+        this.isLoadingSuppliers = false;
+
+        this.AllSupplierList = [];
+        this.SupplierList = [];
+
+        console.error(
+          'Connection validation failed:',
+          connectionError
+        );
+
+        this.toastr.error(
+          'Unable to connect to the project database.'
+        );
+      }
+    });
+}
       
-      let result: SupplierList[] = [];
-      for(let a of this.SupplierList){
-        if(a.supName.toLowerCase().indexOf(txt.value.toLowerCase()) > -1){
-          result.push(a)
-        }
+
+private buildSelectedSupplierEmailControls(
+  packageSupplier:
+    SupplierPackagesList = null
+): void {
+
+  const supplierEmails =
+    this.supplierEmailControls;
+
+  supplierEmails.clear();
+
+  const sourceList: SupplierList[] =
+    this.AllSupplierList.length > 0
+      ? this.AllSupplierList
+      : this.SupplierList;
+
+  this.selectedSuppliers.forEach(
+    (supplierId: number) => {
+
+      const supplier =
+        sourceList.find(
+          (item: SupplierList) =>
+            Number(item.supID) ===
+            Number(supplierId)
+        );
+
+      let supplierName = '';
+      let supplierEmail = '';
+
+      if (supplier) {
+        supplierName =
+          supplier.supName || '';
+
+        supplierEmail =
+          supplier.supEmail || '';
       }
-      if (txt.value.toLowerCase()=="")
-      {
-        this.GetSupplierList_NotAssignetPackage(this.PackageId);
+
+      /*
+       * Fallback for Add Revision when the supplier
+       * is no longer listed among unassigned suppliers.
+       */
+      if (
+        !supplier &&
+        packageSupplier &&
+        Number(packageSupplier.psSuppId) ===
+        Number(supplierId)
+      ) {
+        supplierName =
+          packageSupplier.psSupName || '';
+
+        supplierEmail =
+          packageSupplier.psSupEmail || '';
       }
-      else
-        this.SupplierList = result;
+
+      supplierEmails.push(
+        this.formBuilder.group({
+          supplierId: [
+            Number(supplierId),
+            Validators.required
+          ],
+
+          supplierName: [
+            supplierName
+          ],
+
+          emailTo: [
+            supplierEmail.trim(),
+            [
+              emailListValidator(true)
+            ]
+          ]
+        })
+      );
     }
+  );
+}
+
+
+filterSuppliers(
+  event: KeyboardEvent
+): void {
+
+  const input =
+    event.target as HTMLInputElement;
+
+  const searchText =
+    (input.value || '')
+      .trim()
+      .toLowerCase();
+
+  if (!searchText) {
+
+    this.SupplierList =
+      this.AllSupplierList.map(
+        (supplier: SupplierList) => ({
+          ...supplier
+        })
+      );
+
+    return;
+  }
+
+  this.SupplierList =
+    this.AllSupplierList.filter(
+      (supplier: SupplierList) => {
+
+        const supplierId =
+          String(
+            supplier.supID || ''
+          ).toLowerCase();
+
+        const supplierName =
+          (supplier.supName || '')
+            .toLowerCase();
+
+        const supplierEmail =
+          (supplier.supEmail || '')
+            .toLowerCase();
+
+        return (
+          supplierId.indexOf(searchText) >= 0 ||
+          supplierName.indexOf(searchText) >= 0 ||
+          supplierEmail.indexOf(searchText) >= 0
+        );
+      }
+    );
+}
 //AH24012024
 
 openAcceptanceCommentsModal(revisionId : any, prRevNo : any, psSupName : any)
@@ -1295,17 +2206,15 @@ openAcceptanceCommentsModal(revisionId : any, prRevNo : any, psSupName : any)
     this.getAcceptanceComment(revisionId); 
 }
 
-  getAcceptanceComment(revId : any)
-  {
-    let CostConn=this.user.usrLoggedConnString;
+  getAcceptanceComment(revId: any) {
+    let CostConn = this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    
-      this.packageSupplierService.getRevisionAcceptance(revId,CostConn).subscribe(data=>{
-        if(data)
-        {
-            this.acceptanceComments = data;
-        }
-      });
+
+    this.packageSupplierService.getRevisionAcceptance(revId, CostConn).subscribe(data => {
+      if (data) {
+        this.acceptanceComments = data;
+      }
+    });
   }
 
   closeAcceptanceComments()
@@ -1313,6 +2222,30 @@ openAcceptanceCommentsModal(revisionId : any, prRevNo : any, psSupName : any)
     $('#acceptanceCommentsModal').modal('hide');
     this.acceptanceComments = [];
   }
+
+  onPortalStatusChange(): void {
+    /*
+     * Selections from the previous group must not remain
+     * selected after switching portal status.
+     */
+    this.selectedSuppliers = [];
+
+    this.SupplierInput = [];
+
+    this.SupplierInputList = [];
+
+    this.AllSupplierList = [];
+
+    this.SupplierList = [];
+
+    /*
+     * Reload the dropdown using the selected portal group.
+     */
+    this.GetSupplierList_NotAssignetPackage(
+      this.PackageId
+    );
+  }
+
 }
 
 

@@ -108,7 +108,7 @@ export class PackageComparisonNovoComponent implements OnInit {
   comparisonList: GroupingBoq[] = [];
   groupingBoqGroupList: GroupingBoqGroup[] = [];
   fieldTypes = FieldType;
-  selectedResources: number[] = [];
+  selectedResources: string[] = [];
   selectedBoqItems: string[] = [];
   selectedGroups: number[] = [];
   columns: string[] = ['Resource', 'Unit', 'Qty', 'U. price', 'T. Price'];
@@ -479,197 +479,558 @@ export class PackageComparisonNovoComponent implements OnInit {
     $('#assignPackageModal').modal('hide');
   }
 
-  AssignPackageSuppliers() {
-    let CostConn = this.user.usrLoggedConnString;
-    this.loginService.CheckConnection(CostConn).subscribe((data) => {});
+  
+AssignPackageSuppliers(): void {
 
-    if (!this.byBoq && !this.byGroup) {
-      let ressourceItems: ressourceItem[] = [];
-      //AH042024
-      this.CurrentLevelList.forEach((clevel) => {
-        clevel.groupingLevels.forEach((level) => {
-          level.items.forEach((boq: GroupingBoq, i: any) => {
-            // this.comparisonList.forEach((boq : GroupingBoq, i : any)=>{
-            //AH042024
-            boq.groupingResources.forEach((resource) => {
-              if (resource.isChecked) {
-                ressourceItems.push({ resId: resource.boqSeq });
-              }
-            });
-          });
-        });
-      });
+  if (this.isAssigningSupplierList) {
+    return;
+  }
 
-      this.supplierPercent = [];
-      let total = 0;
-      for (let index = 0; index < this.SupplierPackagesList.length; index++) {
-        var input = document.getElementById(
-          'valueInput' + index
-        ) as HTMLInputElement;
-        this.supplierPercent.push({
-          supID: this.SupplierPackagesList[index].psSuppId,
-          percent: Number(input.value),
-        });
-        total += Number(input.value);
-      }
+  const CostConn = this.user?.usrLoggedConnString || '';
 
-      if (total != 100) {
-        this.toastr.error('Total Inputs Should be equal to 100');
-        this.supplierPercent = [];
-      } else {
-        let assignSuppliertRes: AssignSuppliertRes = {
-          supplierPercentList: this.supplierPercent,
-          supplierResItemList: ressourceItems,
-        };
-        this.isAssigningSupplierList = true;
-        this.packageComparisonService
-          .AssignSupplierListRessourceList(
-            this.packageId,
-            true,
-            assignSuppliertRes,
-            CostConn
-          )
-          .subscribe((data) => {
-            this.isAssigningSupplierList = false;
-            if (data) {
-              this.supplierPercent = [];
-              this.toastr.success('Assigned Successfully');
-              $('#assignPackageModal').modal('hide');
+  if (!CostConn) {
+    this.toastr.error('Project database connection is not available.');
+    return;
+  }
 
-              let checkAll = document.getElementById(
-                'selectAllResourcesByItem'
-              ) as HTMLInputElement;
-              checkAll.checked = false;
-              this.onSearch();
-              this.selectedResources = [];
-            }
-          });
-      }
-    } else if (this.byBoq && !this.byGroup) {
-      let boqItems: boqItem[] = [];
+  if ( !this.SupplierPackagesList || this.SupplierPackagesList.length === 0 ) 
+  {
+    this.toastr.error('No suppliers are available for assignment.');
+    return;
+  }
 
-      //AH042024
-      this.CurrentLevelList.forEach((cLevel) => {
-        cLevel.groupingLevels.forEach((level) => {
-          level.items.forEach((boq: GroupingBoq, i: any) => {
-            // this.comparisonList.forEach((boq : GroupingBoq, i : any)=>{
-            //AH042024
-            if (boq.isChecked) {
-              boqItems.push({
-                boqItemID: boq.itemO,
-                isNewItem: boq.isAlternative,
-                isAlternative: boq.isAlternative,
+  /*
+   * Build supplier percentages safely.
+   */
+  const supplierPercentages: SupplierPercent[] = [];
+
+  let totalPercentage = 0;
+
+  for (
+    let index = 0;
+    index < this.SupplierPackagesList.length;
+    index++
+  ) {
+    const supplier =
+      this.SupplierPackagesList[index];
+
+    const percentageInput =
+      document.getElementById(
+        'valueInput' + index
+      ) as HTMLInputElement | null;
+
+    if (!percentageInput) {
+      this.toastr.error(
+        'Percentage input was not found for supplier: ' +
+        (
+          supplier.psSupName ||
+          supplier.psSuppId
+        )
+      );
+
+      return;
+    }
+
+    const percentage =
+      Number(
+        percentageInput.value || 0
+      );
+
+    if (
+      isNaN(percentage) ||
+      percentage < 0 ||
+      percentage > 100
+    ) {
+      this.toastr.error(
+        'Invalid percentage for supplier: ' +
+        (
+          supplier.psSupName ||
+          supplier.psSuppId
+        )
+      );
+
+      return;
+    }
+
+    supplierPercentages.push({
+      supID:
+        supplier.psSuppId,
+
+      percent:
+        percentage
+    });
+
+    totalPercentage +=
+      percentage;
+  }
+
+  totalPercentage =
+    Math.round(
+      totalPercentage * 100
+    ) / 100;
+
+  if (totalPercentage !== 100) {
+    this.toastr.error(
+      'Total supplier percentages must equal 100%. ' +
+      'Current total: ' +
+      totalPercentage +
+      '%'
+    );
+
+    return;
+  }
+
+  /*
+   * Keep all supplier percentages, including zero.
+   * The existing API may expect the complete supplier list.
+   */
+  this.supplierPercent = supplierPercentages;
+
+  /*
+   * RESOURCE ASSIGNMENT
+   */
+  if ( !this.byBoq && !this.byGroup ) 
+  {
+    const resourceIds: string[] = [];
+
+    /*
+     * Do not use level.items here.
+     *
+     * GetComparisonSheet returns:
+     *
+     * C
+     *   -> groupingLevels
+     *       -> groupingResources
+     */
+    (this.CurrentLevelList || [])
+      .forEach(currentLevel => {
+
+        (currentLevel?.groupingLevels || [])
+          .forEach(level => {
+
+            (level?.groupingResources || [])
+              .forEach(resource => {
+
+                if (
+                  !resource ||
+                  !resource.isChecked
+                ) {
+                  return;
+                }
+
+                const resourceId =
+                  String(
+                    resource.resourceSeq || ''
+                  ).trim();
+
+                if (!resourceId) {
+                  console.error(
+                    'Selected resource has no resourceSeq:',
+                    resource
+                  );
+
+                  return;
+                }
+
+                if (
+                  resourceIds.indexOf(
+                    resourceId
+                  ) === -1
+                ) {
+                  resourceIds.push(
+                    resourceId
+                  );
+                }
               });
-            }
           });
-        });
       });
 
-      this.supplierPercent = [];
-      let total = 0;
-      for (let index = 0; index < this.SupplierPackagesList.length; index++) {
-        var input = document.getElementById(
-          'valueInput' + index
-        ) as HTMLInputElement;
-        this.supplierPercent.push({
-          supID: this.SupplierPackagesList[index].psSuppId,
-          percent: Number(input.value),
-        });
-        total += Number(input.value);
-      }
+    /*
+     * Keep compatibility with selectedResources,
+     * but only add valid string IDs.
+     */
+    (this.selectedResources || [])
+      .forEach(resourceIdValue => {
 
-      if (total != 100) {
-        this.toastr.error('Total Inputs Should be equal to 100');
-        this.supplierPercent = [];
-      } else {
-        let assignSuppliertBoq: AssignSuppliertBoq = {
-          supplierPercentList: this.supplierPercent,
-          supplierBoqItemList: boqItems,
-        };
-        this.isAssigningSupplierList = true;
-        this.packageComparisonService
-          .AssignSupplierListBoqList(
-            this.packageId,
-            true,
-            assignSuppliertBoq,
-            CostConn
-          )
-          .subscribe((data) => {
-            this.isAssigningSupplierList = false;
-            if (data) {
-              this.supplierPercent = [];
-              this.toastr.success('Assigned Successfully');
-              $('#assignPackageModal').modal('hide');
+        const resourceId =
+          String(
+            resourceIdValue || ''
+          ).trim();
 
-              let checkAll = document.getElementById(
-                'selectAllBoqItem'
-              ) as HTMLInputElement;
-              checkAll.checked = false;
-              this.onSearch();
-              this.selectedBoqItems = [];
-            }
-          });
-      }
-    } else if (this.byGroup) {
-      let groups: Group[] = [];
-
-      this.groupingBoqGroupList.forEach((group: GroupingBoqGroup, i: any) => {
-        if (group.isChecked) {
-          groups.push({ id: group.id });
+        if (
+          resourceId &&
+          resourceIds.indexOf(
+            resourceId
+          ) === -1
+        ) {
+          resourceIds.push(
+            resourceId
+          );
         }
       });
 
-      this.supplierPercent = [];
-      let total = 0;
-      for (let index = 0; index < this.SupplierPackagesList.length; index++) {
-        var input = document.getElementById(
-          'valueInput' + index
-        ) as HTMLInputElement;
-        this.supplierPercent.push({
-          supID: this.SupplierPackagesList[index].psSuppId,
-          percent: Number(input.value),
-        });
-        total += Number(input.value);
-      }
+    if (resourceIds.length === 0) {
+      this.toastr.warning(
+        'You must select at least one resource.'
+      );
 
-      if (total != 100) {
-        this.toastr.error('Total Inputs Should be equal to 100');
-        this.supplierPercent = [];
-      } else {
-        let assignSupplierGroup: AssignSupplierGroup = {
-          supplierPercentList: this.supplierPercent,
-          supplierGroupList: groups,
-        };
-        this.isAssigningSupplierList = true;
-        this.packageComparisonService
-          .AssignSupplierListGroupList(
-            this.packageId,
-            this.byBoq,
-            true,
-            assignSupplierGroup,
-            CostConn
-          )
-          .subscribe((data) => {
-            this.isAssigningSupplierList = false;
-            if (data) {
-              this.supplierPercent = [];
-              this.toastr.success('Assigned Successfully');
-              $('#assignPackageModal').modal('hide');
-
-              let checkAll = document.getElementById(
-                'selectAllGroups'
-              ) as HTMLInputElement;
-              checkAll.checked = false;
-              this.onSearch();
-              this.getByGroup();
-              this.selectedGroups = [];
-            }
-          });
-      }
+      return;
     }
+
+    const resourceItems:
+      ressourceItem[] =
+        resourceIds.map(
+          resourceId => ({
+            resId:
+              resourceId
+          })
+        );
+
+    const request:
+      AssignSuppliertRes = {
+        supplierPercentList:          supplierPercentages,
+        supplierResItemList:          resourceItems
+      };
+
+    console.log(      'Assign resource request:',      request    );
+
+    this.isAssigningSupplierList =      true;
+
+    this.packageComparisonService.AssignSupplierListRessourceList(this.packageId, true, request, CostConn)
+      .subscribe({
+        next: (data: any) => {
+
+          this.isAssigningSupplierList = false;
+
+          if (data) {
+            this.supplierPercent = [];
+            this.selectedResources = [];
+
+            const checkAllResources =
+              document.getElementById(
+                'selectAllResources'
+              ) as HTMLInputElement | null;
+
+            if (checkAllResources) {
+              checkAllResources.checked =
+                false;
+            }
+
+            const checkAllByItem =
+              document.getElementById(
+                'selectAllResourcesByItem'
+              ) as HTMLInputElement | null;
+
+            if (checkAllByItem) {
+              checkAllByItem.checked =
+                false;
+            }
+
+            this.onSearch();
+            
+            this.toastr.success('Resources assigned successfully.');
+            $('#assignPackageModal').modal('hide');
+
+          } 
+          else 
+          {
+            this.toastr.error('Resource assignment failed.');
+          }
+        },
+
+        error: (error: any) => {
+
+          this.isAssigningSupplierList = false;
+
+          console.error(
+            'Resource assignment API error:',
+            error
+          );
+
+          this.toastr.error(
+            error?.error?.message ||
+            error?.message ||
+            'Resource assignment failed.'
+          );
+        }
+      });
+
+    return;
   }
 
-  OpenAssignModal() {
+  /*
+   * BOQ ASSIGNMENT
+   */
+  if (this.byBoq && !this.byGroup) 
+  {
+    const selectedBoqIds =
+      Array.from(
+        new Set(
+          (this.selectedBoqItems || [])
+            .map(item =>
+              String(item || '').trim()
+            )
+            .filter(item =>
+              item.length > 0
+            )
+        )
+      );
+
+    if (selectedBoqIds.length === 0) {
+      this.toastr.warning(
+        'You must select at least one BOQ item.'
+      );
+
+      return;
+    }
+
+    const boqItems:
+      boqItem[] = [];
+
+    selectedBoqIds.forEach(
+      itemNumber => {
+
+        let matchingItem:
+          GroupingBoq | null =
+            null;
+
+        (this.CurrentLevelList || [])
+          .forEach(currentLevel => {
+
+            (currentLevel?.groupingLevels || [])
+              .forEach(level => {
+
+                const currentItem =
+                  (level?.items || [])
+                    .find(item =>
+                      item?.itemO ===
+                      itemNumber
+                    );
+
+                if (currentItem) {
+                  matchingItem =
+                    currentItem;
+                }
+              });
+          });
+
+        boqItems.push({
+          boqItemID:
+            itemNumber,
+
+          isNewItem:
+            matchingItem?.isNewItem ||
+            false,
+
+          isAlternative:
+            matchingItem?.isAlternative ||
+            false
+        });
+      }
+    );
+
+    const request:
+      AssignSuppliertBoq = {
+
+        supplierPercentList:
+          supplierPercentages,
+
+        supplierBoqItemList:
+          boqItems
+      };
+
+    this.isAssigningSupplierList =
+      true;
+
+    this.packageComparisonService
+      .AssignSupplierListBoqList(
+        this.packageId,
+        true,
+        request,
+        CostConn
+      )
+      .subscribe({
+        next: (data: any) => {
+
+          this.isAssigningSupplierList =
+            false;
+
+          if (data) {
+            this.supplierPercent = [];
+            this.selectedBoqItems = [];
+
+            this.toastr.success(
+              'BOQ items assigned successfully.'
+            );
+
+            $('#assignPackageModal')
+              .modal('hide');
+
+            const checkAll =
+              document.getElementById(
+                'selectAllBoqItem'
+              ) as HTMLInputElement | null;
+
+            if (checkAll) {
+              checkAll.checked =
+                false;
+            }
+
+            this.onSearch();
+          } else {
+            this.toastr.error(
+              'BOQ assignment failed.'
+            );
+          }
+        },
+
+        error: (error: any) => {
+
+          this.isAssigningSupplierList =
+            false;
+
+          console.error(
+            'BOQ assignment API error:',
+            error
+          );
+
+          this.toastr.error(
+            error?.error?.message ||
+            error?.message ||
+            'BOQ assignment failed.'
+          );
+        }
+      });
+
+    return;
+  }
+
+  /*
+   * GROUP ASSIGNMENT
+   */
+  if (this.byGroup) {
+    const groupIds =
+      Array.from(
+        new Set(
+          (
+            this.groupingBoqGroupList ||
+            []
+          )
+            .filter(group =>
+              group?.isChecked
+            )
+            .map(group =>
+              Number(group.id)
+            )
+            .filter(groupId =>
+              !isNaN(groupId) &&
+              groupId > 0
+            )
+        )
+      );
+
+    if (groupIds.length === 0) {
+      this.toastr.warning(
+        'You must select at least one group.'
+      );
+
+      return;
+    }
+
+    const groups:
+      Group[] =
+        groupIds.map(
+          groupId => ({
+            id:
+              groupId
+          })
+        );
+
+    const request:
+      AssignSupplierGroup = {
+
+        supplierPercentList:
+          supplierPercentages,
+
+        supplierGroupList:
+          groups
+      };
+
+    this.isAssigningSupplierList =
+      true;
+
+    this.packageComparisonService
+      .AssignSupplierListGroupList(
+        this.packageId,
+        this.byBoq,
+        true,
+        request,
+        CostConn
+      )
+      .subscribe({
+        next: (data: any) => {
+
+          this.isAssigningSupplierList =
+            false;
+
+          if (data) {
+            this.supplierPercent = [];
+            this.selectedGroups = [];
+
+            this.toastr.success(
+              'Groups assigned successfully.'
+            );
+
+            $('#assignPackageModal')
+              .modal('hide');
+
+            const checkAll =
+              document.getElementById(
+                'selectAllGroups'
+              ) as HTMLInputElement | null;
+
+            if (checkAll) {
+              checkAll.checked =
+                false;
+            }
+
+            this.onSearch();
+            this.getByGroup();
+          } else {
+            this.toastr.error(
+              'Group assignment failed.'
+            );
+          }
+        },
+
+        error: (error: any) => {
+
+          this.isAssigningSupplierList =
+            false;
+
+          console.error(
+            'Group assignment API error:',
+            error
+          );
+
+          this.toastr.error(
+            error?.error?.message ||
+            error?.message ||
+            'Group assignment failed.'
+          );
+        }
+      });
+
+    return;
+  }
+
+  this.toastr.error(
+    'Unsupported assignment mode.'
+  );
+}
+
+
+OpenAssignModal() {
     //console.log(this.SupplierPackagesList);
     for (let index = 0; index < this.SupplierPackagesList.length; index++) {
       var input = document.getElementById(
@@ -1932,9 +2293,9 @@ export class PackageComparisonNovoComponent implements OnInit {
       item.groupingResources.forEach((resource, index) => {
         resource.isChecked = checkbox.checked;
         if (checkbox.checked) {
-          this.selectedResources.push(resource.boqSeq);
+          this.selectedResources.push(resource.resourceSeq);
         } else {
-          let index = this.selectedResources.indexOf(resource.boqSeq);
+          let index = this.selectedResources.indexOf(resource.resourceSeq);
           this.selectedResources.splice(index, 1);
         }
       });
@@ -1943,28 +2304,54 @@ export class PackageComparisonNovoComponent implements OnInit {
     //console.log(this.selectedResources);
   }
 
-  selectAllResources(target: any) {
-    this.selectedResources = [];
-    let checkbox = target as HTMLInputElement;
-    //AH09042024
-    // this.comparisonList.forEach(item=>{
-    this.CurrentLevelList.forEach((cLevel) => {
-      cLevel.groupingLevels.forEach((level) => {
-        level.groupingResources.forEach((resource) => {
-          //AH09042024
-          resource.isChecked = checkbox.checked;
-          if (checkbox.checked) {
-            this.selectedResources.push(resource.boqSeq);
-            //this.show = true;//AH09042024
-          } else {
-            let index = this.selectedResources.indexOf(resource.boqSeq);
-            this.selectedResources.splice(index, 1);
-            //this.show = false;//AH09042024
-          }
+selectAllResources(
+  target: any
+): void {
+
+  const checkbox =
+    target as HTMLInputElement;
+
+  this.selectedResources = [];
+
+  (this.CurrentLevelList || [])
+    .forEach(currentLevel => {
+
+      (currentLevel?.groupingLevels || [])
+        .forEach(level => {
+
+          /*
+           * Resource view stores resources directly
+           * under GroupingLevelModel.GroupingResources.
+           */
+          (level?.groupingResources || [])
+            .forEach(resource => {
+
+              if (!resource) {
+                return;
+              }
+
+              resource.isChecked =
+                checkbox.checked;
+
+              const resourceId =
+                String(
+                  resource.resourceSeq || ''
+                ).trim();
+
+              if (
+                checkbox.checked &&
+                resourceId &&
+                this.selectedResources
+                  .indexOf(resourceId) === -1
+              ) {
+                this.selectedResources.push(
+                  resourceId
+                );
+              }
+            });
         });
-      });
     });
-  }
+}
 
   selectResourcesByItem(event: any, item: GroupingBoq) {
     let allCheckbox = document.getElementById(
@@ -1975,9 +2362,9 @@ export class PackageComparisonNovoComponent implements OnInit {
     item.groupingResources.forEach((resource, index) => {
       resource.isChecked = checkbox.checked;
       if (checkbox.checked) {
-        this.selectedResources.push(resource.boqSeq);
+        this.selectedResources.push(resource.resourceSeq);
       } else {
-        let index = this.selectedResources.indexOf(resource.boqSeq);
+        let index = this.selectedResources.indexOf(resource.resourceSeq);
         this.selectedResources.splice(index, 1);
       }
     });
@@ -2011,9 +2398,9 @@ export class PackageComparisonNovoComponent implements OnInit {
     item.isChecked = allChecked;
 
     if (checkbox.checked) {
-      this.selectedResources.push(resource.boqSeq);
+      this.selectedResources.push(resource.resourceSeq);
     } else {
-      let index = this.selectedResources.indexOf(resource.boqSeq);
+      let index = this.selectedResources.indexOf(resource.resourceSeq);
       this.selectedResources.splice(index, 1);
     }
 
@@ -2031,38 +2418,88 @@ export class PackageComparisonNovoComponent implements OnInit {
     //console.log(this.selectedResources);
   }
 
-  selectResourceNeo(event: any, resource: GroupingResource) {
-    let allCheckbox = document.getElementById(
-      'selectAllResources'
-    ) as HTMLInputElement;
-    let checkbox = event.target as HTMLInputElement;
-    resource.isChecked = checkbox.checked;
-    let allChecked: boolean = true;
+  selectResourceNeo(
+  event: any,
+  resource: GroupingResource
+): void {
 
-    if (checkbox.checked) {
-      this.selectedResources.push(resource.boqSeq);
-      // this.show = true;//AH09042024
-    } else {
-      let index = this.selectedResources.indexOf(resource.boqSeq);
-      this.selectedResources.splice(index, 1);
-      //this.show = false;//AH09042024
-    }
+  const checkbox =
+    event.target as HTMLInputElement;
 
-    let everythingChecked: boolean = true;
+  resource.isChecked =
+    checkbox.checked;
 
-    this.CurrentLevelList.forEach((cLevel) => {
-      cLevel.groupingLevels.forEach((level) => {
-        level.groupingResources.forEach((resource) => {
-          if (!resource.isChecked) {
-            everythingChecked = false;
-            return;
-          }
-        });
-      });
-    });
-    //AH09042024
-    allCheckbox.checked = everythingChecked;
+  const resourceId =
+    String(
+      resource.resourceSeq || ''
+    ).trim();
+
+  if (!resourceId) {
+    console.error(
+      'Resource has no resourceSeq:',
+      resource
+    );
+
+    checkbox.checked = false;
+    resource.isChecked = false;
+
+    this.toastr.error(
+      'The selected resource has no Resource Sequence.'
+    );
+
+    return;
   }
+
+  if (checkbox.checked) {
+
+    if (
+      this.selectedResources.indexOf(
+        resourceId
+      ) === -1
+    ) {
+      this.selectedResources.push(
+        resourceId
+      );
+    }
+  } else {
+
+    this.selectedResources =
+      this.selectedResources.filter(
+        id => id !== resourceId
+      );
+  }
+
+  const allCheckbox =
+    document.getElementById(
+      'selectAllResources'
+    ) as HTMLInputElement | null;
+
+  if (allCheckbox) {
+
+    let everythingChecked =
+      true;
+
+    (this.CurrentLevelList || [])
+      .forEach(currentLevel => {
+
+        (currentLevel?.groupingLevels || [])
+          .forEach(level => {
+
+            (level?.groupingResources || [])
+              .forEach(currentResource => {
+
+                if (!currentResource?.isChecked) {
+                  everythingChecked = false;
+                }
+              });
+          });
+      });
+
+    allCheckbox.checked =
+      everythingChecked;
+  }
+}
+
 
   isAssigned(event: any) {
     return false;

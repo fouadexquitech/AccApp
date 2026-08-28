@@ -2,6 +2,7 @@ export class SupplierList {
     public supID: number = 0;
     public supName: string = null;
     public supEmail: string = null;
+    public isAccountCreated: boolean = false;
 }
 
 export class PackageDetailsModel {
@@ -19,14 +20,33 @@ export class Condition
     public ACCCondValue : string = null;
 }
 
-export class SupplierInputList
-{
-    public supplierInput : SupplierInput = null;
-    public comercialCondList : Condition[] = [];
-    public filePath : string = null;
-    public emailTemplate : string = null;
-    public technicalCondList:Condition[]=[];
+export class SupplierInputList {
+  public supplierInput: SupplierInput = null;
+
+  public supplierName: string = '';
+
+  /*
+   * One editable To email list for this supplier only.
+   */
+  public mailTo: string[] = [];
+
+  public comercialCondList: Condition[] = [];
+
+  public technicalCondList: Condition[] = [];
+
+  public filePath: string = null;
+
+  public emailTemplate: string = null;
+
+  /*
+   * Optional supplier-specific CC.
+   * The shared popup CC is sent in AssignPackageTemplate.listCC.
+   */
+  public mailCC: string[] = [];
+
+  public mailAttachments?: string[] = [];
 }
+
 
 export class ExchangeRate {
     public curCode : string = null;
@@ -38,6 +58,7 @@ export class SupplierPackagesList {
     public psPackId: number = 0;
     public psSuppId: number = 0;
     public psSupName: string = '';
+    public psSupEmail: string = '';
     public psByBoq : number = 0;
     public tecCondSent : boolean = false;
     public revisionStatus : number = 0;
@@ -128,15 +149,26 @@ export class RevisionFieldsList
     public type? : number = null;
 }
 
-export class AssignPackageTemplate
-{
-    public supInputList : SupplierInputList[] = [];
-    public packId : number = 0;
-    public byBoq : number = 0;
-    public userName : string = null;
-    listCC : string[] = [];
-    public listAttach : string[] = [];
-    public revisionExpiryDate : Date = null;
+
+export class AssignPackageTemplate {
+  public supInputList: SupplierInputList[] = [];
+
+  public packId: number = 0;
+
+  public byBoq: number = 0;
+
+  public userName: string = null;
+
+  /*
+   * One shared CC list for all supplier emails.
+   */
+  public listCC: string[] = [];
+
+  public listAttach: string[] = [];
+
+  public revisionExpiryDate: Date = null;
 }
+
+
 
 

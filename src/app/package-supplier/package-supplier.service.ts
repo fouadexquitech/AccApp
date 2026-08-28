@@ -5,7 +5,8 @@ import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { SearchInput } from '../assign-package/assign-package.model';
 import { AccConditions, TechConditions, TechCondModel } from '../package-comparison/package-comparison.model';
-import { AssignPackageTemplate, SupplierInput, SupplierInputList } from './package-supplier.model';
+import { AssignPackageTemplate, SupplierList} from './package-supplier.model';
+
 
 @Injectable({
   providedIn: 'root'
@@ -43,18 +44,61 @@ export class PackageSupplierService {
     );
   }
 
-  AssignPackageSuppliers(assignPackageTemplate : AssignPackageTemplate, attachements : File[],CostConn: string,TSConn: string): Observable<any> {
-    const formData = new FormData();
-  
-    formData.append('assignPackageTemplate' , JSON.stringify(assignPackageTemplate));
-    attachements.forEach(file  =>{
-    formData.append(file ?.name, file  , file ?.name);
-    });
-  
-    return this.http.post(this.baseUrl + 'SupplierPackages/AssignPackageSuppliers?CostConn=' + CostConn +'&TSConn='+TSConn, formData).pipe(
-      map(res => res), catchError(this.handleError)
+
+AssignPackageSuppliers(
+  assignPackageTemplate:
+    AssignPackageTemplate,
+  attachments: File[],
+  CostConn: string,
+  TSConn: string
+): Observable<any> {
+
+  const formData =
+    new FormData();
+
+  formData.append(
+    'assignPackageTemplate',
+    JSON.stringify(
+      assignPackageTemplate
+    )
+  );
+
+  if (
+    attachments &&
+    attachments.length > 0
+  ) {
+    attachments.forEach(
+      (file: File) => {
+
+        if (file) {
+          formData.append(
+            'attachments',
+            file,
+            file.name
+          );
+        }
+      }
     );
   }
+
+  const url =
+    this.baseUrl +
+    'SupplierPackages/AssignPackageSuppliers' +
+    '?CostConn=' +
+    encodeURIComponent(CostConn) +
+    '&TSConn=' +
+    encodeURIComponent(TSConn);
+
+  return this.http
+    .post<any>(
+      url,
+      formData
+    )
+    .pipe(
+      map(res => res),
+      catchError(this.handleError)
+    );
+}
 
   GetEmailTemplate(language : string, packId :number , projName :string , revExpiryDate :string)
   {
@@ -102,9 +146,10 @@ export class PackageSupplierService {
     );
   }
 
-  validateExcelBeforeAssign(packId: number, byBoq : number,CostConn: string) : Observable<any> 
+  validateExcelBeforeAssign(packId: number, byBoq : number, withPrice:boolean , CostConn: string) : Observable<any> 
   {
-    return this.http.post(this.baseUrl + 'SupplierPackages/ValidateExcelBeforeAssign?packId=' + packId + '&byBoq=' + byBoq+ '&CostConn='+CostConn, null).pipe(
+    return this.http.post(this.baseUrl + 'SupplierPackages/ValidateExcelBeforeAssign?packId=' + packId + 
+      '&byBoq=' + byBoq+ '&withPrice=' + withPrice + '&CostConn='+CostConn, null).pipe(
       map(res => res), catchError(this.handleError)
     );
   }
@@ -249,11 +294,42 @@ export class PackageSupplierService {
   }
 
   //AH30012024
-  GetSupplierList_NotAssignetPackage(IdPkge: number,CostConn: string): Observable<any> {
-    return this.http.get(this.baseUrl + 'Supplier/GetSupplierList_NotAssignetPackage?packID=' + IdPkge+ '&CostConn='+CostConn).pipe(
-      map(res => res), catchError(this.handleError)
+GetSupplierList_NotAssignetPackage(
+  packageId: number,
+  portalStatus: number,
+  CostConn: string
+): Observable<SupplierList[]> {
+
+  const url =
+    this.baseUrl +
+    'SupplierPackages/' +
+    'GetSupplierList_NotAssignetPackage' +
+    '?packID=' +
+    encodeURIComponent(
+      String(packageId)
+    ) +
+    '&portalStatus=' +
+    encodeURIComponent(
+      String(portalStatus)
+    ) +
+    '&CostConn=' +
+    encodeURIComponent(
+      CostConn
     );
-  }
+
+  return this.http
+    .get<SupplierList[]>(url)
+    .pipe(
+      map(
+        response =>
+          response || []
+      ),
+
+      catchError(
+        this.handleError
+      )
+    );
+}
 
   getTechConditionsByPackage(packId : number,revisionId :number,CostConn: string ) : Observable<any>
   {

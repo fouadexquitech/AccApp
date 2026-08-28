@@ -38,7 +38,8 @@
               "src/styles.css",
               "node_modules/ngx-toastr/toastr.css",
               "node_modules/@costlydeveloper/ngx-awesome-popup/styles/theme.css",
-              "node_modules/sweetalert2/dist/sweetalert2.css"
+              "node_modules/sweetalert2/dist/sweetalert2.css",
+              "src/assets/css/bootstrap-icons.min.css"
             ],
             "scripts": [
               "./node_modules/jquery/dist/jquery.min.js",
@@ -61,7 +62,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "5mb"
+                  "maximumError": "15mb"
                 },
                 {
                   "type": "anyComponentStyle",
