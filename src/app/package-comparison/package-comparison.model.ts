@@ -13,6 +13,7 @@ export class PackageSuppliersPrice {
     public boqScope : number = 0;
     public resDiv : string = null;
     public resCtg : string = null;
+    public isCalculatedPrice: boolean;
 }
 
 export class FieldList {

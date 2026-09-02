@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subject } from 'rxjs';
 import { PackageList } from './package-list.model';
@@ -38,17 +38,22 @@ export class PackageListComponent implements OnInit, OnDestroy {
   isSearching : boolean = false;
 
   constructor(private assignPackageService : AssignPackageService,
-              private packageListService: PackageListService , 
-              private router: Router , 
+              private packageListService: PackageListService ,
+              private router: Router ,
+              private route: ActivatedRoute,
               private spinner: NgxSpinnerService,
               private packageSupplierService: PackageSupplierService,
-              private loginService: LoginService,) 
-              { 
+              private loginService: LoginService,)
+              {
                 this.loginService.user.subscribe(x => this.user = x);
               }
 
-  ngOnInit(): void 
+  ngOnInit(): void
   {
+    const filterId = this.route.snapshot.queryParamMap.get('filter');
+    if (filterId) {
+      (this.dtOptions as any).search = { search: filterId };
+    }
     this.GetPackageList();
   }
 

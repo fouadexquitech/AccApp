@@ -53,6 +53,7 @@ import { AssignPackageFilterComponent } from '../assign-package-filter/assign-pa
 import { FuseDrawerModule } from '../@fuse/drawer';
 import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { WbsListComponent } from './wbs-list.component';
+import { AgGridModule } from 'ag-grid-angular';
 
 @NgModule({
   declarations: [
@@ -109,7 +110,8 @@ import { WbsListComponent } from './wbs-list.component';
     MatButtonModule,
     MatIconModule,
     FuseDrawerModule,
-    InfiniteScrollModule
+    InfiniteScrollModule,
+    AgGridModule.withComponents([]),
     ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

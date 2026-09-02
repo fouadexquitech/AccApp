@@ -62,9 +62,30 @@ td {
 .tbody-wrapper {
   display: block;
   max-height: calc(100vh - 300px); /* Enables scrolling */
-  overflow-y: auto;
+  overflow-y: scroll; /* always reserve scrollbar gutter so widths match thead */
   overflow-x: hidden;
   width: 100%;
+}
+
+/* Make thead render in the same display:block context as tbody rows so their
+   column widths are calculated identically. The scrollbar is made invisible
+   (transparent colors) but still reserves the same gutter width as tbody. */
+.table-container table thead {
+  display: block;
+  width: 100%;
+  overflow-y: scroll;
+  scrollbar-color: transparent #bebebe; /* Firefox: invisible thumb, header-coloured track */
+}
+.table-container table thead::-webkit-scrollbar {
+  background-color: #bebebe; /* Chrome/Edge: track matches header background */
+}
+.table-container table thead::-webkit-scrollbar-thumb {
+  background-color: transparent; /* invisible thumb */
+}
+.table-container table thead tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 
 .table-container table tbody {
@@ -77,3 +98,117 @@ td {
   width: 100%;
   table-layout: fixed; /* Ensures alignment */
 }
+
+.calculated-supplier-price {
+  background-color: #0d6efd !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+.calculated-supplier-price:hover {
+  background-color: #0b5ed7 !important;
+}
+
+/* Calculated Final U.P. cell */
+.calculated-supplier-price {
+  background-color: #0d6efd !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+
+  /* Requested alignment */
+  text-align: right !important;
+  padding-left: 6px !important;
+
+  cursor: help;
+}
+
+/* Keep the value left aligned if an element exists inside the TD */
+.calculated-supplier-price > span,
+.calculated-supplier-price > div,
+.calculated-supplier-price > input {
+  text-align: right !important;
+  font-weight: 700 !important;
+}
+
+/* Hint displayed above the comparison */
+.comparison-price-legend {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  width: fit-content;
+  max-width: 100%;
+  margin: 5px 0;
+  padding: 5px 9px;
+
+  border: 1px solid #9ec5fe;
+  border-radius: 3px;
+  background-color: #e7f1ff;
+  color: #084298;
+
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+/* Blue sample shown in the hint */
+.calculated-price-swatch {
+  display: inline-block;
+  flex: 0 0 16px;
+
+  width: 16px;
+  height: 12px;
+
+  background-color: #0d6efd;
+  border: 1px solid #084298;
+  border-radius: 2px;
+}
+
+/* AG Grid row types */
+.row-level-header {
+  background-color: #d0d0d0 !important;
+  font-weight: 700;
+}
+.row-subtotal {
+  background-color: #dde8f0 !important;
+  font-weight: 700;
+}
+
+/* AG Grid override: tighten cell padding */
+.ag-theme-alpine .ag-cell {
+  padding-left: 4px !important;
+  padding-right: 4px !important;
+  font-size: 12px !important;
+  line-height: 20px !important;
+}
+.ag-theme-alpine .ag-header-cell {
+  font-size: 12px !important;
+  padding-left: 4px !important;
+  padding-right: 4px !important;
+  line-height: 14px !important;
+}
+.ag-theme-alpine .ag-row {
+  font-size: 12px !important;
+}
+
+/* Center all header labels (both leaf and group rows) */
+.ag-theme-alpine .ag-header-cell-label,
+.ag-theme-alpine .ag-header-group-cell-label {
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+/* Left-border separator on first column of each supplier group */
+.ag-theme-alpine .ag-header-cell.sup-group-start,
+.ag-theme-alpine .ag-cell.sup-group-start {
+  border-left: 3px solid #444 !important;
+}
+
+/* Supplier group header background colors (cycles through 8) */
+.ag-theme-alpine .ag-header-group-cell.sup-color-0 { background-color: #2E75B6 !important; color: #fff !important; }
+.ag-theme-alpine .ag-header-group-cell.sup-color-1 { background-color: #E36C09 !important; color: #fff !important; }
+.ag-theme-alpine .ag-header-group-cell.sup-color-2 { background-color: #375623 !important; color: #fff !important; }
+.ag-theme-alpine .ag-header-group-cell.sup-color-3 { background-color: #7030A0 !important; color: #fff !important; }
+.ag-theme-alpine .ag-header-group-cell.sup-color-4 { background-color: #C00000 !important; color: #fff !important; }
+.ag-theme-alpine .ag-header-group-cell.sup-color-5 { background-color: #1F7391 !important; color: #fff !important; }
+.ag-theme-alpine .ag-header-group-cell.sup-color-6 { background-color: #833C00 !important; color: #fff !important; }
+.ag-theme-alpine .ag-header-group-cell.sup-color-7 { background-color: #215868 !important; color: #fff !important; }

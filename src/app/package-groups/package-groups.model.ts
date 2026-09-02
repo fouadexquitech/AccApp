@@ -87,6 +87,7 @@ export class GroupingPackageSupplierPrice {
   public parentResourceId: number = 0;
   public isCreatedByThisSupplier: boolean = false;
   //AH02032024
+  public isCalculatedPrice: boolean = false;
 }
 //AH02032024
 export class GroupingLevelModel {

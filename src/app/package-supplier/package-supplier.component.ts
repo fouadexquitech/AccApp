@@ -8,7 +8,6 @@ import {
   AbstractControl,
   FormArray,
   FormBuilder,
-  FormControl,
   FormGroup,
   ValidationErrors,
   ValidatorFn,
@@ -22,17 +21,16 @@ import { SupplierInput, SupplierList, SupplierPackagesList, SupplierPackagesRevL
 import { PackageSupplierService } from './package-supplier.service';
 import { environment } from '../../environments/environment';
 import { ProjectCurrency,Project } from '../login/login.model';
-import { EmailTemplate, FieldType, Language } from '../_models';
+import { EmailTemplate, FieldType, User } from '../_models';
 import { ConfirmationDialogService } from '../_components/confirmation-dialog/confirmation-dialog.service';
 import { OriginalBoqModel } from '../assign-package/assign-package.model';
-import { Group, TblComCond, TechConditions, TopManagementAttachement,ConditionsReply} from '../package-comparison/package-comparison.model';
+import { TblComCond, TechConditions, TopManagementAttachement, ConditionsReply } from '../package-comparison/package-comparison.model';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { ComparisonPackageGroup } from '../package-groups/package-groups.model';
 import { PackageGroupsService } from '../package-groups/package-groups.service';
 import { LoginService } from '../login/login.service';
 // AH052024
 import { finalize } from 'rxjs/operators';
-import { User } from '../_models';
 // AH052024
 
 interface SelectedSupplierEmail {
@@ -101,16 +99,36 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
   PackageId: number = 0;
   PackageName = "";
   FilePath = "";
-SupplierList: SupplierList[] = [];
-AllSupplierList: SupplierList[] = [];
-/*
- * 1 = Suppliers with portal account
- * 0 = Suppliers without portal account
- *
- * Default remains 1 to preserve the existing behavior.
- */
-selectedPortalStatus: number = 1;
-isLoadingSuppliers: boolean = false;
+
+  /*
+   * Supplier group:
+   * null = no group selected
+   * 1 = With Portal Account
+   * 0 = Without Portal Account
+   */
+  selectedPortalStatus: number | null = null;
+
+  /*
+   * Assignment option:
+   * null = no option selected
+   * 1 = By BOQ Item
+   * 0 = By Resources
+   */
+  assignmentOption: number | null = null;
+  assignOptionSubmitted: boolean = false;
+
+  isRevisionMode: boolean = false;
+  isLoadingSuppliers: boolean = false;
+  isPreparingRfqAttachment: boolean = false;
+  generatedRfqAttachment: string = '';
+  generatedRfqAttachmentName: string = '';
+  includeRfqAttachment: boolean = true;
+
+  /* Complete supplier list displayed by the dropdown. */
+  SupplierList: SupplierList[] = [];
+
+  /* Unfiltered source list used by supplier search and reset. */
+  AllSupplierList: SupplierList[] = [];
 
   selectedSuppliers: Array<number> = [];
   checkedSuppliers: Array<number> = [];
@@ -121,26 +139,26 @@ isLoadingSuppliers: boolean = false;
   RevisionDetailsBoqItems : OriginalBoqModel[] = [];
   SupplierInputList : SupplierInputList[] = [];
   CurrencyList : CurrencyList[] = [];
-  projectCurrency : ProjectCurrency;
-  project:Project;
+  projectCurrency : ProjectCurrency | null = null;
+  project: Project | null = null;
   expandedDetail: boolean = false;
   currentRowIndex: number = -1;
   currentRevRowIndex : number = -1;
   rowindex: number = -1;
-  selectedFile: File = null;
-  selectedTechnicalCondFile : File = null;
-  selectedCommercialCondFile : File = null;
+  selectedFile: File | null = null;
+  selectedTechnicalCondFile : File | null = null;
+  selectedCommercialCondFile : File | null = null;
   selectedPsId: number = 0;
   selectedRevisionId: number = 0;
   selectedCurrencyId : number = 0;
   public isAssigning : boolean = false;
   public addingRevision : boolean = false;
   public isValidatingExcel : boolean = false;
-  selectedPackageSupplier : SupplierPackagesList;
-  selectedPackageSupplierRevision : SupplierPackagesRevList;
+  selectedPackageSupplier : SupplierPackagesList | null = null;
+  selectedPackageSupplierRevision : SupplierPackagesRevList | null = null;
   exchangeRate : number = 1;
   discount : number = 0;
-  exchangeRates : ExchangeRate[];
+  exchangeRates : ExchangeRate[] = [];
   selectedLanguage : string = '';
   selectedEmailTemplate : EmailTemplate | null;
   lstEmailTemplate : EmailTemplate[] = [];
@@ -152,7 +170,7 @@ isLoadingSuppliers: boolean = false;
   addedTechConditions : TechConditions[] = [];
   groups : ComparisonPackageGroup[] = [];
   formEmailSubmitted = false;
-  assignByBoqOnly : string;
+  
   fieldTypes : any[] = [{id : FieldType.AMOUNT_TYPE_ID, name : FieldType.AMOUNT_TYPE_NAME}, 
     {id : FieldType.PERCENTAGE_TYPE_ID, name : FieldType.PERCENTAGE_TYPE_NAME}];
   selectedSupplierName : any = null;
@@ -248,7 +266,8 @@ constructor(
 
 
 private createEmailTemplateForm(
-  emailCc: string = ''
+  emailCc: string = '',
+  requireEmailContent: boolean = true
 ): FormGroup {
 
   return this.formBuilder.group({
@@ -269,12 +288,12 @@ private createEmailTemplateForm(
 
     language: [
       '',
-      Validators.required
+      requireEmailContent ? Validators.required : []
     ],
 
     template: [
       '',
-      Validators.required
+      requireEmailContent ? Validators.required : []
     ],
 
     revisionExpDate: [
@@ -568,7 +587,7 @@ onSupplierSelectionChange(): void {
     this.revisionFieldsList = [];
     this.selectedSupplierName = null;
     this.selectedRevisionNb = null;
-    this.listCC=null;
+    this.listCC = [];
   }
 
   openFieldsListModal(revisionId : any, prRevNo : any, psSupName : any)
@@ -609,47 +628,64 @@ onSupplierSelectionChange(): void {
     });
 }
 
-  ngOnDestroy() {
-    this.params.unsubscribe();
+  ngOnDestroy(): void {
+    if (this.params) {
+      this.params.unsubscribe();
+    }
   }
 
   ngOnInit(): void {
-      this.params = this.route.params.subscribe(params => {
-      this.PackageId = Number(params['packageId']);
-      
-      localStorage.setItem('assignByBoqOnly', '1');
+    /* Always start both mandatory selections blank. */
+    this.selectedPortalStatus = null;
+    this.assignmentOption = null;
+    this.assignOptionSubmitted = false;
+    this.selectedSuppliers = [];
+    this.SupplierList = [];
+    this.AllSupplierList = [];
+    this.generatedRfqAttachment = '';
+    this.generatedRfqAttachmentName = '';
+    this.includeRfqAttachment = true;
+    localStorage.removeItem('assignByBoqOnly');
 
-      // if(localStorage.getItem('assignByBoqOnly') == null)
-      // {
-      //   //AH022025
-      //   // localStorage.setItem('assignByBoqOnly', '0');
-      //   localStorage.setItem('assignByBoqOnly', '1');
-      //   ///AH022025
-      // }
-   
-      if (this.PackageId != null && this.PackageId != 0) {
-        this.GetPackageById(Number(this.PackageId));
+    this.params = this.route.params.subscribe(params => {
+      this.PackageId = Number(params['packageId']);
+
+      if (this.PackageId > 0) {
+        this.GetPackageById(this.PackageId);
+        this.GetSupplierPackagesList();
       }
 
-      //AH30012023
-      // this.GetSupplierList(Number(this.PackageId));
-      this.GetSupplierList_NotAssignetPackage(Number(this.PackageId));
-      //AH30012023
-      this.GetSupplierPackagesList();
-      this.assignByBoqOnly = localStorage.getItem('assignByBoqOnly');
-      this.projectCurrency = JSON.parse(localStorage.getItem("currency")) as ProjectCurrency;
-      this.project = JSON.parse(localStorage.getItem("project")) as Project;
-   });
+      const currencyValue = localStorage.getItem('currency');
+      const projectValue = localStorage.getItem('project');
+
+      this.projectCurrency = currencyValue
+        ? JSON.parse(currencyValue) as ProjectCurrency
+        : null;
+
+      this.project = projectValue
+        ? JSON.parse(projectValue) as Project
+        : null;
+    });
   }
 
-  flexSwitchCheckDefaultChange(event : any)
-  {
-      let checkbox = event.target as HTMLInputElement;
-      if(checkbox.type == 'checkbox')
-      {
-          let val = checkbox.checked? '1' : '0';
-          localStorage.setItem('assignByBoqOnly', val)
-      }
+  onAssignmentOptionChange(): void {
+    this.assignOptionSubmitted = false;
+
+    if (this.assignmentOption !== 0 && this.assignmentOption !== 1) {
+      this.assignmentOption = null;
+      localStorage.removeItem('assignByBoqOnly');
+      return;
+    }
+
+    localStorage.setItem(
+      'assignByBoqOnly',
+      String(this.assignmentOption)
+    );
+
+    /* Never reuse an RFQ created for another assignment mode. */
+    this.generatedRfqAttachment = '';
+    this.generatedRfqAttachmentName = '';
+    this.includeRfqAttachment = true;
   }
 
   GetPackageById(IdPkge: number) {
@@ -732,10 +768,134 @@ onSupplierSelectionChange(): void {
   }
 
 
+openAssignSupplierEmail(): void {
+  this.assignOptionSubmitted = true;
+
+  if (this.selectedPortalStatus !== 0 && this.selectedPortalStatus !== 1) {
+    this.toastr.error('Please select a supplier group.');
+    return;
+  }
+
+  if (this.assignmentOption !== 0 && this.assignmentOption !== 1) {
+    this.toastr.error('Please select By BOQ Item or By Resources.');
+    return;
+  }
+
+  if (!this.selectedSuppliers || this.selectedSuppliers.length === 0) {
+    this.toastr.error('Select at least one supplier.');
+    return;
+  }
+
+  if (this.selectedPortalStatus === 1 || this.selectedPortalStatus === 0) {
+    this.preparePortalRfqAttachmentAndOpenModal();
+    return;
+  }
+
+  this.generatedRfqAttachment = '';
+  this.generatedRfqAttachmentName = '';
+  this.includeRfqAttachment = false;
+  this.OpenEmailTemplateModal(0, 0, null, -1);
+}
+
+private preparePortalRfqAttachmentAndOpenModal(): void {
+  if (this.isPreparingRfqAttachment) {
+    return;
+  }
+
+  if (this.assignmentOption !== 0 && this.assignmentOption !== 1) {
+    this.toastr.error('Please select By BOQ Item or By Resources.');
+    return;
+  }
+
+  const CostConn = this.user?.usrLoggedConnString || '';
+
+  if (!CostConn) {
+    this.toastr.error('Project database connection is not available.');
+    return;
+  }
+
+  this.isPreparingRfqAttachment = true;
+  this.generatedRfqAttachment = '';
+  this.generatedRfqAttachmentName = '';
+  this.includeRfqAttachment = true;
+
+  this.packageSupplierService
+    .validateExcelBeforeAssign(
+      this.PackageId,
+      this.assignmentOption,
+      false,
+      CostConn
+    )
+    .pipe(
+      finalize(() => {
+        this.isPreparingRfqAttachment = false;
+        this.changeDetectorRef.detectChanges();
+      })
+    )
+    .subscribe({
+      next: (data: any) => {
+        const generatedPath = String(data || '').trim();
+
+        if (!generatedPath) {
+          this.toastr.error('RFQ Excel was not generated.');
+          return;
+        }
+
+        this.generatedRfqAttachment = generatedPath;
+        this.generatedRfqAttachmentName =
+          generatedPath.split(/[\\/]/).pop() || generatedPath;
+
+        this.OpenEmailTemplateModal(0, 0, null, -1);
+      },
+      error: (error: any) => {
+        console.error('RFQ Excel generation failed:', error);
+        this.toastr.error(
+          error?.error?.message ||
+          error?.message ||
+          'RFQ Excel generation failed.'
+        );
+      }
+    });
+}
+
+downloadGeneratedRfq(): void {
+  if (!this.generatedRfqAttachment) {
+    this.toastr.error('RFQ attachment is not available.');
+    return;
+  }
+
+  const downloadUrl =
+    environment.baseApiUrl +
+    'api/SupplierPackages/DownloadFile?filename=' +
+    encodeURIComponent(this.generatedRfqAttachment);
+
+  const anchor = document.createElement('a');
+  anchor.href = downloadUrl;
+  anchor.target = '_blank';
+  anchor.rel = 'noopener';
+  anchor.style.display = 'none';
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+}
+
+removeGeneratedRfq(): void {
+  if (this.selectedPortalStatus === 0) {
+    this.toastr.warning(
+      'The RFQ attachment is mandatory for suppliers without a portal account.'
+    );
+    return;
+  }
+
+  this.includeRfqAttachment = false;
+  this.generatedRfqAttachment = '';
+  this.generatedRfqAttachmentName = '';
+}
+
 OpenEmailTemplateModal(
   supId: number,
   psId: number,
-  packageSupplier: SupplierPackagesList,
+  packageSupplier: SupplierPackagesList | null,
   index: number
 ): void {
 
@@ -787,6 +947,8 @@ OpenEmailTemplateModal(
   this.rowindex =
     index;
 
+  this.isRevisionMode = index >= 0;
+
   const defaultCc =
     this.user &&
     this.user.usrEmail
@@ -795,7 +957,8 @@ OpenEmailTemplateModal(
 
   this.formEmailTemplate =
     this.createEmailTemplateForm(
-      defaultCc
+      defaultCc,
+      !this.isRevisionMode
     );
 
   /*
@@ -820,44 +983,46 @@ OpenEmailTemplateModal(
     );
   }
 
-  this.GetEmailTemplateLanguageList();
+  if (!this.isRevisionMode) {
+    this.GetEmailTemplateLanguageList();
 
-  const costDB =
-    this.user.usrLoggedCostDB;
+    const costDB =
+      this.user.usrLoggedCostDB;
 
-  this.packageSupplierService
-    .GetDefaultProjectEmailTemplate(
-      costDB
-    )
-    .subscribe({
-      next: (data) => {
+    this.packageSupplierService
+      .GetDefaultProjectEmailTemplate(
+        costDB
+      )
+      .subscribe({
+        next: (data) => {
 
-        this.selectedEmailTemplate =
-          data;
+          this.selectedEmailTemplate =
+            data;
 
-        this.formEmailTemplate.patchValue({
-          language:
-            this.selectedEmailTemplate
-              ?.etLang || '',
+          this.formEmailTemplate.patchValue({
+            language:
+              this.selectedEmailTemplate
+                ?.etLang || '',
 
-          template:
-            this.selectedEmailTemplate
-              ?.etContent || ''
-        });
-      },
+            template:
+              this.selectedEmailTemplate
+                ?.etContent || ''
+          });
+        },
 
-      error: (error: any) => {
+        error: (error: any) => {
 
-        console.error(
-          'Unable to load default email template:',
-          error
-        );
+          console.error(
+            'Unable to load default email template:',
+            error
+          );
 
-        this.toastr.error(
-          'Unable to load the default email template.'
-        );
-      }
-    });
+          this.toastr.error(
+            'Unable to load the default email template.'
+          );
+        }
+      });
+  }
 
   this.getComConditions(psId);
 
@@ -869,6 +1034,209 @@ OpenEmailTemplateModal(
     .modal('show');
 }
 
+openAddRevisionEmailModal(
+  packageSupplier: SupplierPackagesList,
+  index: number
+): void {
+
+  if (!packageSupplier) {
+    this.toastr.error(
+      'The selected package supplier is not available.'
+    );
+
+    return;
+  }
+
+  const supplierId =
+    Number(
+      packageSupplier.psSuppId
+    );
+
+  if (!supplierId) {
+    this.toastr.error(
+      'The supplier ID is not available.'
+    );
+
+    return;
+  }
+
+  const existingSupplier =
+    this.findSupplierById(
+      supplierId
+    );
+
+  if (
+    existingSupplier &&
+    String(
+      existingSupplier.supEmail || ''
+    ).trim()
+  ) {
+    this.OpenEmailTemplateModal(
+      supplierId,
+      packageSupplier.psId,
+      packageSupplier,
+      index
+    );
+
+    return;
+  }
+
+  const CostConn =
+    this.user
+      ?.usrLoggedConnString || '';
+
+  if (!CostConn) {
+    this.toastr.error(
+      'Project database connection is not available.'
+    );
+
+    return;
+  }
+
+  this.isLoadingSuppliers =
+    true;
+
+  this.packageSupplierService
+    .GetSupplierList(
+      this.PackageId
+    )
+    .pipe(
+      finalize(() => {
+
+        this.isLoadingSuppliers =
+          false;
+
+        this.changeDetectorRef
+          .detectChanges();
+      })
+    )
+    .subscribe({
+
+      next: (
+        data: SupplierList[]
+      ) => {
+
+        const completeSupplierList =
+          data || [];
+
+        const selectedSupplier =
+          completeSupplierList.find(
+            (
+              supplier:
+                SupplierList
+            ) =>
+              Number(
+                supplier.supID
+              ) === supplierId
+          );
+
+        if (!selectedSupplier) {
+          this.toastr.error(
+            'Supplier information could not be loaded.'
+          );
+
+          return;
+        }
+
+        this.upsertSupplierInMasterList(
+          selectedSupplier
+        );
+
+        this.OpenEmailTemplateModal(
+          supplierId,
+          packageSupplier.psId,
+          packageSupplier,
+          index
+        );
+      },
+
+      error: (
+        error: any
+      ) => {
+
+        console.error(
+          'Unable to load supplier email for Add Revision:',
+          error
+        );
+
+        this.toastr.error(
+          error?.error?.message ||
+          error?.message ||
+          'Unable to load the supplier email.'
+        );
+      }
+
+    });
+}
+
+private findSupplierById(
+  supplierId: number
+): SupplierList | undefined {
+
+  const allSuppliers =
+    [
+      ...(this.AllSupplierList || []),
+      ...(this.SupplierList || [])
+    ];
+
+  return allSuppliers.find(
+    (
+      supplier:
+        SupplierList
+    ) =>
+      Number(
+        supplier.supID
+      ) ===
+      Number(
+        supplierId
+      )
+  );
+}
+
+private upsertSupplierInMasterList(
+  supplier:
+    SupplierList
+): void {
+
+  if (!supplier) {
+    return;
+  }
+
+  const supplierId =
+    Number(
+      supplier.supID
+    );
+
+  const existingIndex =
+    this.AllSupplierList.findIndex(
+      (
+        currentSupplier:
+          SupplierList
+      ) =>
+        Number(
+          currentSupplier.supID
+        ) === supplierId
+    );
+
+  if (existingIndex >= 0) {
+
+    this.AllSupplierList[
+      existingIndex
+    ] = {
+      ...this.AllSupplierList[
+        existingIndex
+      ],
+      ...supplier
+    };
+
+  } else {
+
+    this.AllSupplierList.push({
+      ...supplier
+    });
+
+  }
+}
 
 get f(): { [key: string]: AbstractControl } {
   return this.formEmailTemplate.controls;
@@ -903,6 +1271,26 @@ getSupplierEmailGroup(
   }
 
   this.formEmailSubmitted = true;
+
+  if (
+    this.rowindex < 0 &&
+    this.assignmentOption !== 0 &&
+    this.assignmentOption !== 1
+  ) {
+    this.toastr.error('Please select By BOQ Item or By Resources.');
+    return;
+  }
+
+  if (
+    this.rowindex < 0 &&
+    this.selectedPortalStatus === 1 &&
+    (!this.includeRfqAttachment || !this.generatedRfqAttachment)
+  ) {
+    this.toastr.error(
+      'The generated RFQ Excel attachment is required for suppliers with a portal account.'
+    );
+    return;
+  }
 
   if (!this.formEmailTemplate) {
     this.toastr.error(
@@ -1118,6 +1506,28 @@ getSupplierEmailGroup(
 AssignSuppliers(): void {
 
   if (
+    this.rowindex < 0 &&
+    this.assignmentOption !== 0 &&
+    this.assignmentOption !== 1
+  ) {
+    this.stopAssigning();
+    this.toastr.error('Please select By BOQ Item or By Resources.');
+    return;
+  }
+
+  if (
+    this.rowindex < 0 &&
+    this.selectedPortalStatus === 1 &&
+    (!this.includeRfqAttachment || !this.generatedRfqAttachment)
+  ) {
+    this.stopAssigning();
+    this.toastr.error(
+      'The generated RFQ Excel attachment is required for suppliers with a portal account.'
+    );
+    return;
+  }
+
+  if (
     !this.selectedSuppliers ||
     this.selectedSuppliers.length === 0
   ) {
@@ -1282,13 +1692,18 @@ AssignSuppliers(): void {
     new AssignPackageTemplate();
 
   assignPackageTemplate.byBoq =
-    Number(
-      localStorage.getItem(
-        'assignByBoqOnly'
-      ) || 0
-    );
+    this.rowindex >= 0 && this.selectedPackageSupplier
+      ? Number(this.selectedPackageSupplier.psByBoq)
+      : Number(this.assignmentOption);
 
-  assignPackageTemplate.listAttach = [];
+  assignPackageTemplate.listAttach =
+    this.includeRfqAttachment && this.generatedRfqAttachment
+      ? [this.generatedRfqAttachment]
+      : [];
+  assignPackageTemplate.includeRfqAttachment =
+    this.selectedPortalStatus === 1
+      ? true
+      : this.includeRfqAttachment;
 
   /*
    * One shared CC only.
@@ -1363,6 +1778,9 @@ AssignSuppliers(): void {
           }
 
           this.CloseEmailTemplateModal();
+          this.assignmentOption = null;
+          this.assignOptionSubmitted = false;
+          localStorage.removeItem('assignByBoqOnly');
         } else {
           this.toastr.error(
             res?.message ||
@@ -1484,6 +1902,8 @@ private stopAssigning(): void {
     // }
   
     addedItem=1;
+    
+    console.log(this.selectedPsId);
 
     if (date.value) {
       if(this.selectedCurrencyId > 0)
@@ -1528,38 +1948,81 @@ private stopAssigning(): void {
     }
   }
 
-  validateExcelBeforeAssign(){
-    let CostConn=this.user.usrLoggedConnString;
-    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    //this.spinner.show();
-    this.isValidatingExcel = true;
-    
-    let flexSwitchCheckDefault = document.getElementById("flexSwitchCheckDefault") as HTMLInputElement;
-    if(flexSwitchCheckDefault)
-    {
-      if(flexSwitchCheckDefault.type == 'checkbox' && flexSwitchCheckDefault.checked)
-      {
-          localStorage.setItem('assignByBoqOnly', '1');
-      }      
-    }
-    
-    this.packageSupplierService.validateExcelBeforeAssign(this.PackageId, Number(localStorage.getItem('assignByBoqOnly')),false,CostConn).subscribe((data) => {
-      this.isValidatingExcel = false;
-      if (data) {
-        // this.spinner.hide();
-        
-        this.toastr.success("Validated !!")
-        this.GetPackageById(Number(this.PackageId));
+  validateExcelBeforeAssign(): void {
+    this.assignOptionSubmitted = true;
 
-        let a = document.createElement('a');
-        a.id = 'downloader';
-        a.target = '_blank'; 
-        a.style.visibility = "hidden";
-        document.body.appendChild(a);
-        a.href = environment.baseApiUrl +'api/SupplierPackages/DownloadFile?filename=' + data;
-        a.click();
-      }
-    });
+    if (this.assignmentOption !== 0 && this.assignmentOption !== 1) {
+      this.toastr.error('Please select By BOQ Item or By Resources.');
+      return;
+    }
+
+    if (this.isValidatingExcel) {
+      return;
+    }
+
+    const CostConn = this.user?.usrLoggedConnString || '';
+
+    if (!CostConn) {
+      this.toastr.error('Project database connection is not available.');
+      return;
+    }
+
+    this.isValidatingExcel = true;
+
+    this.packageSupplierService
+      .validateExcelBeforeAssign(
+        this.PackageId,
+        this.assignmentOption,
+        false,
+        CostConn
+      )
+      .pipe(
+        finalize(() => {
+          this.isValidatingExcel = false;
+          this.changeDetectorRef.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (data: any) => {
+          const generatedPath = String(data || '').trim();
+
+          if (!generatedPath) {
+            this.toastr.error('RFQ Excel was not generated.');
+            return;
+          }
+
+          this.generatedRfqAttachment = generatedPath;
+          this.generatedRfqAttachmentName =
+            generatedPath.split(/[\\/]/).pop() || generatedPath;
+          this.includeRfqAttachment = true;
+
+          this.toastr.success(
+            this.assignmentOption === 1
+              ? 'BOQ Item RFQ Excel generated successfully.'
+              : 'Resources RFQ Excel generated successfully.'
+          );
+
+          const anchor = document.createElement('a');
+          anchor.href =
+            environment.baseApiUrl +
+            'api/SupplierPackages/DownloadFile?filename=' +
+            encodeURIComponent(generatedPath);
+          anchor.target = '_blank';
+          anchor.rel = 'noopener';
+          anchor.style.display = 'none';
+          document.body.appendChild(anchor);
+          anchor.click();
+          document.body.removeChild(anchor);
+        },
+        error: (error: any) => {
+          console.error('RFQ Excel generation failed:', error);
+          this.toastr.error(
+            error?.error?.message ||
+            error?.message ||
+            'RFQ Excel generation failed.'
+          );
+        }
+      });
   }
 
 
@@ -1718,9 +2181,67 @@ private stopAssigning(): void {
 
   }
 
-  onCompare() {
-    this.router.navigate(['package-comparison-novo'], { state: { packageId: this.PackageId, packageName : this.PackageName, byBoq : (this.SupplierPackagesList[0]?.psByBoq == 1) , packSuppId : this.SupplierPackagesList[0].psId} });
+  get canCompareQuotations(): boolean {
+
+  return !!(
+    this.SupplierPackagesList &&
+    this.SupplierPackagesList.length > 0 &&
+    this.SupplierPackagesList[0] &&
+    Number(
+      this.SupplierPackagesList[0].psId
+    ) > 0
+  );
+}
+
+
+onCompare(): void {
+
+  if (!this.canCompareQuotations) {
+
+    this.toastr.warning(
+      'At least one supplier quotation is required before comparison.'
+    );
+
+    return;
   }
+
+  const firstPackageSupplier =
+    this.SupplierPackagesList[0];
+
+  this.router.navigate(
+    [
+      'package-comparison-novo'
+    ],
+    {
+      state: {
+
+        packageId:
+          this.PackageId,
+
+        packageName:
+          this.PackageName,
+
+        /*
+         * true  = package assigned by BOQ
+         * false = package assigned by Resources
+         */
+        byBoq:
+          Number(
+            firstPackageSupplier.psByBoq
+          ) === 1,
+
+        packSuppId:
+          Number(
+            firstPackageSupplier.psId
+          )
+      }
+    }
+  );
+}
+
+  // onCompare() {
+  //   this.router.navigate(['package-comparison-novo'], { state: { packageId: this.PackageId, packageName : this.PackageName, byBoq : (this.SupplierPackagesList[0]?.psByBoq == 1) , packSuppId : this.SupplierPackagesList[0].psId} });
+  // }
 
   validateExcel()
   {
@@ -1857,6 +2378,10 @@ private stopAssigning(): void {
     this.router.navigate(['/revision-details', revisionId, psId, psByBoq, this.PackageId, this.PackageName]);
   }
 
+  goToPackageList(): void {
+    this.router.navigate(['/package-list'], { queryParams: { filter: this.PackageId } });
+  }
+
   onGrouping()
   {
     let byBoq = (this.SupplierPackagesList[0].psByBoq == 1);
@@ -1974,96 +2499,49 @@ private stopAssigning(): void {
 GetSupplierList_NotAssignetPackage(
   IdPkge: number
 ): void {
+  if (this.selectedPortalStatus !== 0 && this.selectedPortalStatus !== 1) {
+    this.AllSupplierList = [];
+    this.SupplierList = [];
+    return;
+  }
 
-  const CostConn =
-    this.user.usrLoggedConnString;
+  const CostConn = this.user?.usrLoggedConnString || '';
 
   if (!CostConn) {
     this.AllSupplierList = [];
     this.SupplierList = [];
-
-    this.toastr.error(
-      'Project database connection is not available.'
-    );
-
+    this.toastr.error('Project database connection is not available.');
     return;
   }
 
   this.isLoadingSuppliers = true;
 
-  this.loginService
-    .CheckConnection(CostConn)
-    .subscribe({
-      next: () => {
-
-        this.packageSupplierService
-          .GetSupplierList_NotAssignetPackage(
-            IdPkge,
-            this.selectedPortalStatus,
-            CostConn
-          )
-          .subscribe({
-            next: (data: SupplierList[]) => {
-
-              this.isLoadingSuppliers = false;
-
-              const suppliers =
-                data || [];
-
-              /*
-               * Keep an independent complete list.
-               * SupplierList is used only for dropdown filtering.
-               */
-              this.AllSupplierList =
-                suppliers.map(
-                  (supplier: SupplierList) => ({
-                    ...supplier
-                  })
-                );
-
-              this.SupplierList =
-                this.AllSupplierList.map(
-                  (supplier: SupplierList) => ({
-                    ...supplier
-                  })
-                );
-            },
-
-            error: (error: any) => {
-
-              this.isLoadingSuppliers = false;
-
-              this.AllSupplierList = [];
-              this.SupplierList = [];
-
-              console.error(
-                'Unable to load suppliers:',
-                error
-              );
-
-              this.toastr.error(
-                error?.error?.message ||
-                error?.message ||
-                'Unable to load suppliers.'
-              );
-            }
-          });
-      },
-
-      error: (connectionError: any) => {
-
+  this.packageSupplierService
+    .GetSupplierList_NotAssignetPackage(
+      IdPkge,
+      this.selectedPortalStatus,
+      CostConn
+    )
+    .pipe(
+      finalize(() => {
         this.isLoadingSuppliers = false;
-
+        this.changeDetectorRef.detectChanges();
+      })
+    )
+    .subscribe({
+      next: (data: SupplierList[]) => {
+        const suppliers = data || [];
+        this.AllSupplierList = suppliers.map(item => ({ ...item }));
+        this.SupplierList = suppliers.map(item => ({ ...item }));
+      },
+      error: (error: any) => {
         this.AllSupplierList = [];
         this.SupplierList = [];
-
-        console.error(
-          'Connection validation failed:',
-          connectionError
-        );
-
+        console.error('Unable to load suppliers:', error);
         this.toastr.error(
-          'Unable to connect to the project database.'
+          error?.error?.message ||
+          error?.message ||
+          'Unable to load suppliers.'
         );
       }
     });
@@ -2072,7 +2550,7 @@ GetSupplierList_NotAssignetPackage(
 
 private buildSelectedSupplierEmailControls(
   packageSupplier:
-    SupplierPackagesList = null
+    SupplierPackagesList | null = null
 ): void {
 
   const supplierEmails =
@@ -2080,68 +2558,99 @@ private buildSelectedSupplierEmailControls(
 
   supplierEmails.clear();
 
-  const sourceList: SupplierList[] =
-    this.AllSupplierList.length > 0
-      ? this.AllSupplierList
-      : this.SupplierList;
-
   this.selectedSuppliers.forEach(
-    (supplierId: number) => {
+    (
+      supplierId:
+        number
+    ) => {
 
       const supplier =
-        sourceList.find(
-          (item: SupplierList) =>
-            Number(item.supID) ===
-            Number(supplierId)
+        this.findSupplierById(
+          supplierId
         );
 
-      let supplierName = '';
-      let supplierEmail = '';
+      let supplierName =
+        '';
+
+      let supplierEmail =
+        '';
 
       if (supplier) {
+
         supplierName =
-          supplier.supName || '';
+          String(
+            supplier.supName || ''
+          ).trim();
 
         supplierEmail =
-          supplier.supEmail || '';
+          String(
+            supplier.supEmail || ''
+          ).trim();
       }
 
       /*
-       * Fallback for Add Revision when the supplier
-       * is no longer listed among unassigned suppliers.
+       * Fallback for an already-assigned supplier.
+       * This works when psSupEmail is returned by
+       * GetSupplierPackagesList.
        */
       if (
-        !supplier &&
         packageSupplier &&
-        Number(packageSupplier.psSuppId) ===
-        Number(supplierId)
+        Number(
+          packageSupplier.psSuppId
+        ) ===
+        Number(
+          supplierId
+        )
       ) {
-        supplierName =
-          packageSupplier.psSupName || '';
 
-        supplierEmail =
-          packageSupplier.psSupEmail || '';
+        if (!supplierName) {
+
+          supplierName =
+            String(
+              packageSupplier
+                .psSupName || ''
+            ).trim();
+        }
+
+        if (!supplierEmail) {
+
+          supplierEmail =
+            String(
+              packageSupplier
+                .psSupEmail || ''
+            ).trim();
+        }
       }
 
-      supplierEmails.push(
-        this.formBuilder.group({
-          supplierId: [
-            Number(supplierId),
-            Validators.required
-          ],
+      /*
+       * Keep only the supplier name in the left label.
+       * The email belongs in the editable Email To field.
+       */
+      supplierName =        this.getSupplierDisplayName(     supplierName              );
 
+      supplierEmails.push( this.formBuilder.group({
+
+          supplierId: [
+            Number(
+              supplierId
+            ),
+           Validators.required
+          ],
           supplierName: [
             supplierName
           ],
 
-          emailTo: [
-            supplierEmail.trim(),
+         emailTo: [
+            supplierEmail,
             [
-              emailListValidator(true)
+              emailListValidator(
+                true
+              )
             ]
           ]
+
         })
-      );
+      )
     }
   );
 }
@@ -2224,27 +2733,32 @@ openAcceptanceCommentsModal(revisionId : any, prRevNo : any, psSupName : any)
   }
 
   onPortalStatusChange(): void {
-    /*
-     * Selections from the previous group must not remain
-     * selected after switching portal status.
-     */
+    this.generatedRfqAttachment = '';
+    this.generatedRfqAttachmentName = '';
+    this.includeRfqAttachment = true;
     this.selectedSuppliers = [];
-
     this.SupplierInput = [];
-
     this.SupplierInputList = [];
-
     this.AllSupplierList = [];
-
     this.SupplierList = [];
 
-    /*
-     * Reload the dropdown using the selected portal group.
-     */
-    this.GetSupplierList_NotAssignetPackage(
-      this.PackageId
-    );
+    if (this.selectedPortalStatus === 0 || this.selectedPortalStatus === 1) {
+      this.GetSupplierList_NotAssignetPackage(this.PackageId);
+    }
   }
+
+  private getSupplierDisplayName(  value: string | null | undefined): string {
+
+  const text =    String(value || '').trim();
+
+  if (!text) {
+    return '';
+  }
+
+  return text
+    .split('\\')[0]
+    .trim();
+}
 
 }
 

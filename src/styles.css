@@ -2,6 +2,8 @@
 /*@import "~@ng-select/ng-select/themes/material.theme.css";*/
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 @import "~@ng-select/ng-select/themes/default.theme.css";
+@import "ag-grid-community/dist/styles/ag-grid.css";
+@import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 
 .my-first-scrollbar-table {
     position: relative;
@@ -67,3 +69,61 @@ section {
  .customClass {
     margin-top: 30px;
   }
+
+/* ── AG Grid: comparison table overrides (global to bypass Angular encapsulation) ── */
+
+/* Full-width row container (level headers) must not intercept scroll events */
+.ag-theme-alpine .ag-full-width-container {
+  pointer-events: none;
+}
+/* Re-enable pointer events on the actual full-width cells so text stays selectable */
+.ag-theme-alpine .ag-full-width-container .ag-row {
+  pointer-events: auto;
+}
+
+/* Calculated Final U.P. cell — blue background, must be global for cellClass to reach AG Grid DOM */
+.calculated-supplier-price {
+  background-color: #0d6efd !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  text-align: right !important;
+  cursor: help !important;
+}
+
+.ag-theme-alpine .ag-header-cell-label,
+.ag-theme-alpine .ag-header-group-cell-label {
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+/* Level-header rows (BOQ grouping, byBoq mode) */
+.ag-theme-alpine .ag-row.row-level-header {
+  background-color: #c8c8c8 !important;
+  font-weight: 700 !important;
+}
+
+/* Subtotal rows */
+.ag-theme-alpine .ag-row.row-subtotal {
+  background-color: #dde8f0 !important;
+  font-weight: 700 !important;
+}
+
+/* Pinned total row at grid bottom */
+.ag-theme-alpine .ag-row-pinned {
+  background-color: #f0f4e8 !important;
+  font-weight: 700 !important;
+  border-top: 2px solid #444 !important;
+}
+
+/* Budget and Quotation group header colors */
+.ag-theme-alpine .ag-header-group-cell.budget-header    { background-color: #1F6B3A !important; color: #fff !important; }
+.ag-theme-alpine .ag-header-group-cell.quotation-header { background-color: #5B4B8A !important; color: #fff !important; }
+
+.ag-theme-alpine .ag-header-group-cell.sup-color-0 { background-color: #2E75B6 !important; color: #fff !important; }
+.ag-theme-alpine .ag-header-group-cell.sup-color-1 { background-color: #E36C09 !important; color: #fff !important; }
+.ag-theme-alpine .ag-header-group-cell.sup-color-2 { background-color: #375623 !important; color: #fff !important; }
+.ag-theme-alpine .ag-header-group-cell.sup-color-3 { background-color: #7030A0 !important; color: #fff !important; }
+.ag-theme-alpine .ag-header-group-cell.sup-color-4 { background-color: #C00000 !important; color: #fff !important; }
+.ag-theme-alpine .ag-header-group-cell.sup-color-5 { background-color: #1F7391 !important; color: #fff !important; }
+.ag-theme-alpine .ag-header-group-cell.sup-color-6 { background-color: #833C00 !important; color: #fff !important; }
+.ag-theme-alpine .ag-header-group-cell.sup-color-7 { background-color: #215868 !important; color: #fff !important; }

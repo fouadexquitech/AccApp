@@ -302,7 +302,7 @@ GetSupplierList_NotAssignetPackage(
 
   const url =
     this.baseUrl +
-    'SupplierPackages/' +
+    'Supplier/' +
     'GetSupplierList_NotAssignetPackage' +
     '?packID=' +
     encodeURIComponent(

@@ -1,4 +1,5 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ColDef, ColGroupDef, GridApi, ColumnApi, GridReadyEvent, CellClickedEvent, CellValueChangedEvent } from 'ag-grid-community';
 import { Router } from '@angular/router';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -58,23 +59,6 @@ declare var $: any;
   styleUrls: ['./package-comparison-novo.component.css'],
 })
 export class PackageComparisonNovoComponent implements OnInit {
-  @HostListener('window:scroll', ['$event'])
-  onWindowScroll(event: Event): void {
-    const scrollTop =
-      window.scrollY ||
-      document.documentElement.scrollTop ||
-      document.body.scrollTop ||
-      0;
-
-    var header = document.getElementById('t-header');
-    var sticky = header.offsetTop;
-
-    if (window.scrollY > sticky) {
-      header.classList.add('sticky');
-    } else {
-      header.classList.remove('sticky');
-    }
-  }
   packageId: number = 0;
   packageName: string = '';
   SearchInput: SearchInput = new SearchInput();
@@ -118,6 +102,7 @@ export class PackageComparisonNovoComponent implements OnInit {
   isAssigningSupplierList: boolean = false;
   isAssigningSupplierGroup: boolean = false;
   byGroup: boolean = false;
+  showQuotation: boolean = true;
   techConditionsReplies: DisplayCondition[] = [];
   comConditionsReplies: DisplayCondition[] = [];
   comConditionSuppliers : any[] = [];
@@ -187,6 +172,41 @@ export class PackageComparisonNovoComponent implements OnInit {
   selectedSupplier: SupplierList = null;
   generatingContract: boolean = false;
   cGroup: string = '1';
+
+  // AG Grid
+  gridApi: GridApi;
+  columnApi: ColumnApi;
+  columnDefs: (ColDef | ColGroupDef)[] = [];
+  rowData: any[] = [];
+  gridHeight: string = '150px';
+  defaultColDef: ColDef = {
+    sortable: true,
+    filter: false,
+    resizable: true,
+    suppressMovable: true,
+    cellStyle: { fontSize: '12px' },
+  };
+  rowClassRules: { [cssClass: string]: (params: any) => boolean } = {
+    'row-level-header': (params) => params.data?._rowType === 'levelHeader',
+    'row-subtotal': (params) => params.data?._rowType === 'subtotal',
+    'bg-AlternativeItem': (params) => params.data?._rowType === 'data' && params.data?.isAlternative === true,
+    'bg-NewItem': (params) => params.data?._rowType === 'data' && params.data?.isNewItem === true,
+  };
+  isRowSelectable = (rowNode: any) => rowNode.data?._rowType === 'data';
+  isFullWidthRowFn = (params: any) => params.rowNode?.data?._rowType === 'levelHeader';
+  levelHeaderRenderer: any = class {
+    private eGui: any;
+    init(params: any) {
+      this.eGui = document.createElement('div');
+      this.eGui.style.cssText =
+        'padding:0 10px;font-weight:700;text-align:left;width:100%;height:100%;' +
+        'display:flex;align-items:center;font-size:12px;color:#333;background:#c8c8c8;user-select:text;';
+      this.eGui.textContent = params.data?._levelName || '';
+    }
+    getGui() { return this.eGui; }
+    refresh() { return false; }
+    destroy() {}
+  };
 
   constructor(
     private router: Router,
@@ -1369,43 +1389,41 @@ OpenAssignModal() {
       this.supplierResourceQty = [];
       let oneResourceChecked = false;
       let qtyIsValid = true;
-      this.comparisonList.forEach((boq: GroupingBoq, i: any) => {
-        let resources = boq.groupingResources;
-        resources.forEach((resource: GroupingResource, index: any) => {
-          if (resource.isChecked) {
-            oneResourceChecked = true;
-            let resourceId = resource.boqSeq;
-            let totalQty = 0;
-            let sups = resource.groupingPackageSuppliersPrices;
-            resource.validPerc = true;
-            this.supplierResourceQty = [];
-            sups.forEach((sup, j) => {
-              if (sup.supplierName != 'Ideal') {
-                totalQty += sup.assignedQty;
-              }
-              this.supplierResourceQty.push({
-                supID: sup.supplierId,
-                qty: sup.assignedQty,
+      this.CurrentLevelList.forEach((cLevel) => {
+        cLevel.groupingLevels.forEach((level) => {
+          level.groupingResources.forEach((resource: GroupingResource, index: any) => {
+            if (resource.isChecked) {
+              oneResourceChecked = true;
+              let resourceId = resource.boqSeq;
+              let totalQty = 0;
+              let sups = resource.groupingPackageSuppliersPrices;
+              resource.validPerc = true;
+              this.supplierResourceQty = [];
+              sups.forEach((sup, j) => {
+                if (sup.supplierName != 'Ideal') {
+                  totalQty += sup.assignedQty;
+                }
+                this.supplierResourceQty.push({
+                  supID: sup.supplierId,
+                  qty: sup.assignedQty,
+                });
               });
-            });
 
-            //console.log(totalQty);
+              if (totalQty != resource.qty) {
+                qtyIsValid = false;
+                resource.validPerc = false;
+              }
 
-            //alert(totalPerc);
-            if (totalQty != resource.qty) {
-              qtyIsValid = false;
-              resource.validPerc = false;
+              const newSupplierResource: SupplierResrouces = {
+                resourceID: resourceId,
+                supplierPercents: [],
+                supplierQtys: this.supplierResourceQty,
+                isAlternative: false,
+                isNewItem: false,
+              };
+              this.supplierResrouces.push(newSupplierResource);
             }
-
-            const newSupplierResource: SupplierResrouces = {
-              resourceID: resourceId,
-              supplierPercents: [],
-              supplierQtys: this.supplierResourceQty,
-              isAlternative: false,
-              isNewItem: false,
-            };
-            this.supplierResrouces.push(newSupplierResource);
-          }
+          });
         });
       });
 
@@ -1630,39 +1648,39 @@ OpenAssignModal() {
       this.supplierResourcePercent = [];
       let oneResourceChecked = false;
       let percIsValid = true;
-      this.comparisonList.forEach((boq: GroupingBoq, i: any) => {
-        let resources = boq.groupingResources;
-        resources.forEach((resource: GroupingResource, index: any) => {
-          if (resource.isChecked) {
-            oneResourceChecked = true;
-            let resourceId = resource.boqSeq;
-            let totalPerc = 0;
-            let sups = resource.groupingPackageSuppliersPrices;
-            resource.validPerc = true;
-            this.supplierResourcePercent = [];
-            sups.forEach((sup, j) => {
-              totalPerc += sup.assignedPercentage;
-              this.supplierResourcePercent.push({
-                supID: sup.supplierId,
-                percent: sup.assignedPercentage,
+      this.CurrentLevelList.forEach((cLevel) => {
+        cLevel.groupingLevels.forEach((level) => {
+          level.groupingResources.forEach((resource: GroupingResource, index: any) => {
+            if (resource.isChecked) {
+              oneResourceChecked = true;
+              let resourceId = resource.boqSeq;
+              let totalPerc = 0;
+              let sups = resource.groupingPackageSuppliersPrices;
+              resource.validPerc = true;
+              this.supplierResourcePercent = [];
+              sups.forEach((sup, j) => {
+                totalPerc += sup.assignedPercentage;
+                this.supplierResourcePercent.push({
+                  supID: sup.supplierId,
+                  percent: sup.assignedPercentage,
+                });
               });
-            });
 
-            //alert(totalPerc);
-            if (totalPerc > 100 || totalPerc < 100) {
-              percIsValid = false;
-              resource.validPerc = false;
+              if (totalPerc > 100 || totalPerc < 100) {
+                percIsValid = false;
+                resource.validPerc = false;
+              }
+
+              const newSupplierResource: SupplierResrouces = {
+                resourceID: resourceId,
+                supplierPercents: this.supplierResourcePercent,
+                supplierQtys: [],
+                isAlternative: false,
+                isNewItem: false,
+              };
+              this.supplierResrouces.push(newSupplierResource);
             }
-
-            const newSupplierResource: SupplierResrouces = {
-              resourceID: resourceId,
-              supplierPercents: this.supplierResourcePercent,
-              supplierQtys: [],
-              isAlternative: false,
-              isNewItem: false,
-            };
-            this.supplierResrouces.push(newSupplierResource);
-          }
+          });
         });
       });
 
@@ -2066,6 +2084,15 @@ OpenAssignModal() {
       : 'fa-solid fa-toggle-off';
   }
 
+  toggleQuotation() {
+    this.showQuotation = !this.showQuotation;
+    this.buildColumnDefs();
+    if (this.gridApi) {
+      this.gridApi.setColumnDefs(this.columnDefs);
+      setTimeout(() => { if (this.columnApi) this.columnApi.autoSizeAllColumns(false); }, 300);
+    }
+  }
+
   onSearch() {
     let CostConn = this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => {});
@@ -2073,57 +2100,26 @@ OpenAssignModal() {
     this.searching = true;
     if (!this.byBoq) {
       this.packageComparisonService
-        .getComparisonSheet(
-          this.packageId,
-          this.SearchInput,
-          CostConn,
-          this.cGroup
-        )
+        .getComparisonSheet(this.packageId, this.SearchInput, CostConn, this.cGroup)
         .subscribe((data) => {
           this.searching = false;
-
           if (data) {
-            //AH04042024
-            // this.comparisonList = data;
             this.CurrentLevelList = data;
-
-            //AH04042024
             this.getSuppliersPrice();
-
-            setTimeout(() => {
-              const table_by_boq = document.getElementById(
-                'table-by-boq'
-              ) as HTMLTableElement;
-
-              const tbody_wrapper_byboq = document.getElementById(
-                'tbody-wrapper-byboq'
-              ) as HTMLDivElement;
-              tbody_wrapper_byboq.style.width = table_by_boq.clientWidth + 'px';
-            }, 100);
+            this.buildColumnDefs();
+            this.buildRowData();
           }
         });
     } else {
-      this.packageComparisonService.getComparisonSheetByBoq(this.packageId,this.SearchInput,CostConn,this.cGroup).subscribe((data) => {
+      this.packageComparisonService
+        .getComparisonSheetByBoq(this.packageId, this.SearchInput, CostConn, this.cGroup)
+        .subscribe((data) => {
           this.searching = false;
           if (data) {
-            //console.log(data);
-            //AH04042024
-            // this.comparisonList = data;
             this.CurrentLevelList = data;
-            //AH04042024
-
             this.getSuppliersPrice();
-
-            setTimeout(() => {
-              const table_by_boq = document.getElementById(
-                'table-by-boq'
-              ) as HTMLTableElement;
-
-              const tbody_wrapper_byboq = document.getElementById(
-                'tbody-wrapper-byboq'
-              ) as HTMLDivElement;
-              tbody_wrapper_byboq.style.width = table_by_boq.clientWidth + 'px';
-            }, 100);
+            this.buildColumnDefs();
+            this.buildRowData();
           }
         });
     }
@@ -2564,8 +2560,466 @@ selectAllResources(
     this.onSearch();
   }
 
-  goBack()
-  {
-      this.router.navigate(['/package-supplier', this.packageId]);
+  goBack() {
+    this.router.navigate(['/package-supplier', this.packageId]);
+  }
+
+  // ── AG Grid ──────────────────────────────────────────────────────────────
+
+  onGridReady(params: GridReadyEvent) {
+    this.gridApi = params.api;
+    this.columnApi = params.columnApi;
+  }
+
+  onFirstDataRendered() {
+    if (this.columnApi) {
+      this.columnApi.autoSizeAllColumns(false);
+    }
+  }
+
+  private getSupplierListFromData(): any[] {
+    if (!this.CurrentLevelList?.length) return [];
+    // walk levels until we find one with actual rows
+    for (const cLevel of this.CurrentLevelList) {
+      for (const level of (cLevel?.groupingLevels || [])) {
+        if (this.byBoq) {
+          const sups = level?.items?.[0]?.groupingPackageSuppliersPrices;
+          if (sups?.length) return sups;
+        } else {
+          const sups = level?.groupingResources?.[0]?.groupingPackageSuppliersPrices;
+          if (sups?.length) return sups;
+        }
+      }
+    }
+    return [];
+  }
+
+  buildColumnDefs() {
+    const suppliers = this.getSupplierListFromData();
+    const cols: (ColDef | ColGroupDef)[] = [];
+
+    // Selection + description columns (frozen to left)
+    if (this.byBoq) {
+      cols.push({
+        field: '_sel',
+        headerName: '',
+        width: 30,
+        minWidth: 30,
+        maxWidth: 40,
+        pinned: 'left',
+        lockPinned: true,
+        suppressAutoSize: true,
+        suppressSizeToFit: true,
+        checkboxSelection: (params) => params.data?._rowType === 'data',
+        headerCheckboxSelection: true,
+        cellRenderer: () => '',
+      });
+      cols.push({
+        field: 'boqRef',
+        headerName: 'BOQ #',
+        width: 50,
+        minWidth: 50,
+        maxWidth: 140,
+        pinned: 'left',
+        lockPinned: true,
+        cellRenderer: this._descCellRenderer,
+      });
+      cols.push({
+        field: 'itemDescription',
+        headerName: 'Item Description',
+        width: 200,
+        maxWidth: 300,
+        pinned: 'left',
+        lockPinned: true,
+        cellRenderer: this._descCellRenderer,
+        tooltipValueGetter: (p: any) => p.data?._rowType === 'data' ? p.value : null,
+      });
+    } else {
+      cols.push({
+        field: '_sel',
+        headerName: '',
+        width: 30,
+        minWidth: 30,
+        maxWidth: 40,
+        pinned: 'left',
+        lockPinned: true,
+        suppressAutoSize: true,
+        suppressSizeToFit: true,
+        checkboxSelection: (params) => params.data?._rowType === 'data',
+        headerCheckboxSelection: true,
+        cellRenderer: () => '',
+      });
+      cols.push({
+        field: 'resourceDescription',
+        headerName: 'Resource Description',
+        width: 250,
+        maxWidth: 300,
+        pinned: 'left',
+        lockPinned: true,
+        cellRenderer: this._descCellRenderer,
+        tooltipValueGetter: (p: any) => p.data?._rowType === 'data' ? p.value : null,
+      });
+    }
+
+    // Exclude
+    cols.push({
+      field: 'isExcluded',
+      headerName: 'Excl.',
+      width: 40,     minWidth: 40,        maxWidth: 70,
+      cellRenderer: (params: any) => {
+        if (params.data?._rowType !== 'data') return '';
+        const chk = params.data.isExcluded ? 'checked' : '';
+        return `<input type="checkbox" ${chk} style="cursor:pointer;margin-top:4px;" />`;
+      },
+    });
+
+    // Unit
+    cols.push({ field: 'unit', headerName: 'Unit', width: 60    ,     minWidth: 60,
+        maxWidth: 70 });
+
+    // Budget group
+    const bqW  = this.byBoq ? 45 : 60;  // qty / price column width in byBoq
+    const bqWT = this.byBoq ? 55 : 70;  // total-price column width in byBoq
+    cols.push({
+      headerName: 'Budget',
+      headerClass: 'budget-header',
+      children: [
+        { field: 'qty',        headerName: 'Final Qty', minWidth: bqW,  headerClass: 'sup-group-start', cellStyle: { borderLeft: '3px solid #444', textAlign: 'right' }, valueFormatter: (p) => this.fmtNum(p.value, 2), type: 'numericColumn' },
+        { field: 'unitPrice',  headerName: 'U. Price',  minWidth: bqW,  cellStyle: { textAlign: 'right' }, valueFormatter: (p) => this.fmtNum(p.value, 2), type: 'numericColumn' },
+        { field: 'totalPrice', headerName: 'T. Budget', minWidth: bqWT, cellStyle: { textAlign: 'right' }, valueFormatter: (p) => this.fmtNum(p.value, 0), type: 'numericColumn' },
+      ],
+    });
+
+    // Quotation group (conditionally included)
+    if (this.showQuotation) {
+      cols.push({
+        headerName: 'Quotation',
+        headerClass: 'quotation-header',
+        children: [
+          { field: 'quotationQty', headerName: 'Bill Qty', minWidth: bqW, headerClass: 'sup-group-start', cellStyle: { borderLeft: '3px solid #444', textAlign: 'right' }, valueFormatter: (p) => this.fmtNum(p.value, 2), type: 'numericColumn' },
+          { field: 'quotationAmt', headerName: 'Price',    minWidth: bqW, cellStyle: { textAlign: 'right' }, valueFormatter: (p) => this.fmtNum(p.value, 2), type: 'numericColumn' },
+        ],
+      });
+    }
+
+    // Per-supplier column groups
+    suppliers.forEach((sup, i) => {
+      const isIdeal = sup.supplierName === 'Ideal';
+      const id = sup.supplierId;
+      const header = isIdeal
+        ? 'Ideal'
+        : `${sup.supplierName} (${this.fmtDate(sup.lastRevisionDate)})`;
+      const colorClass = `sup-color-${i % 8}`;
+
+      const children: ColDef[] = [];
+
+      // Qty As. — first column in each supplier group: separator via inline borderLeft
+      children.push({
+        field: `sup_${id}_assignedQty`,
+        headerName: isIdeal ? 'Bud. Qty' : 'Qty As.',
+        minWidth: bqW,
+        headerClass: 'sup-group-start',
+        editable: (params) => !isIdeal && params.data?._rowType === 'data',
+        type: 'numericColumn',
+        valueFormatter: (p) => {
+          if (p.data?._rowType !== 'data') return '';
+          if (isIdeal) return this.fmtNum(p.data?.qty, 2);
+          return this.fmtNum(p.value, 2);
+        },
+        cellStyle: (params) => {
+          const base: any = { borderLeft: '3px solid #444', textAlign: 'right' };
+          if (!isIdeal && params.data?._rowType === 'data') {
+            return { ...base, backgroundColor: '#fffde7' };
+          }
+          return base;
+        },
+      });
+
+      // Final U.P.
+      children.push({
+        field: `sup_${id}_finalUP`,
+        headerName: 'Final U.P.',
+        minWidth: bqW,
+        type: 'numericColumn',
+        cellStyle: { textAlign: 'right' },
+        valueFormatter: (p) => {
+          if (p.data?._rowType !== 'data') return '';
+          return this.fmtNum(p.value, 2);
+        },
+        cellClass: (params) =>
+          params.data?.[`sup_${id}_isCalculated`] ? 'calculated-supplier-price' : '',
+        tooltipValueGetter: (p: any) =>
+          p.data?._rowType === 'data' && p.data?.[`sup_${id}_isCalculated`]
+            ? 'Calculated from the maximum price provided by the other suppliers'
+            : null,
+      });
+
+      // T. Price
+      children.push({
+        field: `sup_${id}_totalPrice`,
+        headerName: 'T. Price',
+        minWidth: bqWT,
+        type: 'numericColumn',
+        cellStyle: { textAlign: 'right' },
+        valueFormatter: (p) => {
+          if (p.data?._rowType === 'levelHeader') return '';
+          return this.fmtNum(p.value, 0);
+        },
+        cellClass: (params) =>
+          params.data?.[`sup_${id}_missed`] === 1 ? 'text-danger' : '',
+        tooltipValueGetter: (p: any) =>
+          p.data?._rowType === 'data' && p.data?.[`sup_${id}_missed`] === 1
+            ? 'Missing price by this supplier'
+            : null,
+      });
+
+      cols.push({ headerName: header, headerClass: colorClass, children });
+    });
+
+    this.columnDefs = cols;
+  }
+
+  private _descCellRenderer = (params: any) => {
+    if (params.data?._rowType === 'levelHeader') {
+      return `<strong style="color:#333">${params.data._levelName || ''}</strong>`;
+    }
+    if (params.data?._rowType === 'subtotal' || params.data?._rowType === 'pinnedTotal') {
+      return `<strong>${params.value || ''}</strong>`;
+    }
+    return params.value || '';
+  };
+
+  buildRowData() {
+    try {
+      const rows: any[] = [];
+
+      (this.CurrentLevelList || []).forEach((cLevel) => {
+        (cLevel?.groupingLevels || []).forEach((level, ind) => {
+
+          // Level name header (byBoq only)
+          if (this.byBoq) {
+            rows.push({
+              _rowType: 'levelHeader',
+              _levelName: level.levelName || 'From Drawing',
+              boqRef: '',
+              itemDescription: level.levelName || 'From Drawing',
+            });
+          }
+
+          // Data rows
+          if (!this.byBoq) {
+            (level?.groupingResources || []).forEach((resource) => {
+              const row: any = {
+                _rowType: 'data',
+                _rowRef: resource,
+                isChecked: resource.isChecked || false,
+                isExcluded: resource.isExcluded || false,
+                isAlternative: resource.isAlternative || false,
+                isNewItem: resource.isNewItem || false,
+                resourceDescription: resource.resourceDescription,
+                unit: resource.unit,
+                qty: resource.qty,
+                unitPrice: resource.unitPrice,
+                totalPrice: resource.totalPrice,
+                quotationQty: resource.quotationQty,
+                quotationAmt: resource.quotationAmt,
+              };
+              (resource.groupingPackageSuppliersPrices || []).forEach((sup) => {
+                const id = sup.supplierId;
+                row[`sup_${id}_assignedQty`] = sup.assignedQty;
+                row[`sup_${id}_finalUP`] = +(sup.uPriceAfterDiscount * sup.exchRateNow).toFixed(2);
+                row[`sup_${id}_totalPrice`] = +(sup.uPriceAfterDiscount * sup.exchRateNow * resource.quotationQty).toFixed(0);
+                row[`sup_${id}_isCalculated`] = sup.isCalculatedPrice;
+                row[`sup_${id}_missed`] = sup.missedPrice;
+              });
+              rows.push(row);
+            });
+
+            // Subtotal after each level
+            const subRow: any = {
+              _rowType: 'subtotal',
+              resourceDescription: level.c_Description,
+              totalPrice: level.c_TotalBudget,
+            };
+            (cLevel.groupingSupplierC_Prices || []).forEach((sup) => {
+              subRow[`sup_${sup.supplierId}_totalPrice`] = sup.totalPrice;
+            });
+            rows.push(subRow);
+
+          } else {
+            (level?.items || []).forEach((item) => {
+              const row: any = {
+                _rowType: 'data',
+                _rowRef: item,
+                isChecked: item.isChecked || false,
+                isExcluded: item.isExcluded || false,
+                isAlternative: item.isAlternative || false,
+                isNewItem: item.isNewItem || false,
+                boqRef: item.itemO,
+                itemDescription: item.descriptionO,
+                unit: item.unit,
+                qty: item.qty,
+                unitPrice: item.unitPrice,
+                totalPrice: item.totalPrice,
+                quotationQty: item.quotationQty,
+                quotationAmt: item.quotationAmt,
+              };
+              (item.groupingPackageSuppliersPrices || []).forEach((sup) => {
+                const id = sup.supplierId;
+                row[`sup_${id}_assignedQty`] = sup.assignedQty;
+                row[`sup_${id}_qty`] = sup.qty;
+                row[`sup_${id}_finalUP`] = +(sup.uPriceAfterDiscount * sup.exchRateNow).toFixed(2);
+                row[`sup_${id}_totalPrice`] = sup.totalPrice;
+                row[`sup_${id}_isCalculated`] = sup.isCalculatedPrice;
+                row[`sup_${id}_missed`] = sup.missedPrice;
+              });
+              rows.push(row);
+            });
+
+            // Subtotal only for last level in cLevel
+            if (ind === (cLevel.groupingLevels || []).length - 1) {
+              const subRow: any = {
+                _rowType: 'subtotal',
+                itemDescription: cLevel.c_Description,
+                totalPrice: cLevel.c_TotalBudget,
+              };
+              (cLevel.groupingSupplierC_Prices || []).forEach((sup) => {
+                subRow[`sup_${sup.supplierId}_totalPrice`] = sup.totalPrice;
+              });
+              rows.push(subRow);
+            }
+          }
+        });
+      });
+
+      this.rowData = rows;
+      // Dynamic height: fit content up to viewport cap
+      const rowPx = 20;                      // rowHeight binding
+      const headerPx = 18 + 27;             // groupHeaderHeight + headerHeight
+      const pinnedPx = 20;                   // pinned bottom row
+      const scrollbarPx = 18;               // horizontal scrollbar
+      const calculated = rows.length * rowPx + headerPx + pinnedPx + scrollbarPx;
+      const maxH = Math.max(window.innerHeight - 320, 150);
+      this.gridHeight = Math.min(calculated, maxH) + 'px';
+
+      setTimeout(() => {
+        if (this.columnApi) this.columnApi.autoSizeAllColumns(false);
+        this.buildPinnedRow();
+      }, 300);
+
+    } catch (err) {
+      console.error('buildRowData error:', err);
+    }
+  }
+
+  onCellClicked(event: CellClickedEvent) {
+    if (event.data?._rowType !== 'data') return;
+    if (event.colDef.field !== 'isExcluded') return;
+
+    const newVal = !event.data.isExcluded;
+    event.node.setDataValue('isExcluded', newVal);
+    const ref = event.data._rowRef;
+
+    const CostConn = this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe(() => {});
+
+    if (this.byBoq) {
+      const item = ref as GroupingBoq;
+      item.isExcluded = newVal;
+      this.packageComparisonService
+        .excludBoq(this.packageId, item.itemO, item.isNewItem, newVal, CostConn)
+        .subscribe(() => this.onSearch());
+    } else {
+      const res = ref as GroupingResource;
+      res.isExcluded = newVal;
+      this.packageComparisonService
+        .excludRessource(this.packageId, res.boqSeq, res.isNewItem, res.isAlternative, newVal, CostConn)
+        .subscribe(() => this.onSearch());
+    }
+  }
+
+  onCellValueChanged(event: CellValueChangedEvent) {
+    const field = event.colDef?.field;
+    if (!field?.startsWith('sup_') || !field?.endsWith('_assignedQty')) return;
+    if (event.data?._rowType !== 'data') return;
+
+    const parts = field.split('_');
+    const supplierId = parseInt(parts[1], 10);
+    const ref = event.data._rowRef;
+    const sups: any[] = this.byBoq
+      ? (ref as GroupingBoq).groupingPackageSuppliersPrices
+      : (ref as GroupingResource).groupingPackageSuppliersPrices;
+
+    const sup = sups?.find((s) => s.supplierId === supplierId);
+    if (sup) {
+      sup.assignedQty = parseFloat(event.newValue) || 0;
+    }
+  }
+
+  onSelectionChanged() {
+    if (!this.gridApi) return;
+    const selectedNodes = this.gridApi.getSelectedNodes();
+    const selectedRefs = new Set(selectedNodes.map((n) => n.data?._rowRef).filter(Boolean));
+
+    if (!this.byBoq) {
+      this.selectedResources = [];
+      this.CurrentLevelList.forEach((cLevel) =>
+        cLevel.groupingLevels.forEach((level) =>
+          level.groupingResources.forEach((res) => {
+            res.isChecked = selectedRefs.has(res);
+            if (res.isChecked) this.selectedResources.push(res.resourceSeq);
+          })
+        )
+      );
+    } else {
+      this.selectedBoqItems = [];
+      this.CurrentLevelList.forEach((cLevel) =>
+        cLevel.groupingLevels.forEach((level) =>
+          level.items.forEach((item) => {
+            item.isChecked = selectedRefs.has(item);
+            if (item.isChecked) this.selectedBoqItems.push(item.itemO);
+          })
+        )
+      );
+    }
+  }
+
+  private buildPinnedRow(): void {
+    if (!this.gridApi) return;
+    const dataRows = (this.rowData || []).filter((r: any) => r._rowType === 'data');
+    const count = dataRows.length;
+    const sumField = (field: string) =>
+      dataRows.reduce((acc: number, r: any) => acc + (parseFloat(r[field]) || 0), 0);
+
+    const descField = this.byBoq ? 'itemDescription' : 'resourceDescription';
+    const row: any = {
+      _rowType: 'pinnedTotal',
+      [descField]: `Total  (${count} item${count !== 1 ? 's' : ''})`,
+      totalPrice: sumField('totalPrice'),
+      quotationAmt: sumField('quotationAmt'),
+    };
+
+    this.getSupplierListFromData().forEach((sup: any) => {
+      row[`sup_${sup.supplierId}_totalPrice`] = sumField(`sup_${sup.supplierId}_totalPrice`);
+    });
+
+    this.gridApi.setPinnedBottomRowData([row]);
+  }
+
+  private fmtNum(value: any, decimals: number): string {
+    if (value == null || value === '') return '';
+    const n = parseFloat(value);
+    if (isNaN(n)) return '';
+    return n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: decimals });
+  }
+
+  private fmtDate(dateVal: any): string {
+    if (!dateVal) return '';
+    const d = new Date(dateVal);
+    if (isNaN(d.getTime())) return '';
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    return `${dd}/${mm}/${yyyy}`;
   }
 }

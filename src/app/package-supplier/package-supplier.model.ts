@@ -165,6 +165,7 @@ export class AssignPackageTemplate {
   public listCC: string[] = [];
 
   public listAttach: string[] = [];
+  public includeRfqAttachment: boolean = true;
 
   public revisionExpiryDate: Date = null;
 }
