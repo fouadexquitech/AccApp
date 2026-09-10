@@ -70,6 +70,25 @@ section {
     margin-top: 30px;
   }
 
+/* ── Dashboard: print-to-PDF ─────────────────────────────────────────────────── */
+@media print {
+  body * { visibility: hidden !important; }
+  .print-section,
+  .print-section * { visibility: visible !important; }
+  .print-section {
+    position: fixed !important;
+    inset: 0;
+    width: 100% !important;
+    background: #fff;
+    overflow: visible;
+    box-shadow: none !important;
+  }
+  .no-print { display: none !important; }
+}
+@media screen {
+  .print-only { display: none !important; }
+}
+
 /* ── AG Grid: comparison table overrides (global to bypass Angular encapsulation) ── */
 
 /* Full-width row container (level headers) must not intercept scroll events */

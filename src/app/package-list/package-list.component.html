@@ -1,97 +1,103 @@
-<!--<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-beat">
-        <p style="font-size: 20px; color: white">Loading...</p>
-    </ngx-spinner>-->
 <app-nav></app-nav>
 <section>
 <br>
-    <nav aria-label="breadcrumb" class="p-2">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Packages List</li>
-        </ol>
-    </nav>
+  <nav aria-label="breadcrumb" class="p-2">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Packages List</li>
+    </ol>
+  </nav>
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <div class="card card-body table-responsive">
-                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">Id</th>
-                                <th scope="col">Description</th>
-                                <th scope="col"></th>
-                                <th scope="col"></th>
-                                <th scope="col" *ngIf="false"></th>
-                                <th scope="col"></th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let item of PackageList; let i = index" style="cursor: pointer;">
-                                <td id="pckId">{{ item.idPkge }}</td>
-                                <td>{{ item.pkgeName }}</td>
-                                <td>
-                                    <a class="btn btn-primary" [routerLink]="['/package-supplier', item.idPkge]">
-                                        Supliers RFQ/Offers
-                                    </a>
-                                </td>
-                                <td>
-                                    <!--AH052024 <button type="button" class="btn btn-secondary"
-                                        (click)="routeToTechnicalConditions(item.idPkge, item.pkgeName)">Technical
-                                        Conditions</button> -->
-                                    <a class="btn btn-primary" [routerLink]="['/technical-conditions', item.idPkge, item.pkgeName]">
-                                        Technical Conditions
-                                    </a>
-                                </td>
-                                <td>
-                                    <h5 style="display: inline-block;"><span>Assigned Supp.</span>&nbsp;
-                                        <span style="float: right; cursor: pointer;user-select: none;" (click)="toggleShow(item.idPkge)">
-                                            <div class="form-check form-switch">
-                                                <input id="ckSupp" class="form-check-input" type="checkbox" [checked]="isShown && item.idPkge == selectedPackId">                     
-                                              </div>       
-                                        </span>            
-                                    </h5>
-                                    <!-- <div class="card-body" *ngIf="isShown && item.idPkge == selectedPackId"> -->
-                                    <table id="tbSupp" class="table" *ngIf="isShown && item.idPkge == selectedPackId" >
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    Supplier
-                                                </td>
-                                                <td>
-                                                    RFQ Priced?
-                                                </td>
-                                            </tr>
-                                            <tr *ngFor="let sup of SupplierPackagesList; let j = index">
-                                                <td *ngIf="item.idPkge == sup.psPackId">
-                                                    {{sup.psSupName}}
-                                                </td>
-                                                <td *ngIf="item.idPkge == sup.psPackId">
-                                                    {{sup.supSubmitted}}
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <!-- </div> -->
-                                </td>
-                                <td>                                   
-                                    <button type="button" *ngIf="item.suplierSubmitted == true" style="width: 100%;font-size:14px;"  class="btn btn-primary" 
-                                    (click)="onCompare(item.idPkge,item.pkgeName )">Compare Quotations</button>             
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tfoot *ngIf="isSearching && PackageList.length == 0">
-                            <tr>
-                                <td colspan="6" style="text-align: center;">
-                                    <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
-                                </td>
-                            </tr>
-                        </tfoot>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card card-body table-responsive">
+          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+            <thead>
+              <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Description</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col">Assigned Supp.</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of PackageList; let i = index">
+                <td>{{ item.idPkge }}</td>
+                <td>{{ item.pkgeName }}</td>
+                <td>
+                  <a class="btn btn-primary" [routerLink]="['/package-supplier', item.idPkge]">
+                    Suppliers RFQ/Offers
+                  </a>
+                </td>
+                <td>
+                  <a class="btn btn-primary" [routerLink]="['/technical-conditions', item.idPkge, item.pkgeName]">
+                    Technical Conditions
+                  </a>
+                </td>
+
+                <!-- ── Assigned Supp cell ── -->
+                <td class="assigned-supp-cell">
+                  <button *ngIf="item.suplierSubmitted"
+                          class="btn btn-sm supp-toggle-btn"
+                          [class.open]="expandedPackId === item.idPkge"
+                          (click)="toggleSuppliers(item.idPkge); $event.stopPropagation()"
+                          [title]="expandedPackId === item.idPkge ? 'Collapse' : 'Show assigned suppliers'">
+                    <i class="fa-solid" [ngClass]="expandedPackId === item.idPkge ? 'fa-minus' : 'fa-plus'"></i>
+                  </button>
+                  <span *ngIf="!item.suplierSubmitted" class="text-muted">—</span>
+
+                  <!-- Expandable supplier detail -->
+                  <div *ngIf="expandedPackId === item.idPkge" class="supp-detail-box">
+                    <div *ngIf="loadingPackId === item.idPkge" class="text-center py-2 text-muted small">
+                      <span class="spinner-border spinner-border-sm me-1"></span>Loading…
+                    </div>
+                    <table *ngIf="loadingPackId !== item.idPkge"
+                           class="table table-sm table-bordered table-striped mb-0 supp-inner-table">
+                      <thead class="table-secondary">
+                        <tr>
+                          <th>Supplier</th>
+                          <th class="text-center">RFQ Priced?</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let sup of suppliersCache[item.idPkge]">
+                          <td>{{ sup.psSupName }}</td>
+                          <td class="text-center">
+                            <i class="fa-solid me-1"
+                               [ngClass]="sup.supSubmitted ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger'"></i>
+                            {{ sup.supSubmitted ? 'Yes' : 'No' }}
+                          </td>
+                        </tr>
+                        <tr *ngIf="(suppliersCache[item.idPkge] || []).length === 0">
+                          <td colspan="2" class="text-center text-muted py-2">No suppliers found.</td>
+                        </tr>
+                      </tbody>
                     </table>
-                </div>
-            </div>
-        </div>
+                  </div>
+                </td>
 
+                <td>
+                  <button type="button" *ngIf="item.suplierSubmitted"
+                          class="btn btn-primary compare-btn"
+                          (click)="onCompare(item.idPkge, item.pkgeName)">
+                    Compare Quotations
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot *ngIf="isSearching && PackageList.length == 0">
+              <tr>
+                <td colspan="6" style="text-align: center;">
+                  <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
     </div>
+  </div>
 </section>

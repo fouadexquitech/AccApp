@@ -1,76 +1,71 @@
-<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light" *ngIf="user"  style="height: 30px;" >
-    <a class="navbar-brand p-2"  href="#"><img src="../../assets/img/acc_logo.png"></a>   
-    
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    
-    <div class="collapse navbar-collapse" id="navbarNavDropdown" >
-      <ul class="navbar-nav">
-        <li class="nav-item active">
-          <a class="nav-link" [routerLink]="['/']">
-            <i class="fa-solid fa-home"></i>
-            Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/package-list']">
-            <i class="fa fa-box-open"></i>
-            Packages</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/assign-package']">
-            <i class="fa-solid fa-arrow-right-to-bracket"></i>
-            Assign Packages</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkSettings" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-           <i class="fa fa-cog"></i> Setup
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkSettings">
-            <li><a class="dropdown-item" [routerLink]="['/management-users']">
-              <i class="	fas fa-user-tie"></i>
-              Management Users</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" [routerLink]="['/suppliers']">
-                <i class="fa fa-users"></i> 
-                Suppliers</a>
-              </li>
-              <!--<li><a class="dropdown-item" [routerLink]="">
-                <i class="fa-solid fa-gears"></i>
-                Technical Conditions</a></li>
-                <li><a class="dropdown-item" [routerLink]="">
-                  <i class="fa-solid fa-comment-dots"></i>
-                  Commercial Conditions</a></li>-->
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" [routerLink]="['/packages']">
-                <i class="fas fa-tools"></i> 
-                Packages</a>
-              </li>
-              <li><hr class="dropdown-divider"></li>
-              <li>
-                <a class="dropdown-item" [routerLink]="['/wbs-list']">
-                <i class="fas fa-tools"></i> WBS</a>
-              </li>
-          </ul>
-        </li>
+<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light" *ngIf="user" style="height: 30px;">
+  <a class="navbar-brand p-2" href="#"><img src="../../assets/img/acc_logo.png"></a>
 
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-           <i class="fa fa-user"></i> {{user.usrDesc}}  
-          </a>
-          
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <li><a class="dropdown-item text-danger" [routerLink]="" (click)="logout()">
-              <i class="fa fa-sign-out"></i>
-              Logout</a></li>
-          </ul>
-        </li>
-       <li class="nav-item active">
-            <a class="nav-link" [routerLink]="['/']">
-              Project: {{user.usrLoggedProjectName}}  </a>
-        </li>
-      </ul>
-    </div>
-    <div>
-    </div>
-  </nav>
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+    aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+
+    <!-- ── Left: navigation links ── -->
+    <ul class="navbar-nav me-auto">
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/']">
+          <i class="fa-solid fa-home"></i> Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/dashboard']">
+          <i class="fa-solid fa-gauge"></i> Dashboard</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/package-list']">
+          <i class="fa fa-box-open"></i> Packages</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/assign-package']">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Assign Packages</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkSettings" role="button"
+          data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fa fa-cog"></i> Setup
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkSettings">
+          <li><a class="dropdown-item" [routerLink]="['/management-users']">
+            <i class="fas fa-user-tie"></i> Management Users</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" [routerLink]="['/suppliers']">
+            <i class="fa fa-users"></i> Suppliers</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" [routerLink]="['/packages']">
+            <i class="fas fa-tools"></i> Packages</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" [routerLink]="['/wbs-list']">
+            <i class="fas fa-tools"></i> WBS</a></li>
+        </ul>
+      </li>
+    </ul>
+
+    <!-- ── Right: user + project ── -->
+    <ul class="navbar-nav align-items-center">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+          data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fa fa-user"></i> {{ user.usrDesc }}
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+          <li><a class="dropdown-item text-danger" [routerLink]="" (click)="logout()">
+            <i class="fa fa-sign-out"></i> Logout</a></li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <span class="nav-link project-label" [title]="user.usrLoggedProjectName">
+          <i class="fa-solid fa-folder-open me-1"></i>
+          <span class="project-name-text">{{ user.usrLoggedProjectName }}</span>
+        </span>
+      </li>
+    </ul>
+
+  </div>
+</nav>

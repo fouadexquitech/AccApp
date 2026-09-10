@@ -1,0 +1,281 @@
+<app-nav></app-nav>
+
+<div class="container-fluid dash-wrapper">
+
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+      <li class="breadcrumb-item active">Dashboard</li>
+    </ol>
+  </nav>
+
+  <!-- ── Stat Cards ─────────────────────────────────────────── -->
+  <div class="row g-3 mb-4">
+
+    <div class="col-md-3 col-sm-6">
+      <div class="card stat-card stat-card-primary shadow-sm h-100 clickable-card" (click)="toggleBudgetDetail()">
+        <div class="card-body">
+          <div class="stat-label">
+            <i class="fa-solid fa-sack-dollar me-2"></i>Project Total Budget
+            <i class="fa-solid ms-2 fa-xs" [ngClass]="showBudgetDetail ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+          </div>
+          <div class="stat-value text-primary" *ngIf="!loadingBudget">{{ fmt(totalBudget) }}</div>
+          <div class="placeholder-glow" *ngIf="loadingBudget"><span class="placeholder col-6"></span></div>
+          <div class="text-end mt-1 no-print">
+            <button class="btn btn-sm print-btn" (click)="printPanel($event, 'budget')" title="Print as PDF">
+              <i class="fa-solid fa-print"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+      <div class="card stat-card stat-card-success shadow-sm h-100 clickable-card" (click)="togglePackagesDetail()">
+        <div class="card-body">
+          <div class="stat-label">
+            <i class="fa-solid fa-boxes-stacked me-2"></i>Packages Total Budget
+            <i class="fa-solid ms-2 fa-xs" [ngClass]="showPackagesDetail ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+          </div>
+          <div class="stat-value text-success" *ngIf="!loadingPackages">{{ fmt(packagesTotalBudget) }}</div>
+          <div class="placeholder-glow" *ngIf="loadingPackages"><span class="placeholder col-6"></span></div>
+          <div class="text-end mt-1 no-print">
+            <button class="btn btn-sm print-btn" (click)="printPanel($event, 'packages')" title="Print as PDF">
+              <i class="fa-solid fa-print"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+      <div class="card stat-card stat-card-danger shadow-sm h-100 clickable-card" (click)="toggleMissingDetail()">
+        <div class="card-body">
+          <div class="stat-label">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>Missing Packaging Budget
+            <i class="fa-solid ms-2 fa-xs" [ngClass]="showMissingDetail ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+          </div>
+          <div class="stat-value text-danger" *ngIf="!loadingDivisions">{{ fmt(missingTotalBudget) }}</div>
+          <div class="placeholder-glow" *ngIf="loadingDivisions"><span class="placeholder col-6"></span></div>
+          <div class="text-end mt-1 no-print">
+            <button class="btn btn-sm print-btn" (click)="printPanel($event, 'missing')" title="Print as PDF">
+              <i class="fa-solid fa-print"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+      <div class="card stat-card stat-card-warning shadow-sm h-100 clickable-card" (click)="toggleQuotationDetail()">
+        <div class="card-body">
+          <div class="stat-label">
+            <i class="fa-solid fa-file-invoice-dollar me-2"></i>Total Quotation Budget
+            <i class="fa-solid ms-2 fa-xs" [ngClass]="showQuotationDetail ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+          </div>
+          <div class="stat-value text-orange" *ngIf="!loadingQuotation">{{ fmt(quotationTotalBudget) }}</div>
+          <div class="placeholder-glow" *ngIf="loadingQuotation"><span class="placeholder col-6"></span></div>
+          <div class="text-end mt-1 no-print">
+            <button class="btn btn-sm print-btn" (click)="printPanel($event, 'quotation')" title="Print as PDF">
+              <i class="fa-solid fa-print"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Project Budget by Division Panel ─────────────────── -->
+  <div class="card shadow-sm mb-4" *ngIf="showBudgetDetail" [class.print-section]="activePrintPanel === 'budget'">
+    <div class="card-header fw-semibold">
+      <i class="fa-solid fa-sack-dollar me-2 text-primary"></i>Project Budget by BOQ Resources Division
+    </div>
+    <div class="card-body">
+
+      <div *ngIf="loadingDivisionBudget" class="text-center py-5 text-muted">
+        <div class="spinner-border spinner-border-sm me-2"></div>Loading…
+      </div>
+
+      <div *ngIf="!loadingDivisionBudget" class="row g-0 div-budget-grid">
+        <div class="col-md-6 col-lg-4" *ngFor="let d of divisionBudgetData; let i = index">
+          <div class="pkg-row div-budget-row">
+            <div class="div-budget-header">
+              <span class="div-budget-name">{{ d.boqDiv || '(none)' }}</span>
+              <span class="div-budget-amount">{{ fmt(d.totalBudget) }}</span>
+            </div>
+            <div class="pkg-right">
+              <span class="pkg-pct">{{ pkgPct(d.totalBudget) }}%</span>
+              <div class="progress pkg-progress">
+                <div class="progress-bar"
+                     role="progressbar"
+                     [style.width]="pkgPct(d.totalBudget) + '%'"
+                     [style.background-color]="pkgColor(i)">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="divisionBudgetData.length === 0" class="col-12 text-center text-muted py-4">
+          No division data found.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Packages Budget Panel ─────────────────────────────── -->
+  <div class="card shadow-sm mb-4" *ngIf="showPackagesDetail" [class.print-section]="activePrintPanel === 'packages'">
+    <div class="card-header fw-semibold">
+      <i class="fa-solid fa-boxes-stacked me-2 text-success"></i>Packages Budget
+    </div>
+    <div class="card-body">
+
+      <div *ngIf="loadingPackages" class="text-center py-5 text-muted">
+        <div class="spinner-border spinner-border-sm me-2"></div>Loading…
+      </div>
+
+      <div *ngIf="!loadingPackages" class="row g-0">
+        <div class="col-md-6 col-lg-4" *ngFor="let p of packagesData; let i = index">
+          <div class="pkg-row">
+            <div class="pkg-left">
+              <div class="pkg-name">{{ p.pkgeName }}</div>
+              <div class="pkg-amount">{{ fmt(p.totalBudget) }}</div>
+            </div>
+            <div class="pkg-right">
+              <span class="pkg-pct">{{ pkgPct(p.totalBudget) }}%</span>
+              <div class="progress pkg-progress">
+                <div class="progress-bar"
+                     role="progressbar"
+                     [style.width]="pkgPct(p.totalBudget) + '%'"
+                     [style.background-color]="pkgColor(i)">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="packagesData.length === 0" class="col-12 text-center text-muted py-4">
+          No package data found.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Missing Resources by Division ─────────────────────── -->
+  <div class="card shadow-sm mb-4" *ngIf="showMissingDetail" [class.print-section]="activePrintPanel === 'missing'">
+    <div class="card-header fw-semibold">
+      <i class="fa-solid fa-triangle-exclamation me-2 text-danger"></i>Missing BOQ Resources by Division
+    </div>
+
+    <div *ngIf="loadingDivisions" class="text-center py-4 text-muted">
+      <div class="spinner-border spinner-border-sm me-2"></div>Loading…
+    </div>
+
+    <div class="table-responsive" *ngIf="!loadingDivisions">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th style="width:40px"></th>
+            <th>BOQ Resource Division</th>
+            <th class="text-end">Total Budget</th>
+            <th class="text-center">Missing Resources</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let div of missingDivisions">
+
+            <!-- Division row -->
+            <tr class="div-row" (click)="toggleDivision(div)">
+              <td class="text-center text-muted">
+                <i class="fa-solid" [ngClass]="div.expanded ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
+              </td>
+              <td><strong>{{ div.boqDiv || '(none)' }}</strong></td>
+              <td class="text-end text-primary fw-semibold">{{ fmt(div.totalBudget) }}</td>
+              <td class="text-center">
+                <span class="badge bg-danger rounded-pill">{{ div.missingCount | number }}</span>
+              </td>
+            </tr>
+
+            <!-- Expanded detail row -->
+            <tr *ngIf="div.expanded">
+              <td colspan="4" class="p-0 detail-cell">
+
+                <div *ngIf="div.loading" class="text-center py-3 text-muted">
+                  <div class="spinner-border spinner-border-sm me-2"></div>Loading resources…
+                </div>
+
+                <table *ngIf="!div.loading" class="table table-sm table-striped mb-0 detail-table">
+                  <thead class="table-secondary">
+                    <tr>
+                      <th>Description</th>
+                      <th>Category</th>
+                      <th>Unit</th>
+                      <th class="text-end">Unit Price</th>
+                      <th class="text-end">Total Qty</th>
+                      <th class="text-end">Total Budget</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngIf="div.resources?.length === 0">
+                      <td colspan="6" class="text-center text-muted py-2">No resources found.</td>
+                    </tr>
+                    <tr *ngFor="let r of div.resources">
+                      <td>{{ r.resDescription }}</td>
+                      <td>{{ r.boqCtg }}</td>
+                      <td>{{ r.boqUnitMesure }}</td>
+                      <td class="text-end">{{ r.boqUPrice | number:'1.2-2' }}</td>
+                      <td class="text-end">{{ r.totalQty | number:'1.3-3' }}</td>
+                      <td class="text-end fw-semibold">{{ fmt(r.totalBudget) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+              </td>
+            </tr>
+
+          </ng-container>
+
+          <tr *ngIf="missingDivisions.length === 0">
+            <td colspan="4" class="text-center text-success py-3">
+              <i class="fa-solid fa-circle-check me-2"></i>No missing resources.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Quotation Supplier Breakdown ──────────────────────── -->
+  <div class="card shadow-sm mb-4" *ngIf="showQuotationDetail" [class.print-section]="activePrintPanel === 'quotation'">
+    <div class="card-header fw-semibold">
+      <i class="fa-solid fa-file-invoice-dollar me-2 text-orange"></i>Quotation Budget by Supplier
+    </div>
+    <div *ngIf="loadingQuotation" class="text-center py-4 text-muted">
+      <div class="spinner-border spinner-border-sm me-2"></div>Loading…
+    </div>
+    <div class="table-responsive" *ngIf="!loadingQuotation">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Supplier</th>
+            <th class="text-end">Total Quotation Budget</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of quotationSuppliers">
+            <td>{{ s.supName }}</td>
+            <td class="text-end fw-semibold text-orange">{{ fmt(s.totalBudget) }}</td>
+          </tr>
+          <tr *ngIf="quotationSuppliers.length === 0">
+            <td colspan="2" class="text-center text-muted py-3">No quotation data found.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+</div>

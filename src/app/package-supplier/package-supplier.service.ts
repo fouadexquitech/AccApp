@@ -100,11 +100,11 @@ AssignPackageSuppliers(
     );
 }
 
-  GetEmailTemplate(language : string, packId :number , projName :string , revExpiryDate :string)
+  GetEmailTemplate(language : string, packId :number , projName :string , revExpiryDate :string, userName : string = '')
   {
         console.log(packId);
         console.log(projName);
-    return this.http.get(this.baseUrl + 'Logon/GetSuppliersEmailTemplate?Lang=' + language+ '&packId=' + packId+ '&projName=' + projName + '&revExpiryDate='+revExpiryDate).pipe(
+    return this.http.get(this.baseUrl + 'Logon/GetSuppliersEmailTemplate?Lang=' + language+ '&packId=' + packId+ '&projName=' + projName + '&revExpiryDate='+revExpiryDate + '&userName=' + encodeURIComponent(userName)).pipe(
       map(res => res), catchError(this.handleError)
     );
   }

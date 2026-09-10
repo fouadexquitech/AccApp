@@ -1444,7 +1444,7 @@ getSupplierEmailGroup(
       let select = event.target as HTMLInputElement;
       let lang = select.value;
       this.formEmailTemplate.controls['template'].setValue('');
-      this.packageSupplierService.GetEmailTemplate(lang,this.PackageId,this.user.usrLoggedProjectName ,revExpiryDate).subscribe((data) => {
+      this.packageSupplierService.GetEmailTemplate(lang,this.PackageId,this.user.usrLoggedProjectName ,revExpiryDate, this.user.usrId || '').subscribe((data) => {
       this.selectedEmailTemplate = data[0];
       this.formEmailTemplate.controls['template'].setValue(this.selectedEmailTemplate?.etContent || '');
       });
@@ -1455,7 +1455,7 @@ getSupplierEmailGroup(
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.lstLanguages=[];
-    this.packageSupplierService.GetEmailTemplate("",this.PackageId,this.user.usrLoggedProjectName,"").subscribe((data) => {
+    this.packageSupplierService.GetEmailTemplate("",this.PackageId,this.user.usrLoggedProjectName,"", this.user.usrId || '').subscribe((data) => {
       if (data) {
         this.lstEmailTemplate = data;
         this.lstEmailTemplate.forEach(element => {

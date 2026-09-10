@@ -14,12 +14,14 @@ import { PackageSupplierComponent } from './package-supplier/package-supplier.co
 import { RevisionDetailsComponent } from './revision-details/revision-details.component';
 import { TechnicalConditionsComponent } from './technical-conditions/technical-conditions.component';
 import { WbsListComponent } from './wbs-list/wbs-list.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthGuard } from './_helpers';
 
 
 const routes: Routes = [
   { path: '', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'assign-package', component: AssignPackageComponent, canActivate: [AuthGuard] },
   { path: 'package-list', component: PackageListComponent, canActivate: [AuthGuard] },

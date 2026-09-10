@@ -2678,15 +2678,18 @@ selectAllResources(
         maxWidth: 70 });
 
     // Budget group
-    const bqW  = this.byBoq ? 45 : 60;  // qty / price column width in byBoq
-    const bqWT = this.byBoq ? 55 : 70;  // total-price column width in byBoq
+    // byBoq: narrow columns (autoSizeAllColumns can shrink but capped by maxWidth)
+    const bqW    = this.byBoq ? 60 : 80;
+    const bqWMax = this.byBoq ? 95 : 90;
+    const bqWT    = this.byBoq ? 55 : 70;
+    const bqWTMax = this.byBoq ? 80 : 120;
     cols.push({
       headerName: 'Budget',
       headerClass: 'budget-header',
       children: [
-        { field: 'qty',        headerName: 'Final Qty', minWidth: bqW,  headerClass: 'sup-group-start', cellStyle: { borderLeft: '3px solid #444', textAlign: 'right' }, valueFormatter: (p) => this.fmtNum(p.value, 2), type: 'numericColumn' },
-        { field: 'unitPrice',  headerName: 'U. Price',  minWidth: bqW,  cellStyle: { textAlign: 'right' }, valueFormatter: (p) => this.fmtNum(p.value, 2), type: 'numericColumn' },
-        { field: 'totalPrice', headerName: 'T. Budget', minWidth: bqWT, cellStyle: { textAlign: 'right' }, valueFormatter: (p) => this.fmtNum(p.value, 0), type: 'numericColumn' },
+        { field: 'qty',        headerName: 'Final Qty', minWidth: bqW,  maxWidth: bqWMax,  headerClass: 'sup-group-start', cellStyle: { borderLeft: '3px solid #444', textAlign: 'right' }, valueFormatter: (p) => this.fmtNum(p.value, 2), type: 'numericColumn' },
+        { field: 'unitPrice',  headerName: 'U. Price',  minWidth: bqW,  maxWidth: bqWMax,  cellStyle: { textAlign: 'right' }, valueFormatter: (p) => this.fmtNum(p.value, 2), type: 'numericColumn' },
+        { field: 'totalPrice', headerName: 'T. Budget', minWidth: bqWT, maxWidth: bqWTMax, cellStyle: { textAlign: 'right' }, valueFormatter: (p) => this.fmtNum(p.value, 0), type: 'numericColumn' },
       ],
     });
 
@@ -2696,8 +2699,8 @@ selectAllResources(
         headerName: 'Quotation',
         headerClass: 'quotation-header',
         children: [
-          { field: 'quotationQty', headerName: 'Bill Qty', minWidth: bqW, headerClass: 'sup-group-start', cellStyle: { borderLeft: '3px solid #444', textAlign: 'right' }, valueFormatter: (p) => this.fmtNum(p.value, 2), type: 'numericColumn' },
-          { field: 'quotationAmt', headerName: 'Price',    minWidth: bqW, cellStyle: { textAlign: 'right' }, valueFormatter: (p) => this.fmtNum(p.value, 2), type: 'numericColumn' },
+          { field: 'quotationQty', headerName: 'Bill Qty', minWidth: bqW, maxWidth: bqWMax, headerClass: 'sup-group-start', cellStyle: { borderLeft: '3px solid #444', textAlign: 'right' }, valueFormatter: (p) => this.fmtNum(p.value, 2), type: 'numericColumn' },
+          { field: 'quotationAmt', headerName: 'Price',    minWidth: bqW, maxWidth: bqWMax, cellStyle: { textAlign: 'right' }, valueFormatter: (p) => this.fmtNum(p.value, 2), type: 'numericColumn' },
         ],
       });
     }
@@ -2717,7 +2720,7 @@ selectAllResources(
       children.push({
         field: `sup_${id}_assignedQty`,
         headerName: isIdeal ? 'Bud. Qty' : 'Qty As.',
-        minWidth: bqW,
+        minWidth: bqW, maxWidth: bqWMax,
         headerClass: 'sup-group-start',
         editable: (params) => !isIdeal && params.data?._rowType === 'data',
         type: 'numericColumn',
@@ -2739,7 +2742,7 @@ selectAllResources(
       children.push({
         field: `sup_${id}_finalUP`,
         headerName: 'Final U.P.',
-        minWidth: bqW,
+        minWidth: bqW, maxWidth: bqWMax,
         type: 'numericColumn',
         cellStyle: { textAlign: 'right' },
         valueFormatter: (p) => {
@@ -2758,7 +2761,7 @@ selectAllResources(
       children.push({
         field: `sup_${id}_totalPrice`,
         headerName: 'T. Price',
-        minWidth: bqWT,
+        minWidth: bqWT, maxWidth: bqWTMax,
         type: 'numericColumn',
         cellStyle: { textAlign: 'right' },
         valueFormatter: (p) => {

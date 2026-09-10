@@ -224,301 +224,307 @@
         </ag-grid-angular>
 
         <div class="table-responsive">
-        <!-- Summary footer (Sub-Total · Additional Fees · Grand Total) -->
-        <div class="summary-footer mt-2" *ngIf="packageSuppliersPrices?.length > 0">
-          <table class="table table-bordered table-sm" style="font-size:12px;">
-            <thead class="table-secondary">
-              <tr style="line-height:1.2;height:auto;font-size:11px;">
-                <th style="width:200px;padding:2px 8px;">Summary</th>
-                <th style="width:130px;padding:2px 8px;">Budget</th>
-                <th style="width:130px;padding:2px 8px;" *ngIf="showQuotation">Quotation</th>
-                <th *ngFor="let p of packageSuppliersPrices" style="min-width:100px;text-align:center;padding:2px 8px;">{{ p.supplierName }}</th>
+          <!-- Summary footer (Sub-Total · Additional Fees · Grand Total) -->
+          <div class="summary-footer mt-2" *ngIf="packageSuppliersPrices?.length > 0">
+            <table class="table table-bordered table-sm" style="font-size:12px;">
+              <thead class="table-secondary">
+                <tr style="line-height:1.2;height:auto;font-size:11px;">
+                  <th style="width:200px;padding:2px 8px;">Summary</th>
+                  <th style="width:130px;padding:2px 8px;">Budget</th>
+                  <th style="width:130px;padding:2px 8px;" *ngIf="showQuotation">Quotation</th>
+                  <th *ngFor="let p of packageSuppliersPrices" style="min-width:100px;text-align:center;padding:2px 8px;">{{
+                    p.supplierName }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Sub-Total</strong></td>
+                  <td class="text-right"></td>
+                  <td class="text-right" *ngIf="showQuotation"></td>
+                  <td *ngFor="let p of packageSuppliersPrices" class="text-right">
+                    <strong>{{ p.totalprice | number:'1.0-0' }}</strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Additional Fees</strong></td>
+                  <td></td>
+                  <td *ngIf="showQuotation"></td>
+                  <td *ngFor="let supp of packageSuppliersPrices" class="text-right text-muted" style="font-size:11px;">
+                    <span *ngFor="let field of supp.fieldLists; let last = last">
+                      {{ field.label }}: {{ field.value | number:'1.0-0' }}<ng-container
+                        *ngIf="field.type == fieldTypes.PERCENTAGE_TYPE_ID">%</ng-container><ng-container *ngIf="!last">,
+                      </ng-container>
+                    </span>
+                  </td>
+                </tr>
+                <tr class="table-light">
+                  <td><strong>Grand Total</strong></td>
+                  <td class="text-right"><strong>{{ getTotalBudget() | number:'1.0-0' }}</strong></td>
+                  <td class="text-right" *ngIf="showQuotation"><strong>{{ getTotalQuotation() | number:'1.0-0' }}</strong></td>
+                  <td *ngFor="let p of packageSuppliersPrices" class="text-right">
+                    <strong>{{ p.totalNetPrice | number:'1.0-0' }}</strong>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        
+          <!-- Technical Conditions -->
+          <div class="mt-2" *ngIf="techConditionsReplies?.length > 0">
+            <div class="p-2 bg-secondary text-white fw-bold">Technical Conditions</div>
+            <table class="table table-bordered table-sm" style="font-size:12px;">
+              <thead>
+                <tr>
+                  <th style="width:20%">Condition</th>
+                  <th style="width:20%">ACC Condition</th>
+                  <th *ngFor="let reply of techConditionsReplies[0]?.replies">{{ reply.supplierName }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let cond of techConditionsReplies">
+                  <td>{{ cond.description }}</td>
+                  <td>{{ cond.accCondition }}</td>
+                  <td *ngFor="let reply of cond.replies" class="text-center">{{ reply.reply }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        
+          <!-- Commercial Conditions -->
+          <div class="mt-2" *ngIf="comConditionsReplies?.length > 0">
+            <div class="bg-secondary text-white fw-bold" style="padding:2px 8px;font-size:11px;line-height:1.2;">Commercial
+              Conditions</div>
+            <table class="table table-bordered table-sm" style="font-size:12px;">
+              <thead>
+                <tr style="line-height:1;height:auto;">
+                  <th style="width:25%;padding:2px 4px;">Condition</th>
+                  <th style="width:25%;padding:2px 4px;">ACC Condition</th>
+                  <th *ngFor="let sup of comConditionSuppliers" style="text-align:center;padding:2px 4px;">{{ sup }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let cond of comConditionsReplies" style="line-height:1;height:auto;">
+                  <td style="padding:2px 4px;">{{ cond.description }}</td>
+                  <td style="padding:2px 4px;">{{ cond.accCondition }}</td>
+                  <td *ngFor="let reply of cond.replies" class="text-center" style="padding:2px 4px;">{{ reply.reply }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        
+          <table class="table table-comparison" *ngIf="groupingBoqGroupList.length > 0 && byGroup">
+            <thead>
+              <tr>
+                <th style="width: 1%">
+                  <input type="checkbox" id="selectAllGroups" (change)="checkAllGroups($event)" />
+                </th>
+                <th>Group</th>
+                <th>T. Price</th>
+                <th *ngFor="let sup of groupingBoqGroupList[0].groupingPackageSuppliersPrices">
+                  <table class="table table-bordered">
+                    <tr>
+                      <td colspan="3" class="text-center" style="font-size: 16px; font-weight: bold;">
+                        {{ sup.supplierName }} ({{ sup.lastRevisionDate | date : "dd/MM/yyyy" }})
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 33.33%" class="text-center">T. Price</td>
+                    </tr>
+                  </table>
+                </th>
               </tr>
             </thead>
             <tbody>
+              <tr *ngFor="let item of groupingBoqGroupList; let i = index">
+                <td style="width: 1%">
+                  <input type="checkbox" [checked]="item.isChecked" (change)="checkGroup($event, item)" />
+                  <input type="hidden" [value]="item.id" />
+                </td>
+                <td>
+                  {{ item.name }}
+                </td>
+                <td>
+                  {{ item.totalPrice | number : "1.0-0" }}
+                </td>
+                <td *ngFor="let sup of item.groupingPackageSuppliersPrices">
+                  <table class="table">
+                    <tr>
+                      <td class="text-center">
+                        <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{ sup.totalPrice | number : "1.2-2"
+                          }}</span>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td *ngIf="show && item.isChecked" style="width: 10%">
+                  <p *ngFor="
+                            let sup of item.groupingPackageSuppliersPrices;
+                            let i = index
+                          ">
+                    <ng-container *ngIf="sup.supplierName != 'Ideal'">
+                      <label>Quantity {{ sup.supplierName }}</label>
+                      &nbsp;
+                      <input class="form-control" type="number" [ngClass]="item.validPerc ? '' : 'border-danger'"
+                        (change)="setSupplierGroupQty($event, item, sup)" [value]="
+                                sup.supplierName != 'Ideal' ? sup.assignedQty : 0
+                              " />
+                    </ng-container>
+                  </p>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
               <tr>
-                <td><strong>Sub-Total</strong></td>
-                <td class="text-right"></td>
-                <td class="text-right" *ngIf="showQuotation"></td>
-                <td *ngFor="let p of packageSuppliersPrices" class="text-right">
-                  <strong>{{ p.totalprice | number:'1.0-0' }}</strong>
+                <td colspan="3"><strong>Sub-Total</strong></td>
+                <td *ngFor="let p of packageSuppliersPrices" class="text-center">
+                  <table class="table">
+                    <tr>
+                      <td class="text-right">
+                        <strong> {{ p.totalprice | number : "1.0-0" }}</strong>
+                      </td>
+                    </tr>
+                  </table>
                 </td>
               </tr>
               <tr>
-                <td><strong>Additional Fees</strong></td>
+                <td colspan="3"><strong>Additional Fees</strong></td>
+        
+                <td *ngFor="let supp of packageSuppliersPrices" class="text-center">
+                  <table class="table table-bordered">
+                    <tr *ngFor="let field of supp.fieldLists">
+                      <td class="text-center">
+                        <table class="table" *ngIf="field.type == fieldTypes.AMOUNT_TYPE_ID">
+                          <tr>
+                            <td class="text-center" style="width: 50%">
+                              <strong>{{ field.label }}</strong>
+                            </td>
+                            <td class="text-right">
+                              {{ field.value | number : "1.0-0" }}
+                            </td>
+                          </tr>
+                        </table>
+                        <table class="table" *ngIf="field.type == fieldTypes.PERCENTAGE_TYPE_ID">
+                          <tr>
+                            <td class="text-center" style="width: 50%">
+                              <strong>{{ field.label }}</strong>
+                            </td>
+                            <td class="text-right">
+                              {{ field.value | number : "1.0-0" }}%
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2"><strong>Grand Total</strong></td>
+                <td>
+                  <strong> {{ getTotalBudget() | number : "1.0-0" }}</strong>
+                </td>
                 <td></td>
-                <td *ngIf="showQuotation"></td>
-                <td *ngFor="let supp of packageSuppliersPrices" class="text-right text-muted" style="font-size:11px;">
-                  <span *ngFor="let field of supp.fieldLists; let last = last">
-                    {{ field.label }}: {{ field.value | number:'1.0-0' }}<ng-container *ngIf="field.type == fieldTypes.PERCENTAGE_TYPE_ID">%</ng-container><ng-container *ngIf="!last">, </ng-container>
-                  </span>
+                <td>
+                  <strong> {{ getTotalQuotation() | number : "1.0-0" }}</strong>
+                </td>
+        
+                <td *ngFor="let p of packageSuppliersPrices" class="text-center">
+                  <table class="table">
+                    <tr>
+                      <td class="text-right">
+                        <strong> {{ p.totalNetPrice | number : "1.0-0" }}</strong>
+                      </td>
+                    </tr>
+                  </table>
                 </td>
               </tr>
-              <tr class="table-light">
-                <td><strong>Grand Total</strong></td>
-                <td class="text-right"><strong>{{ getTotalBudget() | number:'1.0-0' }}</strong></td>
-                <td class="text-right" *ngIf="showQuotation"><strong>{{ getTotalQuotation() | number:'1.0-0' }}</strong></td>
-                <td *ngFor="let p of packageSuppliersPrices" class="text-right">
-                  <strong>{{ p.totalNetPrice | number:'1.0-0' }}</strong>
+              <tr *ngIf="techConditionsReplies?.length > 0">
+                <td colspan="2">
+                  <table style="width: 100%">
+                    <tr>
+                      <td class="text-left" style="width: 4%">
+                        <strong>Technical Conditions</strong>
+                      </td>
+                      <td class="text-left" style="width: 10%">
+                        <strong>ACC Condition</strong>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+        
+                <td [attr.colspan]="packageSuppliersPrices.length + 1">
+                  <table class="table table-bordered">
+                    <tr *ngFor="let cond of techConditionsReplies; let i = index">
+                      <td class="text-left" style="width: 15%">
+                        {{ cond.description }}
+                      </td>
+                      <td class="text-left" style="width: 15%">
+                        {{ cond.accCondition }}
+                      </td>
+                      <ng-container *ngIf="cond.replies.length > 0">
+                        <td *ngFor="let reply of cond.replies">
+                          <table class="table">
+                            <tr>
+                              <td class="text-center">
+                                {{ reply.accCondValue }}
+                              </td>
+                              <td class="text-center">{{ reply.reply }}</td>
+                            </tr>
+                          </table>
+                        </td>
+                      </ng-container>
+                      <ng-container *ngIf="cond.replies.length == 0">
+                        <td [attr.colspan]="packageSuppliersPrices.length">
+                          <table class="table">
+                            <tr>
+                              <td class="text-center">&nbsp;</td>
+                            </tr>
+                          </table>
+                        </td>
+                      </ng-container>
+                    </tr>
+                  </table>
                 </td>
               </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Technical Conditions -->
-        <div class="mt-2" *ngIf="techConditionsReplies?.length > 0">
-          <div class="p-2 bg-secondary text-white fw-bold">Technical Conditions</div>
-          <table class="table table-bordered table-sm" style="font-size:12px;">
-            <thead><tr>
-              <th style="width:20%">Condition</th>
-              <th style="width:20%">ACC Condition</th>
-              <th *ngFor="let reply of techConditionsReplies[0]?.replies">{{ reply.supplierName }}</th>
-            </tr></thead>
-            <tbody>
-              <tr *ngFor="let cond of techConditionsReplies">
-                <td>{{ cond.description }}</td>
-                <td>{{ cond.accCondition }}</td>
-                <td *ngFor="let reply of cond.replies" class="text-center">{{ reply.reply }}</td>
+              <tr *ngIf="comConditionsReplies.length > 0">
+                <td colspan="2"><strong>Commercial Conditions</strong></td>
+        
+                <td [attr.colspan]="packageSuppliersPrices.length + 1">
+                  <table class="table table-bordered">
+                    <tr *ngFor="let cond of comConditionsReplies; let i = index">
+                      <td class="text-left" style="width: 15%">
+                        {{ cond.description }}
+                      </td>
+                      <td class="text-left" style="width: 15%">
+                        {{ cond.accCondition }}
+                      </td>
+                      <ng-container *ngIf="cond.replies.length > 0">
+                        <td *ngFor="let reply of cond.replies">
+                          <table class="table">
+                            <tr>
+                              <td class="text-center">
+                                {{ reply.accCondValue }}
+                              </td>
+                              <td class="text-center">{{ reply.reply }}</td>
+                            </tr>
+                          </table>
+                        </td>
+                      </ng-container>
+                      <ng-container *ngIf="cond.replies.length == 0">
+                        <td [attr.colspan]="packageSuppliersPrices.length">
+                          <table class="table">
+                            <tr>
+                              <td class="text-center">&nbsp;</td>
+                            </tr>
+                          </table>
+                        </td>
+                      </ng-container>
+                    </tr>
+                  </table>
+                </td>
               </tr>
-            </tbody>
+            </tfoot>
           </table>
-        </div>
-
-        <!-- Commercial Conditions -->
-        <div class="mt-2" *ngIf="comConditionsReplies?.length > 0">
-          <div class="bg-secondary text-white fw-bold" style="padding:2px 8px;font-size:11px;line-height:1.2;">Commercial Conditions</div>
-          <table class="table table-bordered table-sm" style="font-size:12px;">
-            <thead><tr style="line-height:1;height:auto;">
-              <th style="width:25%;padding:2px 4px;">Condition</th>
-              <th style="width:25%;padding:2px 4px;">ACC Condition</th>
-              <th *ngFor="let sup of comConditionSuppliers" style="text-align:center;padding:2px 4px;">{{ sup }}</th>
-            </tr></thead>
-            <tbody>
-              <tr *ngFor="let cond of comConditionsReplies" style="line-height:1;height:auto;">
-                <td style="padding:2px 4px;">{{ cond.description }}</td>
-                <td style="padding:2px 4px;">{{ cond.accCondition }}</td>
-                <td *ngFor="let reply of cond.replies" class="text-center" style="padding:2px 4px;">{{ reply.reply }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <table class="table table-comparison" *ngIf="groupingBoqGroupList.length > 0 && byGroup">
-          <thead>
-            <tr>
-              <th style="width: 1%">
-                <input type="checkbox" id="selectAllGroups" (change)="checkAllGroups($event)" />
-              </th>
-              <th>Group</th>
-              <th>T. Price</th>
-              <th *ngFor="let sup of groupingBoqGroupList[0].groupingPackageSuppliersPrices">
-                <table class="table table-bordered">
-                  <tr>
-                    <td colspan="3" class="text-center" style="font-size: 16px; font-weight: bold;">
-                      {{ sup.supplierName }} ({{
-                      sup.lastRevisionDate | date : "dd/MM/yyyy"
-                      }})
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="width: 33.33%" class="text-center">T. Price</td>
-                  </tr>
-                </table>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of groupingBoqGroupList; let i = index">
-              <td style="width: 1%">
-                <input type="checkbox" [checked]="item.isChecked" (change)="checkGroup($event, item)" />
-                <input type="hidden" [value]="item.id" />
-              </td>
-              <td>
-                {{ item.name }}
-              </td>
-              <td>
-                {{ item.totalPrice | number : "1.0-0" }}
-              </td>
-              <td *ngFor="let sup of item.groupingPackageSuppliersPrices">
-                <table class="table">
-                  <tr>
-                    <td class="text-center">
-                      <span [ngClass]="sup.missedPrice == 1 ? 'text-danger' : ''">{{ sup.totalPrice | number : "1.2-2"
-                        }}</span>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-              <td *ngIf="show && item.isChecked" style="width: 10%">
-                <p *ngFor="
-                    let sup of item.groupingPackageSuppliersPrices;
-                    let i = index
-                  ">
-                  <ng-container *ngIf="sup.supplierName != 'Ideal'">
-                    <label>Quantity {{ sup.supplierName }}</label>
-                    &nbsp;
-                    <input class="form-control" type="number" [ngClass]="item.validPerc ? '' : 'border-danger'"
-                      (change)="setSupplierGroupQty($event, item, sup)" [value]="
-                        sup.supplierName != 'Ideal' ? sup.assignedQty : 0
-                      " />
-                  </ng-container>
-                </p>
-              </td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="3"><strong>Sub-Total</strong></td>
-              <td *ngFor="let p of packageSuppliersPrices" class="text-center">
-                <table class="table">
-                  <tr>
-                    <td class="text-right">
-                      <strong> {{ p.totalprice | number : "1.0-0" }}</strong>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="3"><strong>Additional Fees</strong></td>
-
-              <td *ngFor="let supp of packageSuppliersPrices" class="text-center">
-                <table class="table table-bordered">
-                  <tr *ngFor="let field of supp.fieldLists">
-                    <td class="text-center">
-                      <table class="table" *ngIf="field.type == fieldTypes.AMOUNT_TYPE_ID">
-                        <tr>
-                          <td class="text-center" style="width: 50%">
-                            <strong>{{ field.label }}</strong>
-                          </td>
-                          <td class="text-right">
-                            {{ field.value | number : "1.0-0" }}
-                          </td>
-                        </tr>
-                      </table>
-                      <table class="table" *ngIf="field.type == fieldTypes.PERCENTAGE_TYPE_ID">
-                        <tr>
-                          <td class="text-center" style="width: 50%">
-                            <strong>{{ field.label }}</strong>
-                          </td>
-                          <td class="text-right">
-                            {{ field.value | number : "1.0-0" }}%
-                          </td>
-                        </tr>
-                      </table>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2"><strong>Grand Total</strong></td>
-              <td>
-                <strong> {{ getTotalBudget() | number : "1.0-0" }}</strong>
-              </td>
-              <td></td>
-              <td>
-                <strong> {{ getTotalQuotation() | number : "1.0-0" }}</strong>
-              </td>
-
-              <td *ngFor="let p of packageSuppliersPrices" class="text-center">
-                <table class="table">
-                  <tr>
-                    <td class="text-right">
-                      <strong> {{ p.totalNetPrice | number : "1.0-0" }}</strong>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <tr *ngIf="techConditionsReplies?.length > 0">
-              <td colspan="2">
-                <table style="width: 100%">
-                  <tr>
-                    <td class="text-left" style="width: 4%">
-                      <strong>Technical Conditions</strong>
-                    </td>
-                    <td class="text-left" style="width: 10%">
-                      <strong>ACC Condition</strong>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-
-              <td [attr.colspan]="packageSuppliersPrices.length + 1">
-                <table class="table table-bordered">
-                  <tr *ngFor="let cond of techConditionsReplies; let i = index">
-                    <td class="text-left" style="width: 15%">
-                      {{ cond.description }}
-                    </td>
-                    <td class="text-left" style="width: 15%">
-                      {{ cond.accCondition }}
-                    </td>
-                    <ng-container *ngIf="cond.replies.length > 0">
-                      <td *ngFor="let reply of cond.replies">
-                        <table class="table">
-                          <tr>
-                            <td class="text-center">
-                              {{ reply.accCondValue }}
-                            </td>
-                            <td class="text-center">{{ reply.reply }}</td>
-                          </tr>
-                        </table>
-                      </td>
-                    </ng-container>
-                    <ng-container *ngIf="cond.replies.length == 0">
-                      <td [attr.colspan]="packageSuppliersPrices.length">
-                        <table class="table">
-                          <tr>
-                            <td class="text-center">&nbsp;</td>
-                          </tr>
-                        </table>
-                      </td>
-                    </ng-container>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <tr *ngIf="comConditionsReplies.length > 0">
-              <td colspan="2"><strong>Commercial Conditions</strong></td>
-
-              <td [attr.colspan]="packageSuppliersPrices.length + 1">
-                <table class="table table-bordered">
-                  <tr *ngFor="let cond of comConditionsReplies; let i = index">
-                    <td class="text-left" style="width: 15%">
-                      {{ cond.description }}
-                    </td>
-                    <td class="text-left" style="width: 15%">
-                      {{ cond.accCondition }}
-                    </td>
-                    <ng-container *ngIf="cond.replies.length > 0">
-                      <td *ngFor="let reply of cond.replies">
-                        <table class="table">
-                          <tr>
-                            <td class="text-center">
-                              {{ reply.accCondValue }}
-                            </td>
-                            <td class="text-center">{{ reply.reply }}</td>
-                          </tr>
-                        </table>
-                      </td>
-                    </ng-container>
-                    <ng-container *ngIf="cond.replies.length == 0">
-                      <td [attr.colspan]="packageSuppliersPrices.length">
-                        <table class="table">
-                          <tr>
-                            <td class="text-center">&nbsp;</td>
-                          </tr>
-                        </table>
-                      </td>
-                    </ng-container>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-          </tfoot>
-        </table>
         </div><!-- /table-responsive -->
       </div>
     </div>

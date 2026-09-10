@@ -21,10 +21,9 @@ export class PackageListComponent implements OnInit, OnDestroy {
 
   PackageList: PackageList[] = [];
   SupplierPackagesList: SupplierPackagesList[] = [];
-  selectedPackId:number;
-  isShown : boolean = false;
-  show : boolean = false;
-  toggleClass : string = 'fa-solid fa-toggle-off';
+  expandedPackId: number = -1;
+  loadingPackId: number = -1;
+  suppliersCache: { [packId: number]: SupplierPackagesList[] } = {};
   public user : User;
 
   public dtOptions: DataTables.Settings = {
@@ -116,36 +115,40 @@ export class PackageListComponent implements OnInit, OnDestroy {
     this.router.navigate(['technical-conditions'], { state: { packageId: idPkge, pkgeName : pkgeName } });
   }
 
-  toggleShow(idPkge:number)
-  {
-    let CostConn=this.user.usrLoggedConnString;
-    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-
-    this.packageSupplierService.GetSupplierPackagesList(idPkge,CostConn).subscribe((data) => {
-      if (data) {
-        this.SupplierPackagesList = data;
-      }
+  toggleSuppliers(idPkge: number): void {
+    if (this.expandedPackId === idPkge) {
+      this.expandedPackId = -1;
+      return;
+    }
+    this.expandedPackId = idPkge;
+    if (this.suppliersCache[idPkge]) return;
+    this.loadingPackId = idPkge;
+    const CostConn = this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe(() => {});
+    this.packageSupplierService.GetSupplierPackagesList(idPkge, CostConn).subscribe(data => {
+      this.suppliersCache[idPkge] = data || [];
+      this.loadingPackId = -1;
     });
-    
-    this.selectedPackId=idPkge;
-    this.isShown = !this.isShown;
-    this.toggleClass = (this.isShown ? 'fa-solid fa-toggle-on' : 'fa-solid fa-toggle-off');
   }
 
-  onCompare(idPkge:number , PackageName:string) {
-    let CostConn=this.user.usrLoggedConnString;
-    this.loginService.CheckConnection(CostConn).subscribe((data) => { });
-    this.packageSupplierService.GetSupplierPackagesList(idPkge,CostConn).subscribe((data) => {
-      if (data) {
-        this.SupplierPackagesList = data;
-        console.log(this.SupplierPackagesList[0])
-        this.selectedPackId=idPkge;
-        console.log(1)
-        this.router.navigate(['package-comparison-novo'], { state: { packageId: idPkge, packageName :PackageName, byBoq : (this.SupplierPackagesList[0]?.psByBoq == 1) , packSuppId : this.SupplierPackagesList[0].psId} });
-        console.log(2)
+  onCompare(idPkge: number, PackageName: string): void {
+    const navigate = (list: SupplierPackagesList[]) => {
+      if (list && list.length > 0) {
+        this.router.navigate(['package-comparison-novo'], {
+          state: { packageId: idPkge, packageName: PackageName, byBoq: list[0]?.psByBoq == 1, packSuppId: list[0].psId }
+        });
       }
+    };
+    if (this.suppliersCache[idPkge]) {
+      navigate(this.suppliersCache[idPkge]);
+      return;
+    }
+    const CostConn = this.user.usrLoggedConnString;
+    this.loginService.CheckConnection(CostConn).subscribe(() => {});
+    this.packageSupplierService.GetSupplierPackagesList(idPkge, CostConn).subscribe(data => {
+      this.suppliersCache[idPkge] = data || [];
+      navigate(this.suppliersCache[idPkge]);
     });
-
   }
 
 }

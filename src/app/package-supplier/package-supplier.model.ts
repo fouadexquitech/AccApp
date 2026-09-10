@@ -63,6 +63,7 @@ export class SupplierPackagesList {
     public tecCondSent : boolean = false;
     public revisionStatus : number = 0;
     public supSubmitted : boolean = false;
+    public isAccountCreated : boolean = false;
 }
 
 export class SupplierPackagesRevList {

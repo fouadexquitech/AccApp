@@ -53,6 +53,7 @@ import { AssignPackageFilterComponent } from '../assign-package-filter/assign-pa
 import { FuseDrawerModule } from '../@fuse/drawer';
 import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { WbsListComponent } from './wbs-list.component';
+import { DashboardComponent } from '../dashboard/dashboard.component';
 import { AgGridModule } from 'ag-grid-angular';
 
 @NgModule({
@@ -77,7 +78,8 @@ import { AgGridModule } from 'ag-grid-angular';
     ScrollContainerComponent,
     BoqListTableComponent,
     AssignPackageFilterComponent,
-    WbsListComponent
+    WbsListComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,

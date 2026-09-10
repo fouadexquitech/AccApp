@@ -1,6 +1,61 @@
 th {
-    background: white;
-    position: sticky;
-    top: 0;
-    z-index: 999;
-  }
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+/* ── Assigned Supp cell ── */
+.assigned-supp-cell {
+  vertical-align: top;
+  min-width: 200px;
+}
+
+.supp-toggle-btn {
+  background-color: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  color: #2e7d32;
+  font-size: 0.8rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+  transition: background-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.supp-toggle-btn:hover {
+  background-color: #c8e6c9;
+  color: #1b5e20;
+}
+.supp-toggle-btn.open {
+  background-color: #fff3e0;
+  border-color: #ffcc80;
+  color: #e65100;
+}
+.supp-toggle-btn.open:hover {
+  background-color: #ffe0b2;
+}
+
+.supp-detail-box {
+  margin-top: 8px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.supp-inner-table {
+  font-size: 0.82rem;
+  margin: 0;
+}
+.supp-inner-table thead th {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 4px 8px;
+}
+.supp-inner-table tbody td {
+  padding: 4px 8px;
+}
+
+.compare-btn {
+  font-size: 13px;
+  white-space: nowrap;
+}
