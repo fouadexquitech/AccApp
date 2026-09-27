@@ -51,7 +51,10 @@ export class DashboardComponent implements OnInit {
     });
 
     this.dashboardService.getBudgetByDivision(costConn).subscribe({
-      next: data => { this.divisionBudgetData = data || []; this.loadingDivisionBudget = false; },
+      next: data => {
+        this.divisionBudgetData = (data || []).sort((a, b) => parseInt(a.boqDiv, 10) - parseInt(b.boqDiv, 10));
+        this.loadingDivisionBudget = false;
+      },
       error: () => this.loadingDivisionBudget = false
     });
 
