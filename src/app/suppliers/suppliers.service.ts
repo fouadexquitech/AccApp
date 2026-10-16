@@ -43,6 +43,13 @@ export class SuppliersService {
     return this.http.post(environment.baseApiUrl + 'api/Supplier/UpdateSupplier', user);
   }
 
+  checkEmailExists(email : string, excludeSupId : number) : Observable<boolean>
+  {
+    return this.http.get<boolean>(environment.baseApiUrl + 'api/Supplier/CheckSupplierEmailExists', {
+      params : { email : email, excludeSupId : excludeSupId.toString() }
+    });
+  }
+
   createPortalAccount(list : any[])
   {
     //AH07022025

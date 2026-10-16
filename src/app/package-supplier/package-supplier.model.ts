@@ -3,6 +3,8 @@ export class SupplierList {
     public supName: string = null;
     public supEmail: string = null;
     public isAccountCreated: boolean = false;
+    /** client-side only: hidden by the supplier search box */
+    public filterHidden?: boolean = false;
 }
 
 export class PackageDetailsModel {
@@ -75,6 +77,9 @@ export class SupplierPackagesRevList {
     public currency : string = null;
     public prPackSuppId: number = 0;
     public prRevExpDate: Date;
+    public statusId : number = null;
+    public statusName : string = null;
+    public prSupSubmDate: Date = null;
 }
 
 export class RevisionDetailsList {

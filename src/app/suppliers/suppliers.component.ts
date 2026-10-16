@@ -38,6 +38,8 @@ export class SuppliersComponent implements OnInit {
   formEdit: FormGroup;
   submitted : boolean = false;
   updating : boolean = false;
+  loadingList : boolean = false;
+  emailExists : boolean = false;
   currentUser : Supplier;
 //AH22122023
   selectedSuppliers : any[] = [];
@@ -90,14 +92,17 @@ export class SuppliersComponent implements OnInit {
       serverSide: true,
       processing: true,
       ajax: (dataTablesParameters: any, callback : any) => {
-       
-        this.suppliersService.GetSuppliers(dataTablesParameters).subscribe(resp => {
+        that.loadingList = true;
+        this.suppliersService.GetSuppliers(dataTablesParameters).pipe(finalize(() => { that.loadingList = false; })).subscribe(resp => {
             that.suppliers = resp.data;
             callback({
               recordsTotal: resp.recordsTotal - 1,
               recordsFiltered: resp.recordsFiltered,
               data: []
             });
+          }, () => {
+            that.toastrService.error('Failed to load suppliers');
+            callback({ recordsTotal: 0, recordsFiltered: 0, data: [] });
           });
       },
       dom: 'Bfrtip',
@@ -312,6 +317,8 @@ export class SuppliersComponent implements OnInit {
       email: [supplier.supEmail, [Validators.required, Validators.email]]
     });
     this.currentUser = supplier;
+    this.submitted = false;
+    this.emailExists = false;
     this.modalReference = this.modalService.open(this.editModal, this.modalOptions);
     this.modalReference.result.then((result : any) => {
       this.closeResult = `Closed with: ${result}`;
@@ -331,23 +338,53 @@ export class SuppliersComponent implements OnInit {
         return;
     }
 
+    const newEmail = (this.f.email.value || '').trim();
+    const newName = (this.f.supName.value || '').trim();
+
     this.updating = true;
-    this.currentUser.supEmail = this.f.email.value;
-    this.currentUser.supName = this.f.supName.value;
-    this.suppliersService.updateSupplier(this.currentUser).subscribe(response=>{
+    this.emailExists = false;
+    // check the email is not already used by another supplier before updating
+    this.suppliersService.checkEmailExists(newEmail, this.currentUser.supID).subscribe(exists => {
+      if (exists)
+      {
+        this.updating = false;
+        this.emailExists = true;
+        this.toastrService.error('This email already exists for another supplier');
+        return;
+      }
+      this.saveSupplier(newName, newEmail);
+    }, () => {
+      this.updating = false;
+      this.toastrService.error('An error occured while checking the email');
+    });
+  }
+
+  private saveSupplier(name : string, email : string)
+  {
+    const sup = { ...this.currentUser, supName : name, supEmail : email };
+    this.suppliersService.updateSupplier(sup).subscribe(response=>{
       this.updating = false;
         if(response)
         {
+          this.currentUser.supName = name;
+          this.currentUser.supEmail = email;
           this.toastrService.success('Updated successfuly');
-          //this.getSuppliersList();
           this.reload();
           this.modalReference.close();
         }
         else
         {
-          this.toastrService.error('An error occured');
+          this.toastrService.error('Update failed. The email may already exist for another supplier.');
         }
+    }, () => {
+      this.updating = false;
+      this.toastrService.error('An error occured');
     });
+  }
+
+  onEmailChanged()
+  {
+    this.emailExists = false;
   }
 
   //#region select supplier

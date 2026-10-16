@@ -1,1 +1,4 @@
 <router-outlet></router-outlet>
+
+<!-- AI Vendan Agent: floating chat bot on every page once the user is logged in -->
+<app-ai-agent *ngIf="user && user.usrLoggedConnString"></app-ai-agent>

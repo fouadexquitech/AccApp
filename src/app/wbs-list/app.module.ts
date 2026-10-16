@@ -55,6 +55,7 @@ import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { WbsListComponent } from './wbs-list.component';
 import { DashboardComponent } from '../dashboard/dashboard.component';
 import { AgGridModule } from 'ag-grid-angular';
+import { AiAgentComponent } from '../ai-agent/ai-agent.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +80,8 @@ import { AgGridModule } from 'ag-grid-angular';
     BoqListTableComponent,
     AssignPackageFilterComponent,
     WbsListComponent,
-    DashboardComponent
+    DashboardComponent,
+    AiAgentComponent
   ],
   imports: [
     BrowserModule,

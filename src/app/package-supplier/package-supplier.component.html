@@ -1,3 +1,15 @@
+<!-- Loading overlay: supplier packages + revisions -->
+<div class="page-loading-overlay" *ngIf="isPageLoading">
+  <div class="page-loading-box">
+    <div class="spinner-border text-primary" role="status" style="width:3rem;height:3rem;"></div>
+    <div class="mt-2 fw-bold">Loading&hellip;</div>
+    <div class="text-muted small">
+      <span *ngIf="loadingSupplierPackages">Supplier packages</span>
+      <span *ngIf="loadingSupplierPackages && loadingRevisions"> &middot; </span>
+      <span *ngIf="loadingRevisions">Revisions</span>
+    </div>
+  </div>
+</div>
 <app-nav></app-nav>
 <section>
 <br>
@@ -32,12 +44,12 @@
                       [disabled]="selectedPortalStatus === null || isLoadingSuppliers || isAssigning"
                       (selectionChange)="onSupplierSelectionChange()">
             <input matInput type="text" class="mat-filter" placeholder="Search supplier"
-                   (keyup)="filterSuppliers($event)" (keydown)="$event.stopPropagation()">
+                   #supplierSearchInput (input)="filterSuppliers($event)" (keydown)="$event.stopPropagation()">
             <span class="fa fa-search input-icon"></span>
             <mat-divider></mat-divider>
             <mat-option *ngIf="isLoadingSuppliers" disabled>Loading suppliers...</mat-option>
-            <mat-option *ngFor="let item of SupplierList" [value]="item.supID">{{ item.supName }}</mat-option>
-            <mat-option *ngIf="selectedPortalStatus !== null && !isLoadingSuppliers && SupplierList.length === 0" disabled>No matching unassigned suppliers found</mat-option>
+            <mat-option *ngFor="let item of SupplierList; trackBy: trackBySupplierId" [value]="item.supID" [class.d-none]="item.filterHidden">{{ item.supName }}</mat-option>
+            <mat-option *ngIf="selectedPortalStatus !== null && !isLoadingSuppliers && (SupplierList.length === 0 || visibleSupplierCount === 0)" disabled>No matching unassigned suppliers found</mat-option>
           </mat-select>
           <mat-hint *ngIf="selectedPortalStatus === 1">Showing suppliers with portal accounts</mat-hint>
           <mat-hint *ngIf="selectedPortalStatus === 0">Showing suppliers without portal accounts</mat-hint>
@@ -122,9 +134,11 @@
             </tr>
             <tr *ngIf="currentRowIndex === i"><td colspan="9">
               <table class="table" *ngIf="SupplierPackagesRevList.length">
-                <thead><tr><th>Revision Id</th><th>Revision No</th><th>Revision Date</th><th>Expiry Date</th><th>Total Price</th><th>Currency</th><th colspan="6" class="text-center">Actions</th></tr></thead>
+                <thead><tr><th>Revision Id</th><th>Revision No</th><th>Revision Date</th><th>Expiry Date</th><th>Total Price</th><th>Currency</th><th>Status</th><th>Subm. Date</th><th colspan="6" class="text-center">Actions</th></tr></thead>
                 <tbody><tr *ngFor="let rev of SupplierPackagesRevList">
                   <td>{{ rev.prRevId }}</td><td>{{ rev.prRevNo }}</td><td>{{ rev.prRevDate | date:'dd/MM/yyyy HH:mm' }}</td><td>{{ rev.prRevExpDate | date:'dd/MM/yyyy' }}</td><td>{{ rev.prTotPrice | number:'1.2-2' }}</td><td>{{ rev.currency }}</td>
+                  <td><span class="badge rev-status" [ngClass]="'rev-status-' + (rev.statusId || 0)">{{ rev.statusName || '-' }}</span></td>
+                  <td>{{ rev.prSupSubmDate ? (rev.prSupSubmDate | date:'dd/MM/yyyy HH:mm') : '-' }}</td>
                   <td><button class="btn btn-warning" (click)="routeToRevisionDetails(rev.prRevId, item.psByBoq, item.psId)">Rev. Details</button></td>
                   <td><button class="btn btn-secondary" (click)="OpenFieldModal(rev.prRevId)">Add Field</button></td>
                   <td><button class="btn btn-secondary" (click)="openFieldsListModal(rev.prRevId, rev.prRevNo, item.psSupName)">View Fields</button></td>

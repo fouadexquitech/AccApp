@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { ColDef, ColGroupDef, GridApi, ColumnApi, GridReadyEvent, CellClickedEvent, CellValueChangedEvent } from 'ag-grid-community';
+import { Component, ElementRef, OnInit } from '@angular/core';
+import { ColDef, ColGroupDef, GridApi, ColumnApi, GridReadyEvent, CellClickedEvent, CellValueChangedEvent, BodyScrollEvent } from 'ag-grid-community';
 import { Router } from '@angular/router';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -215,7 +215,8 @@ export class PackageComparisonNovoComponent implements OnInit {
     private packageSupplierService: PackageSupplierService,
     private toastr: ToastrService,
     private formBuilder: FormBuilder,
-    private loginService: LoginService
+    private loginService: LoginService,
+    private hostEl: ElementRef
   ) {
     if (this.router.getCurrentNavigation().extras.state != undefined) {
       this.packageId =
@@ -2093,35 +2094,65 @@ OpenAssignModal() {
     }
   }
 
+  // Page loading overlay: shown until both the comparison sheet and the
+  // supplier total prices have been received.
+  loadingComparison = false;
+  loadingPrices = false;
+  get isPageLoading(): boolean {
+    return this.loadingComparison || this.loadingPrices;
+  }
+
   onSearch() {
     let CostConn = this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => {});
 
     this.searching = true;
+    this.loadingComparison = true;
+    this.loadingPrices = true;
     if (!this.byBoq) {
       this.packageComparisonService
         .getComparisonSheet(this.packageId, this.SearchInput, CostConn, this.cGroup)
-        .subscribe((data) => {
-          this.searching = false;
-          if (data) {
-            this.CurrentLevelList = data;
-            this.getSuppliersPrice();
-            this.buildColumnDefs();
-            this.buildRowData();
+        .subscribe(
+          (data) => {
+            this.searching = false;
+            this.loadingComparison = false;
+            if (data) {
+              this.CurrentLevelList = data;
+              this.getSuppliersPrice();
+              this.buildColumnDefs();
+              this.buildRowData();
+            } else {
+              this.loadingPrices = false;
+            }
+          },
+          () => {
+            this.searching = false;
+            this.loadingComparison = false;
+            this.loadingPrices = false;
           }
-        });
+        );
     } else {
       this.packageComparisonService
         .getComparisonSheetByBoq(this.packageId, this.SearchInput, CostConn, this.cGroup)
-        .subscribe((data) => {
-          this.searching = false;
-          if (data) {
-            this.CurrentLevelList = data;
-            this.getSuppliersPrice();
-            this.buildColumnDefs();
-            this.buildRowData();
+        .subscribe(
+          (data) => {
+            this.searching = false;
+            this.loadingComparison = false;
+            if (data) {
+              this.CurrentLevelList = data;
+              this.getSuppliersPrice();
+              this.buildColumnDefs();
+              this.buildRowData();
+            } else {
+              this.loadingPrices = false;
+            }
+          },
+          () => {
+            this.searching = false;
+            this.loadingComparison = false;
+            this.loadingPrices = false;
           }
-        });
+        );
     }
   }
 
@@ -2193,13 +2224,20 @@ OpenAssignModal() {
     let CostConn = this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => {});
 
+    this.loadingPrices = true;
     this.packageComparisonService
       .GetPackageSuppliersPrice(this.packageId, this.SearchInput, CostConn)
-      .subscribe((data) => {
-        if (data) {
-          this.packageSuppliersPrices = data;
+      .subscribe(
+        (data) => {
+          this.loadingPrices = false;
+          if (data) {
+            this.packageSuppliersPrices = data;
+          }
+        },
+        () => {
+          this.loadingPrices = false;
         }
-      });
+      );
   }
 
   GetRESDivList() {
@@ -2575,6 +2613,7 @@ selectAllResources(
     if (this.columnApi) {
       this.columnApi.autoSizeAllColumns(false);
     }
+    this.computeFooterLayout();
   }
 
   private getSupplierListFromData(): any[] {
@@ -2682,7 +2721,7 @@ selectAllResources(
     const bqW    = this.byBoq ? 60 : 80;
     const bqWMax = this.byBoq ? 95 : 90;
     const bqWT    = this.byBoq ? 55 : 70;
-    const bqWTMax = this.byBoq ? 80 : 120;
+    const bqWTMax = 160;   // total columns: wide enough for grand totals (see ensureTotalColumnsFit)
     cols.push({
       headerName: 'Budget',
       headerClass: 'budget-header',
@@ -2700,7 +2739,7 @@ selectAllResources(
         headerClass: 'quotation-header',
         children: [
           { field: 'quotationQty', headerName: 'Bill Qty', minWidth: bqW, maxWidth: bqWMax, headerClass: 'sup-group-start', cellStyle: { borderLeft: '3px solid #444', textAlign: 'right' }, valueFormatter: (p) => this.fmtNum(p.value, 2), type: 'numericColumn' },
-          { field: 'quotationAmt', headerName: 'Price',    minWidth: bqW, maxWidth: bqWMax, cellStyle: { textAlign: 'right' }, valueFormatter: (p) => this.fmtNum(p.value, 2), type: 'numericColumn' },
+          { field: 'quotationAmt', headerName: 'Price',    minWidth: bqW, maxWidth: bqWTMax, cellStyle: { textAlign: 'right' }, valueFormatter: (p) => this.fmtNum(p.value, (p.data?._rowType === 'pinnedTotal' || p.data?._rowType === 'subtotal') ? 0 : 2), type: 'numericColumn' },
         ],
       });
     }
@@ -3007,6 +3046,153 @@ selectAllResources(
     });
 
     this.gridApi.setPinnedBottomRowData([row]);
+    this.ensureTotalColumnsFit(row);
+  }
+
+  /**
+   * autoSizeAllColumns only measures the rendered data rows, so large subtotal /
+   * pinned-total values were cut off ("1,096..."). Widen every total column so
+   * its largest total is fully visible.
+   */
+  private ensureTotalColumnsFit(totalRow: any): void {
+    if (!this.columnApi) return;
+    const totalRows = [totalRow, ...(this.rowData || []).filter((r: any) => r._rowType === 'subtotal')];
+    const fields = Object.keys(totalRow).filter(
+      (k) => k === 'totalPrice' || k === 'quotationAmt' || /^sup_.+_totalPrice$/.test(k)
+    );
+    fields.forEach((f) => {
+      const col = this.columnApi.getColumn(f);
+      if (!col) return;
+      let maxLen = 0;
+      totalRows.forEach((r: any) => {
+        const txt = this.fmtNum(r?.[f], 0);
+        if (txt.length > maxLen) maxLen = txt.length;
+      });
+      const needed = Math.ceil(maxLen * 8) + 28; // bold digits + cell padding
+      if (col.getActualWidth() < needed) this.columnApi.setColumnWidth(col, needed);
+    });
+  }
+
+  // ── Grid-aligned footer (Summary · Technical · Commercial conditions) ────
+  // The footer tables below the grid take their column widths from the live
+  // AG Grid columns so that Budget / Quotation / each supplier line up exactly
+  // under their grid column groups, and follow the grid's horizontal scroll.
+
+  footerLeftWidth = 0;      // width of the pinned-left grid columns
+  footerCenterWidth = 0;    // total width of the scrollable grid columns
+  footerPreWidth = 0;       // width of non-supplier columns (Excl., Unit, Budget, Quotation)
+  footerSegments: FooterSegment[] = [];
+  footerSupplierSegments: FooterSegment[] = [];
+
+  computeFooterLayout(): void {
+    if (!this.columnApi) return;
+    const cols = this.columnApi.getAllDisplayedColumns() || [];
+    const names = new Map<string, string>();
+    this.getSupplierListFromData().forEach((s: any) => names.set(String(s.supplierId), s.supplierName));
+
+    let left = 0;
+    const segs: FooterSegment[] = [];
+    let supIndex = -1;
+    cols.forEach((col) => {
+      const w = col.getActualWidth();
+      const pinned = col.getPinned();
+      if (pinned === 'left') { left += w; return; }
+      if (pinned === 'right') return;
+
+      const field = col.getColDef().field || '';
+      let seg: FooterSegment;
+      if (field === 'qty' || field === 'unitPrice' || field === 'totalPrice') {
+        seg = { key: 'budget', type: 'budget', width: 0, label: 'Budget', cssClass: 'af-budget' };
+      } else if (field === 'quotationQty' || field === 'quotationAmt') {
+        seg = { key: 'quotation', type: 'quotation', width: 0, label: 'Quotation', cssClass: 'af-quotation' };
+      } else {
+        const m = /^sup_(.+?)_(assignedQty|finalUP|totalPrice)$/.exec(field);
+        if (m) {
+          seg = { key: 'sup_' + m[1], type: 'supplier', width: 0, supplierId: m[1], label: names.get(m[1]) || '' };
+        } else {
+          seg = { key: 'lead', type: 'lead', width: 0, label: '' };
+        }
+      }
+      const last = segs[segs.length - 1];
+      if (last && last.key === seg.key) {
+        last.width += w;
+      } else {
+        if (seg.type === 'supplier') {
+          supIndex++;
+          seg.cssClass = 'af-sup-' + (supIndex % 8);
+        }
+        seg.width = w;
+        segs.push(seg);
+      }
+    });
+
+    this.footerLeftWidth = left;
+    this.footerSegments = segs;
+    this.footerSupplierSegments = segs.filter((s) => s.type === 'supplier');
+    this.footerCenterWidth = segs.reduce((a, s) => a + s.width, 0);
+    const firstSup = segs.findIndex((s) => s.type === 'supplier');
+    this.footerPreWidth = segs
+      .slice(0, firstSup < 0 ? segs.length : firstSup)
+      .reduce((a, s) => a + s.width, 0);
+  }
+
+  onGridBodyScroll(event: BodyScrollEvent): void {
+    if (event.direction !== 'horizontal') return;
+    this.hostEl.nativeElement.style.setProperty('--af-scroll', -event.left + 'px');
+  }
+
+  getFooterSupplier(seg: FooterSegment): PackageSuppliersPrice {
+    if (!seg || seg.type !== 'supplier') return null;
+    const list = this.packageSuppliersPrices || [];
+    return (
+      list.find((p) => String(p.supplierId) === seg.supplierId) ||
+      list.find((p) => p.supplierName === seg.label) ||
+      null
+    );
+  }
+
+  /** Sum of the grid data rows for a field — the same numbers as the grid "Total" row. */
+  private sumGridField(field: string): number {
+    return (this.rowData || [])
+      .filter((r: any) => r._rowType === 'data')
+      .reduce((acc: number, r: any) => acc + (parseFloat(r[field]) || 0), 0);
+  }
+
+  /** Sub-Total: Budget / Quotation / supplier T. Price, summed from the grid rows. */
+  getFooterSubTotal(seg: FooterSegment): number {
+    if (!seg) return null;
+    if (seg.type === 'budget') return this.sumGridField('totalPrice');
+    if (seg.type === 'quotation') return this.sumGridField('quotationAmt');
+    if (seg.type === 'supplier') return this.sumGridField(`sup_${seg.supplierId}_totalPrice`);
+    return null;
+  }
+
+  /** Additional fees of a supplier: amount fields + percentage fields applied on the Sub-Total. */
+  getFooterAdditionalFees(seg: FooterSegment): number {
+    if (!seg || seg.type !== 'supplier') return 0;
+    const sub = this.getFooterSubTotal(seg) || 0;
+    return (this.getFooterSupplier(seg)?.fieldLists || []).reduce((acc: number, f: any) => {
+      const v = parseFloat(f.value) || 0;
+      return acc + (f.type == this.fieldTypes.PERCENTAGE_TYPE_ID ? (sub * v) / 100 : v);
+    }, 0);
+  }
+
+  /** Grand Total = Sub-Total + Additional Fees. */
+  getFooterGrandTotal(seg: FooterSegment): number {
+    if (!seg || seg.type === 'lead') return null;
+    return (this.getFooterSubTotal(seg) || 0) + this.getFooterAdditionalFees(seg);
+  }
+
+  getFooterReply(cond: any, seg: FooterSegment): string {
+    const replies: any[] = cond?.replies || [];
+    const r =
+      replies.find((x) => x.supplierId != null && String(x.supplierId) === seg.supplierId) ||
+      replies.find((x) => x.supplierName === seg.label);
+    return r ? r.reply : '';
+  }
+
+  trackBySegKey(_: number, seg: FooterSegment) {
+    return seg.key;
   }
 
   private fmtNum(value: any, decimals: number): string {
@@ -3025,4 +3211,13 @@ selectAllResources(
     const yyyy = d.getFullYear();
     return `${dd}/${mm}/${yyyy}`;
   }
+}
+
+interface FooterSegment {
+  key: string;
+  type: 'lead' | 'budget' | 'quotation' | 'supplier';
+  width: number;
+  label: string;
+  supplierId?: string;
+  cssClass?: string;
 }

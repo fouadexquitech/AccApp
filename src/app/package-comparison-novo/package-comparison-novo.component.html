@@ -1,3 +1,15 @@
+<!-- Loading overlay: comparison data + supplier total prices -->
+<div class="page-loading-overlay" *ngIf="isPageLoading">
+  <div class="page-loading-box">
+    <div class="spinner-border text-primary" role="status" style="width:3rem;height:3rem;"></div>
+    <div class="mt-2 fw-bold">Loading comparison&hellip;</div>
+    <div class="text-muted small">
+      <span *ngIf="loadingComparison">Comparison data</span>
+      <span *ngIf="loadingComparison && loadingPrices"> &middot; </span>
+      <span *ngIf="loadingPrices">Total prices</span>
+    </div>
+  </div>
+</div>
 <app-nav></app-nav>
 <section>
   <style>
@@ -220,98 +232,101 @@
           (firstDataRendered)="onFirstDataRendered()"
           (selectionChanged)="onSelectionChanged()"
           (cellClicked)="onCellClicked($event)"
-          (cellValueChanged)="onCellValueChanged($event)">
+          (cellValueChanged)="onCellValueChanged($event)"
+          (bodyScroll)="onGridBodyScroll($event)"
+          (columnResized)="computeFooterLayout()"
+          (displayedColumnsChanged)="computeFooterLayout()">
         </ag-grid-angular>
 
         <div class="table-responsive">
-          <!-- Summary footer (Sub-Total · Additional Fees · Grand Total) -->
-          <div class="summary-footer mt-2" *ngIf="packageSuppliersPrices?.length > 0">
-            <table class="table table-bordered table-sm" style="font-size:12px;">
-              <thead class="table-secondary">
-                <tr style="line-height:1.2;height:auto;font-size:11px;">
-                  <th style="width:200px;padding:2px 8px;">Summary</th>
-                  <th style="width:130px;padding:2px 8px;">Budget</th>
-                  <th style="width:130px;padding:2px 8px;" *ngIf="showQuotation">Quotation</th>
-                  <th *ngFor="let p of packageSuppliersPrices" style="min-width:100px;text-align:center;padding:2px 8px;">{{
-                    p.supplierName }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Sub-Total</strong></td>
-                  <td class="text-right"></td>
-                  <td class="text-right" *ngIf="showQuotation"></td>
-                  <td *ngFor="let p of packageSuppliersPrices" class="text-right">
-                    <strong>{{ p.totalprice | number:'1.0-0' }}</strong>
-                  </td>
-                </tr>
-                <tr>
-                  <td><strong>Additional Fees</strong></td>
-                  <td></td>
-                  <td *ngIf="showQuotation"></td>
-                  <td *ngFor="let supp of packageSuppliersPrices" class="text-right text-muted" style="font-size:11px;">
-                    <span *ngFor="let field of supp.fieldLists; let last = last">
-                      {{ field.label }}: {{ field.value | number:'1.0-0' }}<ng-container
-                        *ngIf="field.type == fieldTypes.PERCENTAGE_TYPE_ID">%</ng-container><ng-container *ngIf="!last">,
+          <!-- Grid-aligned footer: columns follow the AG Grid column widths & horizontal scroll -->
+          <div class="aligned-footer mt-2" *ngIf="footerSegments.length > 0">
+
+            <!-- Summary (Sub-Total · Additional Fees · Grand Total) -->
+            <div class="af-block" *ngIf="packageSuppliersPrices?.length > 0">
+              <div class="af-row af-head">
+                <div class="af-left" [style.width.px]="footerLeftWidth">Summary</div>
+                <div class="af-view">
+                  <div class="af-inner" [style.width.px]="footerCenterWidth">
+                    <div *ngFor="let seg of footerSegments; trackBy: trackBySegKey" class="af-cell af-center"
+                      [ngClass]="seg.cssClass" [class.af-group-start]="seg.type !== 'lead'"
+                      [style.width.px]="seg.width" [title]="seg.label">{{ seg.label }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="af-row">
+                <div class="af-left" [style.width.px]="footerLeftWidth"><strong>Sub-Total</strong></div>
+                <div class="af-view">
+                  <div class="af-inner" [style.width.px]="footerCenterWidth">
+                    <div *ngFor="let seg of footerSegments; trackBy: trackBySegKey" class="af-cell af-num"
+                      [class.af-group-start]="seg.type !== 'lead'" [style.width.px]="seg.width">
+                      <strong *ngIf="seg.type !== 'lead'">{{ getFooterSubTotal(seg) | number:'1.0-0' }}</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="af-row">
+                <div class="af-left" [style.width.px]="footerLeftWidth"><strong>Additional Fees</strong></div>
+                <div class="af-view">
+                  <div class="af-inner" [style.width.px]="footerCenterWidth">
+                    <div *ngFor="let seg of footerSegments; trackBy: trackBySegKey" class="af-cell af-num text-muted af-small"
+                      [class.af-group-start]="seg.type !== 'lead'" [style.width.px]="seg.width">
+                      <ng-container *ngIf="seg.type === 'supplier'">
+                        <span *ngFor="let field of getFooterSupplier(seg)?.fieldLists; let last = last">
+                          {{ field.label }}: {{ field.value | number:'1.0-0' }}<ng-container
+                            *ngIf="field.type == fieldTypes.PERCENTAGE_TYPE_ID">%</ng-container><ng-container *ngIf="!last">,
+                          </ng-container>
+                        </span>
                       </ng-container>
-                    </span>
-                  </td>
-                </tr>
-                <tr class="table-light">
-                  <td><strong>Grand Total</strong></td>
-                  <td class="text-right"><strong>{{ getTotalBudget() | number:'1.0-0' }}</strong></td>
-                  <td class="text-right" *ngIf="showQuotation"><strong>{{ getTotalQuotation() | number:'1.0-0' }}</strong></td>
-                  <td *ngFor="let p of packageSuppliersPrices" class="text-right">
-                    <strong>{{ p.totalNetPrice | number:'1.0-0' }}</strong>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="af-row af-total">
+                <div class="af-left" [style.width.px]="footerLeftWidth"><strong>Grand Total</strong></div>
+                <div class="af-view">
+                  <div class="af-inner" [style.width.px]="footerCenterWidth">
+                    <div *ngFor="let seg of footerSegments; trackBy: trackBySegKey" class="af-cell af-num"
+                      [class.af-group-start]="seg.type !== 'lead'" [style.width.px]="seg.width">
+                      <strong *ngIf="seg.type !== 'lead'">{{ getFooterGrandTotal(seg) | number:'1.0-0' }}</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Technical & Commercial Conditions -->
+            <ng-container *ngFor="let sec of [
+                { title: 'Technical Conditions', rows: techConditionsReplies },
+                { title: 'Commercial Conditions', rows: comConditionsReplies }]">
+              <div class="af-block mt-2" *ngIf="sec.rows?.length > 0">
+                <div class="af-title">{{ sec.title }}</div>
+                <div class="af-row af-head af-head-light">
+                  <div class="af-left" [style.width.px]="footerLeftWidth">Condition</div>
+                  <div class="af-view">
+                    <div class="af-inner" [style.width.px]="footerCenterWidth">
+                      <div class="af-cell" [style.width.px]="footerPreWidth">ACC Condition</div>
+                      <div *ngFor="let seg of footerSupplierSegments; trackBy: trackBySegKey"
+                        class="af-cell af-center af-group-start" [ngClass]="seg.cssClass"
+                        [style.width.px]="seg.width" [title]="seg.label">{{ seg.label }}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="af-row" *ngFor="let cond of sec.rows">
+                  <div class="af-left af-wrap" [style.width.px]="footerLeftWidth">{{ cond.description }}</div>
+                  <div class="af-view">
+                    <div class="af-inner" [style.width.px]="footerCenterWidth">
+                      <div class="af-cell af-wrap" [style.width.px]="footerPreWidth">{{ cond.accCondition }}</div>
+                      <div *ngFor="let seg of footerSupplierSegments; trackBy: trackBySegKey"
+                        class="af-cell af-center af-wrap af-group-start" [style.width.px]="seg.width">
+                        {{ getFooterReply(cond, seg) }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
           </div>
-        
-          <!-- Technical Conditions -->
-          <div class="mt-2" *ngIf="techConditionsReplies?.length > 0">
-            <div class="p-2 bg-secondary text-white fw-bold">Technical Conditions</div>
-            <table class="table table-bordered table-sm" style="font-size:12px;">
-              <thead>
-                <tr>
-                  <th style="width:20%">Condition</th>
-                  <th style="width:20%">ACC Condition</th>
-                  <th *ngFor="let reply of techConditionsReplies[0]?.replies">{{ reply.supplierName }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let cond of techConditionsReplies">
-                  <td>{{ cond.description }}</td>
-                  <td>{{ cond.accCondition }}</td>
-                  <td *ngFor="let reply of cond.replies" class="text-center">{{ reply.reply }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        
-          <!-- Commercial Conditions -->
-          <div class="mt-2" *ngIf="comConditionsReplies?.length > 0">
-            <div class="bg-secondary text-white fw-bold" style="padding:2px 8px;font-size:11px;line-height:1.2;">Commercial
-              Conditions</div>
-            <table class="table table-bordered table-sm" style="font-size:12px;">
-              <thead>
-                <tr style="line-height:1;height:auto;">
-                  <th style="width:25%;padding:2px 4px;">Condition</th>
-                  <th style="width:25%;padding:2px 4px;">ACC Condition</th>
-                  <th *ngFor="let sup of comConditionSuppliers" style="text-align:center;padding:2px 4px;">{{ sup }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let cond of comConditionsReplies" style="line-height:1;height:auto;">
-                  <td style="padding:2px 4px;">{{ cond.description }}</td>
-                  <td style="padding:2px 4px;">{{ cond.accCondition }}</td>
-                  <td *ngFor="let reply of cond.replies" class="text-center" style="padding:2px 4px;">{{ reply.reply }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        
+
           <table class="table table-comparison" *ngIf="groupingBoqGroupList.length > 0 && byGroup">
             <thead>
               <tr>

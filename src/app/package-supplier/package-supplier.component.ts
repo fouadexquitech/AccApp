@@ -1,8 +1,10 @@
 import {
   ChangeDetectorRef,
   Component,
+  ElementRef,
   OnDestroy,
-  OnInit
+  OnInit,
+  ViewChild
 } from '@angular/core';
 import {
   AbstractControl,
@@ -163,6 +165,13 @@ export class PackageSupplierComponent implements OnInit, OnDestroy {
   selectedEmailTemplate : EmailTemplate | null;
   lstEmailTemplate : EmailTemplate[] = [];
   lstLanguages : string[] = [];
+  /** Default language selected in the email template. */
+  readonly defaultEmailLanguage = 'EN';
+  /** Supplier dropdown search (client-side, debounced). */
+  @ViewChild('supplierSearchInput') supplierSearchInput: ElementRef<HTMLInputElement>;
+  visibleSupplierCount = 0;
+  private supplierFilterTimer: any = null;
+  private supplierSearchKeys = new Map<number, string>();
   isUpdatingTechnicalConditions : boolean = false;
 
   formEmailTemplate: FormGroup ;
@@ -297,7 +306,7 @@ private createEmailTemplateForm(
     ],
 
     revisionExpDate: [
-      '',
+      this.getDefaultExpiryDate(),
       Validators.required
     ]
   });
@@ -629,6 +638,9 @@ onSupplierSelectionChange(): void {
 }
 
   ngOnDestroy(): void {
+    if (this.supplierFilterTimer) {
+      clearTimeout(this.supplierFilterTimer);
+    }
     if (this.params) {
       this.params.unsubscribe();
     }
@@ -721,6 +733,7 @@ onSupplierSelectionChange(): void {
     this.packageSupplierService.GetSupplierList(IdPkge).subscribe((data) => {
       if (data) {
         this.SupplierList = data;
+        this.resetSupplierFilter();
       }
     });
   }
@@ -984,44 +997,7 @@ OpenEmailTemplateModal(
   }
 
   if (!this.isRevisionMode) {
-    this.GetEmailTemplateLanguageList();
-
-    const costDB =
-      this.user.usrLoggedCostDB;
-
-    this.packageSupplierService
-      .GetDefaultProjectEmailTemplate(
-        costDB
-      )
-      .subscribe({
-        next: (data) => {
-
-          this.selectedEmailTemplate =
-            data;
-
-          this.formEmailTemplate.patchValue({
-            language:
-              this.selectedEmailTemplate
-                ?.etLang || '',
-
-            template:
-              this.selectedEmailTemplate
-                ?.etContent || ''
-          });
-        },
-
-        error: (error: any) => {
-
-          console.error(
-            'Unable to load default email template:',
-            error
-          );
-
-          this.toastr.error(
-            'Unable to load the default email template.'
-          );
-        }
-      });
+    this.GetEmailTemplateLanguageList(true);
   }
 
   this.getComConditions(psId);
@@ -1435,23 +1411,55 @@ getSupplierEmailGroup(
 
   onLanguageChange(event : any)
   {
+    const select = event.target as HTMLSelectElement;
+    this.loadEmailTemplateByLanguage(select.value);
+  }
+
+  private loadEmailTemplateByLanguage(lang: string): void
+  {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     let revExpiryDate = this.f.revisionExpDate.value;
 
-    console.log(this.f.revisionExpDate.value);
-
-      let select = event.target as HTMLInputElement;
-      let lang = select.value;
-      this.formEmailTemplate.controls['template'].setValue('');
-      this.packageSupplierService.GetEmailTemplate(lang,this.PackageId,this.user.usrLoggedProjectName ,revExpiryDate, this.user.usrId || '').subscribe((data) => {
+    this.formEmailTemplate.controls['template'].setValue('');
+    this.packageSupplierService.GetEmailTemplate(lang,this.PackageId,this.user.usrLoggedProjectName ,revExpiryDate, this.user.usrId || '').subscribe((data) => {
       this.selectedEmailTemplate = data[0];
       this.formEmailTemplate.controls['template'].setValue(this.selectedEmailTemplate?.etContent || '');
+    });
+  }
+
+  /** Today + 7 days as yyyy-MM-dd (local time) for the date input. */
+  private getDefaultExpiryDate(): string
+  {
+    const d = new Date();
+    d.setDate(d.getDate() + 7);
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return d.getFullYear() + '-' + mm + '-' + dd;
+  }
+
+  /** Falls back to the project's default template when no EN template exists. */
+  private loadDefaultProjectEmailTemplate(): void
+  {
+    this.packageSupplierService
+      .GetDefaultProjectEmailTemplate(this.user.usrLoggedCostDB)
+      .subscribe({
+        next: (data) => {
+          this.selectedEmailTemplate = data;
+          this.formEmailTemplate.patchValue({
+            language: this.selectedEmailTemplate?.etLang || '',
+            template: this.selectedEmailTemplate?.etContent || ''
+          });
+        },
+        error: (error: any) => {
+          console.error('Unable to load default email template:', error);
+          this.toastr.error('Unable to load the default email template.');
+        }
       });
   }
 
 //AH30012024
-  GetEmailTemplateLanguageList() {
+  GetEmailTemplateLanguageList(selectDefaultLanguage: boolean = false) {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
     this.lstLanguages=[];
@@ -1460,8 +1468,23 @@ getSupplierEmailGroup(
         this.lstEmailTemplate = data;
         this.lstEmailTemplate.forEach(element => {
           this.lstLanguages.push(element.etLang);
-          // console.log(element.etLang);
         });
+      }
+
+      if (!selectDefaultLanguage) {
+        return;
+      }
+
+      // Default language = EN (match the list value case-insensitively, e.g. "En")
+      const defaultLang = this.lstLanguages.find(
+        l => (l || '').trim().toUpperCase() === this.defaultEmailLanguage
+      );
+
+      if (defaultLang) {
+        this.formEmailTemplate.patchValue({ language: defaultLang });
+        this.loadEmailTemplateByLanguage(defaultLang);
+      } else {
+        this.loadDefaultProjectEmailTemplate();
       }
     });
   }
@@ -1485,11 +1508,20 @@ getSupplierEmailGroup(
      $("#viewTechnicalConditionsModal").modal('hide');
   }
 
+  // Page loading overlay: tblSupplierPackages list / tblSupplierPackageRevisions list
+  loadingSupplierPackages = false;
+  loadingRevisions = false;
+  get isPageLoading(): boolean {
+    return this.loadingSupplierPackages || this.loadingRevisions;
+  }
+
   GetSupplierPackagesList() {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
 
+    this.loadingSupplierPackages = true;
     this.packageSupplierService.GetSupplierPackagesList(this.PackageId,CostConn).subscribe((data) => {
+      this.loadingSupplierPackages = false;
       if (data) {
         this.SupplierPackagesList = data;
         this.selectedSuppliers = [];
@@ -1499,7 +1531,7 @@ getSupplierEmailGroup(
         // });
 //AH30012024
       }
-    });
+    }, () => { this.loadingSupplierPackages = false; });
   }
 
 
@@ -1832,11 +1864,13 @@ private stopAssigning(): void {
   GetSupplierPackagesRevision(packageSupplierId: number) {
     let CostConn=this.user.usrLoggedConnString;
     this.loginService.CheckConnection(CostConn).subscribe((data) => { });
+    this.loadingRevisions = true;
     this.packageSupplierService.GetSupplierPackagesRevision(packageSupplierId,CostConn).subscribe((data) => {
+      this.loadingRevisions = false;
       if (data) {
         this.SupplierPackagesRevList = data;
       }
-    });
+    }, () => { this.loadingRevisions = false; });
   }
 
   Toggle(data: SupplierPackagesList, index: number) {
@@ -2532,7 +2566,8 @@ GetSupplierList_NotAssignetPackage(
       next: (data: SupplierList[]) => {
         const suppliers = data || [];
         this.AllSupplierList = suppliers.map(item => ({ ...item }));
-        this.SupplierList = suppliers.map(item => ({ ...item }));
+        this.SupplierList = suppliers.map(item => ({ ...item, filterHidden: false }));
+        this.resetSupplierFilter();
       },
       error: (error: any) => {
         this.AllSupplierList = [];
@@ -2657,7 +2692,7 @@ private buildSelectedSupplierEmailControls(
 
 
 filterSuppliers(
-  event: KeyboardEvent
+  event: Event
 ): void {
 
   const input =
@@ -2668,42 +2703,81 @@ filterSuppliers(
       .trim()
       .toLowerCase();
 
-  if (!searchText) {
-
-    this.SupplierList =
-      this.AllSupplierList.map(
-        (supplier: SupplierList) => ({
-          ...supplier
-        })
-      );
-
-    return;
+  /*
+   * Debounce: filter once the user pauses typing,
+   * not on every keystroke.
+   */
+  if (this.supplierFilterTimer) {
+    clearTimeout(this.supplierFilterTimer);
   }
 
-  this.SupplierList =
-    this.AllSupplierList.filter(
-      (supplier: SupplierList) => {
+  this.supplierFilterTimer = setTimeout(() => {
+    this.supplierFilterTimer = null;
+    this.applySupplierFilter(searchText);
+  }, 200);
+}
 
-        const supplierId =
-          String(
-            supplier.supID || ''
-          ).toLowerCase();
+/*
+ * Options are hidden/shown instead of rebuilding the list:
+ * no DOM re-creation, and already-selected suppliers stay
+ * selected even when they are filtered out of view.
+ */
+private applySupplierFilter(searchText: string): void {
 
-        const supplierName =
-          (supplier.supName || '')
-            .toLowerCase();
+  let visible = 0;
 
-        const supplierEmail =
-          (supplier.supEmail || '')
-            .toLowerCase();
+  for (const supplier of this.SupplierList) {
 
-        return (
-          supplierId.indexOf(searchText) >= 0 ||
-          supplierName.indexOf(searchText) >= 0 ||
-          supplierEmail.indexOf(searchText) >= 0
-        );
-      }
+    const key =
+      this.supplierSearchKeys.get(Number(supplier.supID)) || '';
+
+    supplier.filterHidden =
+      !!searchText && key.indexOf(searchText) < 0;
+
+    if (!supplier.filterHidden) {
+      visible++;
+    }
+  }
+
+  this.visibleSupplierCount = visible;
+
+  this.changeDetectorRef.detectChanges();
+}
+
+private resetSupplierFilter(): void {
+
+  if (this.supplierFilterTimer) {
+    clearTimeout(this.supplierFilterTimer);
+    this.supplierFilterTimer = null;
+  }
+
+  if (this.supplierSearchInput?.nativeElement) {
+    this.supplierSearchInput.nativeElement.value = '';
+  }
+
+  this.supplierSearchKeys.clear();
+
+  for (const supplier of this.SupplierList || []) {
+    supplier.filterHidden = false;
+    this.supplierSearchKeys.set(
+      Number(supplier.supID),
+      (
+        String(supplier.supID || '') + ' ' +
+        (supplier.supName || '') + ' ' +
+        (supplier.supEmail || '')
+      ).toLowerCase()
     );
+  }
+
+  this.visibleSupplierCount =
+    (this.SupplierList || []).length;
+}
+
+trackBySupplierId(
+  index: number,
+  supplier: SupplierList
+): number {
+  return supplier.supID;
 }
 //AH24012024
 
