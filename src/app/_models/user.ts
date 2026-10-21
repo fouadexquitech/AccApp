@@ -17,4 +17,5 @@ export class LoginResponse {
     success: boolean = false;
     user : User = null;
     message: string = "";
+    vendanNotReady?: boolean = false;
 }

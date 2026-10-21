@@ -2792,7 +2792,9 @@ selectAllResources(
           params.data?.[`sup_${id}_isCalculated`] ? 'calculated-supplier-price' : '',
         tooltipValueGetter: (p: any) =>
           p.data?._rowType === 'data' && p.data?.[`sup_${id}_isCalculated`]
-            ? 'Calculated from the maximum price provided by the other suppliers'
+            ? (p.data?.[`sup_${id}_calcFrom`]
+                ? 'Calculated from the maximum price provided by ' + p.data[`sup_${id}_calcFrom`]
+                : 'Calculated from the maximum price provided by the other suppliers')
             : null,
       });
 
@@ -2872,6 +2874,7 @@ selectAllResources(
                 row[`sup_${id}_finalUP`] = +(sup.uPriceAfterDiscount * sup.exchRateNow).toFixed(2);
                 row[`sup_${id}_totalPrice`] = +(sup.uPriceAfterDiscount * sup.exchRateNow * resource.quotationQty).toFixed(0);
                 row[`sup_${id}_isCalculated`] = sup.isCalculatedPrice;
+                row[`sup_${id}_calcFrom`] = (sup as any).calculatedFromSupplier;
                 row[`sup_${id}_missed`] = sup.missedPrice;
               });
               rows.push(row);
@@ -2893,6 +2896,7 @@ selectAllResources(
               const row: any = {
                 _rowType: 'data',
                 _rowRef: item,
+                _cLevelRef: cLevel,
                 isChecked: item.isChecked || false,
                 isExcluded: item.isExcluded || false,
                 isAlternative: item.isAlternative || false,
@@ -2913,6 +2917,7 @@ selectAllResources(
                 row[`sup_${id}_finalUP`] = +(sup.uPriceAfterDiscount * sup.exchRateNow).toFixed(2);
                 row[`sup_${id}_totalPrice`] = sup.totalPrice;
                 row[`sup_${id}_isCalculated`] = sup.isCalculatedPrice;
+                row[`sup_${id}_calcFrom`] = (sup as any).calculatedFromSupplier;
                 row[`sup_${id}_missed`] = sup.missedPrice;
               });
               rows.push(row);
@@ -2922,6 +2927,7 @@ selectAllResources(
             if (ind === (cLevel.groupingLevels || []).length - 1) {
               const subRow: any = {
                 _rowType: 'subtotal',
+                _cLevelRef: cLevel,
                 itemDescription: cLevel.c_Description,
                 totalPrice: cLevel.c_TotalBudget,
               };
@@ -2967,10 +2973,19 @@ selectAllResources(
 
     if (this.byBoq) {
       const item = ref as GroupingBoq;
-      item.isExcluded = newVal;
+      // Update the row + Ideal amounts locally, then just save the flag (no full reload)
+      this.applyBoqExclusion(event.node, item, newVal);
+      const revert = (msg: string) => {
+        event.node.setDataValue('isExcluded', !newVal);
+        this.applyBoqExclusion(event.node, item, !newVal);
+        this.toastr.error(msg);
+      };
       this.packageComparisonService
         .excludBoq(this.packageId, item.itemO, item.isNewItem, newVal, CostConn)
-        .subscribe(() => this.onSearch());
+        .subscribe(
+          (ok) => { if (ok === false) revert('Could not save the exclusion of item ' + item.itemO); },
+          (err) => revert(typeof err === 'string' ? err : 'Could not save the exclusion of item ' + item.itemO)
+        );
     } else {
       const res = ref as GroupingResource;
       res.isExcluded = newVal;
@@ -2978,6 +2993,67 @@ selectAllResources(
         .excludRessource(this.packageId, res.boqSeq, res.isNewItem, res.isAlternative, newVal, CostConn)
         .subscribe(() => this.onSearch());
     }
+  }
+
+  /**
+   * Client-side effect of the "Excl." tick (byBoq), mirroring the server logic in
+   * RevisionDetailsRepository.GetComparisonSheetByBoq:
+   *  - excluded  -> Ideal Qty / Final U.P. / T. Price = 0
+   *  - included  -> Ideal = lowest priced supplier (UP > 0), qty = lowest supplier qty
+   * and the Ideal C subtotal, pinned Total row and footer Sub/Grand totals follow.
+   */
+  private applyBoqExclusion(node: any, item: GroupingBoq, excluded: boolean): void {
+    item.isExcluded = excluded;
+    const sups: any[] = item.groupingPackageSuppliersPrices || [];
+    sups.forEach((s) => { if (s.supplierId !== 0) s.isExcluded = excluded; });
+
+    const ideal: any = sups.find((s) => s.supplierId === 0 || s.supplierName === 'Ideal');
+    if (!ideal) return;   // no supplier priced this item -> nothing for Ideal
+
+    const oldTotal = +ideal.totalPrice || 0;
+    if (excluded) {
+      ideal.assignedQty = 0;
+      ideal.qty = 0;
+      ideal.uPriceAfterDiscount = 0;
+      ideal.totalPrice = 0;
+    } else {
+      const priced = sups.filter((s) => s.supplierId !== 0 && s.supplierName !== 'Ideal' && (+s.uPriceAfterDiscount || 0) > 0);
+      if (!priced.length) return;
+      const minUP = Math.min(...priced.map((s) => +s.uPriceAfterDiscount));
+      const best = priced.find((s) => +s.uPriceAfterDiscount === minUP);
+      const minQty = Math.min(...priced.map((s) => +s.qty || 0));
+      const exch = +best.exchRateNow || 1;
+      ideal.assignedQty = best.qty;
+      ideal.qty = minQty;
+      ideal.exchRateNow = best.exchRateNow;
+      ideal.uPriceAfterDiscount = Math.round(minUP * 100) / 100;
+      ideal.totalPrice = minQty * minUP * exch;
+    }
+
+    // Row cells
+    const d = node.data;
+    d['sup_0_assignedQty'] = ideal.assignedQty;
+    d['sup_0_qty'] = ideal.qty;
+    d['sup_0_finalUP'] = +((+ideal.uPriceAfterDiscount || 0) * (+ideal.exchRateNow || 1)).toFixed(2);
+    d['sup_0_totalPrice'] = ideal.totalPrice;
+    const rowsToRefresh: any[] = [node];
+
+    // Ideal subtotal of this C
+    const delta = (+ideal.totalPrice || 0) - oldTotal;
+    const cLevel: any = d._cLevelRef;
+    if (cLevel && delta !== 0) {
+      const cIdeal = (cLevel.groupingSupplierC_Prices || []).find((x: any) => x.supplierId === 0 || x.supplierName === 'Ideal');
+      if (cIdeal) cIdeal.totalPrice = (+cIdeal.totalPrice || 0) + delta;
+      this.gridApi?.forEachNode((n: any) => {
+        if (n.data?._rowType === 'subtotal' && n.data._cLevelRef === cLevel) {
+          n.data['sup_0_totalPrice'] = (+n.data['sup_0_totalPrice'] || 0) + delta;
+          rowsToRefresh.push(n);
+        }
+      });
+    }
+
+    this.gridApi?.refreshCells({ rowNodes: rowsToRefresh, force: true });
+    this.buildPinnedRow();   // pinned "Total" row; footer Sub/Grand totals read rowData
   }
 
   onCellValueChanged(event: CellValueChangedEvent) {

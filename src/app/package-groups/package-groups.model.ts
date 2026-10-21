@@ -88,6 +88,7 @@ export class GroupingPackageSupplierPrice {
   public isCreatedByThisSupplier: boolean = false;
   //AH02032024
   public isCalculatedPrice: boolean = false;
+  public calculatedFromSupplier?: string = null;
 }
 //AH02032024
 export class GroupingLevelModel {

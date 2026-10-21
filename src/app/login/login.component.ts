@@ -6,6 +6,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { LoginService } from './login.service';
 import { Country, Project, ProjectCurrency } from './login.model';
 import { ToastrService } from 'ngx-toastr';
+import Swal from 'sweetalert2';
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
@@ -85,6 +86,15 @@ export class LoginComponent implements OnInit {
                             this.toastr.error('Error getting project currency:' + error);
                             this.loading = false;
                         }); 
+                    }
+                    else if(resp.vendanNotReady)
+                    {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Vendan not ready',
+                            text: resp.message || 'Vendan is not ready for this project, please activate from Estimation.',
+                            confirmButtonText: 'OK'
+                        });
                     }
                     else
                     {                  
